@@ -1617,7 +1617,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 <!-- ===== BANDEAU URGENCE ===== -->
 <div style="background:linear-gradient(135deg,#FF6B35 0%,#F7931E 100%);padding:14px 20px;text-align:center;color:white;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.3px;">
     🎁 <span style="text-decoration:underline;">Offre limitée</span> — Recevez un livre illustré GRATUIT par email
-    <span style="opacity:0.85;font-weight:400;margin-left:8px;">• Déjà <span class="dynamic-families" style="font-weight:700;">33 500</span> familles en profitent</span>
+    <span style="opacity:0.85;font-weight:400;margin-left:8px;">• Déjà <span class="dynamic-families" style="font-weight:700;">…</span> familles en profitent</span>
 </div>
 <section class="about" id="apropos">
     <div class="container">
@@ -1691,7 +1691,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
             <div class="free-book-badge">&#127381; Cadeau</div>
             <h2 class="free-book-title">Offrez une aventure <span class="free-book-highlight">GRATUITE</span> à votre enfant</h2>
             <p class="free-book-subtitle">Choisissez parmi nos 14 livres et recevez-le en <strong>PDF</strong> en 2 minutes.</p>
-            <div class="free-book-social-proof">&#10003; Déjà <strong id="downloadCount" class="dynamic-families">33 500</strong> familles ont téléchargé leur livre</div>
+            <div class="free-book-social-proof">&#10003; Déjà <strong id="downloadCount" class="dynamic-families">…</strong> familles ont téléchargé leur livre</div>
 
             <form class="free-book-form" id="freeBookForm" action="#" method="POST">
                 <div class="form-row">
@@ -2253,7 +2253,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
     const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec?action=stats';
 
     // === VALEURS PAR DÉFAUT (affichées si le fetch échoue) ===
-    const DEFAULTS = { lecteurs: 47880, note: 4.5, livres: 14, series: 2, avis: 1197, familles: 33516 };
+    const DEFAULTS = { lecteurs: 47880, note: 4.5, livres: 14, series: 2, avis: 1197, familles: 0 };
 
     // === CACHE LOCAL (évite de re-fetch à chaque scroll) ===
     const CACHE_KEY = 'chevalier_stats';
@@ -2295,10 +2295,12 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
             el.textContent = fmt(stats.avis) + '+';
         });
 
-        // Familles livre gratuit
-        document.querySelectorAll('.dynamic-families').forEach(function(el){
-            el.textContent = fmt(stats.familles);
-        });
+        // Familles livre gratuit (vrais chiffres depuis Google Sheet)
+        if(stats.familles > 0){
+            document.querySelectorAll('.dynamic-families').forEach(function(el){
+                el.textContent = fmt(stats.familles);
+            });
+        }
     }
 
     function loadStats(){
