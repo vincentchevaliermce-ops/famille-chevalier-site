@@ -2436,11 +2436,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
             });
         }
 
-        // Show last updated date
-        const ticker = document.querySelector('.bsr-ticker-wrap');
-        if (ticker && data.scraped_at) {
-            ticker.title = 'Données mises à jour le ' + data.scraped_at;
-        }
     }
 
     // Fetch on page load
