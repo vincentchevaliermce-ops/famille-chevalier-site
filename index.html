@@ -1366,13 +1366,15 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 
     function fmtRank(n){ return '#' + Math.floor(n).toLocaleString('fr-FR').replace(/,/g,' '); }
 
-    /* Fix mojibake UTF-8 double-encodé (ex: "GÃ©niales" → "Géniales") */
+    /* Fix mojibake UTF-8 double-encode: "G\u00c3\u00a9niales" -> "Geniales" */
     function fixUtf8(str){
         if(!str) return str;
+        /* Only attempt decode if string has mojibake signature: \u00c0-\u00c3 followed by \u0080-\u00bf */
+        if(!/[\u00c0-\u00c3][\u0080-\u00bf]/.test(str)) return str;
         try {
             var bytes = new Uint8Array(str.split('').map(function(c){ return c.charCodeAt(0); }));
             var decoded = new TextDecoder('utf-8').decode(bytes);
-            if(decoded !== str && !/ï¿½/.test(decoded)) return decoded;
+            if(decoded !== str && decoded.indexOf('\ufffd') === -1) return decoded;
         } catch(e){}
         return str;
     }
