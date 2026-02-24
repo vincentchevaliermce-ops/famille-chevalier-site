@@ -810,6 +810,96 @@ nav .nav-inner { will-change: background, box-shadow; }
     .hero h1 { animation-duration: 0.6s; }
 }
 
+/* ========================================
+   PACK WHAOOO - Effets premium
+   ======================================== */
+
+/* --- Page Loader --- */
+.page-loader {
+    position: fixed; inset: 0; z-index: 10000;
+    background: linear-gradient(160deg, #0f0c29, #302b63, #24243e);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-logo {
+    font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 2.4rem;
+    color: white; margin-bottom: 16px;
+    animation: loaderPulse 1.2s ease-in-out infinite;
+}
+.loader-bar {
+    width: 180px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden;
+}
+.loader-bar-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--accent), var(--pink));
+    border-radius: 4px;
+    animation: loaderFill 1.8s ease-in-out forwards;
+}
+@keyframes loaderPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.05);opacity:0.8} }
+@keyframes loaderFill { 0%{width:0%} 60%{width:80%} 100%{width:100%} }
+
+/* --- Custom Cursor --- */
+.cursor-blob {
+    position: fixed; top: 0; left: 0;
+    width: 32px; height: 32px;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s, transform 0.15s ease-out;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+    background: transparent;
+}
+.cursor-blob.hover-active {
+    width: 56px; height: 56px;
+    background: rgba(255,107,53,0.15);
+    border-color: var(--accent);
+}
+.cursor-dot {
+    position: fixed; top: 0; left: 0;
+    width: 6px; height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    pointer-events: none; z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s;
+}
+@media (max-width: 768px) {
+    .cursor-blob, .cursor-dot { display: none !important; }
+}
+@media (pointer: coarse) {
+    .cursor-blob, .cursor-dot { display: none !important; }
+}
+
+/* --- Magnetic Buttons --- */
+.magnetic-btn { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* --- FAQ enhanced --- */
+details[open] summary span:last-child { transform: rotate(90deg); }
+details { transition: all 0.3s ease; }
+details[open] { box-shadow: 0 4px 20px rgba(255,107,53,0.12) !important; border-color: rgba(255,107,53,0.2) !important; }
+details summary { cursor: pointer; }
+details summary span:last-child { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); display: inline-block; }
+
+/* --- Enhanced 3D book tilt glow --- */
+.book-card { transition: all 0.4s cubic-bezier(.4,0,.2,1), box-shadow 0.3s ease; }
+.book-card.tilt-active { box-shadow: var(--shadow-glow), 0 20px 60px rgba(0,0,0,0.15), 0 0 40px rgba(255,107,53,0.1) !important; }
+
+/* --- Smooth counter flip style --- */
+.hero-counter-num {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+/* --- Newsletter section floating shapes --- */
+.newsletter { overflow: hidden; }
+.newsletter::after {
+    content: '📚'; position: absolute; font-size: 4rem; opacity: 0.06;
+    bottom: 20px; right: 40px;
+    animation: gentleFloat 4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
     .trust-track { animation: none !important; }
@@ -1215,6 +1305,16 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 </style>
 </head>
 <body>
+<!-- PAGE LOADER -->
+<div class="page-loader" id="pageLoader">
+    <div class="loader-logo">📚 Chevalier</div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor-blob" id="cursorBlob"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
 <a href="#livres" class="skip-link">Passer au contenu principal</a>
 
 <!-- SCROLL PROGRESS -->
@@ -1984,14 +2084,7 @@ document.querySelectorAll('[data-count]').forEach(el=>counterObs.observe(el));
     c.appendChild(p);}
 })();
 
-// === 3D TILT ON BOOK CARDS ===
-document.querySelectorAll('.book-card').forEach(card=>{
-    card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-0.5;const y=(e.clientY-r.top)/r.height-0.5;
-    card.style.transform='translateY(-10px) perspective(800px) rotateY('+x*8+'deg) rotateX('+(-y*6)+'deg)';});
-    card.addEventListener('mouseleave',()=>{card.style.transform='';});
-});
-
-// parallax removed (no .hero-book elements)
+// 3D TILT moved to PACK WHAOOO JS (enhanced version with glow)
 
 // === CONFETTI ===
 function launchConfetti(){const canvas=document.getElementById('confettiCanvas');const ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;const ps=[];const cols=['#FF6B35','#FCBF49','#7C3AED','#EC4899','#10B981','#004E89'];
@@ -2392,6 +2485,95 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
 
 
 <!-- Script Auto-Update Reviews supprimé (remplacé par GAS ?action=reviews) -->
+
+<script>
+/* ===== PACK WHAOOO JS ===== */
+(function(){
+    // --- 1. Page Loader ---
+    const loader = document.getElementById('pageLoader');
+    if(loader){
+        window.addEventListener('load', function(){
+            setTimeout(function(){ loader.classList.add('hidden'); }, 2000);
+        });
+        // Fallback: hide after 4s max
+        setTimeout(function(){ if(loader) loader.classList.add('hidden'); }, 4000);
+    }
+
+    // --- 2. Custom Cursor ---
+    const blob = document.getElementById('cursorBlob');
+    const dot = document.getElementById('cursorDot');
+    if(blob && dot && window.innerWidth > 768 && !('ontouchstart' in window)){
+        document.body.style.cursor = 'none';
+        let mx = 0, my = 0, bx = 0, by = 0;
+        document.addEventListener('mousemove', function(e){
+            mx = e.clientX; my = e.clientY;
+            dot.style.left = mx + 'px';
+            dot.style.top = my + 'px';
+        });
+        function animateBlob(){
+            bx += (mx - bx) * 0.12;
+            by += (my - by) * 0.12;
+            blob.style.left = bx + 'px';
+            blob.style.top = by + 'px';
+            requestAnimationFrame(animateBlob);
+        }
+        animateBlob();
+        // Grow on interactive elements
+        document.addEventListener('mouseover', function(e){
+            if(e.target.closest('a, button, .btn, .cat-tab, .book-card, .fan-book, input, select, summary, .social-icon')){
+                blob.classList.add('hover-active');
+            }
+        });
+        document.addEventListener('mouseout', function(e){
+            if(e.target.closest('a, button, .btn, .cat-tab, .book-card, .fan-book, input, select, summary, .social-icon')){
+                blob.classList.remove('hover-active');
+            }
+        });
+        // Hide cursor when leaving window
+        document.addEventListener('mouseleave', function(){ blob.style.opacity='0'; dot.style.opacity='0'; });
+        document.addEventListener('mouseenter', function(){ blob.style.opacity='1'; dot.style.opacity='1'; });
+    }
+
+    // --- 3. Magnetic Buttons ---
+    document.querySelectorAll('.btn, .cat-tab, .nav-cta, .popup-cta, .sticky-gift-btn').forEach(function(btn){
+        btn.classList.add('magnetic-btn');
+        btn.addEventListener('mousemove', function(e){
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width/2;
+            const y = e.clientY - rect.top - rect.height/2;
+            btn.style.transform = 'translate(' + (x*0.2) + 'px,' + (y*0.2) + 'px) scale(1.03)';
+        });
+        btn.addEventListener('mouseleave', function(){
+            btn.style.transform = '';
+        });
+    });
+
+    // --- 4. FAQ icon animation ---
+    document.querySelectorAll('details').forEach(function(d){
+        d.addEventListener('toggle', function(){
+            // Animation is handled by CSS details[open]
+        });
+    });
+
+    // --- 5. Enhanced 3D tilt with glow ---
+    document.querySelectorAll('.book-card').forEach(function(card){
+        card.addEventListener('mousemove', function(e){
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            card.style.transform = 'translateY(-12px) perspective(800px) rotateY(' + (x*12) + 'deg) rotateX(' + (-y*10) + 'deg)';
+            card.classList.add('tilt-active');
+            // Dynamic shadow based on tilt
+            card.style.boxShadow = (x*-30)+'px '+(y*-30)+'px 60px rgba(255,107,53,0.15), 0 20px 50px rgba(0,0,0,0.1)';
+        });
+        card.addEventListener('mouseleave', function(){
+            card.style.transform = '';
+            card.style.boxShadow = '';
+            card.classList.remove('tilt-active');
+        });
+    });
+})();
+</script>
 
 <script>
 
