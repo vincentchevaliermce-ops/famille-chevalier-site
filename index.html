@@ -411,16 +411,18 @@
 .back-to-top:hover { transform: translateY(-4px) scale(1.1); box-shadow: 0 8px 30px rgba(255,107,53,0.4); }
         @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
         @keyframes scaleIn { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.7s cubic-bezier(.4,0,.2,1); }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
+        /* .reveal rules moved to Pack Animations WOW section */
         .reveal-delay-1 { transition-delay: 0.1s; }
         .reveal-delay-2 { transition-delay: 0.2s; }
         .reveal-delay-3 { transition-delay: 0.3s; }
         .book-card.reveal:nth-child(1) { transition-delay: 0s; }
-        .book-card.reveal:nth-child(2) { transition-delay: 0.08s; }
-        .book-card.reveal:nth-child(3) { transition-delay: 0.16s; }
-        .book-card.reveal:nth-child(4) { transition-delay: 0.24s; }
-        .book-card.reveal:nth-child(5) { transition-delay: 0.32s; }
+        .book-card.reveal:nth-child(2) { transition-delay: 0.07s; }
+        .book-card.reveal:nth-child(3) { transition-delay: 0.14s; }
+        .book-card.reveal:nth-child(4) { transition-delay: 0.21s; }
+        .book-card.reveal:nth-child(5) { transition-delay: 0.28s; }
+        .book-card.reveal:nth-child(6) { transition-delay: 0.35s; }
+        .book-card.reveal:nth-child(7) { transition-delay: 0.42s; }
+        .book-card.reveal:nth-child(8) { transition-delay: 0.49s; }
         #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
         @media (max-width: 768px) {
             .nav-links { display: none; } .nav-hamburger { display: flex; }
@@ -641,6 +643,173 @@
     .free-book-form { padding: 20px; }
     .free-book-btn { font-size: 1rem; padding: 14px 24px; }
 }
+/* ========================================
+   PACK 1: ANIMATIONS WOW
+   ======================================== */
+
+/* --- Parallax hero support --- */
+.hero-content, .hero-visual { will-change: transform; }
+
+/* --- Enhanced scroll reveals with 3D --- */
+.reveal { opacity: 0; transform: translateY(50px) rotateX(8deg) scale(0.96); transform-origin: bottom center; transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0) rotateX(0) scale(1); }
+.section-header.reveal { transform: translateY(40px) scale(0.97); }
+.section-header.reveal.visible { transform: translateY(0) scale(1); }
+
+/* --- Shine effect on book covers --- */
+.book-cover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    z-index: 4; pointer-events: none;
+    transition: left 0.7s ease;
+}
+.book-card:hover .book-cover::before { left: 120%; }
+
+/* --- Animated gradient on social-proof section --- */
+.social-proof {
+    background-size: 200% 200%;
+    animation: spGradient 6s ease-in-out infinite;
+}
+@keyframes spGradient {
+    0%,100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* --- Floating animation on stat cards --- */
+.stat { animation: statFloat 3s ease-in-out infinite; }
+.stat:nth-child(2) { animation-delay: 0.5s; }
+.stat:nth-child(3) { animation-delay: 1s; }
+.stat:nth-child(4) { animation-delay: 1.5s; }
+@keyframes statFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+.stat:hover { animation: none; transform: translateY(-8px) scale(1.05); }
+
+/* --- Hero text word entrance --- */
+.hero h1 { animation: heroTitleIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
+@keyframes heroTitleIn {
+    from { opacity: 0; transform: translateY(40px) rotateX(15deg); filter: blur(8px); }
+    to { opacity: 1; transform: translateY(0) rotateX(0); filter: blur(0); }
+}
+.hero-sub { animation: heroSubIn 0.9s ease 0.35s both !important; }
+@keyframes heroSubIn {
+    from { opacity: 0; transform: translateX(-30px); filter: blur(4px); }
+    to { opacity: 1; transform: translateX(0); filter: blur(0); }
+}
+.hero-buttons { animation: heroSubIn 0.9s ease 0.5s both; }
+
+/* ========================================
+   PACK 2: POLISH PREMIUM
+   ======================================== */
+
+/* --- Glassmorphism on section headers --- */
+.section-header {
+    position: relative;
+    padding: 32px 24px;
+    border-radius: var(--radius);
+    background: rgba(255,255,255,0.5);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.6);
+}
+.books-section .section-header, .about .section-header { background: rgba(255,251,245,0.6); }
+.newsletter .section-header { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+.newsletter .section-header .section-subtitle { color: rgba(255,255,255,0.7); }
+
+/* --- Animated underline on section labels --- */
+.section-label { position: relative; display: inline-flex; }
+.section-label::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 2.5px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 2px;
+    transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.reveal.visible .section-label::after, .section-label.visible::after { width: 100%; }
+
+/* --- Glow hover on all interactive elements --- */
+.cat-tab:hover, .footer-links a:hover, .social-icon:hover {
+    text-shadow: 0 0 16px rgba(255,107,53,0.3);
+}
+.btn:hover { filter: brightness(1.08); }
+
+/* --- Ripple effect on buttons --- */
+.btn { position: relative; overflow: hidden; }
+.btn .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    transform: scale(0);
+    animation: rippleAnim 0.6s ease-out;
+    pointer-events: none;
+}
+@keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+}
+
+/* --- Enhanced nav scroll effect --- */
+nav.scrolled .nav-inner {
+    border-bottom: 2px solid rgba(255,107,53,0.15);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 0 20px rgba(255,107,53,0.06);
+}
+
+/* --- Smooth popup entrance with bounce --- */
+.popup-box {
+    animation: popBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+@keyframes popBounce {
+    from { opacity: 0; transform: scale(0.7) translateY(40px); }
+    60% { transform: scale(1.05) translateY(-5px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* --- Form input glow on focus --- */
+.newsletter-form input:focus {
+    box-shadow: 0 0 20px rgba(252,191,73,0.25), inset 0 0 8px rgba(252,191,73,0.1);
+}
+.free-book-form input:focus, .free-book-form select:focus {
+    box-shadow: 0 0 20px rgba(252,191,73,0.2);
+}
+
+/* --- Category tab active glow --- */
+.cat-tab.active { box-shadow: 0 4px 24px var(--primary-glow), 0 0 40px rgba(255,107,53,0.15); }
+
+/* --- Smooth wave SVG animation --- */
+.wave svg path { transition: d 0.5s ease; }
+
+/* --- About photo glow ring --- */
+.about-photo { box-shadow: 0 0 0 0 rgba(255,107,53,0); transition: box-shadow 0.5s ease; }
+.about-photo:hover { box-shadow: 0 0 30px rgba(255,107,53,0.2), 0 0 60px rgba(255,107,53,0.08); }
+
+/* ========================================
+   PACK 3: PERFORMANCE
+   ======================================== */
+
+/* --- will-change hints for GPU --- */
+.book-card { will-change: transform, box-shadow; }
+.trust-marquee, .review-ticker-track { will-change: transform; }
+nav .nav-inner { will-change: background, box-shadow; }
+.btn { will-change: transform; }
+
+/* --- Pause offscreen continuous animations --- */
+.trust-banner:not(.in-viewport) .trust-marquee { animation-play-state: paused; }
+.review-ticker-section:not(.in-viewport) .review-ticker-track { animation-play-state: paused; }
+
+/* --- Mobile animation reduction --- */
+@media (max-width: 768px) {
+    .book-cover::before { display: none; } /* no shine on mobile (perf) */
+    .stat { animation: none; } /* no float on mobile */
+    .section-header { backdrop-filter: none; -webkit-backdrop-filter: none; background: transparent; border: none; } /* save GPU */
+    .reveal { transform: translateY(30px); transition-duration: 0.5s; } /* simpler reveal */
+    .reveal.visible { transform: translateY(0); }
+    .hero h1 { animation-duration: 0.6s; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
     .trust-track { animation: none !important; }
@@ -757,6 +926,12 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
     position: relative;
     overflow: hidden;
     background: linear-gradient(160deg, #0f0c29 0%, #302b63 40%, #24243e 100%);
+    background-size: 200% 200%;
+    animation: heroGradientShift 8s ease-in-out infinite;
+}
+@keyframes heroGradientShift {
+    0%,100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 .hero::before {
     content: '';
@@ -1799,11 +1974,12 @@ document.querySelectorAll('[data-count]').forEach(el=>counterObs.observe(el));
     } catch(e){}
 })();
 
-// === FLOATING PARTICLES ===
+// === FLOATING PARTICLES (optimized for mobile) ===
 (function(){
     const c=document.getElementById('particles');
     const colors=['#FF6B35','#FCBF49','#7C3AED','#EC4899','#10B981','#004E89'];
-    for(let i=0;i<20;i++){const p=document.createElement('div');p.className='particle';const s=4+Math.random()*12;
+    const count=window.innerWidth<768?8:20;
+    for(let i=0;i<count;i++){const p=document.createElement('div');p.className='particle';const s=4+Math.random()*12;
     p.style.cssText='width:'+s+'px;height:'+s+'px;left:'+Math.random()*100+'%;background:'+colors[i%colors.length]+';animation-duration:'+(12+Math.random()*20)+'s;animation-delay:'+(-Math.random()*20)+'s;';
     c.appendChild(p);}
 })();
@@ -1819,7 +1995,7 @@ document.querySelectorAll('.book-card').forEach(card=>{
 
 // === CONFETTI ===
 function launchConfetti(){const canvas=document.getElementById('confettiCanvas');const ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;const ps=[];const cols=['#FF6B35','#FCBF49','#7C3AED','#EC4899','#10B981','#004E89'];
-for(let i=0;i<80;i++){ps.push({x:canvas.width/2+(Math.random()-0.5)*200,y:canvas.height*0.7,vx:(Math.random()-0.5)*12,vy:-Math.random()*15-5,c:cols[Math.floor(Math.random()*cols.length)],s:4+Math.random()*6,r:Math.random()*360,rs:(Math.random()-0.5)*10,g:0.3});}
+const confettiCount=window.innerWidth<768?40:80;for(let i=0;i<confettiCount;i++){ps.push({x:canvas.width/2+(Math.random()-0.5)*200,y:canvas.height*0.7,vx:(Math.random()-0.5)*12,vy:-Math.random()*15-5,c:cols[Math.floor(Math.random()*cols.length)],s:4+Math.random()*6,r:Math.random()*360,rs:(Math.random()-0.5)*10,g:0.3});}
 let f=0;function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.r+=p.rs;p.vx*=0.99;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r*Math.PI/180);ctx.fillStyle=p.c;ctx.globalAlpha=Math.max(0,1-f/90);ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);ctx.restore();});f++;if(f<90)requestAnimationFrame(animate);else ctx.clearRect(0,0,canvas.width,canvas.height);}animate();}
 
 // === LIVRE GRATUIT ===
@@ -2113,7 +2289,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
     const c = document.getElementById('heroParticles');
     if(!c) return;
     const colors = ['rgba(255,107,53,0.6)','rgba(252,191,73,0.5)','rgba(124,58,237,0.4)','rgba(16,185,129,0.5)','rgba(236,72,153,0.4)'];
-    for(let i=0;i<30;i++){
+    const heroCount=window.innerWidth<768?12:30;
+    for(let i=0;i<heroCount;i++){
         const p = document.createElement('div');
         p.className = 'h-particle';
         const s = Math.random()*6+3;
@@ -2147,6 +2324,69 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
         });
     }, {threshold: 0.5});
     counters.forEach(c => obs.observe(c));
+})();
+
+/* ===== PACK ENHANCEMENTS JS ===== */
+(function(){
+    // --- 1. Hero Parallax on scroll ---
+    const hero = document.querySelector('.hero');
+    const heroContent = document.querySelector('.hero-content');
+    const heroVisual = document.querySelector('.hero-visual');
+    if(hero && heroContent){
+        let ticking = false;
+        window.addEventListener('scroll', function(){
+            if(!ticking){
+                requestAnimationFrame(function(){
+                    const scrollY = window.scrollY;
+                    const heroH = hero.offsetHeight;
+                    if(scrollY < heroH){
+                        const ratio = scrollY / heroH;
+                        heroContent.style.transform = 'translateY(' + (scrollY * 0.3) + 'px)';
+                        heroContent.style.opacity = 1 - ratio * 0.6;
+                        if(heroVisual) heroVisual.style.transform = 'translateY(' + (scrollY * 0.15) + 'px)';
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, {passive: true});
+    }
+
+    // --- 2. Ripple effect on all buttons ---
+    document.addEventListener('click', function(e){
+        const btn = e.target.closest('.btn, .cat-tab, .btn-sm, .sticky-gift-btn, .popup-cta');
+        if(!btn) return;
+        const rect = btn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple-effect';
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+        btn.style.position = 'relative';
+        btn.style.overflow = 'hidden';
+        btn.appendChild(ripple);
+        ripple.addEventListener('animationend', function(){ ripple.remove(); });
+    });
+
+    // --- 3. Viewport-based animation pause ---
+    const vpObserver = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+            e.target.classList.toggle('in-viewport', e.isIntersecting);
+        });
+    }, {threshold: 0});
+    document.querySelectorAll('.trust-banner, .review-ticker-section').forEach(function(el){ vpObserver.observe(el); });
+
+    // --- 4. Enhanced nav on scroll (progressive shadow) ---
+    const nav = document.getElementById('navbar');
+    if(nav && hero){
+        window.addEventListener('scroll', function(){
+            const ratio = Math.min(window.scrollY / (hero.offsetHeight * 0.5), 1);
+            if(ratio > 0.05){
+                nav.querySelector('.nav-inner').style.boxShadow = '0 '+(4+ratio*12)+'px '+(20+ratio*30)+'px rgba(0,0,0,'+(0.06+ratio*0.1)+')';
+            }
+        }, {passive: true});
+    }
 })();
 </script>
 
