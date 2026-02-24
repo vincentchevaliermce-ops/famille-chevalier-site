@@ -2391,62 +2391,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
 </script>
 
 
-<script>
-/* ===== Auto-Update Reviews (obsolete - remplace par GAS ?action=reviews) ===== */
-/* Ce script est desactive car les reviews viennent maintenant du GAS endpoint */
-(function(){
-    // DISABLED: l'ancien systeme via amazon_reviews_data.json n'est plus utilise
-    // Les reviews sont fetchees par le script AUTO-UPDATE REVIEW TICKER plus bas
-    return;
-
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-                timestamp: Date.now(),
-                data: data
-            }));
-
-            applyData(data);
-        } catch(e) {
-            // Silently fail - static data in HTML is the fallback
-        }
-    }
-
-    function applyData(data) {
-        if (!data || !data.books) return;
-
-        // Update each book card that has data-asin
-        document.querySelectorAll('[data-asin]').forEach(card => {
-            const asin = card.dataset.asin;
-            const book = data.books[asin];
-            if (!book || !book.rating || !book.reviews) return;
-
-            const starsText = card.querySelector('.stars-text');
-            if (starsText) {
-                starsText.textContent = book.rating.toFixed(1).replace('.', ',') + ' (' + book.reviews + ' avis)';
-            }
-        });
-
-        // Update total reviews in hero counter
-        if (data.total_reviews) {
-            const counterEl = document.querySelector('.hero-counter-num[data-target]');
-            // Find the "Avis Amazon" counter
-            document.querySelectorAll('.hero-counter').forEach(c => {
-                if (c.querySelector('.hero-counter-label')?.textContent.includes('Avis')) {
-                    const num = c.querySelector('.hero-counter-num');
-                    if (num) num.dataset.target = data.total_reviews;
-                }
-            });
-        }
-
-    }
-
-    // Fetch on page load
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', fetchReviewData);
-    } else {
-        fetchReviewData();
-    }
-})();
-</script>
+<!-- Script Auto-Update Reviews supprimé (remplacé par GAS ?action=reviews) -->
 
 <script>
 
