@@ -1877,11 +1877,12 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 
             <div class="free-book-success" id="freeBookSuccess" style="display:none">
                 <div class="success-icon">&#127881;</div>
-                <h3>Votre livre est prêt !</h3>
-                <div id="downloadLinkContainer" style="text-align:center;margin:20px 0;">
-                    <a id="downloadBookLink" href="#" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#FF6B35,#FCBF49);color:white;text-decoration:none;padding:16px 40px;border-radius:50px;font-size:1.1rem;font-weight:800;font-family:'Nunito',sans-serif;box-shadow:0 4px 15px rgba(255,107,53,0.4);transition:all 0.3s;">&#128229; Télécharger mon livre</a>
+                <h3>Votre livre arrive dans votre boîte mail !</h3>
+                <div style="text-align:center;margin:20px 0;">
+                    <div style="display:inline-block;background:linear-gradient(135deg,#FF6B35,#FCBF49);color:white;padding:16px 40px;border-radius:50px;font-size:1.1rem;font-weight:800;font-family:'Nunito',sans-serif;box-shadow:0 4px 15px rgba(255,107,53,0.4);">&#128232; Vérifiez votre boîte mail</div>
                 </div>
-                <p style="margin-top:12px;font-size:0.9rem;color:#6B7280;">Un email de confirmation a aussi été envoyé. <strong>Pensez à vérifier vos spams.</strong></p>
+                <p style="margin-top:12px;font-size:0.95rem;color:#333;line-height:1.6;">&#128221; Un email contenant <strong>le lien de lecture personnalisé</strong> de votre livre vient d'être envoyé.</p>
+                <p style="margin-top:8px;font-size:0.9rem;color:#6B7280;line-height:1.5;">&#128270; <strong>Pensez à vérifier vos spams</strong> si vous ne le trouvez pas dans votre boîte de réception.</p>
                 <p style="margin-top:16px;font-size:0.95rem;">&#11088; Si votre enfant adore, une petite note sur Amazon nous ferait super plaisir !</p>
             </div>
 
@@ -2187,23 +2188,7 @@ function launchConfetti(){const canvas=document.getElementById('confettiCanvas')
 const confettiCount=window.innerWidth<768?40:80;for(let i=0;i<confettiCount;i++){ps.push({x:canvas.width/2+(Math.random()-0.5)*200,y:canvas.height*0.7,vx:(Math.random()-0.5)*12,vy:-Math.random()*15-5,c:cols[Math.floor(Math.random()*cols.length)],s:4+Math.random()*6,r:Math.random()*360,rs:(Math.random()-0.5)*10,g:0.3});}
 let f=0;function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.r+=p.rs;p.vx*=0.99;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r*Math.PI/180);ctx.fillStyle=p.c;ctx.globalAlpha=Math.max(0,1-f/90);ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);ctx.restore();});f++;if(f<90)requestAnimationFrame(animate);else ctx.clearRect(0,0,canvas.width,canvas.height);}animate();}
 
-// === LIVRE GRATUIT ===
-var BOOK_PDF_MAP = {
-    "Rose, la petite licorne qui ne brillait pas": "Rose-la-petite-licorne.pdf",
-    "Pour toujours dans mon coeur, Petite girafe": "Pour-toujours-dans-mon-coeur-Petite-girafe.pdf",
-    "Frisson, le petit manchot qui n'aimait pas le froid": "Frisson-le-petit-manchot.pdf",
-    "Mon Livre Animé des Animaux Rigolos": "Mon-Livre-Anime-des-Animaux-Rigolos.pdf",
-    "Gaspard - Voyageur du temps": "Gaspard-Voyageur-du-temps.pdf",
-    "Gaspard - La Legende du Bison Blanc": "Gaspard-La-Legende-du-Bison-Blanc.pdf",
-    "Gaspard - Au-dela de l'ocean": "Gaspard-Au-dela-de-l-ocean.pdf",
-    "Gaspard - Les Graines de la Liberte": "Gaspard-Les-Graines-de-la-Liberte.pdf",
-    "Gaspard - Le Secret de la Montre Magique": "Gaspard-Le-Secret-de-la-Montre-Magique.pdf",
-    "50 Erreurs Geniales qui ont change le monde": "50-Erreurs-Geniales-qui-ont-change-le-monde.pdf",
-    "Piégé dans Roblox : L'obby des mondes perdus": "Piege-dans-Roblox-1-L-Obby-des-mondes-perdus.pdf",
-    "Piégé dans Roblox 2 : La Pyramide infernale": "Piege-dans-Roblox-2-La-Pyramide-infernale.pdf",
-    "Une histoire et au lit": "Une-histoire-et-au-lit.pdf",
-    "KPOP Academie Talent Hunters": "KPOP-Academie-Talent-Hunters.pdf"
-};
+// === LIVRE GRATUIT (protégé — envoi par email uniquement) ===
 document.getElementById('freeBookForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var form = this;
@@ -2213,9 +2198,9 @@ document.getElementById('freeBookForm').addEventListener('submit', function(e) {
     var email = document.getElementById('emailInput').value;
     var book = document.getElementById('bookSelect').value;
     var consent = document.getElementById('consentCheck');
-    if (!email || !book || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { 
+    if (!email || !book || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) alert('Veuillez entrer une adresse email valide.');
-        return; 
+        return;
     }
     if (!consent.checked) { consent.focus(); consent.reportValidity(); return; }
 
@@ -2224,21 +2209,14 @@ document.getElementById('freeBookForm').addEventListener('submit', function(e) {
     btn.disabled = true;
     btn.style.opacity = '0.7';
 
-    // Lien de téléchargement direct
-    var pdfFile = BOOK_PDF_MAP[book] || '';
-    var downloadUrl = pdfFile ? 'livres/' + pdfFile : '#livres';
+    // Envoyer au Google Apps Script (envoi du lien protégé par email)
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec';
+    fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book', {mode: 'no-cors'}).catch(function(){});
 
-    // Afficher le bouton de téléchargement immédiatement
-    var dlLink = document.getElementById('downloadBookLink');
-    dlLink.href = downloadUrl;
-    dlLink.textContent = '\uD83D\uDCE9 Télécharger : ' + book;
+    // Afficher le message de confirmation (plus de téléchargement direct)
     form.style.display = 'none';
     document.getElementById('freeBookSuccess').style.display = 'block';
     if (typeof launchConfetti === 'function') launchConfetti();
-
-    // En parallèle : envoyer les données au Google Apps Script (log + email de confirmation)
-    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec';
-    fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book', {mode: 'no-cors'}).catch(function(){});
 });
 
 // === SMOOTH SCROLL ===
