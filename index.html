@@ -1886,6 +1886,14 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                 <p style="margin-top:16px;font-size:0.95rem;">&#11088; Si votre enfant adore, une petite note sur Amazon nous ferait super plaisir !</p>
             </div>
 
+            <!-- Message si l'email a déjà été utilisé -->
+            <div id="freeBookAlready" style="display:none;text-align:center;padding:24px;">
+                <div style="font-size:2.5rem;margin-bottom:12px;">&#128214;</div>
+                <h3 style="font-family:'Nunito',sans-serif;color:#1E293B;font-size:1.2rem;margin-bottom:12px;">Vous avez déjà reçu votre livre gratuit !</h3>
+                <p style="font-size:0.95rem;color:#4B5563;line-height:1.6;">Retrouvez-le dans votre boîte mail (pensez à vérifier les spams).</p>
+                <p style="font-size:0.9rem;color:#6B7280;margin-top:12px;">Envie de découvrir nos autres livres ? Retrouvez toute la collection sur <a href="https://www.amazon.fr/s?k=famille+chevalier+livres" target="_blank" style="color:#FF6B35;font-weight:700;">Amazon</a> !</p>
+            </div>
+
             <p class="free-book-note">&#128274; Zéro spam, promis. Juste votre livre + nos prochaines aventures.</p>
             
         </div>
@@ -2188,14 +2196,14 @@ function launchConfetti(){const canvas=document.getElementById('confettiCanvas')
 const confettiCount=window.innerWidth<768?40:80;for(let i=0;i<confettiCount;i++){ps.push({x:canvas.width/2+(Math.random()-0.5)*200,y:canvas.height*0.7,vx:(Math.random()-0.5)*12,vy:-Math.random()*15-5,c:cols[Math.floor(Math.random()*cols.length)],s:4+Math.random()*6,r:Math.random()*360,rs:(Math.random()-0.5)*10,g:0.3});}
 let f=0;function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.r+=p.rs;p.vx*=0.99;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r*Math.PI/180);ctx.fillStyle=p.c;ctx.globalAlpha=Math.max(0,1-f/90);ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);ctx.restore();});f++;if(f<90)requestAnimationFrame(animate);else ctx.clearRect(0,0,canvas.width,canvas.height);}animate();}
 
-// === LIVRE GRATUIT (protégé — envoi par email uniquement) ===
+// === LIVRE GRATUIT (protégé — 1 email = 1 livre max) ===
 document.getElementById('freeBookForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var form = this;
     var btn = document.getElementById('freeBookBtn');
     var btnText = btn.querySelector('.btn-text');
     var btnLoad = btn.querySelector('.btn-loading');
-    var email = document.getElementById('emailInput').value;
+    var email = document.getElementById('emailInput').value.trim().toLowerCase();
     var book = document.getElementById('bookSelect').value;
     var consent = document.getElementById('consentCheck');
     if (!email || !book || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -2203,6 +2211,19 @@ document.getElementById('freeBookForm').addEventListener('submit', function(e) {
         return;
     }
     if (!consent.checked) { consent.focus(); consent.reportValidity(); return; }
+
+    // Vérification locale : 1 email = 1 livre maximum
+    var usedEmail = localStorage.getItem('fc_book_claimed');
+    if (usedEmail) {
+        var alreadyDiv = document.getElementById('freeBookAlready');
+        if (alreadyDiv) {
+            alreadyDiv.style.display = 'block';
+            form.style.display = 'none';
+        } else {
+            alert('Vous avez déjà reçu votre livre gratuit ! Vérifiez votre boîte mail (et vos spams).');
+        }
+        return;
+    }
 
     btnText.style.display = 'none';
     btnLoad.style.display = 'inline';
@@ -2213,7 +2234,11 @@ document.getElementById('freeBookForm').addEventListener('submit', function(e) {
     var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec';
     fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book', {mode: 'no-cors'}).catch(function(){});
 
-    // Afficher le message de confirmation (plus de téléchargement direct)
+    // Marquer cet email comme ayant déjà réclamé un livre
+    localStorage.setItem('fc_book_claimed', email);
+    localStorage.setItem('fc_book_title', book);
+
+    // Afficher le message de confirmation
     form.style.display = 'none';
     document.getElementById('freeBookSuccess').style.display = 'block';
     if (typeof launchConfetti === 'function') launchConfetti();
