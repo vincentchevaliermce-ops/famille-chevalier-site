@@ -217,7 +217,7 @@
         .book-card::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.08) 55%, transparent 70%); transform: translateX(-100%) rotate(25deg); transition: none; z-index: 2; pointer-events: none; }
         .book-card:hover::after { transform: translateX(100%) rotate(25deg); transition: transform 0.8s ease; }
         .book-cover { min-height: 300px; height: auto; position: relative; overflow: hidden; background: #FFFFFF; display: flex; align-items: center; justify-content: center; padding: 12px; aspect-ratio: 2/3; border-radius: 16px 16px 0 0; }
-        .book-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(.4,0,.2,1); border-radius: 4px; }
+        .book-cover img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s cubic-bezier(.4,0,.2,1); border-radius: 4px; }
         .book-card:hover .book-cover img { transform: scale(1.08); }
         .book-cover-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.6)); opacity: 0; transition: opacity 0.4s; display: flex; justify-content: center; z-index: 3; }
         .book-card:hover .book-cover-overlay { opacity: 1; }
