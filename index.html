@@ -1951,7 +1951,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 <script>
 /* ===== REVIEWS DYNAMIQUES AMAZON ===== */
 (function(){
-    var GAS_URL = "https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec";
+    var GAS_URL = "https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec";
     var REVIEWS_CACHE_KEY = 'chevalier_reviews';
     var REVIEWS_CACHE_DURATION = 3600 * 1000; // 1h
 
@@ -2066,7 +2066,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
     <div style="max-width:500px;margin:0 auto;">
         <h3 style="color:white;font-family:'Nunito',sans-serif;font-size:1.3rem;margin-bottom:8px;">📬 Ne ratez aucune sortie</h3>
         <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-bottom:16px;">Recevez nos nouveautés et offres exclusives en avant-première.</p>
-        <form onsubmit="event.preventDefault();var e=this.querySelector('input').value;if(!e)return;fetch('https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec?action=email&email='+encodeURIComponent(e)+'&book=Newsletter&source=footer',{mode:'no-cors'});this.innerHTML='<p style=\'color:#10B981;font-weight:700;font-size:1.1rem;\'>✅ Inscrit ! À très vite.</p>';return false;" style="display:flex;gap:8px;max-width:420px;margin:0 auto;">
+        <form onsubmit="event.preventDefault();var e=this.querySelector('input').value;if(!e)return;fetch('https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec?action=email&email='+encodeURIComponent(e)+'&book=Newsletter&source=footer',{mode:'no-cors'});this.innerHTML='<p style=\'color:#10B981;font-weight:700;font-size:1.1rem;\'>✅ Inscrit ! À très vite.</p>';return false;" style="display:flex;gap:8px;max-width:420px;margin:0 auto;">
             <input type="email" placeholder="votre@email.com" required style="flex:1;padding:12px 16px;border-radius:50px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:white;font-family:'Nunito',sans-serif;font-size:0.95rem;outline:none;" onfocus="this.style.borderColor='#FF6B35'" onblur="this.style.borderColor='rgba(255,255,255,0.2)'">
             <button type="submit" style="padding:12px 24px;border-radius:50px;border:none;background:#FF6B35;color:white;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer;white-space:nowrap;transition:background 0.3s;" onmouseover="this.style.background='#E55A2B'" onmouseout="this.style.background='#FF6B35'">S'inscrire</button>
         </form>
@@ -2231,7 +2231,7 @@ document.getElementById('freeBookForm').addEventListener('submit', function(e) {
     btn.style.opacity = '0.7';
 
     // Envoyer au Google Apps Script (envoi du lien protégé par email)
-    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec';
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec';
     fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book', {mode: 'no-cors'}).catch(function(){});
 
     // Marquer cet email comme ayant déjà réclamé un livre
@@ -2398,7 +2398,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
     // === URL DU GOOGLE SHEET PUBLIÉ (format JSON) ===
     // Vincent : crée un Google Sheet avec tes vrais chiffres Amazon
     // Puis publie-le en JSON via Google Apps Script (voir instructions)
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec?action=stats';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec?action=stats';
 
     // === VALEURS PAR DÉFAUT (affichées si le fetch échoue) ===
     const DEFAULTS = { lecteurs: 30163, note: 4.5, livres: 14, series: 2, avis: 1197, familles: 0 };
@@ -2696,7 +2696,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
 /* ===== AUTO-UPDATE REVIEW TICKER (vrais avis Amazon) ===== */
 (function(){
     function loadReviews(){
-        fetch('https://script.google.com/macros/s/AKfycbxGYRfPMwH2UPIQ-Pnv0s9g_spZFQE9viwAgqYlIl5wsJUUjUilJoIFoMilljaK2Q2qsg/exec?action=reviews&t='+Date.now())
+        fetch('https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec?action=reviews&t='+Date.now())
         .then(r=>r.ok?r.json():null)
         .then(data=>{
             if(!data||!data.reviews) return;
