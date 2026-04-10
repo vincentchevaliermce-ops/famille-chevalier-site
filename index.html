@@ -162,6 +162,111 @@
         .nav-hamburger:hover { background: rgba(0,0,0,0.05); }
         .nav-hamburger span { width: 22px; height: 2.5px; background: var(--dark); border-radius: 2px; transition: all 0.3s; }
 
+        
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--bg) 0%, #FFF5ED 50%, #EEF2FF 100%);
+    padding: 120px 0 80px;
+    position: relative;
+    overflow: hidden;
+}
+.hero .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+.hero-content { max-width: 560px; }
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(252,191,73,0.1));
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,107,53,0.15);
+}
+.hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    margin-bottom: 20px;
+}
+.highlight {
+    color: var(--primary);
+    position: relative;
+}
+.hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-light);
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+.hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-counter-bar {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.hero-counter {
+    text-align: center;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,0.04);
+}
+.hero-counter-num {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--dark);
+}
+.hero-counter-label {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+.hero-book-fan {
+    display: flex;
+    gap: 16px;
+    perspective: 1000px;
+}
+.fan-book {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    transition: all 0.5s cubic-bezier(.4,0,.2,1);
+}
+.fan-book:nth-child(1) { transform: rotate(-6deg) translateY(20px); width: 180px; }
+.fan-book:nth-child(2) { transform: rotate(0deg) translateY(-10px); width: 200px; z-index: 2; }
+.fan-book:nth-child(3) { transform: rotate(6deg) translateY(20px); width: 180px; }
+.fan-book:hover { transform: rotate(0deg) translateY(-20px) scale(1.05); z-index: 10; }
+.fan-book img { width: 100%; height: auto; display: block; }
+.fan-book-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-align: center;
+}
+
         /* HERO V2 - animated gradient */
         .hero p strong { color: var(--primary); font-weight: 700; }
         .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; border: none; transition: all 0.3s cubic-bezier(.4,0,.2,1); position: relative; overflow: hidden; }
@@ -181,6 +286,18 @@
          
          
         
+        
+        
+@keyframes heroFadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.hero-badge { animation: heroFadeIn 0.6s ease both; animation-delay: 0.1s; }
+.hero h1 { animation: heroFadeIn 0.6s ease both; animation-delay: 0.2s; }
+.hero-sub { animation: heroFadeIn 0.6s ease both; animation-delay: 0.3s; }
+.hero-buttons { animation: heroFadeIn 0.6s ease both; animation-delay: 0.4s; }
+.hero-counter-bar { animation: heroFadeIn 0.6s ease both; animation-delay: 0.5s; }
+.hero-visual { animation: heroFadeIn 0.8s ease both; animation-delay: 0.3s; }
         
         /* TRUST BANNER */
         .trust-banner { background: linear-gradient(135deg, var(--dark), #2D2A5E); padding: 0; overflow: hidden; position: relative; z-index: 1; }
@@ -438,6 +555,17 @@
             .free-book-subtitle { font-size: 1rem; }
         }
         @media (max-width: 480px) {
+        
+.hero { min-height: auto; padding: 100px 0 60px; }
+.hero h1 { font-size: 1.8rem; }
+.hero-sub { font-size: 0.95rem; }
+.hero-counter-bar { gap: 12px; }
+.hero-counter { padding: 8px 12px; }
+.hero-counter-num { font-size: 1.2rem; }
+.fan-book:nth-child(1), .fan-book:nth-child(3) { width: 100px; }
+.fan-book:nth-child(2) { width: 120px; }
+
+        
             .container { padding: 0 16px; }
             section { padding: 60px 0; }
             .section-title { font-size: clamp(1.4rem, 5vw, 2.2rem); }
@@ -1097,6 +1225,17 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
     .hero-counter-num { font-size: 1.3rem; }
 }
 @media (max-width: 480px) {
+        
+.hero { min-height: auto; padding: 100px 0 60px; }
+.hero h1 { font-size: 1.8rem; }
+.hero-sub { font-size: 0.95rem; }
+.hero-counter-bar { gap: 12px; }
+.hero-counter { padding: 8px 12px; }
+.hero-counter-num { font-size: 1.2rem; }
+.fan-book:nth-child(1), .fan-book:nth-child(3) { width: 100px; }
+.fan-book:nth-child(2) { width: 120px; }
+
+        
     .hero-book-fan { width: 280px; height: 340px; }
     .fan-book { width: 130px; height: 200px; }
     .fan-book:nth-child(1) { transform: translate(-50%, -50%) rotate(-10deg) translateX(-55px); }
@@ -1191,6 +1330,17 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 
 /* Modal responsive */
 @media (max-width: 480px) {
+        
+.hero { min-height: auto; padding: 100px 0 60px; }
+.hero h1 { font-size: 1.8rem; }
+.hero-sub { font-size: 0.95rem; }
+.hero-counter-bar { gap: 12px; }
+.hero-counter { padding: 8px 12px; }
+.hero-counter-num { font-size: 1.2rem; }
+.fan-book:nth-child(1), .fan-book:nth-child(3) { width: 100px; }
+.fan-book:nth-child(2) { width: 120px; }
+
+        
     .modal-content { padding: 24px 20px !important; border-radius: 16px !important; }
     .modal-content h3 { font-size: 1.1rem !important; }
     .modal-content div { font-size: 0.85rem !important; }
