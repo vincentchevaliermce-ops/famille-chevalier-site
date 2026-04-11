@@ -9,7 +9,7 @@
     <meta name="description" content="Livres illustrés pour enfants de 3 à 12 ans. Séries Gaspard, Rose la licorne, Piégé dans Roblox. Best-sellers Amazon. Frissons, rires et aventures !">
     <meta name="keywords" content="livre enfant, livre illustré, roman jeunesse, Gaspard voyageur du temps, Rose licorne, Piégé dans Roblox, livre 8-12 ans, cadeau enfant, Amazon KDP">
     <meta property="og:title" content="Famille Chevalier — Livres jeunesse pour rêveurs et aventuriers">
-    <meta property="og:description" content="Découvrez nos 22 livres illustrés pour enfants. Best-sellers Amazon. Frissons, rires et mystères !">
+    <meta property="og:description" content="Découvrez nos 21 livres illustrés pour enfants. Best-sellers Amazon. Frissons, rires et mystères !">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vincentchevaliermce-ops.github.io/famille-chevalier-site/">
     <meta property="og:locale" content="fr_FR">
@@ -18,7 +18,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Famille Chevalier — Livres jeunesse">
-    <meta name="twitter:description" content="22 livres illustrés pour enfants de 3 à 12 ans. Best-sellers Amazon !">
+    <meta name="twitter:description" content="21 livres illustrés pour enfants de 3 à 12 ans. Best-sellers Amazon !">
     <meta name="twitter:image" content="https://vincentchevaliermce-ops.github.io/famille-chevalier-site/og-image.jpg">
     <meta name="author" content="Famille Chevalier">
     <meta name="theme-color" content="#FF6B35">
@@ -1299,7 +1299,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                     <div class="hero-counter-label">⭐ Sur Amazon</div>
                 </div>
                 <div class="hero-counter">
-                    <div class="hero-counter-num dynamic-books" data-target="22">22</div>
+                    <div class="hero-counter-num dynamic-books" data-target="21">21</div>
                     <div class="hero-counter-label">📚 Livres publiés</div>
                 </div>
                 <div class="hero-counter">
@@ -1601,6 +1601,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                 </div>
             </div>
 
+            <!-- Zoé Marchand : à activer après publication
             <div class="book-card reveal" data-cat="age8">
                 <div class="book-cover">
                     <img src="images/cover-zoe-t1.jpg" alt="Mystère au Louvre — Les Enquêtes Impossibles de Zoé Marchand" loading="lazy">
@@ -1613,7 +1614,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                     <div class="book-price">12,99 €</div>
                     <a href="https://www.amazon.fr/s?k=zoé+marchand+enquêtes+impossibles" target="_blank" rel="noopener noreferrer" class="book-link">Voir sur Amazon →</a>
                 </div>
-            </div>
+            </div> -->
 
             <div class="book-card reveal" data-cat="age7">
                 <div class="book-cover">
@@ -1714,7 +1715,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
         <div class="free-book-content reveal">
             <div class="free-book-badge">&#127381; Cadeau</div>
             <h2 class="free-book-title">Offrez une aventure <span class="free-book-highlight">GRATUITE</span> à votre enfant</h2>
-            <p class="free-book-subtitle">Choisissez parmi nos 17 livres et recevez-le en <strong>PDF</strong> en 2 minutes.</p>
+            <p class="free-book-subtitle">Choisissez parmi nos 21 livres et recevez-le en <strong>PDF</strong> en 2 minutes.</p>
             <div class="free-book-social-proof">&#10003; Déjà <strong id="downloadCount" class="dynamic-families">…</strong> familles ont téléchargé leur livre</div>
 
             <form class="free-book-form" id="freeBookForm" action="#" method="POST">
@@ -1722,7 +1723,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                     <div class="form-group">
                         <label for="bookSelect">&#128214; Choisissez un livre</label>
                         <select id="bookSelect" name="book" required>
-                            <option value="" disabled selected>&#11088; 22 livres disponibles — lequel fera rêver votre enfant ?</option>
+                            <option value="" disabled selected>&#11088; 21 livres disponibles — lequel fera rêver votre enfant ?</option>
                             <optgroup label="&#129528; Albums illustrés — Dès 3 ans">
                                 <option value="Rose, la petite licorne qui ne brillait pas">&#129412; Rose, la petite licorne qui ne brillait pas</option>
                                 <option value="Pour toujours dans mon coeur, Petite girafe">&#129426; Pour toujours dans mon coeur, Petite girafe</option>
@@ -1754,9 +1755,10 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                             <optgroup label="⚽ Sport — Dès 7 ans">
                                 <option value="Mon Carnet Coupe du Monde 2026">⚽ Mon Carnet Coupe du Monde 2026</option>
                             </optgroup>
+                            <!-- Zoé Marchand : à activer après publication
                             <optgroup label="🔍 Enquêtes — Dès 8 ans">
                                 <option value="Mystère au Louvre">🔍 Mystère au Louvre — Zoé Marchand</option>
-                            </optgroup>
+                            </optgroup> -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -2147,15 +2149,31 @@ document.getElementById('freeBookForm').addEventListener('submit', function(e) {
 
     // Envoyer au Google Apps Script (envoi du lien protégé par email)
     var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec';
-    fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book', {mode: 'no-cors'}).catch(function(){});
-
-    // Marquer cet email comme ayant déjà réclamé un livre
-    localStorage.setItem('fc_book_claimed', email);
-    localStorage.setItem('fc_book_title', book);
-
-    // Afficher le message de confirmation
-    form.style.display = 'none';
-    document.getElementById('freeBookSuccess').style.display = 'block';
+    fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+        if(data.status === 'sent' || data.status === 'ok'){
+            // Succès : marquer + afficher confirmation
+            localStorage.setItem('fc_book_claimed', email);
+            localStorage.setItem('fc_book_title', book);
+            form.style.display = 'none';
+            document.getElementById('freeBookSuccess').style.display = 'block';
+        } else {
+            // Erreur côté serveur
+            alert('Oups ! Une erreur est survenue : ' + (data.message || 'réessayez dans quelques instants.'));
+            btnText.style.display = 'inline';
+            btnLoad.style.display = 'none';
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    })
+    .catch(function(err){
+        alert('Erreur de connexion. Vérifiez votre connexion internet et réessayez.');
+        btnText.style.display = 'inline';
+        btnLoad.style.display = 'none';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    });
 });
 
 // === SMOOTH SCROLL ===
