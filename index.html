@@ -2309,7 +2309,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
     const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec?action=stats';
 
     // === VALEURS PAR DÉFAUT (affichées si le fetch échoue) ===
-    const DEFAULTS = { lecteurs: 30163, note: 4.5, livres: 22, series: 5, avis: 1197, familles: 1250 };
+    const DEFAULTS = { lecteurs: 30163, note: 4.5, livres: 21, series: 5, avis: 1197, familles: 1250 };
 
     // === CACHE LOCAL (évite de re-fetch à chaque scroll) ===
     const CACHE_KEY = 'chevalier_stats';
@@ -2328,9 +2328,11 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
             el.textContent = salesStr;
         });
 
-        // Livres
+        // Livres (ne jamais descendre en-dessous de la valeur HTML — la Sheet peut être en retard)
+        var htmlBooks = parseInt(document.querySelector('.dynamic-books').getAttribute('data-target')) || 21;
+        var livresVal = Math.max(stats.livres, htmlBooks);
         document.querySelectorAll('.dynamic-books').forEach(function(el){
-            el.dataset.target = stats.livres;
+            el.dataset.target = livresVal;
         });
 
         // Séries
