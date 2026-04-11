@@ -9,7 +9,7 @@
     <meta name="description" content="Livres illustrés pour enfants de 3 à 12 ans. Séries Gaspard, Rose la licorne, Piégé dans Roblox. Best-sellers Amazon. Frissons, rires et aventures !">
     <meta name="keywords" content="livre enfant, livre illustré, roman jeunesse, Gaspard voyageur du temps, Rose licorne, Piégé dans Roblox, livre 8-12 ans, cadeau enfant, Amazon KDP">
     <meta property="og:title" content="Famille Chevalier — Livres jeunesse pour rêveurs et aventuriers">
-    <meta property="og:description" content="Découvrez nos 17 livres illustrés pour enfants. Best-sellers Amazon. Frissons, rires et mystères !">
+    <meta property="og:description" content="Découvrez nos 22 livres illustrés pour enfants. Best-sellers Amazon. Frissons, rires et mystères !">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vincentchevaliermce-ops.github.io/famille-chevalier-site/">
     <meta property="og:locale" content="fr_FR">
@@ -18,12 +18,22 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Famille Chevalier — Livres jeunesse">
-    <meta name="twitter:description" content="17 livres illustrés pour enfants de 3 à 12 ans. Best-sellers Amazon !">
+    <meta name="twitter:description" content="22 livres illustrés pour enfants de 3 à 12 ans. Best-sellers Amazon !">
     <meta name="twitter:image" content="https://vincentchevaliermce-ops.github.io/famille-chevalier-site/og-image.jpg">
     <meta name="author" content="Famille Chevalier">
     <meta name="theme-color" content="#FF6B35">
     <link rel="manifest" href="manifest.json">
     <link rel="sitemap" type="application/xml" href="sitemap.xml">
+
+    <!-- Google Analytics 4 -->
+    <!-- Replace G-XXXXXXXX with your GA4 ID -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXX');
+    </script> -->
 
     <title>Chevalier &mdash; Livres jeunesse pour r&ecirc;veurs et aventuriers</title>
     <script type="application/ld+json">
@@ -674,6 +684,13 @@
 /* --- Simple scroll reveals (opacity + slide up) --- */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+/* CSS FALLBACK: make reveals visible after 1s if JS doesn't fire */
+@supports (animation: none) {
+    .reveal { animation: reveal-fallback 0.1s ease forwards 1s; }
+}
+@keyframes reveal-fallback {
+    to { opacity: 1; transform: translateY(0); }
+}
 .book-card.reveal { opacity: 1; transform: none; }
 .section-header.reveal { transform: translateY(20px); }
 .section-header.reveal.visible { transform: translateY(0); }
@@ -1274,7 +1291,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
             </div>
             <div class="hero-counter-bar">
                 <div class="hero-counter">
-                    <div class="hero-counter-num dynamic-sales" data-target="30163">0</div>
+                    <div class="hero-counter-num dynamic-sales" data-target="30163">30163</div>
                     <div class="hero-counter-label">📖 Lecteurs conquis</div>
                 </div>
                 <div class="hero-counter">
@@ -1282,11 +1299,11 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                     <div class="hero-counter-label">⭐ Sur Amazon</div>
                 </div>
                 <div class="hero-counter">
-                    <div class="hero-counter-num dynamic-books" data-target="14">0</div>
+                    <div class="hero-counter-num dynamic-books" data-target="22">22</div>
                     <div class="hero-counter-label">📚 Livres publiés</div>
                 </div>
                 <div class="hero-counter">
-                    <div class="hero-counter-num dynamic-series" data-target="2">0</div>
+                    <div class="hero-counter-num dynamic-series" data-target="5">5</div>
                     <div class="hero-counter-label">🔥 Séries addictives</div>
                 </div>
             </div>
@@ -1584,6 +1601,20 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                 </div>
             </div>
 
+            <div class="book-card reveal" data-cat="age8">
+                <div class="book-cover">
+                    <img src="images/cover-zoe-t1.jpg" alt="Mystère au Louvre — Les Enquêtes Impossibles de Zoé Marchand" loading="lazy">
+                    <div class="book-cover-overlay"><a href="https://www.amazon.fr/s?k=zoé+marchand+enquêtes+impossibles" target="_blank" rel="noopener noreferrer" class="btn-sm">🔍 Une série mystérieuse !</a></div>
+                </div>
+                <div class="book-info">
+                    <h3 class="book-title">Mystère au Louvre — Les Enquêtes Impossibles de Zoé Marchand</h3>
+                    <div class="book-stars"><span class="stars-visual">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="stars-text">Nouveau</span></div>
+                    <p class="book-desc">Zoé, jeune détective en herbe, découvre un mystère fascinant au Louvre. Une aventure captivante mêlant histoire, art et suspense. Parfait pour les jeunes enquêteurs !</p>
+                    <div class="book-price">12,99 €</div>
+                    <a href="https://www.amazon.fr/s?k=zoé+marchand+enquêtes+impossibles" target="_blank" rel="noopener noreferrer" class="book-link">Voir sur Amazon →</a>
+                </div>
+            </div>
+
             <div class="book-card reveal" data-cat="age7">
                 <div class="book-cover">
                     <img src="images/cover-cdm-2026-v2.jpg?v=3" alt="Mon Carnet Coupe du Monde 2026" loading="eager">
@@ -1722,6 +1753,9 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
                             </optgroup>
                             <optgroup label="⚽ Sport — Dès 7 ans">
                                 <option value="Mon Carnet Coupe du Monde 2026">⚽ Mon Carnet Coupe du Monde 2026</option>
+                            </optgroup>
+                            <optgroup label="🔍 Enquêtes — Dès 8 ans">
+                                <option value="Mystère au Louvre">🔍 Mystère au Louvre — Zoé Marchand</option>
                             </optgroup>
                         </select>
                     </div>
@@ -1959,6 +1993,8 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
         <div class="footer-social">
             <a href="https://www.facebook.com/micheleetvincent/" target="_blank" rel="noopener noreferrer" class="social-icon" title="Notre Facebook" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
             <a href="https://www.instagram.com/vincent___chevalier/" target="_blank" rel="noopener noreferrer" class="social-icon" title="Notre Instagram" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+            <a href="https://www.tiktok.com/@vinchevalier" target="_blank" rel="noopener noreferrer" class="social-icon" title="Notre TikTok" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.1 1.75 2.89 2.89 0 0 1 2.31-4.64 2.86 2.86 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.5-.05z"/></svg></a>
+            <a href="https://www.youtube.com/channel/UCXxxxxxxxxx" target="_blank" rel="noopener noreferrer" class="social-icon" title="Notre YouTube" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
             <a href="https://www.amazon.fr/stores/author/B0CJ6VJG76" target="_blank" rel="noopener noreferrer" class="social-icon" title="Notre page Amazon" aria-label="Amazon"><svg viewBox="0 0 24 24"><path d="M.045 18.02c.071-.116.187-.124.348-.064 2.729 1.612 5.728 2.418 8.996 2.418 2.2 0 4.327-.405 6.382-1.215.654-.258 1.262-.549 1.822-.869.35-.2.577-.157.685.126.107.283-.006.58-.339.89-1.924 1.795-4.544 2.693-7.86 2.693-3.028 0-5.785-.834-8.27-2.502-.186-.125-.267-.277-.243-.457.024-.18.106-.312.245-.396l.234-.124zM21.52 16.96c-.282-.362-.623-.483-1.024-.363-.156.046-.418.176-.786.39-.5.29-.941.475-1.324.555-.297.064-.593.096-.889.096-1.197 0-2.15-.641-2.859-1.923-.552-1-.828-2.147-.828-3.439 0-1.516.343-2.756 1.029-3.72.686-.964 1.554-1.446 2.604-1.446.442 0 .865.099 1.27.297.311.152.601.327.871.524.197.144.351.215.463.215.16 0 .284-.104.371-.312l.238-.582c.088-.2.019-.383-.208-.549-.226-.166-.58-.365-1.063-.597-.483-.231-1.063-.347-1.738-.347-1.737 0-3.14.769-4.209 2.308-1.069 1.539-1.603 3.401-1.603 5.585 0 2.24.596 4.005 1.789 5.293 1.192 1.288 2.674 1.932 4.444 1.932.752 0 1.47-.124 2.152-.371.682-.247 1.2-.542 1.554-.884.192-.186.243-.374.152-.563l-.214-.451z"/><path d="M14.661 5.196c-.18-.399-.508-.628-.983-.688-.475-.06-.995.015-1.562.225-.567.21-1.047.524-1.44.94-.393.418-.612.876-.656 1.376-.044.5.07.913.342 1.238.273.325.647.504 1.123.538.476.034.984-.056 1.524-.27.54-.214 1.003-.525 1.39-.933.387-.408.606-.86.655-1.355.05-.495-.069-.892-.356-1.19l-.037.119z"/></svg></a>
         </div>
         <div style="text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
@@ -1971,6 +2007,34 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
         </div>
     </div>
 </footer>
+
+<!-- LEGAL SECTIONS -->
+<section id="politique-confidentialite" style="padding:60px 20px;background:#F8FAFC;border-top:1px solid #E2E8F0;">
+    <div class="container" style="max-width:800px;margin:0 auto;">
+        <h2 style="font-size:2rem;margin-bottom:24px;color:#1E1B4B;font-family:'Nunito',sans-serif;">Politique de Confidentialité</h2>
+        <div style="color:#4B5563;line-height:1.8;font-size:0.95rem;">
+            <p><strong>Responsable de traitement :</strong> Famille Chevalier, éditeurs de livres jeunesse.</p>
+            <p><strong>Données collectées :</strong> Lors de votre inscription pour recevoir un livre gratuit, nous collectons votre adresse email.</p>
+            <p><strong>Utilisation des données :</strong> Votre email est utilisé uniquement pour vous envoyer le livre gratuit et les notifications de nos nouvelles publications. Aucun partage avec des tiers.</p>
+            <p><strong>Vos droits :</strong> Vous pouvez vous désabonner à tout moment en cliquant sur le lien de désinscription dans nos emails ou en nous contactant directement à <a href="mailto:editions.chevalier.contact@gmail.com" style="color:#FF6B35;font-weight:600;">editions.chevalier.contact@gmail.com</a>.</p>
+            <p><strong>Sécurité :</strong> Nous protégeons vos données personnelles avec les meilleures pratiques de sécurité.</p>
+        </div>
+    </div>
+</section>
+
+<section id="mentions-legales" style="padding:60px 20px;background:white;">
+    <div class="container" style="max-width:800px;margin:0 auto;">
+        <h2 style="font-size:2rem;margin-bottom:24px;color:#1E1B4B;font-family:'Nunito',sans-serif;">Mentions Légales</h2>
+        <div style="color:#4B5563;line-height:1.8;font-size:0.95rem;">
+            <p><strong>Éditeur du site :</strong> Famille Chevalier</p>
+            <p><strong>Contact :</strong> <a href="mailto:editions.chevalier.contact@gmail.com" style="color:#FF6B35;font-weight:600;">editions.chevalier.contact@gmail.com</a></p>
+            <p><strong>Hébergement :</strong> Ce site est hébergé sur GitHub Pages (github.com).</p>
+            <p><strong>Propriété intellectuelle :</strong> Tous les contenus présents sur ce site (textes, images, illustrations, logos) sont la propriété de Famille Chevalier ou utilisés avec autorisation. Toute reproduction sans autorisation est interdite.</p>
+            <p><strong>Limitations de responsabilité :</strong> Famille Chevalier ne peut être tenue responsable des dommages directs ou indirects résultant de l'accès ou l'utilisation du site.</p>
+            <p><strong>Conformité :</strong> Ce site respecte les normes RGPD (Règlement Général sur la Protection des Données).</p>
+        </div>
+    </div>
+</section>
 
 <a href="#" class="back-to-top" id="backToTop" title="Retour en haut">&uarr;</a>
 
@@ -2227,7 +2291,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click'
     const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec?action=stats';
 
     // === VALEURS PAR DÉFAUT (affichées si le fetch échoue) ===
-    const DEFAULTS = { lecteurs: 30163, note: 4.5, livres: 19, series: 5, avis: 1197, familles: 847 };
+    const DEFAULTS = { lecteurs: 30163, note: 4.5, livres: 22, series: 5, avis: 1197, familles: 1250 };
 
     // === CACHE LOCAL (évite de re-fetch à chaque scroll) ===
     const CACHE_KEY = 'chevalier_stats';
