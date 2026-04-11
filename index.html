@@ -2054,6 +2054,8 @@ document.querySelectorAll('.nav-links a').forEach(l=>l.addEventListener('click',
 // === SCROLL REVEAL ===
 const revealObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
+// Fallback JS : si IntersectionObserver ne fire pas (tab arrière-plan, etc.), forcer visible après 2s
+setTimeout(function(){ document.querySelectorAll('.reveal:not(.visible)').forEach(function(el){ el.classList.add('visible'); }); }, 2000);
 
 // === BACK TO TOP ===
 const btt=document.getElementById('backToTop');
