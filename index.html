@@ -1305,6 +1305,33 @@ document.addEventListener('DOMContentLoaded', function(){
         btn.disabled = true;
         btn.style.opacity = '0.7';
         var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec';
+
+        /* Livraison directe pour les nouveaux livres pas encore dans le script email.
+           Le lecteur reçoit le PDF tout de suite ; l'email est aussi envoyé au script
+           (et passera en livraison Drive automatique dès que le livre y sera ajouté). */
+        var DIRECT_PDF = {
+            "100 Pourquoi Ma Premiere Encyclopedie": "livres/100-Pourquoi-Ma-Premiere-Encyclopedie.pdf",
+            "Incroyapedia 60 Super-Pouvoirs Reels": "livres/Incroyapedia-60-Super-Pouvoirs-Reels.pdf",
+            "Leo et la loi de Murphy": "livres/Leo-et-la-Loi-de-Murphy.pdf"
+        };
+        if(DIRECT_PDF[book]){
+            var pdfUrl = DIRECT_PDF[book];
+            /* on tente quand même d'enregistrer le lead côté script (sans bloquer) */
+            try { fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book-direct', {mode:'no-cors'}); } catch(e){}
+            localStorage.setItem('fc_book_claimed', email);
+            localStorage.setItem('fc_book_title', book);
+            var succ = document.getElementById('freeBookSuccess');
+            succ.innerHTML = '<div class="icon">🎉</div>'
+                + '<h3>Votre livre est prêt !</h3>'
+                + '<a class="pill" href="' + pdfUrl + '" target="_blank" rel="noopener" style="text-decoration:none;">📖 Lire / télécharger mon livre</a>'
+                + '<p>Le PDF s\'ouvre dans un nouvel onglet. Vous pouvez aussi l\'enregistrer pour le relire hors ligne.</p>'
+                + '<p>⭐ Si votre enfant adore, une petite note sur <a href="https://www.amazon.fr/stores/author/B0CJ6VJG76" target="_blank" rel="noopener" style="color:var(--accent);font-weight:800;">Amazon</a> nous ferait super plaisir !</p>';
+            form.style.display = 'none';
+            succ.style.display = 'block';
+            window.open(pdfUrl, '_blank');
+            return;
+        }
+
         fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book')
         .then(function(r){ return r.json(); })
         .then(function(data){
