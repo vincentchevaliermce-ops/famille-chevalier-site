@@ -1,17 +1,25 @@
 {
-    "name": "Famille Chevalier — Livres jeunesse",
-    "short_name": "Chevalier",
-    "description": "Livres illustrés pour enfants de 3 à 12 ans. Frissons, rires et aventures !",
-    "start_url": "/famille-chevalier-site/",
-    "display": "standalone",
-    "background_color": "#1E1B4B",
-    "theme_color": "#FF6B35",
-    "lang": "fr",
-    "icons": [
-        {
-            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>",
-            "sizes": "any",
-            "type": "image/svg+xml"
-        }
-    ]
+  "name": "Famille Chevalier — Livres jeunesse",
+  "short_name": "Chevalier",
+  "description": "Maison d'édition familiale : livres illustrés pour les enfants de 3 à 12 ans.",
+  "start_url": "/famille-chevalier-site/",
+  "scope": "/famille-chevalier-site/",
+  "display": "standalone",
+  "background_color": "#F7F3EC",
+  "theme_color": "#1C1F2A",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
