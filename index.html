@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Famille Chevalier — Maison d'édition jeunesse, livres illustrés pour les 3-12 ans</title>
-    <meta name="description" content="Maison d'édition familiale. 17 livres illustrés pour les enfants de 3 à 12 ans : la série Gaspard, 10 ans, les encyclopédies 100 Pourquoi, des albums tendres et des livres pour apprendre en riant. Un livre offert en PDF.">
+    <meta name="description" content="Maison d'édition familiale. 17 livres illustrés pour les enfants de 3 à 12 ans : la série Gaspard, 10 ans, les encyclopédies 100 Pourquoi, des albums tendres et des livres pour apprendre en riant. Un livre offert, à lire en ligne.">
     <meta name="keywords" content="livre enfant, livre illustré, roman jeunesse, Gaspard 10 ans, 100 Pourquoi, encyclopédie enfant, album 3 ans, livre 8-12 ans, maison d'édition jeunesse">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Famille Chevalier — Livres illustrés pour les 3-12 ans">
-    <meta property="og:description" content="17 livres illustrés écrits en famille : aventures, encyclopédies, albums tendres. Un livre offert en PDF.">
+    <meta property="og:description" content="17 livres illustrés écrits en famille : aventures, encyclopédies, albums tendres. Un livre offert, à lire en ligne.">
     <meta property="og:image" content="https://vincentchevaliermce-ops.github.io/famille-chevalier-site/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -16,7 +16,7 @@
     <meta property="og:locale" content="fr_FR">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Famille Chevalier — Livres illustrés pour les 3-12 ans">
-    <meta name="twitter:description" content="17 livres illustrés écrits en famille. Un livre offert en PDF.">
+    <meta name="twitter:description" content="17 livres illustrés écrits en famille. Un livre offert, à lire en ligne.">
     <meta name="twitter:image" content="https://vincentchevaliermce-ops.github.io/famille-chevalier-site/og-image.jpg">
     <link rel="canonical" href="https://vincentchevaliermce-ops.github.io/famille-chevalier-site/">
     <link rel="icon" href="favicon.ico">
@@ -818,7 +818,7 @@
         <div>
             <span class="eyebrow">Un livre offert</span>
             <h2>Lisez-en un en entier avant d'acheter.</h2>
-            <p>Choisissez l'un de nos livres : vous recevez le PDF illustré complet, à lire à l'écran ou à enregistrer. C'est la meilleure façon de savoir si votre enfant va accrocher.</p>
+            <p>Choisissez l'un de nos livres : il s'ouvre aussitôt dans votre navigateur et se lit en entier, en ligne. C'est la meilleure façon de savoir si votre enfant va accrocher.</p>
             <p style="margin-top:14px">Un livre par famille. En échange, nous vous écrirons deux à quatre fois par an pour annoncer nos nouvelles parutions — et jamais rien d'autre.</p>
         </div>
         <div class="gift-form">
@@ -934,7 +934,7 @@
             </details>
             <details>
                 <summary>Comment fonctionne le livre offert ?</summary>
-                <p>Vous choisissez un livre, vous indiquez votre email, et le PDF illustré complet s'ouvre immédiatement. Vous pouvez le lire à l'écran ou l'enregistrer. Nous vous écrivons ensuite deux à quatre fois par an, pour les nouvelles parutions seulement ; vous pouvez vous désinscrire à tout moment en écrivant à editions.chevalier.contact@gmail.com.</p>
+                <p>Vous choisissez un livre, vous indiquez votre email, et le livre illustré complet s'ouvre immédiatement dans votre navigateur, à lire en ligne. Nous vous écrivons ensuite deux à quatre fois par an, pour les nouvelles parutions seulement ; vous pouvez vous désinscrire à tout moment en écrivant à editions.chevalier.contact@gmail.com.</p>
             </details>
             <details>
                 <summary>Peut-on commander ailleurs que sur Amazon ?</summary>
@@ -1005,7 +1005,7 @@
         <h3>Politique de confidentialité</h3>
         <p><b>Responsable :</b> Famille Chevalier.</p>
         <p><b>Données collectées :</b> adresse email et livre choisi, uniquement via le formulaire du livre offert et l'inscription aux nouvelles parutions.</p>
-        <p><b>Finalité :</b> remise du livre PDF choisi et, avec votre consentement, l'annonce de nos nouvelles parutions (deux à quatre envois par an).</p>
+        <p><b>Finalité :</b> remise du livre choisi, à lire en ligne, et, avec votre consentement, l'annonce de nos nouvelles parutions (deux à quatre envois par an).</p>
         <p><b>Base légale :</b> votre consentement explicite (case à cocher).</p>
         <p><b>Conservation :</b> tant que vous êtes inscrit(e) ; suppression sur simple demande.</p>
         <p><b>Partage :</b> vos données ne sont ni vendues ni transmises à des tiers.</p>
@@ -1063,9 +1063,13 @@
     };
 
     var form = document.getElementById('freeBookForm');
+    var LEAD_SOURCE = 'free-book-direct';
     try {
-        var pre = new URLSearchParams(location.search).get('livre');
+        var qs = new URLSearchParams(location.search);
+        var pre = qs.get('livre');
         if (pre && DIRECT_PDF[pre]) { document.getElementById('bookSelect').value = pre; }
+        var src = (qs.get('src') || '').replace(/[^a-z0-9-]/gi, '').slice(0, 24);
+        if (src) { LEAD_SOURCE = 'free-book-direct-' + src; }
     } catch(e){}
     form.addEventListener('submit', function(e){
         e.preventDefault();
@@ -1084,15 +1088,15 @@
             return;
         }
         var pdfUrl = DIRECT_PDF[book];
-        if(!pdfUrl){ alert("Ce livre n'est pas encore disponible en PDF. Écrivez-nous à editions.chevalier.contact@gmail.com."); return; }
+        if(!pdfUrl){ alert("Ce livre n'est pas encore disponible à la lecture en ligne. Écrivez-nous à editions.chevalier.contact@gmail.com."); return; }
         btn.disabled = true; btn.querySelector('.btn-text').style.display='none'; btn.querySelector('.btn-loading').style.display='inline';
-        try { fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=free-book-direct', {mode:'no-cors'}); } catch(e){}
+        try { fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=' + encodeURIComponent(LEAD_SOURCE), {mode:'no-cors'}); } catch(e){}
         try { localStorage.setItem('fc_book_claimed', email); localStorage.setItem('fc_book_title', book); localStorage.setItem('fc_book_pdf', pdfUrl); } catch(e){}
         var succ = document.getElementById('freeBookSuccess');
         succ.innerHTML = '<h3>Votre livre est prêt</h3>'
-            + '<a class="btn" id="freeBookPdfLink" href="' + pdfUrl + '" target="_blank" rel="noopener">Lire ou télécharger le PDF</a>'
-            + '<p>Le livre s\'ouvre dans un nouvel onglet ; c\'est un vrai livre illustré, il peut prendre quelques secondes. Enregistrez-le pour le relire hors ligne.</p>'
-            + '<p>Une copie du lien vous est aussi envoyée par email — pensez à vérifier les courriers indésirables.</p>'
+            + '<a class="btn" id="freeBookPdfLink" href="' + pdfUrl + '" target="_blank" rel="noopener">Lire le livre en ligne</a>'
+            + '<p>Le livre s\'ouvre dans un nouvel onglet ; c\'est un vrai livre illustré, il peut prendre quelques secondes à s\'afficher.</p>'
+            + '<p>Le lien vous est aussi envoyé par email, pour le rouvrir quand vous voulez — pensez à vérifier les courriers indésirables.</p>'
             + '<p>Si votre enfant l\'aime, un avis sur <a class="link" href="https://www.amazon.fr/stores/author/B0CJ6VJG76" target="_blank" rel="noopener">Amazon</a> nous aide beaucoup.</p>';
         form.style.display = 'none'; succ.style.display = 'block';
         window.open(pdfUrl, '_blank');
