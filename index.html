@@ -1245,7 +1245,7 @@ footer a:hover{color:var(--ink)}
     var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7HmkseaDtIbT70xaE7Sqhhik7ZKOYYFcPkMzWCB-ML--BAWutLYwUYuyHhJM4fKJM6A/exec';
 
     /* ===== Livre offert : le PDF s'ouvre immédiatement depuis ce site ; le script Google enregistre le lecteur
-       et envoie un email de secours pour les livres qu'il connaît. ===== */
+       et envoie un email avec le lien (tous les livres du catalogue). ===== */
     var DIRECT_PDF = {
         "Rose, la petite licorne qui ne brillait pas": "livres/Rose-la-petite-licorne.pdf",
         "Pour toujours dans mon coeur, Petite girafe": "livres/Pour-toujours-dans-mon-coeur-Petite-girafe.pdf",
@@ -1264,7 +1264,6 @@ footer a:hover{color:var(--ink)}
         "Incroyapedia 60 Super-Pouvoirs Reels": "livres/Incroyapedia-60-Super-Pouvoirs-Reels.pdf",
         "Leo et la loi de Murphy": "livres/Leo-et-la-Loi-de-Murphy.pdf"
     };
-    var EMAIL_KNOWN = {"Rose, la petite licorne qui ne brillait pas":1,"Pour toujours dans mon coeur, Petite girafe":1,"Frisson, le petit manchot qui n'aimait pas le froid":1,"Mon Livre Animé des Animaux Rigolos":1,"Gaspard - Voyageur du temps":1,"Gaspard - La Legende du Bison Blanc":1,"Gaspard - Au-dela de l'ocean":1,"Gaspard - Les Graines de la Liberte":1,"Gaspard - Le Secret de la Montre Magique":1,"50 Erreurs Geniales qui ont change le monde":1};
 
     var form = document.getElementById('freeBookForm');
     form.addEventListener('submit', function(e){
@@ -1292,7 +1291,7 @@ footer a:hover{color:var(--ink)}
         succ.innerHTML = '<h3>Votre livre est prêt</h3>'
             + '<a class="btn" id="freeBookPdfLink" href="' + pdfUrl + '" target="_blank" rel="noopener">Lire ou télécharger le PDF</a>'
             + '<p>Le livre s\'ouvre dans un nouvel onglet ; c\'est un vrai livre illustré, il peut prendre quelques secondes. Enregistrez-le pour le relire hors ligne.</p>'
-            + (EMAIL_KNOWN[book] ? '<p>Une copie du lien vous est aussi envoyée par email — pensez à vérifier les courriers indésirables.</p>' : '')
+            + '<p>Une copie du lien vous est aussi envoyée par email — pensez à vérifier les courriers indésirables.</p>'
             + '<p>Si votre enfant l\'aime, un avis sur <a class="link" href="https://www.amazon.fr/stores/author/B0CJ6VJG76" target="_blank" rel="noopener">Amazon</a> nous aide beaucoup.</p>';
         form.style.display = 'none'; succ.style.display = 'block';
         window.open(pdfUrl, '_blank');
