@@ -112,6 +112,7 @@ section{padding:88px 0}
 .gift-done h3{font-size:1.4rem;margin-bottom:14px}
 .gift-done p{font-size:.92rem;color:var(--ink-2);margin-top:10px}
 .gift-done .btn{margin-top:8px;width:auto}
+.gift-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 /* Auteurs */
 .authors .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:center}
