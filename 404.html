@@ -4,25 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page introuvable — Famille Chevalier</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="/famille-chevalier-site/favicon.ico">
+    <link rel="apple-touch-icon" href="/famille-chevalier-site/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/famille-chevalier-site/assets/site.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Nunito', sans-serif; background: linear-gradient(160deg, #1E1B4B, #312E81); color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; }
-        .container { max-width: 500px; }
-        .emoji { font-size: 5rem; margin-bottom: 16px; }
-        h1 { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
-        p { font-size: 1.1rem; opacity: 0.8; margin-bottom: 32px; line-height: 1.6; }
-        a { display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; border-radius: 50px; background: linear-gradient(135deg, #FF6B35, #FF8F5E); color: white; font-weight: 800; font-size: 1rem; text-decoration: none; transition: all 0.3s; }
-        a:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4); }
+        .lost{min-height:78vh;display:flex;align-items:center}
+        .lost .wrap{max-width:660px}
+        .lost h1{font-size:clamp(2rem,4.5vw,3rem);margin:14px 0 18px}
+        .lost p{color:var(--ink-2);font-size:1.08rem;max-width:52ch}
+        .lost .links{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:32px}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="emoji">📚</div>
-        <h1>Oups, cette page n'existe pas !</h1>
-        <p>On dirait que tu t'es perdu dans une aventure... Pas de panique, retourne à la bibliothèque !</p>
-        <a href="/famille-chevalier-site/">← Retour à l'accueil</a>
+<header class="site-header">
+    <div class="wrap">
+        <a class="brand" href="/famille-chevalier-site/">
+            <b>Famille Chevalier</b><small>Maison d’édition jeunesse</small>
+        </a>
     </div>
+</header>
+
+<section class="lost">
+    <div class="wrap">
+        <span class="eyebrow">Erreur 404</span>
+        <h1>Cette page n’existe pas <em>(ou plus)</em>.</h1>
+        <p>Le lien est peut-être ancien, ou l’adresse comporte une coquille. Nos dix-sept livres, eux, sont toujours là.</p>
+        <div class="links">
+            <a class="btn" href="/famille-chevalier-site/#catalogue">Voir le catalogue</a>
+            <a class="link arrow" href="/famille-chevalier-site/#offert">Recevoir un livre offert</a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="wrap">
+        <p class="copy">© Famille Chevalier · <a href="mailto:editions.chevalier.contact@gmail.com">editions.chevalier.contact@gmail.com</a></p>
+    </div>
+</footer>
 </body>
 </html>
