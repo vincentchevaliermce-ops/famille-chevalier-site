@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /offert/
+Disallow: /livre-offert/
 Disallow: /ancien.html
 Disallow: /livres/
 
