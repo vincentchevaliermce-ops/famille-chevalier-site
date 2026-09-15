@@ -1080,6 +1080,25 @@
         "Leo et la loi de Murphy": "livres/Leo-et-la-Loi-de-Murphy.pdf"
     };
 
+    var BOOK_ASIN = {
+        "Rose, la petite licorne qui ne brillait pas": "B0DJD7LT4G",
+        "Pour toujours dans mon coeur, Petite girafe": "B0D36H833M",
+        "Frisson, le petit manchot qui n'aimait pas le froid": "B0G4DKT2SR",
+        "Mon Livre Anime des Animaux Rigolos": "B0FTTVMC4F",
+        "Une histoire et au lit": "B0F5PWMFSJ",
+        "100 Pourquoi Ma Premiere Encyclopedie": "B0H4JCLJT9",
+        "100 Pourquoi des Dinosaures": "B0H886LMFY",
+        "Gaspard - Voyageur du temps": "B0F9SXN6LG",
+        "Gaspard - La Legende du Bison Blanc": "B0F9P8DGYV",
+        "Gaspard - Au-dela de l'ocean": "B0F9DX17MV",
+        "Gaspard - Les Graines de la Liberte": "B0F8VGYNL3",
+        "Gaspard - Le Secret de la Montre Magique": "B0FT7ZVY8M",
+        "50 Erreurs Geniales qui ont change le monde": "B0FTS6HJJ9",
+        "Le Guide de survie des enfants debrouillards": "B0H6V9W53D",
+        "Incroyapedia 60 Super-Pouvoirs Reels": "B0H3NKTD14",
+        "Leo et la loi de Murphy": "B0GYKRPQLL"
+    };
+
     var form = document.getElementById('freeBookForm');
     var LEAD_SOURCE = 'free-book-direct';
     try {
@@ -1125,13 +1144,15 @@
         btn.disabled = true; btn.querySelector('.btn-text').style.display='none'; btn.querySelector('.btn-loading').style.display='inline';
         try { fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=' + encodeURIComponent(LEAD_SOURCE), {mode:'no-cors'}); } catch(e){}
         try { localStorage.setItem('fc_book_claimed', email); localStorage.setItem('fc_book_title', book); localStorage.setItem('fc_book_pdf', pdfUrl); } catch(e){}
+        var asin = BOOK_ASIN[book];
+        var reviewUrl = asin ? 'https://www.amazon.fr/review/create-review?asin=' + asin : 'https://www.amazon.fr/stores/author/B0CJ6VJG76';
         var succ = document.getElementById('freeBookSuccess');
         succ.innerHTML = '<h3>Votre livre est prêt</h3>'
             + '<div class="gift-btns"><a class="btn" id="freeBookPdfLink" href="' + pdfUrl + '" target="_blank" rel="noopener">Lire le livre en ligne</a>'
             + '<a class="btn btn-ghost" id="freeBookDlLink" href="' + pdfUrl + '" download>Télécharger le PDF</a></div>'
             + '<p>Le livre s\'ouvre dans un nouvel onglet ; c\'est un vrai livre illustré, il peut prendre quelques secondes à s\'afficher. Vous pouvez aussi le télécharger pour le garder sur votre ordinateur, votre tablette ou votre téléphone.</p>'
             + '<p>Le lien vous est aussi envoyé par email, pour le rouvrir quand vous voulez — pensez à vérifier les courriers indésirables.</p>'
-            + '<p>Si votre enfant l\'aime, un avis sur <a class="link" href="https://www.amazon.fr/stores/author/B0CJ6VJG76" target="_blank" rel="noopener">Amazon</a> nous aide beaucoup.</p>';
+            + '<p>Si vous avez un moment, dites en quelques mots ce que votre enfant en a pensé : <a class="link" href="' + reviewUrl + '" target="_blank" rel="noopener">écrire un avis sur Amazon</a>. C\'est à peu près tout ce qui nous fait connaître.</p>';
         form.style.display = 'none'; succ.style.display = 'block';
         window.open(pdfUrl, '_blank');
     });
