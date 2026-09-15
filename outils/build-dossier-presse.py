@@ -18,7 +18,7 @@ SRC_HTML = os.path.join(RACINE, 'outils', 'dossier-presse.html')
 OUT_PDF = os.path.join(RACINE, 'presse', 'dossier-de-presse-famille-chevalier.pdf')
 CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 SITE = 'https://editions-chevalier.fr/'
-CONTACT = 'editions.chevalier.contact@gmail.com'
+CONTACT = 'contact@editions-chevalier.fr'
 MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre']
 
 # slug -> (catégorie affichée, groupe d'âge, ordre)
