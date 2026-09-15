@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /offert/
 Disallow: /ancien.html
-Disallow: /famille-chevalier-site/livres/
+Disallow: /livres/
 Disallow: /livres/
 
-Sitemap: https://vincentchevaliermce-ops.github.io/famille-chevalier-site/sitemap.xml
+Sitemap: https://editions-chevalier.fr/sitemap.xml

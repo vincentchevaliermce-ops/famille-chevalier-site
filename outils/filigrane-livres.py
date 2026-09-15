@@ -19,7 +19,7 @@ from reportlab.lib.utils import ImageReader
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEST = os.path.join(RACINE, 'livres')
 ORIG = os.path.join(RACINE, 'livres', '_originaux')   # hors dépôt (voir .gitignore)
-SITE = 'vincentchevaliermce-ops.github.io/famille-chevalier-site'
+SITE = 'editions-chevalier.fr'
 AUTEURS = 'Michèle et Vincent Chevalier'
 MENTION = 'Exemplaire offert par Famille Chevalier — merci de ne pas le revendre ni le rediffuser'
 MENTION1 = 'Tous nos livres : %s' % SITE

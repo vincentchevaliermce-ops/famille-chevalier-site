@@ -17,7 +17,7 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_HTML = os.path.join(RACINE, 'outils', 'dossier-presse.html')
 OUT_PDF = os.path.join(RACINE, 'presse', 'dossier-de-presse-famille-chevalier.pdf')
 CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-SITE = 'https://vincentchevaliermce-ops.github.io/famille-chevalier-site/'
+SITE = 'https://editions-chevalier.fr/'
 CONTACT = 'editions.chevalier.contact@gmail.com'
 MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre']
 
