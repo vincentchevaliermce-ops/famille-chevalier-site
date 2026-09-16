@@ -1024,11 +1024,11 @@
         <h3>Politique de confidentialité</h3>
         <p><b>Responsable :</b> Famille Chevalier.</p>
         <p><b>Données collectées :</b> adresse email et livre choisi, uniquement via le formulaire du livre offert et l’inscription aux nouvelles parutions.</p>
-        <p><b>Finalité :</b> remise du livre choisi (lecture en ligne ou téléchargement), et, avec votre consentement, l’annonce de nos nouvelles parutions (deux à quatre envois par an).</p>
+        <p><b>Finalité :</b> remise du livre choisi (lecture en ligne ou téléchargement) et, une semaine plus tard, un seul message pour vérifier qu’il vous est bien parvenu ; avec votre consentement, l’annonce de nos nouvelles parutions (deux à quatre envois par an).</p>
         <p><b>Base légale :</b> votre consentement explicite (case à cocher).</p>
         <p><b>Conservation :</b> tant que vous êtes inscrit(e) ; suppression sur simple demande.</p>
         <p><b>Partage :</b> vos données ne sont ni vendues ni transmises à des tiers.</p>
-        <p><b>Mesure d’audience de nos emails :</b> nos messages d’annonce contiennent un lien propre à chaque destinataire, ce qui nous indique si le lien a été ouvert. Cette information sert uniquement à mesurer l’intérêt pour nos parutions et à écarter les abus ; elle n’est jamais transmise à des tiers.</p>
+        <p><b>Mesure d’audience :</b> les liens de nos emails (livre offert, message de vérification, annonces) sont propres à chaque destinataire. Ils nous indiquent si vous avez ouvert le livre, visité une page ou cliqué vers Amazon ; nous ne mesurons pas l’ouverture des emails. Quand vous arrivez par l’un de ces liens, cet identifiant est gardé dans votre navigateur le temps de la visite. Sur le site, nous comptons aussi les pages vues (la page et le type de provenance) et les clics vers Amazon, sans cookie, et sans vous identifier si vous ne venez pas d’un de nos emails. Ces informations servent uniquement à mesurer l’intérêt pour nos livres et à écarter les abus ; elles ne sont jamais transmises à des tiers. Pour vous opposer à ce suivi, écrivez-nous.</p>
         <p><b>Vos droits :</b> accès, rectification, suppression, opposition — en écrivant à contact@editions-chevalier.fr. Demande traitée sous 48 heures.</p>
         <button class="btn" type="button" onclick="document.getElementById('privacyModal').classList.remove('show')">Fermer</button>
     </div>
@@ -1086,7 +1086,7 @@
         "Rose, la petite licorne qui ne brillait pas": "B0DJD7LT4G",
         "Pour toujours dans mon coeur, Petite girafe": "B0D36H833M",
         "Frisson, le petit manchot qui n'aimait pas le froid": "B0G4DKT2SR",
-        "Mon Livre Anime des Animaux Rigolos": "B0FTTVMC4F",
+        "Mon Livre Animé des Animaux Rigolos": "B0FTTVMC4F",
         "Une histoire et au lit": "B0F5PWMFSJ",
         "100 Pourquoi Ma Premiere Encyclopedie": "B0H4JCLJT9",
         "100 Pourquoi des Dinosaures": "B0H886LMFY",
@@ -1103,12 +1103,16 @@
 
     var form = document.getElementById('freeBookForm');
     var LEAD_SOURCE = 'free-book-direct';
+    var OFFRE_2 = false;   /* lien de l'email « nouveau site » : un livre de plus, une fois */
     try {
         var qs = new URLSearchParams(location.search);
         var pre = qs.get('livre');
         if (pre && DIRECT_PDF[pre]) { document.getElementById('bookSelect').value = pre; }
         var src = (qs.get('src') || '').replace(/[^a-z0-9-]/gi, '').slice(0, 24);
         if (src) { LEAD_SOURCE = 'free-book-direct-' + src; }
+        OFFRE_2 = qs.get('offre') === '2';
+        /* l'offre suit la visite : page d'un livre, puis retour au formulaire */
+        try { if (OFFRE_2) { sessionStorage.setItem('fc_offre2', '1'); } else { OFFRE_2 = sessionStorage.getItem('fc_offre2') === '1'; } } catch(e){}
     } catch(e){}
 
     /* Lecteur déjà inscrit : on lui redonne son livre tout de suite, sans masquer le formulaire */
@@ -1123,6 +1127,12 @@
                 + '<a class="btn btn-ghost" href="' + seenPdf + '" download>Télécharger le PDF</a></div>';
             form.parentNode.insertBefore(back, form);
         }
+        if (OFFRE_2) {
+            var fete = document.createElement('div');
+            fete.className = 'gift-back';
+            fete.innerHTML = '<p><b>Nouveau site, un livre de plus offert.</b> Choisissez un titre et indiquez l’adresse email à laquelle vous avez reçu notre message.</p>';
+            form.parentNode.insertBefore(fete, form.parentNode.firstChild);
+        }
     } catch(e){}
     form.addEventListener('submit', function(e){
         e.preventDefault();
@@ -1132,7 +1142,7 @@
         var consent = document.getElementById('consentCheck');
         if(!email || !book || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ document.getElementById('emailInput').reportValidity(); return; }
         if(!consent.checked){ consent.focus(); consent.reportValidity(); return; }
-        var already = null; try { already = localStorage.getItem('fc_book_claimed'); } catch(e){}
+        var already = null; try { already = localStorage.getItem(OFFRE_2 ? 'fc_book_offre2' : 'fc_book_claimed'); } catch(e){}
         if(already){
             var usedPdf = null; try { usedPdf = localStorage.getItem('fc_book_pdf'); } catch(e){}
             form.style.display = 'none';
@@ -1145,7 +1155,7 @@
         if(!pdfUrl){ alert("Ce livre n'est pas encore disponible en version offerte. Écrivez-nous à contact@editions-chevalier.fr."); return; }
         btn.disabled = true; btn.querySelector('.btn-text').style.display='none'; btn.querySelector('.btn-loading').style.display='inline';
         try { fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=' + encodeURIComponent(LEAD_SOURCE), {mode:'no-cors'}); } catch(e){}
-        try { localStorage.setItem('fc_book_claimed', email); localStorage.setItem('fc_book_title', book); localStorage.setItem('fc_book_pdf', pdfUrl); } catch(e){}
+        try { localStorage.setItem('fc_book_claimed', email); localStorage.setItem('fc_book_title', book); localStorage.setItem('fc_book_pdf', pdfUrl); if (OFFRE_2) { localStorage.setItem('fc_book_offre2', email); } } catch(e){}
         var asin = BOOK_ASIN[book];
         var reviewUrl = asin ? 'https://www.amazon.fr/review/create-review?asin=' + asin : 'https://www.amazon.fr/stores/author/B0CJ6VJG76';
         var succ = document.getElementById('freeBookSuccess');

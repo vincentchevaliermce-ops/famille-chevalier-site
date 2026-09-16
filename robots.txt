@@ -4,5 +4,6 @@ Disallow: /offert/
 Disallow: /livre-offert/
 Disallow: /ancien.html
 Disallow: /livres/
+Disallow: /go/
 
 Sitemap: https://editions-chevalier.fr/sitemap.xml
