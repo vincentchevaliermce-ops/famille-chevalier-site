@@ -13,13 +13,14 @@
     var AMAZON = 'https://www.amazon.fr';
     var BOUTIQUE = AMAZON + '/stores/author/B0CJ6VJG76';
 
-    /* Liens Amazon Attribution (console Amazon Ads), un par livre : { "ASIN": "https://www.amazon.fr/dp/ASIN?maas=..." }.
-       site  : boutons « Commander » des pages du site
-       email : liens « Commander » des emails (passent par /go/)
-       Tant qu'un livre n'a pas de lien ici, on garde le lien Amazon simple. */
+    /* Balises Amazon Attribution (console Amazon Ads, campagne « editions-chevalier.fr »,
+       16 livres). Les mêmes paramètres servent pour tous les livres : Amazon rattache
+       la vente au livre acheté.
+       site  : boutons « Commander » et liens boutique du site
+       email : liens des emails (passent par /go/), et visites arrivées par un email */
     var ATTRIBUTION = {
-        site: {},
-        email: {}
+        site: 'maas=maas_adg_4CFC82BDF97BCE49F83EA4417F2CA9A6_afap_abs&ref_=aa_maas&tag=maas',
+        email: 'maas=maas_adg_AB9C6CE477EF35B641E9B405B20D5D0D_afap_abs&ref_=aa_maas&tag=maas'
     };
 
     var RE_JETON = /^[a-z0-9]{4,12}$/;
@@ -41,10 +42,14 @@
         }
     }
 
+    function avecBalise(url, canal) {
+        var p = ATTRIBUTION[canal];
+        if (!p || url.indexOf('maas=') >= 0) return url;
+        return url + (url.indexOf('?') >= 0 ? '&' : '?') + p;
+    }
+
     function lienAchat(asin, canal) {
-        var tag = ATTRIBUTION[canal] && ATTRIBUTION[canal][asin];
-        if (tag && tag.indexOf(AMAZON + '/') === 0) return tag;
-        return AMAZON + '/dp/' + asin;
+        return avecBalise(AMAZON + '/dp/' + asin, canal);
     }
 
     function asinDe(href) {
@@ -79,7 +84,7 @@
             dest = AMAZON + '/review/create-review?asin=' + asin;
         } else if (k === 'achat' || k === 'avis' || k === 'boutique') {
             k = 'boutique';
-            dest = BOUTIQUE;
+            dest = avecBalise(BOUTIQUE, 'email');
         } else {
             k = (k === 'livre' && to) ? 'livre' : 'page';
             dest = '/' + to;
@@ -141,10 +146,15 @@
 
     /* 2. Clics vers Amazon. */
     function preparer() {
+        var canal = jeton ? 'email' : 'site';
         var liens = document.querySelectorAll('a[href*="amazon.fr/dp/"]');
         for (var i = 0; i < liens.length; i++) {
             var a = asinDe(liens[i].getAttribute('href') || '');
-            if (a) liens[i].setAttribute('href', lienAchat(a, 'site'));
+            if (a) liens[i].setAttribute('href', lienAchat(a, canal));
+        }
+        var boutiques = document.querySelectorAll('a[href^="' + BOUTIQUE + '"]');
+        for (var j = 0; j < boutiques.length; j++) {
+            boutiques[j].setAttribute('href', avecBalise(boutiques[j].getAttribute('href'), canal));
         }
     }
     function surClic(ev) {
