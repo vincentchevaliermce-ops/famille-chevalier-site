@@ -30,6 +30,7 @@ LIVRES = [
     ('une-histoire-et-au-lit',                  'Histoires du soir',         '3'),
     ('frisson-le-petit-manchot',                'Album illustré',            '3'),
     ('mon-livre-anime-des-animaux-rigolos',     'Livre animé',               '3'),
+    ('metiers-secrets-petites-betes',           'Documentaire',              '7'),
     ('gaspard-voyageur-du-temps',               'Gaspard, 10 ans · Tome 1',  '7'),
     ('gaspard-la-legende-du-bison-blanc',       'Gaspard, 10 ans · Tome 2',  '7'),
     ('gaspard-au-dela-de-l-ocean',              'Gaspard, 10 ans · Tome 3',  '7'),
@@ -43,6 +44,7 @@ LIVRES = [
 
 # Titres courts pour les grilles (le titre complet reste dans le JSON-LD)
 COURT = {
+    'metiers-secrets-petites-betes': 'Les métiers secrets des petites bêtes du jardin',
     'gaspard-voyageur-du-temps': 'Voyageur du temps',
     'gaspard-la-legende-du-bison-blanc': 'La Légende du Bison Blanc',
     'gaspard-au-dela-de-l-ocean': "Au-delà de l'océan",
@@ -52,6 +54,7 @@ COURT = {
 
 # Pitches de la page « Parutions 2026 »
 PITCHES_2026 = {
+ 'metiers-secrets-petites-betes': "La taupe conduit le métro, le lombric est ingénieur agronome, la coccinelle commande la brigade anti-pucerons et le hérisson fait sa ronde de nuit. Trente petites bêtes du jardin présentées par leur métier, du sol au potager, de la mare au compost, avec cherche-et-trouve, quiz et bons gestes pour le jardin.",
  '100-pourquoi-des-dinosaures': "Cent vraies questions d'enfant sur les dinosaures — leurs plumes, leurs œufs, leurs dents, leur disparition — et pour chacune une réponse en deux ou trois phrases, juste et à leur portée. Chaque page se termine par un « truc waouh » à raconter à la maison.",
  '100-pourquoi': "Pourquoi mes doigts se plissent-ils dans le bain ? Pourquoi le chat ronronne ? Pourquoi le ciel devient orange le soir ? Huit parties — mon corps, les animaux, le ciel et la météo, l'espace et la nuit, la maison, la table, le jardin, les grandes questions — et cent réponses simples, drôles et vraies.",
  'guide-de-survie-des-enfants-debrouillards': "Filtrer de l'eau, monter un mur anti-vent, reconnaître un courant qui tire, soigner une ampoule, retenir les numéros d'urgence : soixante fiches illustrées, une astuce par page, chacune avec un « que faire ? » en trois étapes et une erreur à éviter.",
@@ -95,6 +98,8 @@ def lire_livres():
 
 
 def euro(v):
+    if not v:
+        return 'prix à venir'
     return ('%.2f' % v).replace('.', ',') + ' €'
 
 
@@ -130,7 +135,8 @@ def build_html():
     total_avis = sum(l['avis'] for l in tous)
     note_moy = sum(l['note'] * l['avis'] for l in tous) / total_avis
     pmin, pmax = min(l['pages'] for l in tous), max(l['pages'] for l in tous)
-    prix_min, prix_max = min(l['prix'] for l in tous), max(l['prix'] for l in tous)
+    avec_prix = [l['prix'] for l in tous if l['prix']]
+    prix_min, prix_max = min(avec_prix), max(avec_prix)
     aujourdhui = datetime.date.today()
     mois_an = '%s %d' % (MOIS[aujourdhui.month - 1].capitalize(), aujourdhui.year)
     nouveautes = sorted([l for l in tous if l['date'].startswith('2026')], key=lambda l: l['date'], reverse=True)
@@ -163,7 +169,7 @@ def build_html():
   <div class="brand"><b>Famille Chevalier</b><small>Maison d’édition jeunesse</small></div>
   <p class="kicker">Dossier de presse · %s</p>
   <h1>Des livres que les enfants <em>finissent.</em></h1>
-  <p class="lead">Seize livres illustrés pour les 3-12 ans, écrits en famille depuis 2023 : romans d’aventure
+  <p class="lead">Dix-sept livres illustrés pour les 3-12 ans, écrits en famille depuis 2023 : romans d’aventure
   historiques, encyclopédies qui répondent aux vrais «&nbsp;pourquoi&nbsp;», albums tendres, documentaires et bande dessinée.</p>
   <div class="stats">
     <div><b>%d</b><span>titres publiés</span></div>
@@ -218,7 +224,7 @@ def build_html():
     P.append("""
 <section class="page">
   <p class="eyebrow">Catalogue</p>
-  <h2>Seize livres, classés par âge</h2>
+  <h2>Dix-sept livres, classés par âge</h2>
   <h3 class="sub">Dès 3 ans — albums et premières encyclopédies</h3>
   <div class="grid-bk c4">%s</div>
   %s
@@ -228,7 +234,7 @@ def build_html():
     P.append("""
 <section class="page">
   <p class="eyebrow">Catalogue (suite)</p>
-  <h2>Dès 7 ans — romans, documentaires et BD</h2>
+  <h2>Dès 6 ans — romans, documentaires et BD</h2>
   <div class="grid-bk c5">%s</div>
   <p class="encart">Tous les titres sont imprimés à la demande en couleurs, au format broché, et disponibles sur
   Amazon.fr. Un PDF complet de chaque livre peut être fourni aux enseignants, bibliothécaires et journalistes sur
@@ -246,19 +252,20 @@ def build_html():
       <p class="tag">%s · %s · parution %s</p>
       <h3>%s</h3>
       <p>%s</p>
-      <p class="specs">%s %s · %s avis · %s · %d p. · ISBN %s</p>
+      <p class="specs">%s · %s · %d p. · ISBN %s</p>
     </div>
   </article>""" % (l['cover'], html.escape(cat_de[l['slug']].upper()), l['age'].upper(),
                    date_fr(l['date']).upper(), html.escape(l['nom']),
-                   html.escape(PITCHES_2026.get(l['slug'], '')), etoiles(l['note']), note_fr(l['note']),
-                   l['avis'], euro(l['prix']), l['pages'], l['isbn']))
+                   html.escape(PITCHES_2026.get(l['slug'], '')),
+                   ('%s %s · %s avis' % (etoiles(l['note']), note_fr(l['note']), l['avis'])) if l['avis'] else 'nouveauté, en librairie en ligne',
+                   euro(l['prix']), l['pages'], l['isbn']))
     P.append("""
 <section class="page">
   <p class="eyebrow">Parutions 2026</p>
-  <h2>Cinq nouveautés cette année</h2>
+  <h2>%s nouveautés cette année</h2>
   %s
   %s
-</section>""" % (''.join(lignes), pied(5)))
+</section>""" % ({4: 'Quatre', 5: 'Cinq', 6: 'Six', 7: 'Sept', 8: 'Huit'}.get(len(nouveautes), str(len(nouveautes))), ''.join(lignes), pied(5)))
 
     # ---------- 6. série phare ----------
     tomes = ''.join(
@@ -410,11 +417,11 @@ font-size:6.9pt;color:var(--ink-3);border-top:1px solid var(--line);padding-top:
 .stars{color:#C08A2B;letter-spacing:.5pt;white-space:nowrap}
 .star-off{color:#D9D3C8}
 /* nouveautés */
-.nouv{display:grid;grid-template-columns:26mm 1fr;gap:6mm;align-items:start;margin-bottom:6.5mm}
+.nouv{display:grid;grid-template-columns:22mm 1fr;gap:5mm;align-items:start;margin-bottom:4.2mm}
 .nouv img{border-radius:1mm;box-shadow:0 1.5mm 4mm rgba(28,31,42,.14)}
 .nouv .tag{font-size:6.8pt;letter-spacing:.12em;color:var(--accent);font-weight:600;margin-bottom:1.5mm}
-.nouv h3{margin-bottom:1.8mm}
-.nouv p{font-size:9.2pt;color:var(--ink-2);margin-bottom:1.8mm}
+.nouv h3{margin-bottom:1.2mm;font-size:12pt}
+.nouv p{font-size:8.7pt;color:var(--ink-2);margin-bottom:1.4mm}
 .nouv .specs{font-size:7.8pt;color:var(--ink-3)}
 /* série */
 .tomes{margin-bottom:2mm}
