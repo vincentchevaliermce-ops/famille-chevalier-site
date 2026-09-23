@@ -1,0 +1,62 @@
+L'Arène des Duels — crédits des sons
+====================================
+Tous les sons ci-dessous sont libres de droits, y compris pour un usage commercial.
+Ils ont été découpés, normalisés et parfois ralentis (voix de l'ours, du gorille) pour le jeu.
+
+Kenney — www.kenney.nl — licence CC0 1.0 (domaine public)
+  · Impact Sounds : coups de poing (coup_l*, coup_h*), parades (garde*), atterrissages (sol*), pas (pas*), cloche (cloche)
+  · Interface Sounds : clic, valide, retour, erreur
+  · Music Jingles : victoire, defaite, badge, pret
+
+Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (« Additional sounds: Joseph SARDIN - BigSoundBank.com »)
+  · Punch 4 à 10 (coup_s*), Body fall 1 à 5 (chute*, ko), Whoosh 1 à 10 (vent*, vent_long, aspire)
+  · Explosion 1 et 2 (boum*), Shouts and applauses of teens 1 et 2 (foule*), Boing cartoon 1 (boing)
+  · Two cats fighting (ratel_grr), Grunts (gorille_grr)
+
+Wikimedia Commons
+  · « Lion raring-sound1TamilNadu178.ogg » — domaine public (lion_roar, lion_grr)
+  · « 439280 schots angry-tiger.wav » — schots — CC0 (tigre_roar, tigre_grr*, ours_roar, ours_grr)
+  · « Yellowstone sound library - Grizzly Bears Roar - 001.mp3 » — NPS & MSU Acoustic Atlas / Jennifer Jerrett — domaine public (ours_huff)
+  · « Alligatorbellow1.ogg » et « Alligatorhiss.ogg » — domaine public (croco_roar, croco_hiss, komodo_hiss)
+  · « Cat hissing - Zabuhailo.wav » — Zabuhailo — CC0 (chat_hiss)
+
+Kenney — www.kenney.nl — licence CC0 1.0 (domaine public)
+  · Voiceover Pack: Fighter : annonces « Round 1/2/3 », « Final round », « Fight! », « You win! », « You lose! », « Winner! », « Flawless victory! », « Time! », « Tie! », « Ready? » (voix_*)
+
+Musique — Alexander Ehlers, « Free Music Pack » (OpenGameArt.org, publié par tricksntraps) — licence CC0 1.0 (domaine public)
+  · « Warped » (musique des menus : mus_menu), « Twists » et « Great mission » (musiques de combat : mus_combat1, mus_combat2)
+  · Découpés (silences) et normalisés pour le jeu.
+
+Quelques effets de secours sont fabriqués par le code du jeu (seulement si un son ne se charge pas).
+
+Bruitages de dessin animé (ajoutés le 23/09/2026)
+L'Arène des Duels — crédits des nouveaux sons
+======================================================================
+Tous les sons ci-dessous sont sous licence CC0 1.0 ou dans le domaine public : utilisation libre, y compris commerciale, sans obligation de citer (les auteurs sont cités par courtoisie).
+La licence a été vérifiée sur la page de chaque son (adresse indiquée sur chaque ligne).
+Pour le jeu, chaque son a été découpé, converti en MP3 mono 44,1 kHz 128 kbit/s, normalisé (environ −16 LUFS, crête ≤ −1 dBTP) et adouci par des fondus ; les autres traitements sont précisés entre parenthèses.
+
+sifflet.mp3 → « Ghost on the flute #4 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/ghost-on-the-flute-4-s2057.html — licence CC0 1.0 (glissando descendant de la flûte à coulisse, transposé d'une octave vers l'aigu et accéléré)
+sifflet_haut.mp3 → « Ghost on the flute #4 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/ghost-on-the-flute-4-s2057.html — licence CC0 1.0 (glissando montant de la flûte à coulisse, transposé d'une octave vers l'aigu)
+oiseaux.mp3 → « Chick 1 (Stuffings) » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/chick-1-stuffings-s0430.html — licence CC0 1.0 (4 piaillements de poussin)
+pop.mp3 → « Bubbles Burst » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/bubbles-burst-s1074.html — licence CC0 1.0 (une seule bulle, faite avec la bouche)
+prout.mp3 → « Flatulence #4 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/flatulence-4-s1031.html — licence CC0 1.0
+pouet.mp3 → « Trumpet horn for bike #3 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/trumpet-horn-for-bike-3-s1086.html — licence CC0 1.0 (un coup de klaxon poire de vélo)
+meuh.mp3 → « Cow moos #4 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/cow-moos-4-s2384.html — licence CC0 1.0 (légèrement accéléré)
+rire_hyene.mp3 → « Strident Laughter » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/strident-laughter-s0489.html — licence CC0 1.0 (rire strident humain, utilisé à la place d'un vrai rire de hyène : aucun enregistrement de hyène en CC0 ou domaine public trouvé)
+slurp.mp3 → « Straw, end of glass » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/straw-end-of-glass-s0508.html — licence CC0 1.0 (une aspiration de paille, ralentie et rendue plus grave)
+plouf.mp3 → « Splash, Big #1 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/splash-big-1-s1519.html — licence CC0 1.0
+eclaboussure.mp3 → « Shoes in the Water » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/shoes-in-the-water-s0690.html — licence CC0 1.0 (un seul pas dans l'eau)
+glace.mp3 → « Cracking ice #3 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/cracking-ice-3-s2207.html — licence CC0 1.0
+ronfle.mp3 → « Man Snoring » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/man-snoring-s0170.html — licence CC0 1.0 (un seul ronflement)
+crac_os.mp3 → « Bones cracking #3 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/bones-cracking-3-s1409.html — licence CC0 1.0 (bruitage fait avec une branche de céleri)
+fouet.mp3 → « Complete whip #2 » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/complete-whip-2-s2962.html — licence CC0 1.0 (légèrement compressé)
+gloups.mp3 → « Mouth Noises #1 » — DavidGreck — BigSoundBank.com — https://bigsoundbank.com/mouth-noises-1-s0352.html — licence CC0 1.0 (une seule déglutition)
+flac.mp3 → « Slaps » — Joseph SARDIN — BigSoundBank.com — https://bigsoundbank.com/slaps-s0597.html — licence CC0 1.0, superposé à « 8 wet squish, slurp impacts » (fichier impactsplat06) — qubodup — OpenGameArt.org — https://opengameart.org/content/8-wet-squish-slurp-impacts — licence CC0 1.0 (une gifle + un « splat » mouillé)
+dino.mp3 → « T-rex Calls » — CaveboyTup — OpenGameArt.org — https://opengameart.org/content/t-rex-calls — licence CC0 1.0 (premier rugissement, ralenti et rendu plus grave)
+buffle.mp3 → « Bison (bellow) », enregistré le 14/09/2005 — NPS / Shan Burson, National Park Service (Yellowstone Sound Library) — https://www.nps.gov/yell/learn/photosmultimedia/sounds-bison.htm — domaine public (« The files available here […] are in the public domain » : https://www.nps.gov/yell/learn/photosmultimedia/soundlibrary.htm) (un seul mugissement de bison)
+vapeur.mp3 → « Breath of a horse #2 » — DenisChardonnet — BigSoundBank.com — https://bigsoundbank.com/breath-of-a-horse-2-s0286.html — licence CC0 1.0 (ébrouement de cheval par les naseaux)
+
+Mentions demandées ou appréciées par les sources :
+  · « Additional sounds: Joseph SARDIN - BigSoundBank.com »
+  · Enregistrements de Yellowstone : merci de citer le « National Park Service ».

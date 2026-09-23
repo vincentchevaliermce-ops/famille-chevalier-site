@@ -1,0 +1,386 @@
+{
+ "coup_l1": [
+  "coup_l1.wav",
+  0.32
+ ],
+ "coup_l2": [
+  "coup_l2.wav",
+  0.32
+ ],
+ "coup_l3": [
+  "coup_l3.wav",
+  0.32
+ ],
+ "coup_l4": [
+  "coup_l4.wav",
+  0.32
+ ],
+ "coup_l5": [
+  "coup_l5.wav",
+  0.32
+ ],
+ "coup_h1": [
+  "coup_h1.wav",
+  0.5
+ ],
+ "coup_h2": [
+  "coup_h2.wav",
+  0.5
+ ],
+ "coup_h3": [
+  "coup_h3.wav",
+  0.451
+ ],
+ "coup_h4": [
+  "coup_h4.wav",
+  0.466
+ ],
+ "coup_h5": [
+  "coup_h5.wav",
+  0.5
+ ],
+ "coup_s1": [
+  "coup_s1.wav",
+  0.55
+ ],
+ "coup_s2": [
+  "coup_s2.wav",
+  0.55
+ ],
+ "coup_s3": [
+  "coup_s3.wav",
+  0.55
+ ],
+ "coup_s4": [
+  "coup_s4.wav",
+  0.55
+ ],
+ "garde1": [
+  "garde1.wav",
+  0.25
+ ],
+ "garde2": [
+  "garde2.wav",
+  0.25
+ ],
+ "garde3": [
+  "garde3.wav",
+  0.25
+ ],
+ "sol1": [
+  "sol1.wav",
+  0.4
+ ],
+ "sol2": [
+  "sol2.wav",
+  0.4
+ ],
+ "sol3": [
+  "sol3.wav",
+  0.4
+ ],
+ "pas1": [
+  "pas1.wav",
+  0.3
+ ],
+ "pas2": [
+  "pas2.wav",
+  0.3
+ ],
+ "pas3": [
+  "pas3.wav",
+  0.3
+ ],
+ "pas4": [
+  "pas4.wav",
+  0.3
+ ],
+ "vent1": [
+  "vent1.wav",
+  0.317
+ ],
+ "vent2": [
+  "vent2.wav",
+  0.246
+ ],
+ "vent3": [
+  "vent3.wav",
+  0.349
+ ],
+ "vent4": [
+  "vent4.wav",
+  0.278
+ ],
+ "vent_long": [
+  "vent_long.wav",
+  0.631
+ ],
+ "aspire": [
+  "aspire.wav",
+  0.887
+ ],
+ "chute1": [
+  "chute1.wav",
+  1.1
+ ],
+ "chute2": [
+  "chute2.wav",
+  1.1
+ ],
+ "chute3": [
+  "chute3.wav",
+  1.002
+ ],
+ "ko": [
+  "ko.wav",
+  1.6
+ ],
+ "boum1": [
+  "boum1.wav",
+  0.211
+ ],
+ "boum2": [
+  "boum2.wav",
+  0.325
+ ],
+ "cloche": [
+  "cloche.wav",
+  1.4
+ ],
+ "foule1": [
+  "foule1.mp3",
+  2.8
+ ],
+ "foule2": [
+  "foule2.mp3",
+  3.2
+ ],
+ "splotch1": [
+  "splotch1.wav",
+  0.45
+ ],
+ "splotch2": [
+  "splotch2.wav",
+  0.45
+ ],
+ "boing": [
+  "boing.wav",
+  0.7
+ ],
+ "clic": [
+  "clic.wav",
+  0.04
+ ],
+ "valide": [
+  "valide.wav",
+  0.539
+ ],
+ "retour": [
+  "retour.wav",
+  0.091
+ ],
+ "erreur": [
+  "erreur.wav",
+  0.104
+ ],
+ "victoire": [
+  "victoire.mp3",
+  1.387
+ ],
+ "defaite": [
+  "defaite.mp3",
+  1.366
+ ],
+ "badge": [
+  "badge.mp3",
+  0.822
+ ],
+ "pret": [
+  "pret.wav",
+  0.359
+ ],
+ "lion_roar": [
+  "lion_roar.mp3",
+  1.86
+ ],
+ "lion_grr": [
+  "lion_grr.mp3",
+  0.97
+ ],
+ "tigre_roar": [
+  "tigre_roar.mp3",
+  1.55
+ ],
+ "tigre_grr": [
+  "tigre_grr.mp3",
+  0.95
+ ],
+ "tigre_grr2": [
+  "tigre_grr2.mp3",
+  0.9
+ ],
+ "ours_roar": [
+  "ours_roar.mp3",
+  1.438
+ ],
+ "ours_grr": [
+  "ours_grr.mp3",
+  1.41
+ ],
+ "ours_huff": [
+  "ours_huff.mp3",
+  0.55
+ ],
+ "gorille_grr": [
+  "gorille_grr.mp3",
+  0.764
+ ],
+ "croco_roar": [
+  "croco_roar.mp3",
+  1.9
+ ],
+ "croco_hiss": [
+  "croco_hiss.mp3",
+  1.15
+ ],
+ "komodo_hiss": [
+  "komodo_hiss.mp3",
+  0.67
+ ],
+ "ratel_grr": [
+  "ratel_grr.mp3",
+  0.611
+ ],
+ "chat_hiss": [
+  "chat_hiss.wav",
+  1.0
+ ],
+ "voix_fight": [
+  "voix_fight.mp3",
+  0.68
+ ],
+ "voix_final_round": [
+  "voix_final_round.mp3",
+  1.52
+ ],
+ "voix_flawless_victory": [
+  "voix_flawless_victory.mp3",
+  1.67
+ ],
+ "voix_ready": [
+  "voix_ready.mp3",
+  0.91
+ ],
+ "voix_round_1": [
+  "voix_round_1.mp3",
+  1.28
+ ],
+ "voix_round_2": [
+  "voix_round_2.mp3",
+  1.31
+ ],
+ "voix_round_3": [
+  "voix_round_3.mp3",
+  1.36
+ ],
+ "voix_tie": [
+  "voix_tie.mp3",
+  0.81
+ ],
+ "voix_time": [
+  "voix_time.mp3",
+  0.91
+ ],
+ "voix_winner": [
+  "voix_winner.mp3",
+  1.23
+ ],
+ "voix_you_lose": [
+  "voix_you_lose.mp3",
+  1.2
+ ],
+ "voix_you_win": [
+  "voix_you_win.mp3",
+  1.07
+ ],
+ "sifflet": [
+  "sifflet.mp3",
+  1.0
+ ],
+ "sifflet_haut": [
+  "sifflet_haut.mp3",
+  0.66
+ ],
+ "oiseaux": [
+  "oiseaux.mp3",
+  1.88
+ ],
+ "pop": [
+  "pop.mp3",
+  0.08
+ ],
+ "prout": [
+  "prout.mp3",
+  0.62
+ ],
+ "pouet": [
+  "pouet.mp3",
+  0.33
+ ],
+ "meuh": [
+  "meuh.mp3",
+  1.43
+ ],
+ "rire_hyene": [
+  "rire_hyene.mp3",
+  1.28
+ ],
+ "slurp": [
+  "slurp.mp3",
+  0.67
+ ],
+ "plouf": [
+  "plouf.mp3",
+  1.06
+ ],
+ "eclaboussure": [
+  "eclaboussure.mp3",
+  0.34
+ ],
+ "glace": [
+  "glace.mp3",
+  0.73
+ ],
+ "ronfle": [
+  "ronfle.mp3",
+  1.59
+ ],
+ "crac_os": [
+  "crac_os.mp3",
+  0.57
+ ],
+ "fouet": [
+  "fouet.mp3",
+  0.61
+ ],
+ "gloups": [
+  "gloups.mp3",
+  0.48
+ ],
+ "flac": [
+  "flac.mp3",
+  0.36
+ ],
+ "dino": [
+  "dino.mp3",
+  1.66
+ ],
+ "buffle": [
+  "buffle.mp3",
+  1.41
+ ],
+ "vapeur": [
+  "vapeur.mp3",
+  0.39
+ ]
+}

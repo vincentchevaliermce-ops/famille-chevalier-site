@@ -1,0 +1,1829 @@
+// =====================================================================
+//   L'ARÈNE DES DUELS — jeu de combat : Tigre contre Gorille
+// =====================================================================
+const W = 1920, H = 1080, FLOOR = 950, STAGE_L = 170, STAGE_R = 1750;
+const NV = '#0B2A5B', OR = '#FF5A1F', BL = '#1160D8', JA = '#FFC629', PA = '#FFF8EC', CY = '#12A4C4', VI = '#4a3296';
+const $ = id => document.getElementById(id);
+const bgC = $('bg'), glC = $('gl'), fxC = $('fx');
+const bg = bgC.getContext('2d'), fx = fxC.getContext('2d');
+
+// ---------------------------------------------------------------------
+//  Données des combattants (boîtes en px image, x vers l'adversaire, y vers le haut négatif, 0 = sol)
+// ---------------------------------------------------------------------
+const CHARS = {
+  // Chaque animal a sa façon de jouer (archétype), 3 coups spéciaux (★, → ★, ↓ ★), un SUPER, une balayette (↓ B) et une projection (tout près, → B).
+  // ia = [distance min, max, poids] : où l'ordi aime utiliser le coup. aie = ce que l'animal crie quand il prend un gros coup.
+  // --- TIGRE : le chasseur rapide (bonds, ruées, griffes vers le ciel)
+  tigre: {
+    nom: 'TIGRE', art: 'LE TIGRE', force: 1.012, col: OR, clair: '#FF8A4C', fond: '#FF8A4C', K: .44, hp: 102, walk: 7.2, back: 5.2, dash: 17, jumpV: 25, jumpX: 8.5, grav: 1.15, etour: 44,
+    aie: ['MIAOU ?!', 'AÏE AÏE !', 'MES RAYURES !'], ia: { saut: 1.2, spe: 1.1 },
+    hurt: { stand: [-300, 720, -800, 0], crouch: [-300, 740, -440, 0], air: [-300, 700, -700, 0] },
+    push: [160, 290], // largeur arrière, avant (monde)
+    moves: {
+      L: { st: 4, act: 4, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [640, 980, -720, -360], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PAF !', 'VLAN !', 'SCRITCH !', 'GRIFFOUILLE !'], son: 'l' },
+      cL: { st: 5, act: 4, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [560, 960, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['SCRITCH !', 'PAF !', 'CHATOUILLE !'], son: 'l' },
+      H: { st: 11, act: 5, rec: 17, dmg: 12, hs: 20, bs: 15, kb: 13, box: [560, 1020, -640, -20], lvl: 'mid', chain: ['S', 'SUPER'], mots: ['BAM !', 'CRAC !', 'SPLAF !'], son: 'h' },
+      cH: { st: 7, act: 4, rec: 20, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [540, 1010, -200, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !', 'OUPS, PAR TERRE !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 8, hs: 18, bs: 11, kb: 7, box: [300, 900, -420, 160], lvl: 'high', air: true, land: true, dive: 4, chain: ['L', 'cL', 'H', 'S'], mots: ['CROC !', 'GRRR !', 'MIAM !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP LÀ !', 'CATAPULTÉ !'], son: 'h' },
+      S: { st: 11, act: 99, rec: 18, dmg: 12, hs: 0, bs: 16, kb: 16, kd: true, box: [420, 980, -620, 0], lvl: 'mid', land: true, mots: ['ATTAQUE SURPRISE !', 'BOND DE 10 MÈTRES !', 'COUCOU !'], son: 's', nom: 'Attaque surprise', ia: [450, 1000, 1.2] },
+      SF: { st: 8, act: 14, rec: 22, dmg: 10, hs: 20, bs: 14, kb: 12, kd: true, box: [300, 900, -560, 0], rush: 21, stopHit: true, lvl: 'mid', mots: ['RUÉE !', 'FIOUUU !', 'TROP RAPIDE !'], son: 's', nom: 'La ruée du chasseur', ia: [300, 820, 1] },
+      SD: { st: 3, act: 99, rec: 26, dmg: 11, hs: 0, bs: 16, kb: 6, kd: true, lance: 20, aa: true, inv: 9, saute: [3, 21], land: true, box: [150, 700, -900, -200], lvl: 'mid', mots: ['GRIFFES AU CIEL !', 'SCRAAATCH !'], son: 's', nom: 'Griffes vers le ciel', ia: [0, 0, 0] },
+      SUPER: { st: 14, act: 44, rec: 20, dmg: 5, hits: 6, hs: 22, bs: 8, kb: 3, kd: true, box: [300, 1040, -700, 0], lvl: 'mid', mots: ['GRRR !', 'SCRITCH !', 'VLAN !', 'RAYÉ JUSQU’À LA PEAU !'], son: 'h', nom: 'Rugissement du roi' },
+    },
+  },
+  // --- GORILLE : le colosse (coups blindés, prise du dos argenté, onde de choc)
+  gorille: {
+    nom: 'GORILLE', art: 'LE GORILLE', force: 1.08, spr: true, gardeBas: 'accroupi', col: BL, clair: '#4F8FF5', fond: '#3B86F0', K: .42, hp: 108, walk: 5.4, back: 4.2, dash: 14, jumpV: 22.5, jumpX: 7, grav: 1.2, etour: 52,
+    aie: ['OUGH !', 'OUH OUH !', 'MÊME PAS MAL… AÏE !'], ia: { chope: 2 },
+    hurt: { stand: [-560, 600, -960, 0], crouch: [-560, 620, -820, 0], air: [-400, 500, -900, 0], up: [-330, 400, -1080, 0] },
+    push: [200, 280],
+    moves: {
+      L: { st: 5, act: 4, rec: 11, dmg: 6, hs: 15, bs: 11, kb: 6, box: [560, 1000, -730, -470], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['POK !', 'PAF !', 'BONK !'], son: 'l' },
+      cL: { st: 6, act: 5, rec: 12, dmg: 6, hs: 15, bs: 11, kb: 5, box: [520, 980, -230, 0], lvl: 'low', chain: ['cL', 'H', 'cH', 'S'], mots: ['BLAM !', 'TOC !'], son: 'l' },
+      H: { st: 17, act: 5, rec: 22, dmg: 13, hs: 21, bs: 16, kb: 12, box: [380, 900, -560, 0], lvl: 'mid', armor: true, quake: true, chain: ['S', 'SUPER'], mots: ['BOUM !', 'BADABOUM !', 'ÉCRABOUILLÉ !'], son: 'h' },
+      cH: { st: 9, act: 5, rec: 24, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [480, 1000, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 7, act: 99, rec: 10, dmg: 9, hs: 20, bs: 12, kb: 9, box: [60, 660, -420, 240], lvl: 'high', air: true, land: true, dive: 9, quakeLand: true, chain: ['L', 'cL', 'H'], mots: ['ÉCRABOUILLÉ !', 'BOUM !', 'PLAF !'], son: 'h' },
+      T: { st: 4, act: 3, rec: 22, dmg: 13, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['VOLTIGE !', 'HOP LÀ !'], son: 'h' },
+      S: { st: 18, act: 26, rec: 20, dmg: 14, hs: 0, bs: 16, kb: 17, kd: true, box: [300, 800, -760, 0], lvl: 'mid', mots: ['CHARGE !', 'VLAM !', 'POUSSE-TOI !'], son: 's', nom: 'La charge en hurlant', ia: [380, 1000, 1] },
+      SF: { st: 6, act: 5, rec: 30, dmg: 18, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 150, t: 30, degage: false, mot: 'LA PRISE DU DOS ARGENTÉ !', haut: 19, loin: 7, rec: 6 }, mots: ['BADABOUM !', 'TAMBOUR !'], son: 'h', nom: 'La prise du dos argenté', ia: [0, 520, 1.4] },
+      SD: { st: 14, act: 12, rec: 22, dmg: 10, hs: 22, bs: 14, kb: 10, kd: true, lvl: 'low', quake: true, proj: { x0: 480, spd: 15, w: 150, h: [-240, 0], life: 76, sol: true }, mots: ['LA TERRE TREMBLE !', 'BOUM !'], son: 's', nom: 'Le coup de poing au sol', ia: [520, 1500, .9] },
+      SUPER: { st: 16, act: 36, rec: 22, dmg: 7, hits: 4, hs: 22, bs: 8, kb: 6, kd: true, box: [300, 1100, -600, 0], lvl: 'low', quake: true, mots: ['BOUM !', 'BADABOUM !', 'TAM TAM !'], son: 'h', nom: 'Tambour de la jungle' },
+    },
+  },
+  // --- GRIZZLY : le pêcheur (la patte à saumons envoie en l'air… et un saumon s'envole, charge, grognement qui fait fuir)
+  grizzly: {
+    nom: 'GRIZZLY', art: 'LE GRIZZLY', force: 0.929, spr: true, col: '#8B5A2B', clair: '#D9A36A', fond: '#A8703E', K: .42, hp: 110, walk: 5.9, back: 4.4, dash: 14, jumpV: 22, jumpX: 7, grav: 1.2, etour: 50,
+    aie: ['GROAR ?!', 'MON SAUMON !', 'OUILLE LA TRUFFE !'], ia: {},
+    hurt: { stand: [-640, 755, -880, 0], crouch: [-640, 760, -600, 0], air: [-500, 700, -760, 0] },
+    push: [215, 280], reach: 690, speMin: 300, speMax: 1000,
+    moves: {
+      L: { st: 4, act: 4, rec: 10, dmg: 7, hs: 15, bs: 11, kb: 6, box: [600, 980, -780, -380], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PAF !', 'BAFFE !', 'GRIFFE !'], son: 'l' },
+      cL: { st: 5, act: 4, rec: 12, dmg: 6, hs: 15, bs: 11, kb: 5, box: [560, 950, -240, 0], lvl: 'low', chain: ['cL', 'H', 'cH', 'S'], mots: ['SCRITCH !', 'TOC !'], son: 'l' },
+      H: { st: 13, act: 5, rec: 20, dmg: 13, hs: 21, bs: 16, kb: 12, box: [480, 1010, -700, -20], lvl: 'mid', chain: ['S', 'SUPER'], mots: ['BAM !', 'GROSSE PATTE !', 'PATAPAF !'], son: 'h' },
+      cH: { st: 9, act: 5, rec: 23, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [520, 1010, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 5, act: 99, rec: 8, dmg: 9, hs: 18, bs: 12, kb: 8, box: [300, 900, -400, 180], lvl: 'high', air: true, land: true, dive: 6, quakeLand: true, chain: ['L', 'cL', 'H'], mots: ['PLAF !', 'SPLOUTCH !'], son: 'h' },
+      T: { st: 4, act: 3, rec: 22, dmg: 13, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['VOLTIGE !', 'CÂLIN D’OURS !'], son: 'h' },
+      S: { st: 6, act: 8, rec: 24, dmg: 13, hs: 0, bs: 16, kb: 6, kd: true, lance: 23, aa: true, inv: 6, box: [350, 950, -1000, -100], lvl: 'mid', saumon: true, mots: ['PATTE À SAUMONS !', 'HOP, AU VOL !'], son: 's', nom: 'La patte à saumons', ia: [0, 560, 1.1] },
+      SF: { st: 10, act: 16, rec: 24, dmg: 12, hs: 0, bs: 16, kb: 16, kd: true, box: [300, 900, -600, 0], rush: 18, stopHit: true, lvl: 'mid', mots: ['CHARGE !', 'POUSSEZ-VOUS !'], son: 's', nom: 'La charge du grizzly', ia: [350, 950, 1] },
+      SD: { st: 14, act: 18, rec: 22, dmg: 4, hs: 30, bs: 20, kb: 14, peur: true, lvl: 'mid', proj: { x0: 560, spd: 16, w: 150, h: [-700, -40], life: 58, peur: true }, mots: ['GROAAAR !', 'TOUT LE MONDE DEHORS !'], son: 's', nom: 'L’invité surprise', ia: [300, 1100, .9] },
+      SUPER: { st: 14, act: 42, rec: 22, dmg: 5, hits: 7, hs: 20, bs: 8, kb: 3, kd: true, box: [300, 1050, -900, 0], lvl: 'mid', saumon: true, mots: ['PÊCHE MIRACULEUSE !', 'SAUMON !', 'SPLAF !'], son: 'h', nom: 'La pêche miraculeuse' },
+    },
+  },
+  // --- HYÈNE : la harceleuse increvable (son rire vide la jauge SUPER, elle ne lâche jamais, croque-os, et… le clan !)
+  hyene: {
+    nom: 'HYÈNE', art: 'LA HYÈNE', fem: true, force: 1, spr: true, poseLance: 'coup', col: '#A87B3C', clair: '#F2D49B', fond: '#C9974E', K: .39, hp: 104, walk: 7.2, back: 5.6, dash: 18, jumpV: 24, jumpX: 8.6, grav: 1.15, etour: 44,
+    aie: ['HI… HI… AÏE !', 'C’EST NERVEUX !', 'OUILLE LE MUSEAU !'], ia: {},
+    hurt: { stand: [-560, 730, -800, 0], crouch: [-560, 740, -540, 0], air: [-480, 700, -700, 0] },
+    push: [190, 240], reach: 760, speMin: 300, speMax: 1500,
+    moves: {
+      L: { st: 4, act: 3, rec: 9, dmg: 6, hs: 14, bs: 10, kb: 5, box: [540, 1060, -720, -340], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['CROC !', 'GNAP !', 'CROQUÉ !'], son: 'l' },
+      cL: { st: 4, act: 4, rec: 11, dmg: 5, hs: 14, bs: 10, kb: 4, box: [520, 1040, -260, 0], lvl: 'low', chain: ['cL', 'H', 'cH', 'S'], mots: ['MORDILLE !', 'LES CHEVILLES !'], son: 'l' },
+      H: { st: 12, act: 5, rec: 19, dmg: 12, hs: 20, bs: 15, kb: 11, box: [500, 1120, -740, -200], lvl: 'mid', chain: ['S', 'SUPER'], mots: ['CRAC !', 'CRONCH !', 'MÂCHOIRE D’ACIER !'], son: 'h' },
+      cH: { st: 8, act: 5, rec: 22, dmg: 9, hs: 17, bs: 12, kb: 9, kd: true, box: [520, 1100, -220, 0], lvl: 'low', chain: ['S'], mots: ['CROCHE-PATTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 5, act: 99, rec: 8, dmg: 9, hs: 17, bs: 12, kb: 8, box: [300, 980, -420, 160], lvl: 'high', air: true, land: true, dive: 6, chain: ['L', 'cL', 'H'], mots: ['GNAC !', 'PLONGEON !'], son: 'h' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['SECOUE-SECOUE !', 'ATTRAPÉ !'], son: 'h' },
+      S: { st: 12, act: 10, rec: 22, dmg: 4, hs: 16, bs: 10, kb: 6, vide: 34, lvl: 'mid', proj: { x0: 540, spd: 16, w: 150, h: [-760, -300], life: 68, rire: true }, mots: ['HI HI HI !', 'HA HA HA !', 'ÇA ÉNERVE, HEIN ?'], son: 's', nom: 'Le rire qui énerve', ia: [450, 1500, 1] },
+      SF: { st: 8, act: 28, rec: 22, dmg: 4, hits: 4, hs: 12, bs: 8, kb: 3, vide: 6, box: [300, 1000, -640, -80], rush: 15, lvl: 'mid', mots: ['ENCORE !', 'TOUJOURS LÀ !', 'COUCOU !'], son: 's', nom: 'Elle ne lâche jamais', ia: [300, 1000, 1] },
+      SD: { st: 6, act: 4, rec: 26, dmg: 16, hs: 0, bs: 0, kb: 10, kd: true, lvl: 'mid', os: true, prise: { portee: 110, t: 36, degage: false, mot: 'CROQUE-OS !', haut: 12, loin: 9, rec: 6 }, mots: ['CRONCH !', 'CRAC CRAC !'], son: 'h', nom: 'Croque-os', ia: [0, 420, 1.2] },
+      SUPER: { st: 16, act: 44, rec: 22, dmg: 5, hits: 6, hs: 18, bs: 8, kb: 3, kd: true, box: [150, 1300, -700, 0], lvl: 'mid', clan: true, vide: 8, mots: ['LE CLAN !', 'HI HI HI !', 'À L’ATTAQUE !'], son: 'h', nom: 'Le clan arrive !' },
+    },
+  },
+  // --- animaux « 100 % illustrations » (boîtes en px de l'image de base, sol = centre de gravité)
+  // --- LION : le roi polyvalent (rugissement à distance, plaquage, coup de patte vers le ciel)
+  lion: {
+    nom: 'LION', art: 'LE LION', force: 0.846, spr: true, col: '#D9901A', clair: '#FFC24D', fond: '#F0A830', K: .44, hp: 114, walk: 6.8, back: 5, dash: 16, jumpV: 24.5, jumpX: 8.2, grav: 1.15, etour: 48,
+    aie: ['OUILLE !', 'MA CRINIÈRE !', 'PAS LA COIFFURE !'], ia: { loin: 780, spe: 1.2 },
+    hurt: { stand: [-520, 540, -880, 0], crouch: [-520, 560, -520, 0], air: [-480, 540, -700, 0] },
+    push: [200, 235], reach: 640, speMin: 480, speMax: 1450,
+    moves: {
+      L: { st: 4, act: 4, rec: 10, dmg: 7, hs: 15, bs: 11, kb: 6, box: [500, 910, -700, -300], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PAF !', 'SCRATCH !', 'PATOUNE !'], son: 'l' },
+      cL: { st: 5, act: 4, rec: 11, dmg: 5, hs: 15, bs: 11, kb: 5, box: [430, 800, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['SCRITCH !', 'TIC !'], son: 'l' },
+      H: { st: 12, act: 5, rec: 18, dmg: 12, hs: 20, bs: 15, kb: 13, box: [460, 990, -640, -20], lvl: 'mid', chain: ['S', 'SUPER'], mots: ['BAM !', 'CRAC !', 'ROYAL !'], son: 'h' },
+      cH: { st: 8, act: 4, rec: 22, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [430, 880, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 7, hs: 17, bs: 11, kb: 7, box: [250, 820, -400, 160], lvl: 'high', air: true, land: true, dive: 3, chain: ['L', 'cL', 'H', 'S'], mots: ['GRIFF !', 'PLAF !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP LÀ !'], son: 'h' },
+      S: { st: 15, act: 16, rec: 31, dmg: 10, hs: 24, bs: 17, kb: 24, souffle: true, lvl: 'mid', proj: { x0: 620, spd: 20, w: 170, h: [-700, -40], life: 70 }, mots: ['ROAAAR !', 'SOUFFLÉ !', 'ON M’ENTEND À 8 KM !'], son: 's', nom: 'Rugissement qui souffle', ia: [480, 1700, 1.4] },
+      SF: { st: 9, act: 14, rec: 26, dmg: 16, hs: 0, bs: 0, kb: 8, kd: true, rush: 12, lvl: 'mid', prise: { portee: 95, t: 26, degage: false, mot: 'PLAQUÉ AU SOL !', haut: 7, loin: 5, rec: 6, plaque: true }, mots: ['PLAQUÉ !', 'PATAPOUF !'], son: 'h', nom: 'Il plaque sa proie au sol', ia: [250, 600, 1] },
+      SD: { st: 4, act: 99, rec: 24, dmg: 12, hs: 0, bs: 16, kb: 6, kd: true, lance: 19, aa: true, inv: 8, saute: [2, 20], land: true, box: [200, 820, -900, -250], lvl: 'mid', mots: ['PAF DANS LES AIRS !', 'COUP DE PATTE ROYAL !'], son: 's', nom: 'Un coup de patte mortel', ia: [0, 0, 0] },
+      SUPER: { st: 14, act: 40, rec: 20, dmg: 5, hits: 6, hs: 22, bs: 8, kb: 3, kd: true, box: [260, 900, -700, 0], rush: 13, lvl: 'mid', mots: ['GRRR !', 'VLAN !', 'ROAR !', 'VIVE LE ROI !'], son: 'h', nom: 'La charge du roi' },
+    },
+  },
+  // --- OURS POLAIRE : le géant solide (glissade, saut qui brise la glace, baffe vers le ciel)
+  ours: {
+    nom: 'OURS POLAIRE', art: 'L’OURS POLAIRE', force: 1.096, spr: true, col: '#2E8FC7', clair: '#9ADCFF', fond: '#5BB8E8', K: .45, hp: 112, walk: 5.3, back: 4, dash: 13, jumpV: 21.5, jumpX: 6.6, grav: 1.22, etour: 54,
+    aie: ['BRRR !', 'OUILLE LA TRUFFE !', 'J’AI CHAUD !'], ia: {},
+    hurt: { stand: [-640, 755, -880, 0], crouch: [-640, 760, -640, 0], air: [-500, 700, -760, 0] },
+    push: [220, 285], reach: 700, speMin: 480, speMax: 1000,
+    moves: {
+      L: { st: 5, act: 4, rec: 11, dmg: 6, hs: 15, bs: 11, kb: 6, box: [620, 960, -800, -420], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['POK !', 'PAF !', 'BAFFE !'], son: 'l' },
+      cL: { st: 6, act: 5, rec: 13, dmg: 6, hs: 15, bs: 11, kb: 5, box: [560, 950, -240, 0], lvl: 'low', chain: ['cL', 'H', 'cH', 'S'], mots: ['BLAM !', 'PLOC !'], son: 'l' },
+      H: { st: 17, act: 5, rec: 23, dmg: 12, hs: 21, bs: 16, kb: 12, box: [480, 1000, -640, 0], lvl: 'mid', armor: true, quake: true, chain: ['S', 'SUPER'], mots: ['BOUM !', 'PATATRAS !', 'GROSSE PATTE !'], son: 'h' },
+      cH: { st: 9, act: 5, rec: 24, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [520, 1010, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'SUR LA GLACE !'], son: 'h' },
+      A: { st: 5, act: 99, rec: 8, dmg: 9, hs: 18, bs: 12, kb: 8, box: [300, 900, -400, 180], lvl: 'high', air: true, land: true, dive: 6, quakeLand: true, chain: ['L', 'cL', 'H'], mots: ['PLAF !', 'SPLOUTCH !'], son: 'h' },
+      T: { st: 4, act: 3, rec: 22, dmg: 13, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['VOLTIGE !', 'CÂLIN D’OURS !'], son: 'h' },
+      S: { st: 16, act: 24, rec: 22, dmg: 12, hs: 0, bs: 16, kb: 16, kd: true, box: [300, 880, -300, 0], rush: 17, lvl: 'low', mots: ['GLISSADE !', 'SPLATCH !', 'TOBOGGAN !'], son: 's', nom: 'Glissade sur le ventre', ia: [350, 1000, 1] },
+      SF: { st: 6, act: 99, rec: 20, dmg: 13, hs: 22, bs: 16, kb: 10, kd: true, saute: [11, 19], land: true, dive: 4, quakeLand: true, box: [100, 760, -500, 150], lvl: 'high', mots: ['CRAC LA GLACE !', 'PLOUF !'], son: 's', nom: 'Le saut qui brise la glace', ia: [380, 820, 1] },
+      SD: { st: 4, act: 99, rec: 26, dmg: 12, hs: 0, bs: 16, kb: 6, kd: true, lance: 18, aa: true, inv: 8, saute: [1, 18], land: true, box: [150, 800, -950, -250], lvl: 'mid', mots: ['BAFFE POLAIRE !', 'DEBOUT !'], son: 's', nom: 'Debout, patte levée !', ia: [0, 0, 0] },
+      SUPER: { st: 16, act: 36, rec: 22, dmg: 7, hits: 4, hs: 22, bs: 8, kb: 6, kd: true, box: [300, 1100, -600, 0], lvl: 'low', onde: true, mots: ['BOUM !', 'CRAC !', 'ÇA GLISSE !'], son: 'h', nom: 'Le coup de patte de géant' },
+    },
+  },
+  // --- CROCODILE : l'embuscade (il plonge, il attrape et tourne, coup de queue)
+  croco: {
+    nom: 'CROCODILE', art: 'LE CROCODILE', force: 0.953, spr: true, col: '#4E8A2E', clair: '#A8DC6E', fond: '#6DB33F', K: .46, hp: 110, walk: 5.6, back: 4.2, dash: 16, jumpV: 20, jumpX: 7, grav: 1.25, etour: 50,
+    aie: ['CLAC ?!', 'AÏE LES ÉCAILLES !', 'GLOUPS !'], ia: { saut: .6 },
+    hurt: { stand: [-560, 700, -800, 0], crouch: [-560, 700, -420, 0], air: [-500, 650, -600, 0] },
+    push: [230, 300], reach: 690, speMin: 330, speMax: 780,
+    moves: {
+      L: { st: 5, act: 4, rec: 11, dmg: 7, hs: 15, bs: 11, kb: 6, box: [560, 1020, -380, -40], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['CLAC !', 'CROC !', 'CLAC-CLAC !'], son: 'l' },
+      cL: { st: 6, act: 4, rec: 12, dmg: 6, hs: 15, bs: 11, kb: 5, box: [520, 980, -220, 0], lvl: 'low', chain: ['cL', 'H', 'cH', 'S'], mots: ['CLAC !', 'SCRONCH !'], son: 'l' },
+      H: { st: 12, act: 5, rec: 20, dmg: 13, hs: 20, bs: 15, kb: 12, box: [520, 1100, -420, 0], lvl: 'mid', lunge: 6, chain: ['S', 'SUPER'], mots: ['CROC !', 'CRAC !', 'MÂCHOIRE D’ACIER !'], son: 'h' },
+      cH: { st: 8, act: 5, rec: 22, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [480, 1080, -200, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'FLAC !'], son: 'h' },
+      A: { st: 5, act: 99, rec: 8, dmg: 8, hs: 18, bs: 12, kb: 8, box: [200, 900, -400, 160], lvl: 'high', air: true, land: true, dive: 6, chain: ['L', 'cL', 'H'], mots: ['CLAC !', 'PLOUF !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP DANS L’EAU !'], son: 'h' },
+      S: { st: 14, act: 30, rec: 22, dmg: 4, hits: 4, hs: 22, bs: 14, kb: 3, kd: true, box: [380, 980, -420, 0], rush: 9, agrippe: true, lvl: 'mid', mots: ['ROULADE !', 'TOURNE !', 'ÇA TOURNE !'], son: 's', nom: 'La roulade de la mort', ia: [300, 720, 1] },
+      SF: { st: 34, act: 99, rec: 18, land: true, dmg: 12, hs: 22, bs: 14, kb: 8, kd: true, box: [-300, 800, -900, 0], plonge: true, lvl: 'mid', mots: ['SURPRISE !', 'SPLASH !', 'COUCOU C’EST MOI !'], son: 'h', nom: 'Il attaque caché sous l’eau', ia: [520, 1400, .9] },
+      SD: { st: 5, act: 8, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 10, kd: true, lance: 16, aa: true, inv: 6, box: [-300, 760, -820, 0], lvl: 'mid', mots: ['COUP DE QUEUE !', 'FLAC !'], son: 's', nom: 'Le coup de queue', ia: [0, 0, 0] },
+      SUPER: { st: 40, act: 99, rec: 18, land: true, dmg: 20, hs: 24, bs: 16, kb: 10, kd: true, box: [-320, 820, -1000, 0], plonge: true, lvl: 'mid', mots: ['SPLASH !', 'CROC !', 'SURPRIIISE !'], son: 'h', nom: 'Il jaillit de l’eau' },
+    },
+  },
+  // --- HIPPOPOTAME : le tank blindé. ★ il se retourne et sa queue-hélice mitraille des crottes !
+  hippo: {
+    nom: 'HIPPOPOTAME', art: 'L’HIPPOPOTAME', force: 1.246, spr: true, col: '#8E6FA8', clair: '#DCC2F2', fond: '#B48CD6', K: .5, hp: 112, walk: 4.4, back: 3.6, dash: 12, jumpV: 18.5, jumpX: 6, grav: 1.3, etour: 58,
+    aie: ['OUMPF !', 'GROMPF !', 'MES DENTS !', 'MA PEAU FENDILLÉE !'], ia: { saut: .5 },
+    hurt: { stand: [-620, 780, -760, 0], crouch: [-620, 780, -600, 0], air: [-560, 720, -700, 0] },
+    push: [260, 300], reach: 700, speMin: 480, speMax: 1100,
+    moves: {
+      L: { st: 6, act: 4, rec: 12, dmg: 7, hs: 15, bs: 11, kb: 7, box: [600, 1000, -640, -200], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['BONK !', 'PAF !', 'BOUDIN !'], son: 'l' },
+      cL: { st: 7, act: 5, rec: 13, dmg: 6, hs: 15, bs: 11, kb: 5, box: [560, 980, -260, 0], lvl: 'low', chain: ['cL', 'H', 'cH', 'S'], mots: ['BLAM !', 'POUF !'], son: 'l' },
+      H: { st: 18, act: 6, rec: 23, dmg: 13, hs: 21, bs: 16, kb: 13, box: [560, 1120, -780, -60], lvl: 'mid', armor: true, chain: ['S', 'SUPER'], mots: ['CHOMP !', 'CRAC !', 'GLOUPS !'], son: 'h' },
+      cH: { st: 10, act: 5, rec: 25, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [520, 1060, -240, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'SPLOTCH !'], son: 'h' },
+      A: { st: 7, act: 99, rec: 10, dmg: 10, hs: 20, bs: 12, kb: 9, box: [100, 800, -420, 220], lvl: 'high', air: true, land: true, dive: 9, quakeLand: true, chain: ['L', 'cL', 'H'], mots: ['PLOUF !', 'BOUM !', 'BOMBE !'], son: 'h' },
+      T: { st: 4, act: 3, rec: 22, dmg: 13, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['VOLTIGE !', 'HOP LÀ !'], son: 'h' },
+      // ★ le ventilateur à crottes : dos à l'adversaire, la queue tourne comme une hélice et tire en rafale (la mitraillette)
+      S: { st: 14, act: 32, rec: 24, dmg: 2, hs: 9, bs: 6, kb: 2.5, dos: true, jet: { every: 4, spd: [20, 26], vy: [-7, -2], grav: .34, r: 24, dmg: 1.6, rafale: true }, lvl: 'mid', mots: ['RATATATATA !', 'PROUT PROUT !'], son: 'h', nom: 'Le ventilateur à crottes', ia: [220, 980, 1.3] },
+      SF: { st: 18, act: 20, rec: 24, dmg: 11, hs: 0, bs: 16, kb: 17, kd: true, box: [300, 1000, -560, 0], rush: 19, armor: true, lvl: 'mid', mots: ['CHARGE !', 'BADABOUM !', 'POUSSEZ-VOUS !'], son: 's', nom: 'La charge gueule ouverte', ia: [350, 1000, 1] },
+      SD: { st: 6, act: 10, rec: 26, dmg: 13, hs: 0, bs: 16, kb: 8, kd: true, lance: 17, aa: true, inv: 7, box: [300, 1050, -1050, -280], lvl: 'mid', mots: ['OUAAAH !', 'GRAND BÂILLEMENT !'], son: 's', nom: 'Le grand bâillement', ia: [0, 0, 0] },
+      SUPER: { st: 16, act: 46, rec: 24, dmg: 3, hs: 10, bs: 8, kb: 3, dos: true, jet: { every: 3, spd: [12, 27], vy: [-22, -4], grav: .5, r: 36, dmg: 2.4 }, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !', 'PROUUUT !'], son: 'h', nom: 'Le déluge de crottes' },
+    },
+  },
+  // --- RATEL : le teigneux minuscule (nuage puant, il fonce, il mord et ne lâche pas)
+  ratel: {
+    nom: 'RATEL', art: 'LE RATEL', force: 0.989, spr: true, col: '#3A3A48', clair: '#E3E3EE', fond: '#6B6B80', K: .38, hp: 108, walk: 7.8, peau: .85, back: 6, dash: 19, jumpV: 25, jumpX: 9, grav: 1.15, etour: 46,
+    aie: ['MÊME PAS MAL !', 'PEAU ÉPAISSE !', 'GRRR !'], ia: { saut: 1.1 },
+    hurt: { stand: [-560, 660, -780, 0], crouch: [-560, 660, -520, 0], air: [-500, 600, -680, 0] },
+    push: [170, 210], reach: 580, speMin: 300, speMax: 560,
+    moves: {
+      L: { st: 3, act: 3, rec: 7, dmg: 7, hs: 14, bs: 10, kb: 5, box: [560, 1080, -560, -60], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['SCRITCH !', 'GRRR !', 'TCHAC !'], son: 'l' },
+      cL: { st: 4, act: 3, rec: 9, dmg: 4, hs: 13, bs: 10, kb: 4, box: [520, 900, -260, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['SCRITCH !', 'MORDILLE !'], son: 'l' },
+      H: { st: 8, act: 5, rec: 15, dmg: 12, hs: 18, bs: 14, kb: 11, box: [520, 1160, -640, 0], lvl: 'mid', lunge: 7, chain: ['S', 'SUPER'], mots: ['CROC !', 'GRRR !', 'TEIGNE !'], son: 'h' },
+      cH: { st: 6, act: 4, rec: 18, dmg: 8, hs: 18, bs: 12, kb: 8, kd: true, box: [480, 1000, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'CROCHE-PATTE !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 7, hs: 17, bs: 11, kb: 7, box: [300, 900, -420, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['SCRITCH !', 'KAMIKAZE !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 20, dmg: 11, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 18 }, mots: ['VOLTIGE !', 'CROCHE !'], son: 'h' },
+      S: { st: 14, act: 10, rec: 22, dmg: 1, nuage: { x0: 560, r: 230, life: 170, tick: 25, stun: 42 }, lvl: 'mid', mots: ['PSCHIIT !', 'PFIOU, ÇA PUE !', 'PROUT !'], son: 's', nom: 'La bombe puante', ia: [250, 720, 1] },
+      SF: { st: 5, act: 16, rec: 24, dmg: 9, hs: 20, bs: 14, kb: 10, kd: true, box: [200, 900, -380, 0], rush: 24, stopHit: true, bas: true, bonk: true, lvl: 'mid', mots: ['FONCE !', 'TÊTE BAISSÉE !', 'SANS RÉFLÉCHIR !'], son: 's', nom: 'Il fonce sans réfléchir', ia: [300, 900, 1.2] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 18, aa: true, inv: 8, saute: [4, 20], land: true, box: [150, 800, -800, -150], lvl: 'mid', mots: ['CROC !', 'JE LÂCHE PAS !'], son: 's', nom: 'La morsure qui ne lâche pas', ia: [0, 0, 0] },
+      SUPER: { st: 12, act: 48, rec: 22, dmg: 4, hits: 8, hs: 16, bs: 8, kb: 3, kd: true, box: [200, 1100, -640, 0], rush: 15, armor: true, lvl: 'mid', mots: ['GRRR !', 'SCRITCH !', 'FURIE !', 'TREIZE KILOS DE RAGE !'], son: 'l', nom: 'La furie du ratel' },
+    },
+  },
+  // --- DRAGON DE KOMODO : le venimeux (morsure à venin, coup de queue, morsure en l'air)
+  komodo: {
+    nom: 'KOMODO', art: 'LE DRAGON DE KOMODO', force: 0.944, spr: true, col: '#8A7A45', clair: '#E2D49A', fond: '#B09C5A', K: .44, hp: 116, walk: 6, back: 4.4, dash: 15, jumpV: 21, jumpX: 7.5, grav: 1.2, etour: 52,
+    aie: ['SSSS !', 'AÏE LA LANGUE !', 'HEIN ? J’ENTENDS RIEN !'], ia: {},
+    hurt: { stand: [-560, 680, -700, 0], crouch: [-560, 680, -440, 0], air: [-500, 620, -620, 0] },
+    push: [220, 280], reach: 680, speMin: 380, speMax: 640,
+    moves: {
+      L: { st: 5, act: 4, rec: 11, dmg: 7, hs: 15, bs: 11, kb: 6, box: [560, 1000, -560, -100], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['CLAC !', 'SSSS !', 'SLURP !'], son: 'l' },
+      cL: { st: 6, act: 4, rec: 12, dmg: 5, hs: 15, bs: 11, kb: 5, box: [520, 980, -240, 0], lvl: 'low', chain: ['cL', 'H', 'cH', 'S'], mots: ['CLAC !'], son: 'l' },
+      H: { st: 12, act: 5, rec: 19, dmg: 13, hs: 20, bs: 15, kb: 12, box: [540, 1100, -660, 0], lvl: 'mid', lunge: 6, chain: ['S', 'SUPER'], mots: ['CRAC !', 'VLAN !', 'DRAGON !'], son: 'h' },
+      cH: { st: 8, act: 5, rec: 22, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [480, 1060, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'FOUETTÉ !'], son: 'h' },
+      A: { st: 5, act: 99, rec: 8, dmg: 8, hs: 18, bs: 12, kb: 8, box: [300, 900, -400, 160], lvl: 'high', air: true, land: true, dive: 6, chain: ['L', 'cL', 'H'], mots: ['CLAC !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP LÀ !'], son: 'h' },
+      S: { st: 12, act: 12, rec: 20, dmg: 8, hs: 18, bs: 14, kb: 8, box: [500, 1060, -580, 0], rush: 12, venin: { t: 300, tick: 20, dmg: 1 }, lvl: 'mid', mots: ['VENIN !', 'SSSS !', 'TU VAS VOIR !'], son: 's', nom: 'La morsure à venin', ia: [380, 760, 1] },
+      SF: { st: 10, act: 6, rec: 24, dmg: 11, hs: 20, bs: 16, kb: 14, kd: true, box: [300, 1300, -400, 0], lvl: 'low', mots: ['FOUETTÉ !', 'FLAC !', 'QUEUE DE DRAGON !'], son: 'h', nom: 'Le coup de queue', ia: [420, 900, 1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 17, aa: true, inv: 7, saute: [3, 19], land: true, box: [150, 820, -800, -150], lvl: 'mid', mots: ['CLAC EN L’AIR !', 'SSSS !'], son: 's', nom: 'La morsure en l’air', ia: [0, 0, 0] },
+      SUPER: { st: 22, act: 16, rec: 24, dmg: 14, hs: 24, bs: 16, kb: 10, kd: true, box: [480, 1150, -660, 0], rush: 19, venin: { t: 420, tick: 18, dmg: 1, lent: .6 }, lvl: 'mid', mots: ['MORSURE ROYALE !', 'VENIN XXL !'], son: 'h', nom: 'La morsure royale' },
+    },
+  },
+};
+// phrases de victoire (drôles, tirées du livre) : le gagnant parle sur l'écran de fin
+const PHRASES = {
+  tigre: ['Rayé jusqu’à la peau… et champion !', 'Un bond de 10 mètres, et hop !', 'Miaou. Enfin… ROAAAR !'],
+  gorille: ['Mains en coupe, s’il vous plaît !', 'Tam-tam ! Et maintenant, je chante en mangeant.', 'On m’entend taper à 1 km !'],
+  lion: ['20 heures de sieste par jour… et je t’ai quand même battu !', 'On m’entend rugir à 8 km !', 'Le roi, c’est moi. Enfin… aujourd’hui.'],
+  ours: ['Mes poils sont des pailles : je flotte et je gagne !', 'Blanc ? Non : transparent. Et champion !', '687 km à la nage : ça muscle !'],
+  croco: ['Clac-clac ! Même Brutus serait fier.', 'Tu m’as vu venir ? Non ? Normal.', 'Une flaque, et hop : surprise !'],
+  hippo: ['Trois tonnes de mauvaise humeur !', 'Le ventilateur à crottes marche à tous les coups !', 'Plus grande bouche = plus fort. Logique !'],
+  ratel: ['Je ne gagne pas : je dégoûte !', 'Treize kilos de rage !', 'Ma peau est trop grande : même pas mal !'],
+  komodo: ['Je t’ai senti à 4 km !', 'Hein ? Tu as dit quoi ? J’entends très mal…', 'Un DRAGON. Je rappelle.'],
+  grizzly: ['Attrapé au vol, comme un saumon !', '40 000 papillons au dîner. Croustillant !', 'J’arrive… et la plage se vide !'],
+  hyene: ['Hi hi hi… c’est nerveux !', 'Chez les hyènes, ce sont les filles qui commandent !', 'Mangeuse de restes ? Même pas vrai !'],
+  buffle: ['Meuh ? Non : BUFFLE !', 'Mordu, mais pas vaincu !', 'Et en plus, je fais de la mozzarella !'],
+  morse: ['Un canapé à moustaches, hein ?', 'Pas touche au troupeau !', '700 moustaches, zéro défaite !'],
+  trex: ['Préhistorique, mais toujours en forme !', 'Petits bras, GRANDES dents !', 'C’est qui le plus fort ? MOI !'],
+};
+const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
+
+const ARENES = [
+  { k: 'savane', nom: 'SAVANE', img: 'arene.webp' }, { k: 'jungle', nom: 'JUNGLE', img: 'arene_jungle.webp' },
+  { k: 'banquise', nom: 'BANQUISE', img: 'arene_banquise.webp' }, { k: 'desert', nom: 'DÉSERT', img: 'arene_desert.webp' },
+  { k: 'colisee', nom: 'COLISÉE', img: 'arene_colisee.webp' }, { k: 'riviere', nom: 'RIVIÈRE', img: 'arene_riviere.webp' },
+];
+const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene']; // les autres animaux du livre arrivent au fur et à mesure
+const FAITS = { // cartes « LE SAVAIS-TU ? » : uniquement des infos du livre imprimé (TEXTE_IMPRIME_V12, page en fin de ligne)
+  tigre: [
+    'Si on rasait un tigre, il resterait rayé : ses rayures sont aussi dessinées sur sa peau !', // p. 9
+    'La nuit, le tigre voit six fois mieux que toi.', // p. 67
+    'Le tigre traverse à la nage des rivières larges de 8 km !', // p. 67
+    'Un tigre peut tuer un gaur, un bœuf sauvage d’une tonne : presque cinq fois son poids !', // p. 10
+    'Le tigre vit en Asie, le gorille en Afrique : dans la nature, ils ne se croisent jamais. Leur duel est imaginé !', // p. 67
+  ],
+  gorille: [
+    'Le gorille se frappe la poitrine les mains en coupe, pas avec les poings. Au cinéma, on se trompe souvent !', // p. 68
+    'On entend un gorille se frapper la poitrine à 1 km : un vrai tambour !', // p. 68
+    'Devant ses plantes préférées, le gorille fredonne et chantonne. Sans doute pour dire : « Je mange, ne me dérange pas ! »', // p. 67
+    'Un dos argenté, c’est un grand gorille mâle. Il ne recule pas : il charge en hurlant !', // p. 67-68
+    'Le gorille ne chasse jamais : il gagne ses disputes en impressionnant.', // p. 68
+  ],
+  lion: [
+    'La nuit, le rugissement du lion s’entend à 8 km : de l’autre bout de la ville !', // p. 9
+    'Le lion passe environ 20 heures par jour à ne rien faire. Un vrai chat… de 190 kg !', // p. 19
+    'La langue du lion est couverte de pointes : elle racle la viande sur les os et nettoie son pelage.', // p. 10
+    'Le point faible du lion ? Sa crinière lui donne chaud !', // p. 9
+    'Le lion a des crocs de 7 cm. Son coup spécial : il plaque sa proie au sol.', // p. 9 et 19
+  ],
+  ours: [
+    'Les poils de l’ours polaire sont creux, comme des pailles : ils gardent la chaleur… et l’aident à flotter !', // p. 15
+    'L’ours polaire n’est pas vraiment blanc : ses poils sont transparents et sa peau est noire !', // p. 32
+    'Une ourse polaire a nagé 687 km en 9 jours sans s’arrêter : autant que de Paris à Marseille… à la nage !', // p. 16
+    'L’ours polaire sent un phoque à plus d’un kilomètre, même caché sous la neige !', // p. 31
+    'Grizzly + ours polaire = « pizzly » ! On en a trouvé 8 dans la nature.', // p. 15
+  ],
+  croco: [
+    'Brutus, le crocodile géant de la photo, mesure 5,50 m… et il lui manque une patte avant !', // p. 60
+    'La morsure du crocodile marin est la plus forte jamais mesurée : presque comme un T. rex !', // p. 59
+    'Un crocodile marin a parcouru 590 km en 25 jours en « surfant » sur les courants de la mer !', // p. 60
+    'Chez le crocodile, c’est la température du nid qui décide : vers 31,6 °C, des mâles. Plus chaud ou plus froid : des femelles.', // p. 60
+    'Des crocodiles font un demi-cercle dans la rivière : un filet vivant pour pêcher !', // p. 13
+  ],
+  hippo: [
+    'Les plus grandes dents d’hippopotame mesurent 50 cm : plus que ton avant-bras !', // p. 14
+    'L’hippopotame ne nage pas : il marche au fond de l’eau. Il y dort même, et remonte respirer sans se réveiller !', // p. 13
+    'Un hippopotame peut peser jusqu’à 3 200 kg.', // p. 13
+    'Le mâle agite sa queue pour éparpiller ses crottes et marquer son territoire. Mieux vaut ne pas être derrière !', // p. 14
+    'L’hippopotame renverse même des bateaux : c’est l’un des animaux les plus dangereux d’Afrique.', // p. 14
+  ],
+  ratel: [
+    'Le ratel pèse au maximum 13 kg… et des vidéos le montrent tenir tête à des lions !', // p. 19
+    'La peau du ratel est épaisse et trop grande pour lui : si on l’attrape, il se retourne dedans… et mord !', // p. 19
+    'Mordu au visage par une vipère, un ratel chassait de nouveau des serpents 5 heures plus tard !', // p. 20
+    'Dans une ruche, le ratel mange le miel… et les larves, les bébés des abeilles !', // p. 20
+    'Quand le ratel sent la trace fraîche d’un lion, il file se cacher dans un trou !', // p. 20
+  ],
+  grizzly: [
+    'Le grizzly, un ours brun d’Amérique, peut avaler 40 000 papillons de nuit en un jour. Croustillant !', // p. 56
+    'L’ours brun peut passer l’hiver sans manger, sans boire, sans pipi ni caca. Plusieurs mois !', // p. 16
+    'Sur une plage d’Alaska, un grizzly tout seul a fait filer une quinzaine d’ours polaires… sans même grogner !', // p. 16
+    'Le grizzly a des griffes de 6 cm. Son coup spécial : il attrape les saumons au vol !', // p. 15
+    'Les oursons naissent en plein hiver, dans la tanière : ils pèsent moins qu’une brique de lait !', // p. 55
+  ],
+  hyene: [
+    'Mangeuse de restes, la hyène ? Faux : elle chasse elle-même la plupart de ses repas. Des gnous, des zèbres… parfois trois fois plus lourds qu’elle !', // p. 41
+    'Avec ses dents, une hyène peut casser des os de girafe épais de 7 cm. Plus épais que ton poignet !', // p. 42
+    'Le fameux « rire » de la hyène n’a rien d’une blague : c’est du stress !', // p. 42
+    'Chez les hyènes, ce sont les femelles qui commandent !', // p. 42
+    'La hyène n’est pas un chien sauvage : elle est plus proche des chats !', // p. 42
+    'Dans un ancien volcan vivent jusqu’à 550 hyènes et 40 lions. Et ce sont les lions qui volent le plus !', // p. 42
+  ],
+  komodo: [
+    'Le dragon de Komodo est le plus gros lézard du monde : trois mètres de long !', // p. 23
+    'Sa langue fourchue « goûte » l’air : il repère un animal mort à plus de 4 km !', // p. 23
+    'Un dragon de Komodo peut avaler 80 % de son poids en un repas. Pour toi, ce serait 24 kg de pâtes !', // p. 24
+    'Les bébés dragons vivent dans les arbres : les adultes mangent les petits !', // p. 24
+    'Le dragon de Komodo a 60 dents coupantes… et une morsure à venin.', // p. 23
+  ],
+};
+
+// ---------------------------------------------------------------------
+//  Quiz du livre : 3 bonnes réponses sur 3 pour débloquer un animal (24 réponses vérifiées sur le texte imprimé V12, page indiquée)
+// ---------------------------------------------------------------------
+const QUIZ = {
+  croco: { pages: '13-14 et 59-60', q: [
+    ['Comment s’appelle le vieux crocodile géant photographié avec un requin dans la gueule ?', ['Brutus', 'Rex', 'Goliath'], 60],
+    ['Qu’est-ce qui décide si un bébé crocodile sera une fille ou un garçon ?', ['La température du nid', 'La couleur de l’œuf', 'La taille du papa'], 60],
+    ['La morsure du crocodile marin est…', ['la plus forte jamais mesurée', 'plus faible que celle du requin', 'la plus venimeuse du monde'], 59],
+    ['Au duel 5, qui gagne entre l’hippopotame et le crocodile du Nil ?', ['L’hippopotame', 'Le crocodile', 'Match nul'], 14],
+    ['Combien de kilomètres un crocodile marin a-t-il parcourus en « surfant » sur les courants ?', ['590 km', '5 km', '59 000 km'], 60],
+    ['Quel est le coup spécial du crocodile marin dans sa fiche ?', ['Il jaillit de l’eau', 'Il charge gueule ouverte', 'Il attaque en bande'], 59],
+  ] },
+  hippo: { pages: '13-14', q: [
+    ['Quelle longueur font les plus grandes dents d’hippopotame ?', ['50 cm', '5 cm', '5 mètres'], 14],
+    ['Où l’hippopotame dort-il parfois ?', ['Sous l’eau', 'Dans un arbre', 'Dans un terrier'], 13],
+    ['À quoi sert le « ventilateur à crottes » de l’hippopotame mâle ?', ['À marquer son territoire', 'À se rafraîchir', 'À attirer les poissons'], 14],
+    ['Un crocodile s’approche d’un bébé hippo. Que fait le troupeau ?', ['Il se serre autour du petit', 'Il s’enfuit', 'Il continue de dormir'], 14],
+    ['Combien peut peser un hippopotame ?', ['Jusqu’à 3 200 kg', 'Jusqu’à 320 kg', 'Jusqu’à 32 tonnes'], 13],
+    ['« L’hippopotame ? Un gros pépère qui broute. » Vrai ou faux ?', ['Faux : il est très dangereux', 'Vrai : il ne se bat jamais', 'Vrai : il a peur des crocodiles'], 14],
+  ] },
+  ratel: { pages: '19-20', q: [
+    ['Au duel 8, qui gagne entre le lion et le ratel ?', ['Le lion', 'Le ratel', 'Match nul'], 20],
+    ['Combien pèse un ratel, au maximum ?', ['13 kg', '130 kg', '1 kg'], 19],
+    ['Quel est le coup spécial du ratel ?', ['La bombe puante', 'Il plaque sa proie au sol', 'Il jaillit de l’eau'], 19],
+    ['Que fait le ratel si on l’attrape par la peau ?', ['Il se retourne dans sa peau et mord', 'Il fait le mort', 'Il s’envole'], 19],
+    ['Mordu au visage par une vipère, que fait le ratel 5 heures plus tard ?', ['Il chasse de nouveau des serpents', 'Il dort encore', 'Il reste caché une semaine'], 20],
+    ['Dans une ruche, le ratel mange le miel… et quoi d’autre ?', ['Les larves, les bébés des abeilles', 'La cire, seulement', 'Rien d’autre'], 20],
+  ] },
+  grizzly: { pages: '15-16 et 56', q: [
+    ['Au duel 6, qui gagne entre l’ours polaire et le grizzly ?', ['Le grizzly', 'L’ours polaire', 'Match nul'], 16],
+    ['Quel est le coup spécial du grizzly ?', ['Il attrape les saumons au vol', 'La bombe puante', 'Il charge gueule ouverte'], 15],
+    ['Combien de papillons de nuit un grizzly peut-il avaler en un jour ?', ['40 000', '40', '4 millions'], 56],
+    ['Grizzly + ours polaire, ça donne…', ['Un pizzly', 'Un grizzlaire', 'Un ours panda'], 15],
+    ['Pendant l’hiver, l’ours brun peut rester plusieurs mois…', ['Sans manger ni faire pipi', 'Sans dormir', 'Sous l’eau'], 16],
+    ['Quelle longueur font les griffes du grizzly ?', ['6 cm', '6 mm', '60 cm'], 15],
+  ] },
+  hyene: { pages: '41-42', q: [
+    ['Au duel 18, qui gagne entre la hyène et le lion ?', ['Le lion', 'La hyène', 'Match nul'], 42],
+    ['Quel est le coup spécial de la hyène ?', ['Elle épuise ses proies', 'Elle crache du venin', 'Elle plaque sa proie au sol'], 41],
+    ['La hyène est plus proche…', ['Des chats', 'Des chiens', 'Des ours'], 42],
+    ['Pourquoi la hyène « rit »-elle ?', ['Parce qu’elle est stressée', 'Parce qu’elle trouve ça drôle', 'Pour appeler ses bébés'], 42],
+    ['Chez les hyènes, qui commande ?', ['Les femelles', 'Les mâles', 'Les bébés'], 42],
+    ['Quelle épaisseur d’os de girafe une hyène peut-elle casser ?', ['7 cm', '7 mm', '70 cm'], 42],
+    ['Quel est le point faible de la hyène ?', ['Son vacarme attire les voleurs', 'Elle a peur de l’eau', 'Elle ne sait pas courir'], 41],
+  ] },
+  komodo: { pages: '23-24', q: [
+    ['Au duel 10, qui gagne entre le dragon de Komodo et le buffle ?', ['Le buffle', 'Le dragon', 'Match nul'], 24],
+    ['Pourquoi les bébés dragons vivent-ils dans les arbres ?', ['Les adultes mangent les petits', 'Ils ont peur de l’eau', 'Ils mangent des feuilles'], 24],
+    ['Avec quoi le dragon de Komodo « goûte »-t-il l’air ?', ['Sa langue fourchue', 'Sa queue', 'Ses griffes'], 23],
+    ['Combien de dents coupantes a le dragon de Komodo ?', ['60', '6', '600'], 23],
+    ['Quelle part de son poids le dragon peut-il avaler en un seul repas ?', ['80 %', '8 %', '800 %'], 24],
+    ['Le dragon de Komodo est le plus gros…', ['lézard du monde', 'serpent du monde', 'oiseau du monde'], 23],
+  ] },
+};
+
+// ---------------------------------------------------------------------
+//  Progrès (sur cet appareil) : animaux débloqués, étoiles, badges, cartes
+// ---------------------------------------------------------------------
+const CODES = { CRINIERE: 'lion', BANQUISE: 'ours' }; // codes à imprimer dans le livre
+const BADGES = [
+  ['premiere', 'PREMIÈRE VICTOIRE', 'Gagne ton premier combat contre l’ordi.'],
+  ['combo', 'COMBO FINAL', 'Tapote A trois fois de suite sur l’adversaire.'],
+  ['mur', 'MUR DE FER', 'Pare 10 coups dans un même combat.'],
+  ['super', 'SUPER STAR', 'Touche ton adversaire avec ton SUPER.'],
+  ['parfait', 'PARFAIT !', 'Gagne une manche sans perdre un seul point de vie.'],
+  ['costaud', 'GROS COSTAUD', 'Gagne au niveau COSTAUD.'],
+  ['champion', 'CHAMPION DE L’ARÈNE', 'Bats tous les animaux à la suite.'],
+  ['explo', 'EXPLORATEUR', 'Gagne avec 4 animaux différents.'],
+  ['secret', 'AS DU LIVRE', 'Débloque un animal grâce au quiz du livre.'],
+  ['lecteur', 'LECTEUR EXPERT', 'Débloque les 4 animaux secrets.'],
+  ['duo', 'À DEUX, C’EST MIEUX', 'Termine un combat à 2 joueurs.'],
+  ['cartes', 'COLLECTIONNEUR', 'Gagne 10 cartes « Le savais-tu ? ».'],
+  ['toutes', 'GRAND SAVANT', 'Gagne toutes les cartes « Le savais-tu ? ».'],
+];
+const DE_BASE = ['tigre', 'gorille', 'lion', 'ours']; // disponibles tout de suite ; les 4 autres se débloquent avec le quiz du livre
+let SAVE = { debloques: DE_BASE.slice(), etoiles: {}, badges: {}, cartes: {}, gagneAvec: {}, quiz: {} };
+try { const s = JSON.parse(localStorage.getItem('arene-duels') || 'null'); if (s && s.debloques) SAVE = Object.assign(SAVE, s) } catch (e) { }
+for (const k of DE_BASE) if (!SAVE.debloques.includes(k)) SAVE.debloques.push(k);
+SAVE.quiz = SAVE.quiz || {};
+function sauve() { try { localStorage.setItem('arene-duels', JSON.stringify(SAVE)) } catch (e) { } }
+// demande au navigateur de ne pas effacer la sauvegarde (Android / ordinateur) ; sur iPhone, l'ajout à l'écran d'accueil la protège
+try { navigator.storage && navigator.storage.persist && navigator.storage.persist().catch(() => { }) } catch (e) { }
+if (matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || navigator.standalone) addEventListener('DOMContentLoaded', () => { const e = $('garde-trophees'); if (e) e.hidden = true });
+const debloque = k => SAVE.debloques.includes(k) || (G.god && G.mode === 1 && !(window.NET && NET.on)); // GOD MODE : tous les animaux (sans les garder)
+function badge(id, liste) { if (!SAVE.badges[id]) { SAVE.badges[id] = Date.now(); liste.push(id) } }
+const nbCartes = () => Object.values(SAVE.cartes).reduce((n, a) => n + a.length, 0), totalCartes = () => Object.values(FAITS).reduce((n, a) => n + a.length, 0);
+
+// ---------------------------------------------------------------------
+//  Sons (synthétisés)
+// ---------------------------------------------------------------------
+const SON = { ctx: null, on: true, master: null, noise: null, mus: null, next: 0, step: 0 };
+// iPhone : le son Web Audio est coupé par le bouton « silencieux » et doit être débloqué par un vrai geste (toucher relâché, clic).
+// On passe la session audio en mode « lecture » et on joue en boucle un son muet dans une balise audio (astuce connue),
+// ce qui laisse passer la musique et les bruitages ; le bouton SON du jeu permet toujours de couper.
+const SILENCE = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
+function debloqueSon() {
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback' } catch (e) { }
+  try { if (!SON.tag) { SON.tag = new Audio(SILENCE); SON.tag.loop = true; SON.tag.setAttribute('playsinline', ''); } if (SON.tag.paused) SON.tag.play().catch(() => { }) } catch (e) { }
+  sonInit();
+}
+for (const ev of ['touchend', 'click', 'keydown']) addEventListener(ev, debloqueSon, { passive: true });
+function sonInit() {
+  if (SON.ctx) { if (SON.ctx.state !== 'running') SON.ctx.resume().catch?.(() => { }); chargeSons(); return }
+  try {
+    const A = new (window.AudioContext || window.webkitAudioContext)(); SON.ctx = A;
+    SON.master = A.createGain(); SON.master.gain.value = SON.on ? .8 : 0; SON.master.connect(A.destination);
+    const n = A.createBuffer(1, A.sampleRate * 1.5, A.sampleRate), d = n.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; SON.noise = n;
+    chargeSons(); musInit();
+  } catch (e) { SON.ctx = null }
+}
+function env(g, t, a, p, d) { g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(p, t + a); g.gain.exponentialRampToValueAtTime(.0001, t + a + d) }
+function bruit(t, dur, type, f0, f1, p, q = 1, dest) { const A = SON.ctx, s = A.createBufferSource(); s.buffer = SON.noise; const f = A.createBiquadFilter(); f.type = type; f.Q.value = q;
+  f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur); const g = A.createGain(); env(g, t, .005, p, dur); s.connect(f).connect(g).connect(dest || SON.master); s.start(t); s.stop(t + dur + .05) }
+function ton(t, type, f0, f1, dur, p, dest) { const A = SON.ctx, o = A.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
+  const g = A.createGain(); env(g, t, .004, p, dur); o.connect(g).connect(dest || SON.master); o.start(t); o.stop(t + dur + .05) }
+function rugit(t, base, dur, p) { const A = SON.ctx, o = A.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(base, t); o.frequency.linearRampToValueAtTime(base * 1.45, t + dur * .35); o.frequency.linearRampToValueAtTime(base * .8, t + dur);
+  const lf = A.createOscillator(); lf.frequency.value = 27; const lg = A.createGain(); lg.gain.value = .35; const g = A.createGain(); g.gain.value = .0001; const f = A.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1100;
+  lf.connect(lg).connect(g.gain); o.connect(f).connect(g).connect(SON.master); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(p, t + .06); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.start(t); lf.start(t); o.stop(t + dur + .05); lf.stop(t + dur + .05); bruit(t, dur * .8, 'lowpass', 1400, 300, p * .6) }
+// sons de secours, fabriqués par le code (tant que les vrais sons ne sont pas chargés)
+function sfxSynth(k, v = 1) {
+  const t = SON.ctx.currentTime;
+  switch (k) {
+    case 'l': ton(t, 'sine', 190, 60, .12, .9 * v); bruit(t, .09, 'bandpass', 2600, 900, .7 * v, 1.2); break;
+    case 'h': ton(t, 'sine', 150, 38, .32, 1.1 * v); bruit(t, .24, 'lowpass', 3200, 250, .9 * v); break;
+    case 's': ton(t, 'sine', 120, 32, .5, 1.2 * v); bruit(t, .4, 'lowpass', 4200, 180, 1 * v); break;
+    case 'garde': ton(t, 'square', 980, 700, .08, .22); bruit(t, .06, 'highpass', 4200, 4200, .45); break;
+    case 'vent': bruit(t, .22, 'bandpass', 500, 3200, .35 * v, 2); break;
+    case 'saut': ton(t, 'triangle', 280, 560, .12, .2); break;
+    case 'sol': ton(t, 'sine', 90, 38, .2, .55 * v); bruit(t, .14, 'lowpass', 900, 180, .35 * v); break;
+    case 'tigre': rugit(t, 88, .9, .5 * v); break;
+    case 'gorille': ton(t, 'sine', 240, 420, .6, .4 * v); ton(t, 'sine', 480, 840, .6, .1 * v); rugit(t, 70, .6, .25 * v); break;
+    case 'lion': rugit(t, 64, 1.1, .6 * v); rugit(t + .05, 96, .8, .25 * v); break;
+    case 'ours': rugit(t, 52, .8, .5 * v); bruit(t, .5, 'lowpass', 600, 120, .4 * v); break;
+    case 'tam': ton(t, 'sine', 125, 72, .14, .85 * v); bruit(t, .05, 'lowpass', 700, 300, .3 * v); break;
+    case 'gong': ton(t, 'triangle', 660, 660, 1.3, .35); ton(t, 'sine', 990, 990, 1.1, .2); ton(t, 'sine', 330, 330, 1.5, .25); break;
+    case 'ko': ton(t, 'sine', 170, 28, 1.2, 1.3); bruit(t, .9, 'lowpass', 2600, 90, 1.1); break;
+    case 'super': ton(t, 'sawtooth', 220, 880, .5, .18); ton(t, 'square', 440, 1760, .5, .08); bruit(t, .6, 'bandpass', 800, 5000, .3, 3); break;
+    case 'foule': bruit(t, 1.6, 'bandpass', 900, 1300, .35 * v, .6); bruit(t + .1, 1.4, 'bandpass', 1500, 2000, .2 * v, .8); break;
+    case 'clic': ton(t, 'square', 880, 880, .05, .12); break;
+    case 'valide': ton(t, 'square', 660, 660, .06, .12); ton(t + .07, 'square', 990, 990, .09, .12); break;
+  }
+}
+// ---------------------------------------------------------------------
+//  Vrais bruitages enregistrés (licences CC0 ou domaine public : voir sons/CREDITS.txt)
+// ---------------------------------------------------------------------
+// f : fichiers (une variante au hasard), v : volume, j : variation de hauteur (± j), r : hauteur fixe
+const BANQUE = {
+  l: { f: ['coup_l1', 'coup_l2', 'coup_l3', 'coup_l4', 'coup_l5'], v: .85, j: .07 },
+  h: { f: ['coup_h1', 'coup_h2', 'coup_h3', 'coup_h4', 'coup_h5'], v: 1, j: .05 },
+  s: { f: ['coup_s1', 'coup_s2', 'coup_s3', 'coup_s4'], v: 1, j: .04 },
+  garde: { f: ['garde1', 'garde2', 'garde3'], v: .75, j: .08 },
+  vent: { f: ['vent1', 'vent2', 'vent3', 'vent4'], v: .42, j: .1 },
+  ventlong: { f: ['vent_long'], v: .5, j: .05 },
+  saut: { f: ['vent2', 'vent4'], v: .28, r: 1.3 },
+  sol: { f: ['sol1', 'sol2', 'sol3'], v: .9, j: .08 },
+  pas: { f: ['pas1', 'pas2', 'pas3', 'pas4'], v: .45, j: .1 },
+  chute: { f: ['chute1', 'chute2', 'chute3'], v: .95 },
+  ko: { f: ['ko'], v: 1 },
+  boum: { f: ['boum1', 'boum2'], v: .7, j: .06 },
+  super: { f: ['aspire'], v: .75 },
+  cloche: { f: ['cloche'], v: .55 },
+  foule: { f: ['foule1', 'foule2'], v: .5 },
+  boing: { f: ['boing'], v: .5 }, splotch: { f: ['splotch1', 'splotch2'], v: .8, j: .08 },
+  clic: { f: ['clic'], v: .6 }, valide: { f: ['valide'], v: .55 }, retour: { f: ['retour'], v: .5 }, erreur: { f: ['erreur'], v: .55 },
+  // bruitages de dessin animé (CC0 / domaine public, voir sons/CREDITS.txt)
+  sifflet: { f: ['sifflet'], v: .55 }, sifflet_haut: { f: ['sifflet_haut'], v: .55 }, oiseaux: { f: ['oiseaux'], v: .65 },
+  pop: { f: ['pop'], v: .5, j: .18 }, prout: { f: ['prout'], v: .7, j: .1 }, pouet: { f: ['pouet'], v: .55, j: .06 },
+  meuh: { f: ['meuh'], v: .8 }, rire: { f: ['rire_hyene'], v: .7, j: .06 }, slurp: { f: ['slurp'], v: .8 },
+  plouf: { f: ['plouf'], v: .7, j: .05 }, eclaboussure: { f: ['eclaboussure'], v: .45, j: .14 }, glace: { f: ['glace'], v: .8, j: .06 },
+  ronfle: { f: ['ronfle'], v: .6 }, crac_os: { f: ['crac_os'], v: .9 }, fouet: { f: ['fouet'], v: .8, j: .05 }, gloups: { f: ['gloups'], v: .8 },
+  flac: { f: ['flac'], v: .85, j: .06 }, dino: { f: ['dino'], v: 1 }, buffle: { f: ['buffle'], v: .9 }, vapeur: { f: ['vapeur'], v: .7, j: .08 },
+  victoire: { f: ['victoire'], v: .6 }, defaite: { f: ['defaite'], v: .5 }, badge: { f: ['badge'], v: .5 }, pret: { f: ['pret'], v: .45 },
+  // annonceur
+  voix_round_1: { f: ['voix_round_1'], v: .95 }, voix_round_2: { f: ['voix_round_2'], v: .95 }, voix_round_3: { f: ['voix_round_3'], v: .95 },
+  voix_final_round: { f: ['voix_final_round'], v: .95 }, voix_fight: { f: ['voix_fight'], v: 1.05 }, voix_you_win: { f: ['voix_you_win'], v: .95 },
+  voix_you_lose: { f: ['voix_you_lose'], v: .9 }, voix_winner: { f: ['voix_winner'], v: .95 }, voix_flawless_victory: { f: ['voix_flawless_victory'], v: .95 },
+  voix_time: { f: ['voix_time'], v: .95 }, voix_tie: { f: ['voix_tie'], v: .95 }, voix_ready: { f: ['voix_ready'], v: .9 },
+  // voix des animaux : cri de combat (nom de l'animal) et grognement (_grr)
+  tigre: { f: ['tigre_roar'], v: .9 }, tigre_grr: { f: ['tigre_grr', 'tigre_grr2'], v: .8, j: .05 },
+  lion: { f: ['lion_roar'], v: .95 }, lion_grr: { f: ['lion_grr'], v: .8, j: .05 },
+  ours: { f: ['ours_roar'], v: .95 }, ours_grr: { f: ['ours_grr', 'ours_huff'], v: .85, j: .05 },
+  gorille: { f: ['gorille_grr'], v: .8 }, gorille_grr: { f: ['gorille_grr'], v: .75, j: .06 },
+  croco: { f: ['croco_roar'], v: .95 }, croco_grr: { f: ['croco_hiss'], v: .8, j: .05 },
+  komodo: { f: ['komodo_hiss'], v: .9, r: .9 }, komodo_grr: { f: ['komodo_hiss'], v: .8, j: .06 },
+  ratel: { f: ['ratel_grr'], v: .9, r: .9 }, ratel_grr: { f: ['ratel_grr'], v: .8, j: .08 },
+  grizzly: { f: ['ours_huff'], v: 1, r: .95 }, grizzly_grr: { f: ['ours_grr', 'ours_huff'], v: .85, j: .06 },
+  hyene: { f: ['rire_hyene'], v: .85, j: .05 }, hyene_grr: { f: ['ratel_grr', 'chat_hiss'], v: .7, r: 1.15, j: .06 },
+};
+const SONS = { buf: {}, pret: false, dernier: {} };
+function chargeSons() {
+  if (SONS.charge || !SON.ctx) return; SONS.charge = true;
+  const A = SON.ctx, dec = ab => new Promise((r, j) => { const p = A.decodeAudioData(ab, r, j); if (p && p.then) p.then(r, j) });
+  fetch('sons/manifest.json').then(r => r.json()).then(man => Promise.all(Object.entries(man).map(([k, [f]]) =>
+    fetch('sons/' + f).then(r => r.arrayBuffer()).then(dec).then(b => { SONS.buf[k] = b }).catch(() => { }))))
+    .then(() => { SONS.pret = true }).catch(() => { });
+}
+function bus() {
+  if (SON.bus) return SON.bus; const A = SON.ctx;
+  const c = A.createDynamicsCompressor(); c.threshold.value = -12; c.knee.value = 8; c.ratio.value = 4; c.attack.value = .002; c.release.value = .18;
+  const g = A.createGain(); g.gain.value = 1; g.connect(c).connect(SON.master); SON.bus = g; return g;
+}
+// joue un vrai son ; renvoie false s'il n'est pas (encore) chargé
+function joue(k, v = 1, o = {}) {
+  const e = BANQUE[k]; if (!e) return false;
+  const dispo = e.f.filter(n => SONS.buf[n]); if (!dispo.length) return false;
+  let n = dispo[Math.floor(Math.random() * dispo.length)];
+  if (dispo.length > 1 && n === SONS.dernier[k]) n = dispo[(dispo.indexOf(n) + 1) % dispo.length]; SONS.dernier[k] = n;
+  const A = SON.ctx, s = A.createBufferSource(); s.buffer = SONS.buf[n];
+  s.playbackRate.value = (o.r || e.r || 1) * (1 + (Math.random() * 2 - 1) * (e.j || 0));
+  const g = A.createGain(); g.gain.value = Math.min(1.6, e.v * v); s.connect(g).connect(bus());
+  s.start(A.currentTime + (o.delai || 0)); return true;
+}
+function sfx(k, v = 1, distant) {
+  if (window.NET && NET.on && NET.role === 'hote' && !distant && ['fight', 'intro', 'ko'].includes(G.phase)) NET.sons.push([k, v]);
+  if (!SON.ctx || !SON.on) return;
+  const t = SON.ctx.currentTime, reel = SONS.pret || Object.keys(SONS.buf).length > 20;
+  if (!reel) { sfxSynth(k.replace('_grr', ''), v); return }
+  switch (k) {
+    case 'h': joue('h', v); ton(t, 'sine', 110, 42, .22, .5 * v); break;                       // coup fort : poing + « poids »
+    case 's': joue('s', v); joue('h', .7 * v); ton(t, 'sine', 95, 34, .35, .6 * v); break;       // coup spécial : double impact
+    case 'sol': joue('sol', v); if (v >= .9) joue('boum', .45 * v); break;
+    case 'tam': joue('sol', .55 * v, { r: 1.55 }); ton(t, 'sine', 130, 80, .12, .45 * v); break;  // le gorille se tape la poitrine
+    case 'gong': joue('cloche', v); joue('cloche', .8 * v, { delai: .32 }); break;             // « ding-ding » comme sur un ring
+    case 'ko': joue('ko', v); joue('boum', .6); ton(t, 'sine', 150, 30, .9, .7); break;
+    case 'super': joue('super', v); ton(t, 'sawtooth', 220, 880, .5, .05); break;
+    case 'gorille': for (let i = 0; i < 4; i++) { joue('sol', .5 * v, { r: 1.55, delai: i * .11 }) } joue('gorille', v, { delai: .45 }); break;
+    default: if (!joue(k, v)) sfxSynth(k.replace('_grr', ''), v);
+  }
+}
+// ---------------------------------------------------------------------
+//  Musique : vrais morceaux (Alexander Ehlers, licence CC0), lus en continu (jamais décodés en mémoire)
+//  menus → « Warped » ; combats → « Twists » ou « Great mission » (un match sur deux)
+// ---------------------------------------------------------------------
+const MUS = { el: null, g: null, piste: null, sortie: false };
+const PISTES = { menu: 'sons/mus_menu.mp3', combat1: 'sons/mus_combat1.mp3', combat2: 'sons/mus_combat2.mp3' };
+const VOL_MUS = { menu: .30, combat1: .24, combat2: .24 };
+function musInit() {
+  if (MUS.el || !SON.ctx) return;
+  const el = new Audio(); el.loop = true; el.preload = 'auto'; el.setAttribute('playsinline', ''); MUS.el = el;
+  try { const src = SON.ctx.createMediaElementSource(el); MUS.g = SON.ctx.createGain(); MUS.g.gain.value = 0; src.connect(MUS.g).connect(SON.master) } catch (e) { MUS.g = null; el.volume = 0 }
+}
+function musVoulue() {
+  if (!SON.on || SON.musOff || !SON.ctx) return null;
+  const ph = G.phase;
+  if (ph === 'fight' || ph === 'intro' || ph === 'ko' || ph === 'pause') return G.pisteCombat || 'combat1';
+  if (ph === 'vs' || ph === 'loading') return null;
+  return 'menu';
+}
+function musRampe(v, d) {
+  if (MUS.g) { const t = SON.ctx.currentTime; MUS.g.gain.cancelScheduledValues(t); MUS.g.gain.setTargetAtTime(v, t, d / 3) }
+  else if (MUS.el) MUS.el.volume = Math.max(0, Math.min(1, v * 2));
+}
+function musTick() {
+  if (!MUS.el || MUS.sortie) return;
+  const voulue = musVoulue();
+  if (voulue !== MUS.piste) {
+    if (MUS.piste) { MUS.sortie = true; musRampe(0, .4); setTimeout(() => { MUS.sortie = false; MUS.piste = null; try { MUS.el.pause() } catch (e) { } }, 450); return }
+    if (voulue) { MUS.piste = voulue; MUS.el.src = PISTES[voulue]; try { MUS.el.currentTime = 0 } catch (e) { } MUS.el.play().catch(() => { MUS.piste = null }); musRampe(VOL_MUS[voulue], 1) }
+    return;
+  }
+  if (voulue) musRampe(VOL_MUS[voulue] * (G.phase === 'pause' ? .4 : G.phase === 'ko' ? .55 : 1), .4);
+}
+setInterval(musTick, 150);
+// annonceur (voix de Kenney, CC0) : « Round 1 », « Fight! », « You win! »…
+function annonceur(k, v = 1) { sfx('voix_' + k, v) } // passe par sfx : l'autre téléphone l'entend aussi en mode 2 TÉLÉPHONES
+function vibre(ms) { try { navigator.vibrate && navigator.vibrate(ms) } catch (e) { } }
+
+
+// ---------------------------------------------------------------------
+//  Pas de zoom involontaire (iPhone / iPad) : ni pincement, ni double-tap, ni loupe
+// ---------------------------------------------------------------------
+for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
+document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
+document.addEventListener('touchmove', e => { if (e.touches.length > 1 || e.scale && e.scale !== 1) e.preventDefault() }, { passive: false });
+let dernierTap = 0;
+document.addEventListener('touchend', e => {
+  const t = Date.now(), vite = t - dernierTap < 400; dernierTap = t;
+  // en combat, deux appuis rapprochés ne doivent jamais zoomer (les boutons du jeu utilisent les « pointer events »)
+  if (vite && (document.body.classList.contains('en-combat') || !e.target.closest('button, input'))) e.preventDefault();
+}, { passive: false });
+// ---------------------------------------------------------------------
+//  Entrées : clavier, tactile (joystick + boutons), historique pour les coups spéciaux
+// ---------------------------------------------------------------------
+const KEYS = new Set(), TOUCH = { x: 0, y: 0, L: false, H: false, S: false, G: false }, TOUCH2 = { x: 0, y: 0, L: false, H: false, S: false, G: false };
+const MAP = [
+  { left: ['KeyA'], right: ['KeyD'], up: ['KeyW'], down: ['KeyS'], L: ['KeyF', 'KeyJ'], H: ['KeyG', 'KeyK'], S: ['KeyH', 'KeyL'], G: ['KeyV'] },
+  { left: ['ArrowLeft'], right: ['ArrowRight'], up: ['ArrowUp'], down: ['ArrowDown'], L: ['Numpad1', 'Comma', 'KeyM'], H: ['Numpad2', 'Period', 'Semicolon'], S: ['Numpad3', 'Slash', 'Quote'], G: ['Numpad0', 'ShiftRight'] },
+];
+const SOLO_EXTRA = { left: ['ArrowLeft'], right: ['ArrowRight'], up: ['ArrowUp', 'Space'], down: ['ArrowDown'], L: ['KeyJ'], H: ['KeyK'], S: ['KeyL'], G: ['ShiftLeft', 'ShiftRight'] };
+function lire(n) {
+  const m = MAP[n], r = {};
+  for (const k in m) r[k] = m[k].some(c => KEYS.has(c)) || (G.mode === 1 && n === 0 && SOLO_EXTRA[k].some(c => KEYS.has(c)));
+  const T = n === 0 ? TOUCH : TOUCH2;
+  if (n === 0 || G.mode === 2) { const j = joyDir(T); for (const k of ['left', 'right', 'up', 'down']) r[k] = r[k] || j[k]; for (const k of ['L', 'H', 'S', 'G']) r[k] = r[k] || T[k]; }
+  return r;
+}
+// joystick tactile : grandes zones gauche/droite, haut/bas seulement si on pousse franchement (évite sauts et accroupis involontaires),
+// et hystérésis (une direction reste active tant qu'on ne revient pas nettement vers le centre)
+function joyDir(T) {
+  const x = T.x, y = T.y, p = T.st || (T.st = {}), ax = Math.abs(x), ay = Math.abs(y);
+  p.right = x > (p.right ? .22 : .38); p.left = x < -(p.left ? .22 : .38);
+  p.up = y < -(p.up ? .45 : .6) && ay > ax * .8;
+  p.down = y > (p.down ? .38 : .52) && ay > ax * .6;
+  return p;
+}
+addEventListener('keydown', e => {
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code) && G.phase !== 'menu') e.preventDefault();
+  if ((e.code === 'Escape' || e.code === 'KeyP') && ['fight', 'intro', 'pause'].includes(G.phase)) { pause(); return }
+  if (!KEYS.has(e.code)) menuKey(e.code);
+  KEYS.add(e.code);
+});
+addEventListener('keyup', e => KEYS.delete(e.code));
+addEventListener('blur', () => { KEYS.clear(); for (const T of [TOUCH, TOUCH2]) { T.x = T.y = 0; T.L = T.H = T.S = T.G = false } });
+
+// ---------------------------------------------------------------------
+//  Combattant
+// ---------------------------------------------------------------------
+function Fighter(kind, side, cpu) {
+  const d = CHARS[kind];
+  return { kind, d, side, cpu, R: G.rigs[kind], x: side ? 1330 : 590, h: 0, vx: 0, vy: 0, face: side ? -1 : 1, hp: d.hp, shown: d.hp, trail: d.hp, meter: 0,
+    state: 'intro', t: 0, u: 0, ph: '', mk: null, move: null, hit: 0, hitT: 0, stun: 0, hurtK: 0, combo: 0, dist: 0, wins: 0, flash: 0, blocking: false,
+    st: {}, hist: [], prev: {}, lastTap: { d: 0, t: -99 }, landed: false, landT: 0, knock: false, inv: 0, tint: null, pose: null, M: null, roar: false, ai: { t: 0, hold: {}, react: 0 }, pp: null };
+}
+const setS = (f, s) => { f.state = s; f.t = 0; f.u = 0 };
+const neutral = f => ['idle', 'walk', 'walkB', 'crouch', 'block', 'cblock'].includes(f.state);
+function phaseOf(f) {
+  const m = f.move, k = f.t;
+  if (k < m.st) return ['st', k / m.st];
+  if (m.land && !f.landed) return ['act', 0];
+  const a = m.land ? f.landT : m.st + m.act;
+  if (!m.land && k < a) return ['act', (k - m.st) / m.act];
+  return ['rec', Math.min(1, (k - a) / m.rec)];
+}
+const SPECIALES = ['S', 'SF', 'SD', 'SUPER'];
+function startMove(f, k, fort) {
+  const m = f.d.moves[k]; if (!m) return false;
+  f.state = 'atk'; f.t = 0; f.mk = k; f.move = m; f.mvN = (f.mvN || 0) + 1; f.hit = 0; f.hitT = 0; f.grabD = 0; f.landed = false; f.ph = 'st'; f.u = 0; f.cn = 0; f.fin = false; f.fort = !!fort; f.contre = false;
+  if (m.inv) f.inv = Math.max(f.inv, m.inv); // anti-aérien : invincible au démarrage
+  // buffle : la charge est plus forte si on a reculé avant (on « arme » la charge)
+  f.arme = m.charge ? Math.min(1, (f.recule || 0) / 45) : 0; f.recule = 0;
+  if (k === 'SUPER') { f.meter = 0; G.freeze = 34; G.superBy = f; G.superT = 0; sfx('super'); sfx(f.kind, 1.2); vibre(60); }
+  else if (k === 'S' || k === 'SF' || k === 'SD') { if (f.kind === 'gorille' && k === 'S') sfx('tam', .8); else if (!m.proj) sfx(f.kind + '_grr', .9); if (f.fort) addFx({ k: 'mot', x: f.x, y: FLOOR - 640 * f.d.K / .44, mot: 'SUPER FORT !', col: JA }) }
+  else sfx('vent', k === 'H' || k === 'cH' || k === 'T' ? .9 : .6);
+  return true;
+}
+// manipulations d'expert (dans les 16 dernières images, directions vues du combattant) :
+// ↓ ↘ → (quart de cercle avant) = ★ · → ↓ ↘ = ↓★ (anti-aérien) · ↓ ↙ ← (quart de cercle arrière) = →★
+function suite(f, seq) { const h = f.hist.slice(-16); let s = 0; for (const d of h) { if (d === seq[s]) { s++; if (s === seq.length) return true } } return false }
+function motion236(f) { return suite(f, [2, 3, 6]) }
+function manip(f) { if (suite(f, [6, 2, 3])) return 'SD'; if (suite(f, [2, 3, 6])) return 'S'; if (suite(f, [2, 1, 4])) return 'SF'; return null }
+// projection : il faut être tout près, l'adversaire au sol et « attrapable »
+const PAS_ATTRAPABLE = ['hurt', 'bstun', 'down', 'getup', 'ko', 'tenu', 'lance'];
+function portee(f, o, plus) { return Math.abs(o.x - f.x) <= f.d.push[1] + o.d.push[1] + plus }
+function attrapable(o) { return o.h <= 0 && !o.cache && !PAS_ATTRAPABLE.includes(o.state) && !(o.pasPrise > 0) && o.inv <= 0 }
+function numpad(inp, face) { const fx = (inp.right ? 1 : 0) - (inp.left ? 1 : 0), x = fx * face, y = inp.up ? 1 : inp.down ? -1 : 0; return 5 + x + y * 3 }
+
+function update(f, o, inp) {
+  f.t++; if (f.inv > 0) f.inv--; if (f.pasPrise > 0) f.pasPrise--;
+  if (f.roule && !(o.state === 'atk' && o.move && o.move.agrippe && o.hit)) f.roule = 0;
+  const onG = f.h <= 0, press = k => inp[k] && !f.prev[k];
+  const dir = (inp.right ? 1 : 0) - (inp.left ? 1 : 0), fwd = dir * f.face;
+  const np = numpad(inp, f.face); f.hist.push(np); if (f.hist.length > 30) f.hist.shift();
+  // étourdissement : la jauge redescend quand on ne prend plus de coups
+  if (f.etourdi > 0 && G.frame - (f.dernierCoup || 0) > 70) f.etourdi = Math.max(0, f.etourdi - .3);
+  // reculer « arme » la charge du buffle (souvenir gardé 12 images après avoir lâché)
+  if (fwd < 0 && onG) { f.recule = Math.min(90, (f.recule || 0) + 1); f.reculeT = 12 } else if (f.reculeT > 0) f.reculeT--; else f.recule = 0;
+  // tape deux fois devant = élan
+  if (fwd !== 0 && !(f.prev.right || f.prev.left)) { if (f.lastTap.d === fwd && G.frame - f.lastTap.t < 12 && neutral(f) && onG) { setS(f, 'dash'); sfx('pas', .9); sfx('vent', .35); f.vx = fwd * f.face * f.d.dash * (fwd > 0 ? 1 : .8); f.dashDir = fwd; } f.lastTap = { d: fwd, t: G.frame } }
+  if (onG && (neutral(f) || f.state === 'land') && Math.abs(o.x - f.x) > 6) f.face = o.x > f.x ? 1 : -1;
+  const fight = G.phase === 'fight';
+  f.blocking = false; f.guardBtn = !!(inp.G || inp.down);
+  // annulation d'un coup en combo (sur touche)
+  let wantAtk = press('S') ? 'S' : press('H') ? 'H' : press('L') ? 'L' : null;
+  // tampon : un appui fait un peu trop tôt (pendant la fin d'un coup) est gardé 9 images (avec la direction tenue)
+  if (wantAtk) f.buf = { k: wantAtk, t: G.frame, down: !!inp.down, fwd: fwd > 0 };
+  const libre = neutral(f) || f.state === 'dash' || (f.state === 'atk' && f.hit);
+  let avant = fwd > 0;
+  if (!wantAtk && libre && f.buf && G.frame - f.buf.t <= 9) { wantAtk = f.buf.k; if (f.buf.down) inp.down = true; if (f.buf.fwd) avant = true }
+  if (wantAtk && libre) f.buf = null;
+  const bufS = wantAtk === 'S' && !press('S');
+  // ★ seul = coup spécial · → ★ = spécial vers l'avant · ↓ ★ = spécial anti-aérien · jauge pleine = SUPER
+  // manipulations d'expert + A ou B = version « SUPER FORT » du coup spécial
+  const special = () => {
+    if (press('S') || bufS) {
+      if (f.meter >= 100 && f.d.moves.SUPER) return { k: 'SUPER' };
+      let k = inp.down ? 'SD' : avant ? 'SF' : 'S'; if (!f.d.moves[k]) k = 'S'; return { k };
+    }
+    if (press('L') || press('H')) { const k = manip(f); if (k && f.d.moves[k]) return { k, fort: true } }
+    return null;
+  };
+  switch (f.state) {
+    case 'intro': case 'win': case 'lose': f.vx *= .8; break;
+    case 'idle': case 'walk': case 'walkB': case 'crouch': case 'block': case 'cblock': {
+      if (!fight) { f.vx = 0; if (f.state !== 'idle') setS(f, 'idle'); break }
+      const sp = special(); if (sp) { startMove(f, sp.k, sp.fort); break }
+      if (wantAtk) {
+        // projection : tout près, en poussant vers l'adversaire + B (elle passe la garde)
+        if (wantAtk === 'H' && avant && !inp.down && onG && f.d.moves.T && portee(f, o, 70) && attrapable(o)) { startMove(f, 'T'); break }
+        let k = wantAtk; if (inp.down) k = k === 'L' ? 'cL' : k === 'H' && f.d.moves.cH ? 'cH' : k;
+        startMove(f, k); break
+      }
+      // se protéger : vers le BAS = garde accroupie qui pare tout (idée de Vincent : pas besoin de bouton).
+      // Reculer protège aussi (comme dans les jeux de combat classiques). Touche V au clavier : garde debout.
+      if (inp.down || inp.G) { f.vx = 0; const s = inp.down ? 'cblock' : 'block'; if (f.state !== s) setS(f, s); f.blocking = true; f.guardBtn = true; break }
+      if (inp.up) { setS(f, 'prejump'); f.jdir = dir; break }
+      const backH = fwd < 0;
+      // reculer face à une attaque qui arrive = se mettre en garde (on le voit à l'écran)
+      const menace = o.state === 'atk' && o.ph !== 'rec' && Math.abs(o.x - f.x) < 900;
+      if (inp.down) { f.vx = 0; const s = backH ? 'cblock' : 'crouch'; if (f.state !== s) setS(f, s); f.blocking = backH; }
+      else if (backH && menace) { f.vx = 0; if (f.state !== 'block') setS(f, 'block'); f.blocking = true; }
+      else if (backH) { f.vx = dir * f.d.back; if (f.state !== 'walkB') setS(f, 'walkB'); f.blocking = true; }
+      else if (dir) { f.vx = dir * f.d.walk * (f.poison && f.poison.lent || 1); if (f.state !== 'walk') setS(f, 'walk'); }
+      else { f.vx = 0; if (f.state !== 'idle') setS(f, 'idle'); }
+      f.dist += Math.abs(f.vx) * (f.state === 'walkB' ? -1 : 1);
+      break;
+    }
+    case 'dash': f.dist += Math.abs(f.vx); f.vx *= .9; if (f.t > 16) setS(f, 'idle'); { const sp = special(); if (sp) startMove(f, sp.k, sp.fort); else if (wantAtk) startMove(f, wantAtk === 'H' && inp.down && f.d.moves.cH ? 'cH' : wantAtk); } break;
+    case 'prejump': if (f.t >= 3) { f.vy = -f.d.jumpV; f.h = .1; f.vx = f.jdir * f.d.jumpX; setS(f, 'air'); f.airAtk = false; f.sautN = (f.sautN || 0) + 1; sfx('saut'); } break;
+    case 'air': if (wantAtk && !f.airAtk && wantAtk !== 'S') { f.airAtk = true; startMove(f, 'A'); } break;
+    case 'land': if (f.t >= 5) setS(f, 'idle'); break;
+    // projection : celui qui attrape (« lance ») et celui qui est attrapé (« tenu »)
+    case 'lance': {
+      const d = f.cible, m = f.prise; f.vx = 0;
+      if (!d || d.state !== 'tenu') { setS(f, 'idle'); break }
+      d.x = f.x + f.face * (f.d.push[1] + d.d.push[1] - 40); d.h = Math.min(60, f.t * 6);
+      if (m.os && f.t % 9 === 4) { sfx('crac_os', .9); G.shake = Math.max(G.shake, 5); addFx({ k: 'mot', x: d.x + (Math.random() - .5) * 160, y: FLOOR - 470 + (Math.random() - .5) * 80, mot: hasard(['CRAC !', 'CRONCH !', 'CROC !']), col: '#FFF1C9' }) } // croque-os : ça croque !
+      if (f.t >= (m.prise.t || 22)) { lache(f, d, m); }
+      break;
+    }
+    case 'tenu': {
+      f.vx = 0; const a = f.tenuPar;
+      if (!a || a.state !== 'lance') { setS(f, 'idle'); f.h = 0; break }
+      // se dégager d'une projection normale : appuyer sur A ou B tout de suite
+      if (f.t <= 8 && a.prise.prise.degage !== false && (press('L') || press('H'))) degage(a, f);
+      break;
+    }
+    case 'fuite': f.vx = -f.face * 9.5; f.dist -= 9.5; if (f.t % 10 === 0) addFx({ k: 'poussiere', x: f.x, y: FLOOR }); if (--f.stun <= 0) setS(f, 'idle'); break;
+    case 'dizzy': f.vx *= .8; if (press('L') || press('H') || press('S') || (dir && !(f.prev.left || f.prev.right))) f.stun -= 6; if (--f.stun <= 0) { setS(f, 'idle'); f.etourdi = 0 } break;
+    case 'atk': {
+      const m = f.move, [ph, u] = phaseOf(f); f.ph = ph; f.u = u;
+      // combos : annule la récupération d'un coup qui a touché (les coups spéciaux s'enchaînent là où ★ est permis)
+      if (f.hit && m.chain && (ph === 'rec' || ph === 'act') && f.t - f.hitT < 16) {
+        let nk = null, fortNk = false; const sp = special();
+        if (sp && (m.chain.includes(sp.k) || (sp.k !== 'SUPER' && m.chain.includes('S')))) { nk = sp.k; fortNk = sp.fort }
+        else if (wantAtk) { const c = inp.down && wantAtk === 'L' ? 'cL' : inp.down && wantAtk === 'H' && m.chain.includes('cH') ? 'cH' : wantAtk; if (m.chain.includes(c)) nk = c; }
+        // combo automatique : 3e appui sur A dans un enchaînement = coup final (coup fort qui fait tomber)
+        let fin = false; if (nk === 'L' && f.mk === 'L' && f.cn >= 1 && m.chain.includes('H')) { nk = 'H'; fin = true }
+        if (nk) { const cn = (f.cn || 0) + 1; startMove(f, nk, fortNk); f.cn = cn; f.fin = fin; if (fin) f.move = Object.assign({}, f.move, { st: Math.min(f.move.st, 8), armor: false }); break }
+      }
+      // projections et prises : on attrape si l'adversaire est à portée pendant le coup
+      if (m.prise && ph === 'act' && !f.hit) {
+        if (portee(f, o, m.prise.portee || 70) && attrapable(o)) {
+          if (o.state === 'atk' && o.mk === 'T' && o.ph !== 'rec' && f.mk === 'T') { degage(f, o); break } // deux projections en même temps
+          attrape(f, o, m); break
+        }
+      }
+      // morse : les défenses tirent l'adversaire vers lui
+      if (m.tire && ph === 'act' && o.h <= 60 && !['down', 'getup', 'ko', 'tenu'].includes(o.state) && Math.abs(o.x - f.x) < m.tire.portee) { o.x -= Math.sign(o.x - f.x) * m.tire.v; if (f.t % 6 === 0) addFx({ k: 'vague', x: o.x, y: FLOOR }) }
+      if (f.mk === 'S' && f.kind === 'tigre' && ph === 'st') f.vx = -f.face * 3.4 * (1 - f.t / m.st); // il recule, ramassé, comme un chat
+      if (f.mk === 'S' && f.kind === 'tigre' && f.t === m.st) { f.vx = f.face * 22.5; f.vy = -13; f.h = .1; sfx('vent'); }
+      if (f.mk === 'S' && f.kind === 'gorille') { if (ph === 'st') { f.vx = 0; if (f.t % 5 === 0) sfx('tam', .7) } else if (ph === 'act') { f.vx = f.face * 15.5; f.dist += 15.5; if (f.t % 9 === 0) { sfx('sol', .5); G.shake = Math.max(G.shake, 5) } } else f.vx *= .8; }
+      if (f.mk === 'SUPER' && f.kind === 'gorille' && ph === 'st' && f.t % 5 === 0) sfx('tam', .9);
+      if (f.mk === 'SUPER' && ph === 'act') { f.vx = f.kind === 'tigre' ? f.face * 7 : 0; if (f.kind === 'gorille' && f.t % 12 === 6) { sfx('sol', 1); G.shake = 14; addFx({ k: 'onde', x: f.x + f.face * 150, y: FLOOR, dir: f.face }) } }
+      if (f.mk === 'H' && f.kind === 'tigre') f.vx = ph === 'act' ? f.face * 5 : f.vx * .7;
+      { // mécaniques des coups spéciaux (tous les animaux)
+        if (m.rush) { if (ph === 'act') {
+            if (m.agrippe && f.hit && f.grabD) { f.vx = 0; o.x = f.x + f.face * f.grabD; o.vx = 0; o.roule = (o.roule || 0) + .34; if (f.t % 7 === 0) { sfx('vent', .5); sfx('plouf', .25); G.shake = Math.max(G.shake, 6); addFx({ k: 'eclabousse', x: o.x, y: FLOOR }) } } // la roulade de la mort : il tient et l'autre tourne
+            else if (m.stopHit && f.hit) f.vx *= .7; // s'arrête sur l'adversaire
+            else { const v = m.rush * (1 + .45 * (f.arme || 0)); f.vx = f.face * v; f.dist += v; if (f.t % 9 === 0) { sfx(m.hits > 4 ? 'pas' : 'sol', .45); G.shake = Math.max(G.shake, 4) } if ((m.hits > 4 || f.arme > .5) && f.t % 6 === 0) addFx({ k: 'poussiere', x: f.x, y: FLOOR }) } }
+          else if (ph === 'st') f.vx = 0; else f.vx *= .8; }
+        // crocodile : il plonge sous le sol et ressort sous l'adversaire
+        if (m.plonge) {
+          if (ph === 'st') { f.cache = true; f.inv = 3; if (f.t === 1) { sfx('plouf', .8); addFx({ k: 'eclabousse', x: f.x, y: FLOOR }); if (G.arene !== 'riviere') addFx({ k: 'mot', x: f.x, y: FLOOR - 300, mot: hasard(['PLOUF !', 'FLAQUE PORTABLE !']), col: '#7FD0F5' }) }
+            f.vx = f.t < m.st - 14 ? Math.sign(o.x - f.x) * Math.min(17, Math.abs(o.x - f.x) * .2) : 0; if (f.t % 5 === 0) addFx({ k: 'vague', x: f.x, y: FLOOR }) }
+          if (f.t === m.st) { f.cache = false; f.face = o.x >= f.x ? 1 : -1; f.vy = -27; f.h = .1; f.vx = 0; sfx('croco', 1.1); sfx('plouf', 1); G.shake = 14; addFx({ k: 'eclabousse', x: f.x, y: FLOOR }); addFx({ k: 'eclabousse', x: f.x + 60, y: FLOOR }) }
+        }
+        // hippopotame : le ventilateur à crottes
+        // ★ : dos tourné, la queue-hélice mitraille (les crottes partent de la queue) · SUPER : le déluge
+        if (m.jet && ph === 'act' && f.t % m.jet.every === 0) { const j = m.jet, K = f.d.K, rd = (a, b) => a + Math.random() * (b - a);
+          const jm = m.jetM || (m.jetM = Object.assign({}, JET, { dmg: j.dmg || JET.dmg, super: m === f.d.moves.SUPER, mots: j.rafale ? ['PLOC !', 'SPLOTCH !', 'PROUT !', 'RATATATA !'] : JET.mots }));
+          const x0 = m.dos ? 650 : 330, y0 = m.dos ? 540 + rd(-25, 25) : 320;
+          G.proj.push({ a: f, m: jm, blob: true, x: f.x + f.face * x0 * K, yy: FLOOR - y0 * K, vx: f.face * rd(...j.spd), vy: rd(...j.vy), grav: j.grav, w: j.r, t: 0, life: 120, dir: f.face });
+          if (j.rafale) { sfx('pop', .55); if (f.t % 12 === 0) sfx('prout', .7) } else if (f.t % 10 === 0) sfx('vent', .4) }
+        if (m.dos && ph === 'act' && f.t % 8 === 0) addFx({ k: 'helice', x: f.x + f.face * 670 * f.d.K, y: FLOOR - 540 * f.d.K, dir: f.face }); // la queue qui tourne
+        // ratel : la bombe puante (un nuage qui reste)
+        if (m.nuage && f.t === m.st) { const n = m.nuage; G.zones.push({ a: f, x: f.x + f.face * n.x0 * f.d.K, r: n.r, t: 0, life: n.life, tick: n.tick, stun: n.stun, fait: false }); sfx('chat_hiss', 1); sfx('vent', .6); addFx({ k: 'mot', x: f.x + f.face * 300, y: FLOOR - 420, mot: 'PSCHIIT !', col: '#9BE15D' }) }
+        if (m.clan && f.t === m.st) { chargeClan(); addFx({ k: 'clan', x: f.x, dir: f.face }); sfx('rire', 1); sfx('foule', .5); addFx({ k: 'mot', x: f.x, y: FLOOR - 520, mot: 'LE CLAN ARRIVE !', col: '#F2D49B' }) }
+        if (m.clan && ph === 'act' && f.t % 11 === 0) { sfx('rire', .45); sfx('pas', .5); G.shake = Math.max(G.shake, 5) }
+        if (m.lunge && ph === 'act') f.vx = f.face * m.lunge;
+        if (m.onde && ph === 'act' && f.t % 12 === 6) { sfx('sol', 1); G.shake = 14; addFx({ k: 'onde', x: f.x + f.face * 150, y: FLOOR, dir: f.face }) }
+        if (m.proj && f.t === m.st) { lanceProj(f, m); sfx(f.kind, 1.2); G.shake = Math.max(G.shake, m.souffle ? 16 : 8); if (m.souffle) { addFx({ k: 'onde', x: f.x + f.face * 200, y: FLOOR, dir: f.face }); addFx({ k: 'poussiere', x: f.x + f.face * 260, y: FLOOR }); vibre(50) } }
+        if (m.saute && f.t === m.st) { f.vx = f.face * m.saute[0]; f.vy = -m.saute[1]; f.h = .1; sfx('vent') }
+        else if (f.d.spr && ['L', 'cL', 'H', 'cH'].includes(f.mk)) f.vx *= .6;
+        // T. rex : le pas qui fait trembler (tout le monde au sol près de lui est secoué)
+        if (m.seisme && f.t === m.st) { sfx('sol', 1); sfx('boum', .8); G.shake = 20; addFx({ k: 'onde', x: f.x, y: FLOOR, dir: f.face }); vibre(60); if (o.h <= 0 && !['down', 'getup', 'ko'].includes(o.state) && Math.abs(o.x - f.x) < m.seisme && !o.blocking) { setS(o, 'hurt'); o.stun = 38; o.hurtK = 1; o.vx = 0; addFx({ k: 'mot', x: o.x, y: FLOOR - 520, mot: 'ÇA TREMBLE !', col: JA }) } }
+      }
+      if (['L', 'cL'].includes(f.mk) || (f.mk === 'H' && f.kind === 'gorille')) f.vx *= .6;
+      if (m.quake && f.mk === 'H' && ph === 'act' && f.t === m.st) { sfx('sol', 1); G.shake = Math.max(G.shake, 9); addFx({ k: 'poussiere', x: f.x + f.face * 330, y: FLOOR }) }
+      if (m.dive && f.t === m.st && f.h > 0) { f.vy = Math.max(f.vy, 0) + m.dive; sfx('vent', .8) }
+      if (m.land && !f.landed && f.t > m.st + 1 && f.h <= 0) { f.landed = true; f.landT = f.t; f.vx *= .25; sfx('sol', .6); addFx({ k: 'poussiere', x: f.x, y: FLOOR });
+        if (m.quakeLand) { sfx('sol', 1); G.shake = Math.max(G.shake, 13); addFx({ k: 'onde', x: f.x + f.face * 120, y: FLOOR, dir: f.face }); vibre(40); if (f.kind === 'ours') { addFx({ k: 'glace', x: f.x + f.face * 150, y: FLOOR }); sfx('glace', 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 420, mot: 'CRAC LA GLACE !', col: '#9ADCFF' }) } } }
+      if (m.bonk && ph === 'act' && !f.hit && (f.x <= STAGE_L + 2 || f.x >= STAGE_R - 2)) { // il fonce sans réfléchir… dans le mur
+        setS(f, 'hurt'); f.stun = 44; f.hurtK = 1; f.vx = -f.face * 9; G.shake = 12; sfx('boing', 1); sfx('pouet', .7);
+        addFx({ k: 'mot', x: f.x, y: FLOOR - 520, mot: hasard(['BOING !', 'AÏE, LE MUR !', 'SANS RÉFLÉCHIR…']), col: JA }); addFx({ k: 'impact', x: f.x + f.face * 120, y: FLOOR - 200, size: .7, col: PA }); break }
+      const fini = (!m.land && f.t >= m.st + m.act + m.rec) || (m.land && f.landed && f.t >= f.landT + m.rec);
+      if (fini) { if (!f.hit && SPECIALES.includes(f.mk) && !m.proj && !m.nuage && !m.jet && !m.contre && Math.random() < .3) { addFx({ k: 'mot', x: f.x, y: FLOOR - 640 * f.d.K / .44, mot: hasard(['LOUPÉ !', 'RATÉ !', 'OUPS…']), col: '#C8D6F0' }); sfx('pouet', .5) } setS(f, 'idle') }
+      break;
+    }
+    case 'hurt': f.hurtK = Math.max(0, f.stun / 14); if (--f.stun <= 0 && onG) { f.pasPrise = 4; if (f.dizzyPending && f.hp > 0 && G.phase === 'fight') etourdit(f); else setS(f, 'idle') } break;
+    case 'bstun': f.blocking = true; if (--f.stun <= 0) { f.pasPrise = 4; setS(f, f.crouchB ? 'crouch' : 'idle') } break;
+    case 'down': if (f.t > 50 && onG && G.phase === 'fight') { setS(f, 'getup'); f.inv = 30 } break;
+    case 'getup': f.u = Math.min(1, f.t / 24); if (f.t >= 24) { f.pasPrise = 12; if (f.dizzyPending && G.phase === 'fight') etourdit(f); else setS(f, 'idle') } break;
+    case 'ko': break;
+  }
+  // physique
+  if (f.h > 0 || f.vy < 0) {
+    f.h -= f.vy; f.vy += f.d.grav;
+    if (f.h <= 0) {
+      f.h = 0; f.vy = 0;
+      if (f.state === 'air') { setS(f, 'land'); sfx('sol', .35); plouf(f, 1) }
+      else if (f.state === 'hurt' && f.knock) { setS(f, f.hp <= 0 ? 'ko' : 'down'); f.knock = false; addFx({ k: 'poussiere', x: f.x, y: FLOOR }); sfx('chute', .9); G.shake = Math.max(G.shake, 8); plouf(f, 1.5); if (G.arene === 'riviere' && Math.random() < .4) addFx({ k: 'mot', x: f.x, y: FLOOR - 380, mot: hasard(['SPLASH !', 'PLOUF !', 'TOUT MOUILLÉ !']), col: '#7FD0F5' }) }
+    }
+  } else if (!['walk', 'walkB', 'dash', 'atk'].includes(f.state)) f.vx *= f.glisse > 0 ? .93 : .78;
+  if (f.glisse > 0) { f.glisse--; if (f.glisse % 4 === 0 && Math.abs(f.vx) > 4) addFx({ k: 'poussiere', x: f.x - Math.sign(f.vx) * 60, y: FLOOR }) }
+  if (G.arene === 'riviere' && f.h <= 0 && Math.abs(f.vx) > 3 && ['walk', 'walkB', 'dash', 'atk', 'fuite'].includes(f.state) && G.frame % (f.state === 'walk' || f.state === 'walkB' ? 16 : 7) === f.side * 3) plouf(f, f.state === 'walk' || f.state === 'walkB' ? .4 : .7);
+  f.x += f.vx;
+  f.x = Math.max(STAGE_L, Math.min(STAGE_R, f.x));
+  f.prev = { ...inp };
+}
+
+// ---------- boîtes ----------
+function box(f, b) { const K = f.d.K, y0 = FLOOR - f.h; const x0 = f.x + f.face * b[0] * K, x1 = f.x + f.face * b[1] * K; return [Math.min(x0, x1), Math.max(x0, x1), y0 + b[2] * K, y0 + b[3] * K] }
+function hurtBox(f) {
+  const hb = f.d.hurt;
+  if (f.h > 0) return box(f, hb.air);
+  if (['crouch', 'cblock'].includes(f.state) || (f.state === 'atk' && f.mk === 'cL') || (f.state === 'bstun' && f.crouchB)) return box(f, hb.crouch);
+  if (f.kind === 'gorille' && (f.state === 'block' || f.state === 'win' || (f.state === 'atk' && (f.mk === 'S' || f.mk === 'SUPER' || f.mk === 'H') && f.ph === 'st'))) return box(f, hb.up);
+  return box(f, hb.stand);
+}
+function hitBox(f) {
+  if (f.state !== 'atk' || f.ph !== 'act') return null;
+  const m = f.move;
+  if (m.hits) { if (f.hit >= m.hits || f.t - f.hitT < 7 && f.hit) return null; }
+  else if (f.hit) return null;
+  if (f.mk === 'S' && f.kind === 'gorille' && f.t >= m.st + m.act) return null;
+  if (!m.box || (m.rush && f.t >= m.st + m.act)) return null;
+  return box(f, m.box);
+}
+const over = (a, b) => a[0] < b[1] && a[1] > b[0] && a[2] < b[3] && a[3] > b[2];
+
+function strike(a, d) {
+  const hb = hitBox(a); if (!hb || d.cache) return;
+  if (['down', 'getup', 'ko', 'tenu'].includes(d.state) || d.inv > 0) return;
+  const hu = hurtBox(d); if (!over(hb, hu)) return;
+  const m = a.move; a.hit++; a.hitT = a.t; if (window.__stat) window.__stat.push(a.kind + a.mk);
+  touche(a, d, m, hb, hu, { dir: a.face, fin: a.fin, last: !m.hits || a.hit >= m.hits });
+}
+// un coup (ou un projectile) arrive sur le défenseur : parade, armure, dégâts, chute
+function jauge(f, n) { const avant = f.meter; f.meter = Math.min(100, f.meter + n); if (avant < 100 && f.meter >= 100 && !f.cpu && !f.distant) sfx('pret') }
+const hasard = l => l[Math.floor(Math.random() * l.length)];
+const GRIFFUS = ['tigre', 'lion', 'ours', 'ratel', 'grizzly']; // ils laissent des marques de griffes
+const invincible = f => G.god && G.mode === 1 && !f.cpu && !NET.on; // GOD MODE : le joueur ne perd pas de vie
+function touche(a, d, m, hb, hu, o) {
+  const face = o.dir;
+  const cx = (Math.max(hb[0], hu[0]) + Math.min(hb[1], hu[1])) / 2, cy = (Math.max(hb[2], hu[2]) + Math.min(hb[3], hu[3])) / 2;
+  const spe = o.spe || SPECIALES.includes(a.mk) || !!o.proj;
+  // morse : le mur de défenses renvoie le coup (pas les projectiles ni les prises)
+  if (!o.proj && !o.prise && d.state === 'atk' && d.move && d.move.contre && d.ph === 'act' && !d.contre) {
+    d.contre = true; d.hit = 1; d.hitT = d.t; G.stop = 12; G.shake = 14; sfx('garde'); sfx('boing', .8);
+    addFx({ k: 'mot', x: d.x, y: FLOOR - 600, mot: hasard(['CONTRE !', 'PAS TOUCHE !', 'RETOUR À L’ENVOYEUR !']), col: JA });
+    touche(d, a, d.move.contre, hu, hb, { dir: d.face, last: true, spe: true }); return;
+  }
+  const crouchB = d.state === 'cblock' || (d.state === 'bstun' && d.crouchB), standB = d.state === 'walkB' || d.state === 'block' || (d.state === 'bstun' && !d.crouchB);
+  const canBlock = !o.prise && d.blocking && d.h <= 0 && (d.guardBtn || m.lvl === 'mid' || (m.lvl === 'low' && crouchB) || (m.lvl === 'high' && standB));
+  if (canBlock) {
+    d.crouchB = crouchB; setS(d, 'bstun'); d.stun = m.bs; d.vx = face * m.kb * (m.souffle ? .75 : .8); if (m.souffle) { d.glisse = 22; addFx({ k: 'mot', x: d.x, y: FLOOR - 520, mot: 'SOUFFLÉ !', col: JA }); addFx({ k: 'poussiere', x: d.x, y: FLOOR }) } if (!o.proj) a.vx = -face * 3;
+    // les coups spéciaux abîment un peu la garde (jamais jusqu'au K.-O.)
+    const chip = m.chip != null ? m.chip : spe ? .2 : 0;
+    if (chip && !invincible(d)) { d.chipAcc = (d.chipAcc || 0) + m.dmg * chip; const c = Math.floor(d.chipAcc); if (c >= 1) { d.chipAcc -= c; d.hp = Math.max(1, d.hp - c) } }
+    if (m.casse) { d.stun = m.bs + 14; addFx({ k: 'mot', x: d.x, y: FLOOR - 560, mot: 'GARDE CASSÉE !', col: '#FF6B4A' }) }
+    G.stop = 5; addFx({ k: 'garde', x: cx, y: cy }); sfx('garde'); jauge(a, 3); jauge(d, 2);
+    if (!d.cpu) { d.st.parades = (d.st.parades || 0) + 1; } return;
+  }
+  const armor = !o.prise && d.state === 'atk' && d.move.armor && (d.ph === 'st' || (d.move.rush && d.ph === 'act'));
+  const scale = o.prise ? 1 : Math.max(.45, 1 - d.combo * .1);
+  const aideK = a.cpu && G.mode === 1 ? 1 - .12 * G.aide : 1;
+  // dos tourné (hippo qui mitraille, ratel qui pschitte…) : les fesses à l'air prennent plus cher
+  const fesses = d.state === 'atk' && d.move && d.move.dos && d.ph === 'act';
+  const bonus = (o.fin ? 1.15 : 1) * (a.fort && spe ? 1.2 : 1) * (m.aa && d.h > 0 ? 1.25 : 1) * (a.arme && m.charge ? 1 + .5 * a.arme : 1) * (fesses ? 1.3 : 1) * (a.d.force || 1);
+  if (fesses && Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 560, mot: hasard(['FESSES À L’AIR !', 'PAF, LES FESSES !']), col: '#FF7AB6' });
+  let dmg = Math.max(1, Math.round(m.dmg * scale * aideK * bonus * (d.d.peau || 1)));
+  if (invincible(d)) dmg = 0;
+  if (!a.cpu) { if (o.fin) a.st.final = true; if (m === a.d.moves.SUPER || m.super) a.st.super = true; a.st.coups = (a.st.coups || 0) + 1; }
+  d.hp = Math.max(0, d.hp - dmg); d.flash = 4;
+  if (d.state === 'hurt' || d.state === 'bstun' && false) d.combo++; else d.combo = 1;
+  if (d.combo > 1) { FX = FX.filter(e => e.k !== 'combo'); addFx({ k: 'combo', n: d.combo, side: d.side ? 0 : 1 }); }
+  const rage = f => f.hp / f.d.hp < .3 ? 1.6 : 1;
+  jauge(a, 7 * rage(a)); jauge(d, 5 * rage(d));
+  // hyène : elle épuise ses proies (la jauge SUPER de l'adversaire se vide)
+  if (m.vide) { d.meter = Math.max(0, d.meter - m.vide); jauge(a, m.vide * .4) }
+  // étourdissement : trop de coups en peu de temps → il voit des étoiles (une fois par manche)
+  if (dmg > 0 && !o.prise) { d.etourdi = (d.etourdi || 0) + dmg * (m.kd ? 1.3 : 1); d.dernierCoup = G.frame; if (d.etourdi >= (d.d.etour || 46) && !d.dizzyFait && d.hp > 0) d.dizzyPending = true }
+  const lastHit = o.last;
+  addFx({ k: 'impact', x: cx, y: cy, size: m.kd && lastHit ? 1.15 : m.dmg >= 10 ? .95 : .7, mot: G.prout ? hasard(['PROUT !', 'PFFRT !', 'POUÊÊT !']) : m.mots[Math.floor(Math.random() * m.mots.length)], col: a.d.col });
+  if (!o.proj && !o.prise && GRIFFUS.includes(a.kind) && ['L', 'H', 'cL', 'SUPER', 'SD', 'A'].includes(a.mk)) addFx({ k: 'griffes', x: cx, y: cy, dir: face, n: a.mk === 'H' || a.mk === 'SUPER' ? 4 : 3 });
+  if (m.saumon && !o.proj) { addFx({ k: 'saumon', x: cx, y: cy - 60, vx: face * (3 + Math.random() * 4), vy: -(13 + Math.random() * 6), dir: face }); sfx('flac', .8); if (Math.random() < .4) addFx({ k: 'mot', x: cx, y: cy - 330, mot: hasard(['UN SAUMON ?!', 'POISSON VOLANT !', 'MIAM, UN SAUMON !']), col: '#FF8A7A' }) }
+  if (a.kind === 'ours' && (a.mk === 'SF' || a.mk === 'S')) { addFx({ k: 'glace', x: cx, y: FLOOR }); sfx('glace', .8) }
+  // l'animal touché réagit (en vrai et en rigolant)
+  if ((m.dmg >= 10 || m.kd) && lastHit && d.hp > 0 && d.d.aie && Math.random() < .35) addFx({ k: 'mot', x: d.x - face * 60, y: FLOOR - 700 * d.d.K / .44, mot: hasard(d.d.aie), col: d.d.clair });
+  if (G.prout) { sfx('prout', .8); sfx('pop', .5) } else sfx(m.son); vibre(m.dmg >= 10 ? 40 : 18);
+  if ((m.dmg >= 10 || m.kd) && lastHit && d.hp > 0 && Math.random() < .55) sfx(d.kind + '_grr', .5); // l'animal touché grogne
+  if (m === a.d.moves.SUPER && lastHit) sfx('boum', 1);
+  G.shake = Math.max(G.shake, m.kd ? 16 : m.dmg >= 10 ? 11 : 5); G.stop = m.kd && lastHit ? 10 : m.dmg >= 10 ? 8 : 5;
+  if (a.kind === 'tigre' && a.mk === 'S' && !o.proj) a.vx = -face * 4;
+  if (m.agrippe && a.hit === 1) a.grabD = Math.max(260, Math.abs(d.x - a.x));
+  if (m.sale) { d.sale = 150; if (Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 520, mot: hasard(['BEURK !', 'POUAH !', 'ÇA COLLE !']), col: '#B07A3E' }) }
+  if (m.venin && d.hp > 0 && !invincible(d)) { d.poison = Object.assign({ n: 0 }, m.venin); addFx({ k: 'mot', x: d.x, y: FLOOR - 560, mot: 'EMPOISONNÉ !', col: '#7BD35A' }) }
+  if (m.souffle) { d.glisse = 26; addFx({ k: 'poussiere', x: d.x, y: FLOOR }); G.shake = Math.max(G.shake, 18) }
+  if (d.hp <= 0) { ko(a, d); return }
+  // grizzly : « Un grizzly arrive… et la plage se vide ! » (l'autre part en courant)
+  if (m.peur && !armor && d.h <= 0) { setS(d, 'fuite'); d.stun = 46; d.vx = face * 10; addFx({ k: 'mot', x: d.x, y: FLOOR - 620, mot: hasard(['AU SECOURS !', 'SAUVE QUI PEUT !', 'MAMAN !']), col: PA }); sfx('pouet', .5); return }
+  if (armor) { addFx({ k: 'mot', x: d.x, y: FLOOR - 460, mot: hasard(['TIENT BON !', 'MÊME PAS MAL !', 'BLINDÉ !']), col: CY }); return }
+  setS(d, 'hurt'); d.stun = m.hs || 18; d.hurtK = 1; d.vx = face * m.kb;
+  if (o.fin) { addFx({ k: 'mot', x: (a.x + d.x) / 2, y: FLOOR - 560, mot: 'COMBO FINAL !', col: JA }); G.stop = 12; G.shake = Math.max(G.shake, 16); vibre(50); acclame(.6) }
+  if (m === a.d.moves.SUPER && lastHit) acclame(.8); else if (d.combo === 4) acclame(.5);
+  if ((m.kd && lastHit) || d.h > 0 || o.fin) { d.vy = -12; d.h = Math.max(d.h, .1); d.knock = true; d.stun = 99; d.vx = face * Math.max(6, m.kb * .7) }
+  // coup qui envoie en l'air (anti-aérien, « patte à saumons »…) : il vole haut, avec un sifflet de chute
+  if (m.lance && lastHit) { d.vy = -m.lance; d.h = Math.max(d.h, .1); d.knock = true; d.stun = 99; d.vx = face * 3.5; sfx('sifflet_haut', .8); if (Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 820, mot: hasard(['DÉCOLLAGE !', 'EN L’AIR !', 'ENVOLÉ !']), col: JA }) }
+  if (!o.proj && !o.prise && (d.x <= STAGE_L + 2 || d.x >= STAGE_R - 2)) a.vx = -face * m.kb * .6; // coin : l'attaquant recule
+}
+// --- projections : attraper, se dégager, lancer
+function attrape(a, d, m) {
+  a.hit = 1; a.hitT = a.t; setS(a, 'lance'); a.vx = 0; a.prise = m; a.cible = d; a.mkPrise = a.mk;
+  setS(d, 'tenu'); d.vx = 0; d.vy = 0; d.tenuPar = a; d.combo = 0; d.poison = d.poison;
+  G.stop = 5; sfx('vent', .8); sfx(a.kind + '_grr', .7);
+  addFx({ k: 'mot', x: (a.x + d.x) / 2, y: FLOOR - 600, mot: m.prise.mot || hasard(['ATTRAPÉ !', 'VIENS PAR LÀ !', 'HOP !']), col: JA });
+}
+function degage(a, d) {
+  for (const [f, s] of [[a, -1], [d, 1]]) { setS(f, 'bstun'); f.stun = 12; f.crouchB = false; f.h = 0; f.vx = a.face * s * 10; f.pasPrise = 20 }
+  sfx('garde'); sfx('boing', .6); G.stop = 6;
+  addFx({ k: 'mot', x: (a.x + d.x) / 2, y: FLOOR - 600, mot: hasard(['ÉCHAPPÉ !', 'RATÉ, GLISSANT !', 'NI VU NI CONNU !']), col: CY });
+}
+function lache(a, d, m) {
+  d.h = Math.max(d.h, .1); setS(d, 'hurt');
+  const hb = hurtBox(d);
+  touche(a, d, m, hb, hb, { dir: a.face, prise: true, last: true, spe: m !== a.d.moves.T });
+  if (d.state === 'hurt') { d.knock = true; d.vy = -(m.prise.haut || 15); d.vx = a.face * (m.prise.loin || 11); d.stun = 99 }
+  setS(a, 'land'); a.t = -(m.prise.rec || 8); a.prise = null; a.cible = null;
+  G.shake = Math.max(G.shake, 16); sfx('chute', .8);
+}
+// --- étourdissement : étoiles, oiseaux qui gazouillent, et « IL VOIT DES ÉTOILES ! »
+function etourdit(f) {
+  f.dizzyPending = false; f.dizzyFait = true; setS(f, 'dizzy'); f.stun = 110; f.vx = 0;
+  sfx('oiseaux', 1); sfx('boing', .6);
+  addFx({ k: 'mot', x: f.x, y: FLOOR - 760 * f.d.K / .44, mot: hasard(['IL VOIT DES ÉTOILES !', 'TOUT TOURNE !', 'CUI-CUI !']), col: JA });
+}
+// venin (dragon de Komodo) et nuage puant (ratel) : des effets qui durent
+function majEffets() {
+  for (const f of G.f) {
+    if (f.sale > 0) f.sale--;
+    const p = f.poison; if (!p) continue;
+    p.t--; p.n++;
+    if (p.n % p.tick === 0 && f.hp > 1 && !['ko'].includes(f.state)) { f.hp = Math.max(1, f.hp - p.dmg); addFx({ k: 'bulle', x: f.x + (Math.random() - .5) * 160, y: FLOOR - 200 - Math.random() * 120 }) }
+    if (p.t <= 0) f.poison = null;
+  }
+  for (const z of G.zones) {
+    z.t++; const d = G.f.find(g => g !== z.a); if (!d) continue;
+    const dans = Math.abs(d.x - z.x) < z.r + 70 && d.h < 320 && !['down', 'getup', 'ko'].includes(d.state) && d.inv <= 0 && z.t < z.life - 20;
+    if (!dans) continue;
+    if (!z.fait) { z.fait = true; addFx({ k: 'mot', x: d.x, y: FLOOR - 520, mot: 'BEURK !', col: '#9BE15D' }); sfx('ratel_grr', .5);
+      if (!d.blocking) { setS(d, 'hurt'); d.stun = z.stun; d.hurtK = 1; d.vx = 0; d.puant = z.stun } jauge(z.a, 8) }
+    if (z.t % z.tick === 0 && d.hp > 1) { d.hp = Math.max(1, d.hp - 1); jauge(z.a, 2) }
+  }
+  G.zones = G.zones.filter(z => z.t < z.life);
+}
+function dessineZones(c) {
+  for (const z of G.zones) {
+    const k = z.t / z.life, a = Math.min(1, z.t / 10) * (1 - Math.max(0, k - .8) * 5), r = rng(Math.floor(z.x));
+    c.save(); c.globalAlpha = a * .55;
+    for (let i = 0; i < 14; i++) { const ang = r() * TAU, dist = r() * z.r, px = z.x + Math.cos(ang) * dist, py = FLOOR - 90 - r() * 240 + Math.sin(G.time * 3 + i) * 12, rad = 60 + r() * 70;
+      c.fillStyle = i % 3 ? '#8FD14F' : '#C9E86B'; c.beginPath(); c.arc(px + Math.sin(G.time * 2 + i) * 14, py, rad, 0, TAU); c.fill() }
+    c.globalAlpha = a; c.strokeStyle = '#4E7A1E'; c.lineWidth = 7; c.lineCap = 'round';
+    for (let i = 0; i < 5; i++) { const x0 = z.x - z.r * .7 + i * z.r * .35, y0 = FLOOR - 260 - ((G.time * 60 + i * 30) % 90); c.beginPath();
+      for (let s = 0; s <= 6; s++) c.lineTo(x0 + Math.sin(s * 1.2 + G.time * 4 + i) * 16, y0 - s * 16); c.stroke() }
+    c.fillStyle = NV; for (let i = 0; i < 3; i++) { const ang = G.time * (4 + i) + i * 2; c.beginPath(); c.arc(z.x + Math.cos(ang) * (80 + i * 40), FLOOR - 300 + Math.sin(ang * 1.3) * 50, 6, 0, TAU); c.fill() }
+    c.restore();
+  }
+}
+// projectiles (le rugissement du lion…) : une onde qui avance et touche une seule fois
+function lanceProj(f, m) {
+  const p = m.proj; G.proj.push({ a: f, m, x: f.x + f.face * p.x0 * f.d.K, vx: f.face * p.spd, w: p.w * f.d.K, y0: p.h[0] * f.d.K, y1: p.h[1] * f.d.K, t: 0, life: p.life, dir: f.face });
+}
+function majProj() {
+  for (const p of G.proj) {
+    p.t++; p.x += p.vx;
+    if (p.blob) { p.yy += p.vy; p.vy += p.grav;
+      if (p.yy >= FLOOR - 10) { p.done = true; addFx({ k: 'tache', x: p.x, y: FLOOR, r: p.w }); continue }
+      const d = G.f.find(g => g !== p.a); if (!d || G.phase !== 'fight' || ['down', 'getup', 'ko', 'tenu'].includes(d.state) || d.inv > 0 || d.cache) continue;
+      const hb = [p.x - p.w, p.x + p.w, p.yy - p.w, p.yy + p.w], hu = hurtBox(d);
+      if (over(hb, hu)) { p.done = true; touche(p.a, d, p.m, hb, hu, { dir: p.dir, proj: true, last: false }) } continue }
+    const d = G.f.find(g => g !== p.a); if (!d || p.done || G.phase !== 'fight') continue;
+    if (['down', 'getup', 'ko', 'tenu'].includes(d.state) || d.inv > 0) continue;
+    const hb = [p.x - p.w, p.x + p.w, FLOOR + p.y0, FLOOR + p.y1], hu = hurtBox(d);
+    if (over(hb, hu)) { p.done = true; if (window.__stat) window.__stat.push(p.a.kind + 'P'); touche(p.a, d, p.m, hb, hu, { dir: p.dir, proj: true, last: true }); }
+  }
+  G.proj = G.proj.filter(p => !p.done && p.t < p.life && p.x > STAGE_L - 400 && p.x < STAGE_R + 400);
+}
+function dessineProj(c) {
+  for (const p of G.proj) {
+    if (p.blob) { c.save(); c.translate(p.x, p.yy); c.rotate(p.t * .3);
+      c.fillStyle = '#6B4423'; c.strokeStyle = '#3A220F'; c.lineWidth = 6; c.beginPath();
+      for (let i = 0; i < 9; i++) { const a = i / 9 * TAU, rr = p.w * (.8 + .25 * Math.sin(i * 2.3)); c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) } c.closePath(); c.fill(); c.stroke();
+      c.fillStyle = '#A0703F'; c.beginPath(); c.arc(-p.w * .3, -p.w * .3, p.w * .25, 0, TAU); c.fill(); c.restore(); continue }
+    const k = p.t / p.life, a = Math.min(1, p.t / 4) * (1 - Math.max(0, k - .75) * 4);
+    if (p.m && p.m.proj && p.m.proj.sol) { const r = rng(Math.floor(p.x)); c.save(); c.globalAlpha = a;
+      for (let i = 0; i < 7; i++) { const dx = -p.dir * i * 34, h = (70 + 50 * Math.sin(p.t * .6 + i)) * (1 - i / 8); c.fillStyle = i % 2 ? '#C9A66B' : '#8B6B3E'; c.strokeStyle = NV; c.lineWidth = 5;
+        c.beginPath(); c.moveTo(p.x + dx - 30, FLOOR); c.lineTo(p.x + dx - 8, FLOOR - h); c.lineTo(p.x + dx + 14, FLOOR - h * .6); c.lineTo(p.x + dx + 30, FLOOR); c.closePath(); c.fill(); c.stroke() }
+      for (let i = 0; i < 5; i++) { c.fillStyle = 'rgba(242,215,168,.8)'; c.beginPath(); c.arc(p.x - p.dir * (40 + r() * 160), FLOOR - 20 - r() * 70, 18 + r() * 22, 0, TAU); c.fill() }
+      c.restore(); if (p.t < 26) comic(c, 'BROUM !', p.x, FLOOR - 230, p.t / 60, .5, a, '#C9A66B'); continue }
+    if (p.m && p.m.proj && p.m.proj.rire) { c.save(); c.globalAlpha = a; const yc = FLOOR + (p.y0 + p.y1) / 2;
+      ['HI', 'HA', 'HI'].forEach((s, i) => { const x = p.x - p.dir * i * 95, y = yc - 60 + i * 55 + Math.sin(p.t * .5 + i * 2) * 34, sz = 86 - i * 12;
+        c.save(); c.translate(x, y); c.rotate(Math.sin(p.t * .3 + i) * .25); c.font = `900 ${sz}px Rubik, "Arial Black", sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+        c.lineWidth = 16; c.strokeStyle = NV; c.strokeText(s, 0, 0); c.fillStyle = i % 2 ? '#F2D49B' : JA; c.fillText(s, 0, 0); c.restore() });
+      c.restore(); continue }
+    c.save(); c.globalAlpha = a; c.translate(p.x, FLOOR + (p.y0 + p.y1) / 2); c.scale(p.dir, 1);
+    const gros = p.m && p.m.souffle ? 1.6 : 1;
+    for (let i = 0; i < 4; i++) { const r = (70 + i * 55 + (p.t * 5) % 55) * gros; c.lineWidth = (22 - i * 4) * gros; c.strokeStyle = i % 2 ? PA : JA; c.beginPath(); c.arc(-r * .6, 0, r, -.8, .8); c.stroke() }
+    c.restore(); if (p.t < 30) comic(c, 'ROAAAR !', p.x - p.dir * 40, FLOOR + p.y0 - 30, p.t / 60, .5, a, JA);
+  }
+}
+// la foule de la savane : confettis de feuilles et clameur sur les grands moments
+const FOULE = { bits: [] };
+function acclame(force) {
+  sfx('foule', force); const cols = [JA, OR, CY, PA, '#7BD35A', '#FF7AB6']; if (FOULE.bits.length > 400) FOULE.bits.splice(0, FOULE.bits.length - 400);
+  for (let i = 0; i < 40 * force; i++) FOULE.bits.push({ x: Math.random() * W, y: -40 - Math.random() * 300, vx: (Math.random() - .5) * 4, vy: 3 + Math.random() * 5, r: Math.random() * TAU, vr: (Math.random() - .5) * .3, c: cols[i % cols.length], s: 10 + Math.random() * 14 });
+}
+function dessineFoule(c) {
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  for (const b of FOULE.bits) { b.x += b.vx + Math.sin(b.y * .02) * 1.2; b.y += b.vy; b.r += b.vr; c.save(); c.translate(b.x, b.y); c.rotate(b.r); c.fillStyle = b.c; c.fillRect(-b.s / 2, -b.s / 4, b.s, b.s / 2); c.restore() }
+  FOULE.bits = FOULE.bits.filter(b => b.y < H + 40);
+}
+function ko(a, d) {
+  setS(d, 'hurt'); d.vy = -15; d.h = .1; d.knock = true; d.vx = a.face * 11; d.stun = 999;
+  for (const e of FX) e.mot = null; FX = FX.filter(e => e.k !== 'mot' && e.k !== 'combo');
+  G.phase = 'ko'; G.pt = 0; G.slow = 80; acclame(1); G.roundWinner = a; sfx('ko'); sfx('foule'); G.shake = 22; G.stop = 14; vibre([80, 40, 120]);
+  G.perfect = a.hp >= a.d.hp; if (G.perfect) a.parfait = true;
+}
+
+// ---------------------------------------------------------------------
+//  Ordinateur
+// ---------------------------------------------------------------------
+// Niveaux de l'ordi. aa : anti-aérien contre les sauts · chope : projection (surtout contre la garde)
+// tech : se dégager d'une projection · punir : frapper un coup raté
+const NIV = [
+  { react: 22, garde: .28, agress: .5, spe: .008, saut: .005, combo: .3, aa: .12, chope: .012, tech: .06, punir: .15 },
+  { react: 13, garde: .55, agress: .72, spe: .016, saut: .007, combo: .65, aa: .4, chope: .03, tech: .25, punir: .45 },
+  { react: 6, garde: .86, agress: .9, spe: .026, saut: .009, combo: 1, aa: .75, chope: .06, tech: .5, punir: .8 }];
+// coup spécial adapté à la distance (chaque coup dit où il sert : ia = [distance min, max, poids])
+function choixSpe(f, dist) {
+  let tot = 0; const c = [];
+  for (const k of ['S', 'SF', 'SD']) { const m = f.d.moves[k]; if (!m) continue; const z = m.ia || (k === 'S' ? [f.d.speMin || 640, f.d.speMax || 900, 1] : null); if (z && dist >= z[0] && dist <= z[1] && z[2] > 0) { c.push([k, z[2]]); tot += z[2] } }
+  if (!c.length) return null; let x = Math.random() * tot; for (const [k, w] of c) { x -= w; if (x <= 0) return k } return c[0][0];
+}
+function brain(f, o) {
+  const n0 = NIV[G.niv], ai = f.ai, ag = G.mode === 1 ? G.aide : 0;
+  const n = ag ? Object.assign({}, n0, { react: n0.react + 5 * ag, garde: n0.garde * (1 - .3 * ag), agress: n0.agress * (1 - .15 * ag), spe: n0.spe * (1 - .25 * ag), combo: n0.combo * (1 - .3 * ag), aa: n0.aa * (1 - .35 * ag), chope: n0.chope * (1 - .4 * ag), punir: n0.punir * (1 - .35 * ag) }) : n0;
+  const r = { left: false, right: false, up: false, down: false, L: false, H: false, S: false };
+  if (G.phase !== 'fight') return r;
+  const toward = o.x > f.x ? 'right' : 'left', away = toward === 'right' ? 'left' : 'right', dist = Math.abs(o.x - f.x);
+  const ia = f.d.ia || {}, mv = f.d.moves, appuie = k => { r[k] = !f.prev[k] };
+  const tenirSpe = k => { ai.hold.S = true; if (k === 'SF') ai.hold[toward] = true; if (k === 'SD') ai.hold.down = true };
+  // attrapé : il essaie de se dégager (décidé une fois)
+  if (f.state === 'tenu') { if (f.t === 2) ai.techGo = Math.random() < n.tech; if (f.t === 4 && ai.techGo) appuie('L'); return r }
+  // étourdi : il tapote partout pour se réveiller
+  if (f.state === 'dizzy') { if (Math.random() < .22) appuie(Math.random() < .5 ? 'L' : 'H'); return r }
+  // combo : si le coup a touché, on enchaîne
+  if (f.state === 'atk' && f.hit && Math.random() < n.combo * .25) { const m = f.move; const nx = m.chain && m.chain[Math.floor(Math.random() * m.chain.length)]; if (nx === 'SUPER' && f.meter < 100) return r;
+    if (nx) { const b = nx === 'cL' ? 'L' : nx === 'cH' ? 'H' : nx === 'SUPER' ? 'S' : nx; appuie(b); if (nx === 'cL' || nx === 'cH') r.down = true; if (nx === 'S' && Math.random() < .4) { const k = choixSpe(f, dist); if (k === 'SF') r[toward] = true; else if (k === 'SD') r.down = true } } return r }
+  // anti-aérien : décidé une fois par saut, déclenché quand l'autre redescend à portée
+  const enLair = o.h > 40 && (o.state === 'air' || (o.state === 'atk' && o.h > 40));
+  if (enLair && ai.aaFor !== o.sautN) { ai.aaFor = o.sautN; ai.aaGo = Math.random() < n.aa }
+  if (enLair && ai.aaGo && neutral(f) && dist < (ia.aaDist || 600) && o.vy > -9) {
+    ai.aaGo = false; ai.hold = {}; ai.t = 0;
+    if (mv.SD && mv.SD.aa && f.meter < 100) { r.down = true; appuie('S') } else appuie('H');
+    return r;
+  }
+  const danger = (o.state === 'atk' && o.ph !== 'rec' && !o.move.prise && dist < (SPECIALES.includes(o.mk) ? 1000 : 720)) || G.proj.some(p => p.a === o && Math.abs(p.x - f.x) < 700);
+  // se protéger, comme l'enfant : vers le bas pare tout (parfois en reculant). Décidé une fois par menace, puis tenu tant qu'elle dure
+  if (danger && ai.react <= 0 && !ai.def) { ai.def = true; ai.hold = {}; ai.t = 0; ai.react = n.react * .6;
+    ai.garde = Math.random() < n.garde ? (Math.random() < .7 || (o.move && o.move.lvl === 'low') ? 'down' : away) : null }
+  if (!danger) { ai.def = false; ai.garde = null }
+  if (ai.def && ai.garde) { r[ai.garde] = true; return r }
+  if (ai.react > 0) ai.react--;
+  // punir un coup raté (décidé une fois par coup de l'adversaire)
+  if (o.state === 'atk' && o.ph === 'rec' && !o.hit && ai.punFor !== o.mvN) { ai.punFor = o.mvN; ai.punGo = Math.random() < n.punir }
+  if (ai.punGo && o.state === 'atk' && o.ph === 'rec' && neutral(f)) {
+    const reach = f.d.reach || 680;
+    if (dist < reach + 40) { ai.punGo = false; ai.hold = {}; ai.t = 0; if (f.meter >= 100) appuie('S'); else appuie('H'); return r }
+    if (mv.SF && mv.SF.rush && dist < reach + 420) { ai.punGo = false; ai.hold = {}; ai.t = 0; r[toward] = true; appuie('S'); return r }
+  }
+  // projection : surtout contre quelqu'un qui reste en garde
+  if (neutral(f) && mv.T && portee(f, o, 55) && attrapable(o)) {
+    const garde = ['block', 'cblock', 'crouch'].includes(o.state);
+    if (Math.random() < n.chope * (garde ? 5 : 1) * (ia.chope || 1)) { ai.hold = {}; ai.t = 0; r[toward] = true; appuie('H'); return r }
+  }
+  if (ai.t > 0) { ai.t--; Object.assign(r, ai.hold); for (const k of ['L', 'H', 'S']) if (r[k] && f.prev[k]) r[k] = false; return r }
+  ai.hold = {};
+  if (!neutral(f)) { ai.t = 2; return r }
+  const reach = f.d.reach || (f.kind === 'tigre' ? 660 : 680), rnd = Math.random();
+  if (f.meter >= 100 && dist < 700 && Math.random() < .35) { ai.hold.S = true; ai.t = 2; }
+  else if (dist < reach) {
+    if (rnd < n.agress) { const p = Math.random();
+      if (p < .34) ai.hold.L = true; else if (p < .48) { ai.hold.L = true; ai.hold.down = true }
+      else if (p < .58 && mv.cH) { ai.hold.H = true; ai.hold.down = true } else if (p < .82) ai.hold.H = true;
+      else { const k = choixSpe(f, dist); if (k) tenirSpe(k); else ai.hold.H = true }
+      ai.t = 2; ai.react = n.react }
+    else if (rnd < n.agress + .15) { ai.hold[away] = true; ai.t = n.react }
+    else ai.t = Math.round(n.react * .5);
+  } else {
+    const k = choixSpe(f, dist);
+    if (k && Math.random() < n.spe * 6 * (ia.spe || 1)) { tenirSpe(k); ai.t = 2 }
+    else if (Math.random() < n.saut * 4 * (ia.saut || 1)) { ai.hold.up = true; ai.hold[toward] = true; ai.t = 5 }
+    else if (ia.loin && dist < ia.loin && Math.random() < .45) { ai.hold[away] = true; ai.t = n.react } // les animaux « à distance » gardent leurs distances
+    else { ai.hold[toward] = true; ai.t = Math.round(n.react * .8 + Math.random() * 10) }
+  }
+  Object.assign(r, ai.hold);
+  // l'IA relâche les boutons pour qu'un nouvel appui soit détecté
+  for (const k of ['L', 'H', 'S']) if (r[k] && f.prev[k]) r[k] = false;
+  return r;
+}
+
+// ---------------------------------------------------------------------
+//  Effets (canvas 2D, repère monde)
+// ---------------------------------------------------------------------
+let FX = [];
+function addFx(e) { e.t0 = G.time; FX.push(e); if (FX.length > 300) FX.splice(0, FX.length - 300); if (window.NET && NET.on && NET.role === 'hote') { const c = Object.assign({}, e); delete c.t0; NET.fx.push(c) } }
+function rng(seed) { let s = seed; return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646 } }
+function star(c, x, y, R, r, n, col, stroke = NV, lw = 8) { c.beginPath(); for (let i = 0; i < n * 2; i++) { const rr = i % 2 ? r : R * (.85 + ((i * 7) % 5) * .06), a = i / (n * 2) * TAU; c.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr) } c.closePath(); c.fillStyle = col; c.fill(); if (lw) { c.lineWidth = lw; c.strokeStyle = stroke; c.stroke() } }
+function txt(c, s, x, y, size, fill, o = {}) {
+  c.save(); c.translate(x, y); if (o.rot) c.rotate(o.rot); if (o.sc != null) c.scale(o.sc, o.sc);
+  c.font = `${o.w || 900} ${size}px ${o.f || 'Rubik, "Arial Black", sans-serif'}`; c.textAlign = o.al || 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  if (o.out) { c.lineWidth = o.out; c.strokeStyle = o.oc || NV; if (o.sh) c.strokeText(s, o.sh, o.sh); c.strokeText(s, 0, 0) }
+  c.fillStyle = fill; c.fillText(s, 0, 0); c.restore();
+}
+function drawFx(c) {
+  const t = G.time; FX = FX.filter(e => t - e.t0 < 1.4);
+  for (const e of FX) {
+    const u = (t - e.t0);
+    if (e.k === 'impact') {
+      const k = P(u, 0, .45); if (k >= 1) continue; const s = back(P(u, 0, .12)) * e.size, a = 1 - P(u, .28, .45);
+      c.save(); c.globalAlpha = a; c.translate(e.x, e.y); c.rotate(e.t0 * 7); c.scale(s, s);
+      star(c, 0, 0, 150, 60, 12, JA); star(c, 0, 0, 90, 40, 9, e.col || OR, NV, 0);
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(0, 0, 32, 0, TAU); c.fill(); c.restore();
+      // éclats
+      const r = rng(Math.floor(e.t0 * 1000)); c.save(); c.globalAlpha = a; c.strokeStyle = PA; c.lineCap = 'round';
+      for (let i = 0; i < 9; i++) { const ang = r() * TAU, d0 = 60 + 260 * eo(k), l = 40 + r() * 60; c.lineWidth = 8 * (1 - k) + 2; c.beginPath(); c.moveTo(e.x + Math.cos(ang) * d0, e.y + Math.sin(ang) * d0); c.lineTo(e.x + Math.cos(ang) * (d0 + l), e.y + Math.sin(ang) * (d0 + l)); c.stroke() }
+      c.restore();
+      if (e.mot) comic(c, e.mot, e.x, e.y - 150 * e.size, u, e.size * .75, a);
+    } else if (e.k === 'garde') {
+      const k = P(u, 0, .3); if (k >= 1) continue; c.save(); c.globalAlpha = 1 - k; c.translate(e.x, e.y);
+      c.strokeStyle = CY; c.lineWidth = 22; c.beginPath(); c.arc(0, 0, 70 + 70 * eo(k), -1.25, 1.25); c.stroke(); c.strokeStyle = PA; c.lineWidth = 6; c.stroke(); c.restore();
+      comic(c, 'GARDE !', e.x, e.y - 130, u, .55, 1 - k, CY);
+    } else if (e.k === 'poussiere') {
+      const k = P(u, 0, .8); if (k >= 1) continue; const r = rng(Math.floor(e.t0 * 1000));
+      for (let i = 0; i < 9; i++) { const dir = (r() - .5) * 2, sp = 60 + r() * 170, px = e.x + dir * sp * eo(k), py = e.y - 10 - r() * 60 * eo(k), rad = (20 + r() * 30) * (.5 + k);
+        c.globalAlpha = (1 - k) * .85; c.fillStyle = '#F2D7A8'; c.beginPath(); c.arc(px, py, rad, 0, TAU); c.fill() } c.globalAlpha = 1;
+    } else if (e.k === 'onde') {
+      const k = P(u, 0, .7); if (k >= 1) continue; c.save(); c.globalAlpha = 1 - k; c.strokeStyle = JA; c.lineWidth = 16 * (1 - k) + 3;
+      for (const s of [-1, 1]) { c.beginPath(); c.ellipse(e.x, e.y, 60 + 900 * eo(k), 30 + 60 * eo(k), 0, s < 0 ? Math.PI : 0, s < 0 ? TAU : Math.PI, false); c.stroke() } c.restore();
+    } else if (e.k === 'mot') { const k = P(u, 0, .9); if (k < 1) comic(c, e.mot, e.x, e.y, u, .55, 1 - P(k, .6, 1), e.col || PA) }
+    else if (e.k === 'vague') { const k = P(u, 0, .6); if (k >= 1) continue; c.save(); c.globalAlpha = (1 - k) * .9; c.strokeStyle = '#BFE9FF'; c.lineWidth = 10;
+      for (const s of [-1, 1]) { c.beginPath(); c.moveTo(e.x, e.y - 6); c.quadraticCurveTo(e.x + s * 60 * (1 + k), e.y - 30, e.x + s * 140 * (1 + k), e.y - 8); c.stroke() }
+      c.fillStyle = '#E8F7FF'; for (let i = 0; i < 4; i++) { c.beginPath(); c.arc(e.x + (i - 1.5) * 40, e.y - 20 - k * 60 - i * 8, 10 - i, 0, TAU); c.fill() } c.restore() }
+    else if (e.k === 'eclabousse') { const s = e.s || 1, k = P(u, 0, .9 * Math.sqrt(s)); if (k >= 1) continue; const r = rng(Math.floor(e.t0 * 997)); c.save(); c.globalAlpha = 1 - k;
+      for (let i = 0, n = Math.round(16 * Math.min(1.4, s)); i < n; i++) { const ang = -Math.PI * (.1 + .8 * r()), sp = (200 + r() * 420) * s, px = e.x + Math.cos(ang) * sp * eo(k), py = e.y + Math.sin(ang) * sp * eo(k) + 600 * k * k;
+        c.fillStyle = i % 2 ? '#7FD0F5' : '#E8F7FF'; c.beginPath(); c.arc(px, py, (14 + r() * 20) * (.55 + .45 * Math.min(1.4, s)), 0, TAU); c.fill() } c.restore() }
+    else if (e.k === 'tache') { const k = P(u, 0, 1.3); if (k >= 1) continue; c.save(); c.globalAlpha = (1 - P(k, .6, 1)) * .9; c.fillStyle = '#5A3A1C';
+      c.beginPath(); c.ellipse(e.x, e.y, e.r * 1.6, e.r * .35, 0, 0, TAU); c.fill(); c.restore() }
+    else if (e.k === 'griffes') { // marques de griffes
+      const k = P(u, 0, .35); if (k >= 1) continue; c.save(); c.translate(e.x, e.y); c.scale(e.dir || 1, 1); c.rotate(-.5); c.lineCap = 'round';
+      for (let i = 0; i < (e.n || 3); i++) { const d = (i - 1) * 34, l = 170 * eo(Math.min(1, k * 2.2)); c.globalAlpha = 1 - P(k, .5, 1);
+        c.strokeStyle = NV; c.lineWidth = 16; c.beginPath(); c.moveTo(-l / 2, d); c.quadraticCurveTo(0, d - 26, l / 2, d); c.stroke();
+        c.strokeStyle = i % 2 ? '#FFF1B8' : '#fff'; c.lineWidth = 8; c.stroke() } c.restore() }
+    else if (e.k === 'clan') { if (u >= 1.3) continue; clan(c, e, u) }
+    else if (e.k === 'saumon') { // le saumon qui vole (grizzly : la patte à saumons)
+      const k = P(u, 0, 1.35); if (k >= 1) continue; const tt = u * 60;
+      poisson(c, e.x + e.vx * tt, e.y + e.vy * tt + .5 * 1.1 * tt * tt, u * 14 * (e.dir || 1), 1.3) }
+    else if (e.k === 'glace') { // éclats de glace
+      const k = P(u, 0, .8); if (k >= 1) continue; const r = rng(Math.floor(e.t0 * 991)); c.save(); c.globalAlpha = 1 - k;
+      for (let i = 0; i < 12; i++) { const a = -Math.PI * (.05 + .9 * r()), sp = 180 + r() * 380, px = e.x + Math.cos(a) * sp * eo(k), py = e.y + Math.sin(a) * sp * eo(k) + 420 * k * k, s2 = 12 + r() * 18;
+        c.save(); c.translate(px, py); c.rotate(k * 8 + i); c.fillStyle = i % 3 ? '#DFF6FF' : '#9ADCFF'; c.strokeStyle = '#2E8FC7'; c.lineWidth = 3; c.beginPath(); c.moveTo(0, -s2); c.lineTo(s2 * .7, 0); c.lineTo(0, s2); c.lineTo(-s2 * .6, 0); c.closePath(); c.fill(); c.stroke(); c.restore() } c.restore() }
+    else if (e.k === 'bulle') { const k = P(u, 0, 1); if (k >= 1) continue; c.save(); c.globalAlpha = 1 - k; c.strokeStyle = '#4E9A2E'; c.fillStyle = 'rgba(123,211,90,.55)'; c.lineWidth = 5;
+      c.beginPath(); c.arc(e.x, e.y - 120 * k, 16 + 10 * k, 0, TAU); c.fill(); c.stroke(); c.restore() }
+  }
+}
+function comic(c, word, x, y, u, size = 1, alpha = 1, col = PA) {
+  const s = back(P(u, 0, .16)) * size; if (s <= 0) return;
+  c.save(); c.globalAlpha = Math.max(0, alpha); c.translate(x, y); c.rotate(-.1); c.scale(s, s);
+  c.font = '900 92px Rubik, "Arial Black", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  c.lineWidth = 22; c.strokeStyle = NV; c.strokeText(word, 6, 8); c.strokeText(word, 0, 0); c.fillStyle = col; c.fillText(word, 0, 0); c.restore();
+}
+
+// ---------------------------------------------------------------------
+//  Caméra
+// ---------------------------------------------------------------------
+const cam = { z: 1, cx: 960, cy: 540, ox: 0, oy: 0 };
+function updateCam() {
+  const [a, b] = G.f; let mid = (a.x + b.x) / 2, d = Math.abs(a.x - b.x);
+  let z = cl(1900 / (d + 1050), 1, 1.16);
+  if (G.freeze > 0 && G.superBy) { z = 1.3; mid = G.superBy.x + G.superBy.face * 120 }
+  cam.z += (z - cam.z) * .12;
+  const half = 960 / cam.z; let cx = cl(mid, half, W - half);
+  cam.cx += (cx - cam.cx) * .15; cam.cy = FLOOR - 410 / cam.z - (G.freeze > 0 ? 80 : 0) / cam.z;
+  const s = G.shake; cam.ox = (Math.random() - .5) * s * 1.4; cam.oy = (Math.random() - .5) * s;
+}
+function worldT(c) { c.setTransform(1, 0, 0, 1, 0, 0); c.translate(W / 2 + cam.ox, H / 2 + cam.oy); c.scale(cam.z, cam.z); c.translate(-cam.cx, -cam.cy) }
+
+// ---------------------------------------------------------------------
+//  Interface de combat
+// ---------------------------------------------------------------------
+function rr(c, x, y, w, h, r) { c.beginPath(); c.roundRect(x, y, w, h, r) }
+function hud(c) {
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  for (const f of G.f) {
+    const s = f.side, x0 = s ? 1080 : 140, w = 700, y = 52, h = 44;
+    f.shown += (f.hp - f.shown) * .35; if (f.trail > f.shown) f.trail -= Math.max(.2, (f.trail - f.shown) * .035); else f.trail = f.shown;
+    rr(c, x0 - 8, y - 8, w + 16, h + 16, 16); c.fillStyle = NV; c.fill();
+    c.save(); rr(c, x0, y, w, h, 10); c.clip(); c.fillStyle = '#2A1636'; c.fillRect(x0, y, w, h);
+    const tw = w * f.trail / f.d.hp, sw = w * f.shown / f.d.hp;
+    c.fillStyle = '#FFF1B8'; s ? c.fillRect(x0, y, tw, h) : c.fillRect(x0 + w - tw, y, tw, h);
+    const g = c.createLinearGradient(0, y, 0, y + h); const low = f.hp / f.d.hp < .25 && Math.sin(G.time * 12) > 0;
+    g.addColorStop(0, low ? '#FF6B5A' : f.d.clair); g.addColorStop(1, low ? '#C6281A' : f.d.col);
+    c.fillStyle = g; s ? c.fillRect(x0, y, sw, h) : c.fillRect(x0 + w - sw, y, sw, h);
+    c.fillStyle = 'rgba(255,255,255,.25)'; c.fillRect(x0, y + 5, w, 8); c.restore();
+    c.lineWidth = 5; c.strokeStyle = PA; rr(c, x0, y, w, h, 10); c.stroke();
+    // portrait
+    const px = s ? x0 + w + 70 : x0 - 70, py = y + 24;
+    c.save(); c.beginPath(); c.arc(px, py, 62, 0, TAU); c.fillStyle = f.d.fond; c.fill(); c.clip();
+    const img = G.heads[f.kind]; c.translate(px, py); c.scale(s ? -1 : 1, 1); c.drawImage(img, -70, -70, 140, 140); c.restore();
+    c.lineWidth = 7; c.strokeStyle = PA; c.beginPath(); c.arc(px, py, 62, 0, TAU); c.stroke();
+    // nom + étiquette + manches
+    txt(c, f.nomAff || f.d.nom, s ? x0 + w - 4 : x0 + 4, y + h + 34, (f.nomAff || f.d.nom).length > 13 ? 32 : 40, PA, { al: s ? 'right' : 'left', out: 10 });
+    const qui = NET.on ? (s === NET.moi ? 'TOI' : 'AMI') : G.mode === 1 ? (f.cpu ? 'ORDI' : G.god ? '⚡ GOD MODE' : 'TOI') : (s ? 'J2' : 'J1');
+    c.font = '900 24px Rubik, "Arial Black", sans-serif'; const lw = c.measureText(qui).width + 26, lx = s ? x0 + w - lw : x0;
+    rr(c, lx, y - 44, lw, 32, 10); c.fillStyle = f.cpu ? VI : (s ? BL : OR); c.fill(); c.lineWidth = 3; c.strokeStyle = PA; c.stroke(); txt(c, qui, lx + lw / 2, y - 27, 24, PA);
+    for (let i = 0; i < 2; i++) { const sx = s ? x0 + 30 + i * 46 : x0 + w - 30 - i * 46; star(c, sx, y + h + 32, 18, 8, 5, i < f.wins ? JA : 'rgba(255,255,255,.2)', NV, 4) }
+    // jauge de SUPER (sous le nom)
+    const mw = 330, mx = s ? x0 + w - mw : x0, my = y + h + 70, full = f.meter >= 100;
+    rr(c, mx - 5, my - 5, mw + 10, 28, 10); c.fillStyle = NV; c.fill();
+    if (f.meter > 0) { rr(c, mx, my, Math.max(16, mw * f.meter / 100), 18, 7); c.fillStyle = full ? (Math.sin(G.time * 14) > 0 ? JA : '#FFE8A0') : CY; c.fill(); }
+    c.lineWidth = 3; c.strokeStyle = PA; rr(c, mx, my, mw, 18, 7); c.stroke();
+    txt(c, full ? '★ SUPER PRÊT !' : 'SUPER', s ? mx - 14 : mx + mw + 14, my + 9, full ? 30 : 22, full ? JA : PA, { al: s ? 'right' : 'left', out: 8 });
+  }
+  // chrono
+  c.beginPath(); c.arc(960, 80, 66, 0, TAU); c.fillStyle = NV; c.fill(); c.lineWidth = 7; c.strokeStyle = PA; c.stroke();
+  const sec = Math.max(0, Math.ceil(G.timer / 60)); txt(c, String(sec), 960, 84, 66, sec <= 10 && G.phase === 'fight' && Math.sin(G.time * 10) > 0 ? '#FF6B4A' : JA);
+  txt(c, 'MANCHE ' + G.round, 960, 172, 26, PA, { out: 8 });
+  // combos
+  for (const e of FX) if (e.k === 'combo') { const u = G.time - e.t0; if (u < 1) txt(c, e.n + ' COUPS !', e.side ? 1560 : 360, 250, 60, JA, { out: 14, sc: back(P(u, 0, .15)), rot: e.side ? .05 : -.05 }) }
+}
+function annonce(c) {
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  const ph = G.phase, k = G.pt;
+  const big = (s, col, t0, size = 200, y = 470) => { const u = back(P(k, t0, t0 + 12)); if (u > 0) txt(c, s, 960, y, size, col, { out: 32, sh: 16, sc: u, rot: -.03 }) };
+  if (ph === 'intro') {
+    if (k > 70 && k < 150) { c.fillStyle = 'rgba(11,42,91,.55)'; c.fillRect(0, 370, W, 200 * eo(P(k, 70, 80))); big(G.round === 3 ? 'MANCHE DÉCISIVE' : 'MANCHE ' + G.round, PA, 72, G.round === 3 ? 150 : 190) }
+    if (k >= 150) big('BAGARRE !', JA, 150, 230);
+    // une astuce différente à chaque manche : se protéger, le SUPER, le combo final
+    if (G.round <= 3 && k > 20 && k < 175 && !G.f[0].cpu) { const a = Math.min(1, P(k, 20, 32), 1 - P(k, 165, 175)); c.globalAlpha = a;
+      const tact = document.body.classList.contains('tactile');
+      const astuce = G.round === 1 ? (tact ? 'ASTUCE : tire le joystick VERS LE BAS pour te protéger !' : 'ASTUCE : BAS (S ou flèche) pour te protéger !')
+        : G.round === 2 ? (tact ? 'ASTUCE : jauge SUPER pleine ? Appuie sur ★ SUPER !' : 'ASTUCE : jauge SUPER pleine ? Appuie sur H pour le SUPER !')
+        : (tact ? 'ASTUCE : tape 3 fois A de suite pour un COMBO FINAL !' : 'ASTUCE : tape 3 fois F de suite pour un COMBO FINAL !');
+      txt(c, astuce, 960, 700, 44, PA, { out: 12 }); c.globalAlpha = 1 }
+  }
+  if (ph === 'ko') {
+    if (k < 120) big(G.timeUp ? 'TEMPS !' : 'K.O. !', G.timeUp ? JA : '#FF6B4A', 0, G.timeUp ? 200 : 280);
+    else { const v = G.roundWinner; big(v ? v.d.art + ' GAGNE LA MANCHE' : 'ÉGALITÉ !', v ? v.d.clair : PA, 120, v ? (v.d.art.length > 10 ? 76 : 88) : 170); if (G.perfect && v) big('PARFAIT !', JA, 140, 110, 600) }
+  }
+  if (G.freeze > 0 && G.superBy) {
+    const f = G.superBy, u = P(34 - G.freeze, 0, 8);
+    txt(c, f.move.nom.toUpperCase() + ' !', 960, 900, 86, JA, { out: 20, sh: 10, sc: back(u) });
+  }
+}
+
+// ---------------------------------------------------------------------
+//  Rendu
+// ---------------------------------------------------------------------
+function render() {
+  const t = G.time;
+  // décor
+  bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = '#1a1030'; bg.fillRect(0, 0, W, H);
+  worldT(bg); bg.drawImage(G.bgImg, -40, -20, W + 80, H + 40);
+  if (G.phase === 'menu' || !G.f.length) { Skin.clear(); fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, W, H); return }
+  // flaque « portable » du crocodile (hors de la rivière) et ronds dans l'eau
+  dessineFlaques(bg);
+  // GOD MODE : aura dorée
+  if (G.god && G.mode === 1 && !NET.on) for (const f of G.f) if (!f.cpu && !f.cache) { const R = 420 * f.d.K / .44, y = FLOOR - f.h - 260 * f.d.K / .44, g = bg.createRadialGradient(f.x, y, 20, f.x, y, R);
+    g.addColorStop(0, `rgba(255,214,90,${.55 + .15 * Math.sin(t * 6)})`); g.addColorStop(1, 'rgba(255,214,90,0)'); bg.fillStyle = g; bg.beginPath(); bg.arc(f.x, y, R, 0, TAU); bg.fill() }
+  // ombres
+  for (const f of G.f) { if (f.cache) continue; const k = cl(1 - f.h / 600, .35, 1); bg.fillStyle = 'rgba(40,15,5,.35)'; bg.beginPath(); bg.ellipse(f.x, FLOOR + 6, 220 * f.d.K / .44 * k, 26 * k, 0, 0, TAU); bg.fill() }
+  if (G.freeze > 0 && G.superBy) {
+    const f = G.superBy, u = P(34 - G.freeze, 0, 8);
+    bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = `rgba(4,10,30,${.62 * u})`; bg.fillRect(0, 0, W, H);
+    worldT(bg); bg.save(); bg.globalAlpha = .45 * u; bg.translate(f.x, FLOOR - 220); bg.rotate(t * 2);
+    for (let i = 0; i < 16; i++) { bg.rotate(TAU / 16); bg.fillStyle = i % 2 ? JA : f.d.col; bg.beginPath(); bg.moveTo(0, 0); bg.lineTo(1400, -60); bg.lineTo(1400, 60); bg.closePath(); bg.fill() } bg.restore();
+  }
+  // personnages : celui qui attaque passe devant
+  Skin.clear();
+  const [a, b] = G.f, order = (b.state === 'atk' && a.state !== 'atk') ? [a, b] : [b, a];
+  for (const f of order) {
+    if (f.cache) continue;
+    if (!f.pose) poseOf(f);
+    const view = Skin.viewMatrix(f.R, f.x, FLOOR - f.h, f.d.K, f.flipV ? -f.face : f.face, cam, W, H);
+    if (f.ghost && f.ghost.k > 0) Skin.draw(f.R, f.ghost.M, view, { only: f.ghost.only || undefined, show: { roar: f.ghost.roar }, alpha: .45 * f.ghost.k / 4, tint: f.tint || [0, 0, 0, 0] });
+    const teinte = f.poison ? [.45, 1, .35, .28 + .14 * Math.sin(G.time * 8)] : f.sale > 0 ? [.8, .52, .25, .42 * Math.min(1, f.sale / 40)] : f.tint || [0, 0, 0, 0];
+    Skin.draw(f.R, f.M, view, { only: f.spr || undefined, show: { roar: f.roar }, flash: f.flash > 0 ? .12 * f.flash / 4 : 0, tint: teinte });
+  }
+  // effets et interface
+  fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, W, H);
+  worldT(fx);
+  for (const f of G.f) if (f.state === 'ko' || (f.state === 'down' && f.t < 50)) dizzy(fx, f, t);
+  dessineDetails(fx, t);
+  if (G.arene === 'riviere') eau(fx, t);
+  dessineZones(fx); drawFx(fx); dessineProj(fx);
+  if (G.debug) for (const f of G.f) { fx.strokeStyle = '#0f0'; fx.lineWidth = 3; const h = hurtBox(f); fx.strokeRect(h[0], h[2], h[1] - h[0], h[3] - h[2]); const x = hitBox(f); if (x) { fx.strokeStyle = '#f00'; fx.strokeRect(x[0], x[2], x[1] - x[0], x[3] - x[2]) } }
+  dessineFoule(fx); hud(fx); annonce(fx);
+}
+// position de la tête (px image depuis le point au sol, pose de base)
+const TETE = { hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
+function tete(f) { const p = f.d.tete || TETE[f.kind] || [450, -550], K = f.d.K; return [f.x + f.face * p[0] * K, FLOOR - f.h + p[1] * K] }
+function oiseau(c, x, y, s, t) { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3;
+  c.beginPath(); c.ellipse(0, 0, 16, 11, 0, 0, TAU); c.fill(); c.stroke(); c.beginPath(); c.arc(12, -8, 8, 0, TAU); c.fill(); c.stroke();
+  c.fillStyle = JA; c.beginPath(); c.moveTo(19, -8); c.lineTo(28, -5); c.lineTo(19, -3); c.fill();
+  const a = Math.sin(t * 30) * .8; c.fillStyle = '#BFE9FF'; c.beginPath(); c.moveTo(-4, -2); c.lineTo(-18, -18 * Math.cos(a) - 4); c.lineTo(4, -4); c.fill(); c.stroke(); c.restore() }
+const CLAN = {};
+function chargeClan() { if (CLAN.m) return; for (const [k, n] of [['m', 'marche'], ['s', 'saut'], ['c', 'coup']]) { CLAN[k] = new Image(); CLAN[k].src = 'hyene_' + n + '.webp' } }
+// le clan de la hyène : 5 copines qui traversent l'écran au galop
+function clan(c, e, u) {
+  const im = [CLAN.m, CLAN.s, CLAN.c].filter(i => i && i.complete && i.naturalWidth); if (!im.length) return;
+  for (let i = 0; i < 5; i++) {
+    const d = u * 1500 - i * 150, x = e.x - e.dir * (700 + i * 110) + e.dir * d * 1.35; if (d < 0) continue;
+    const img = im[(Math.floor(u * 14) + i) % im.length], s = .3 + (i % 2) * .05, w = img.naturalWidth * s, h = img.naturalHeight * s, y = FLOOR + 6 - h - Math.abs(Math.sin(u * 22 + i)) * 26;
+    c.save(); c.globalAlpha = Math.min(1, 3 * (1.3 - u)); c.translate(x, 0); c.scale(e.dir, 1); c.drawImage(img, -w / 2, y, w, h); c.restore();
+  }
+}
+function poisson(c, x, y, r, s) { c.save(); c.translate(x, y); c.rotate(r); c.scale(s, s); c.lineWidth = 5; c.strokeStyle = NV;
+  c.fillStyle = '#FF8A7A'; c.beginPath(); c.ellipse(0, 0, 62, 24, 0, 0, TAU); c.fill(); c.stroke();
+  c.beginPath(); c.moveTo(-55, 0); c.lineTo(-92, -24); c.lineTo(-84, 0); c.lineTo(-92, 24); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle = '#FFD1C8'; c.beginPath(); c.ellipse(8, 8, 40, 9, 0, 0, TAU); c.fill();
+  c.fillStyle = '#fff'; c.beginPath(); c.arc(38, -6, 8, 0, TAU); c.fill(); c.stroke(); c.fillStyle = NV; c.beginPath(); c.arc(40, -6, 3.5, 0, TAU); c.fill(); c.restore() }
+// détails dessinés en direct autour des animaux (état par état)
+function dessineDetails(c, t) {
+  for (const f of G.f) {
+    const K = f.d.K, [hx, hy] = tete(f), m = f.state === 'atk' ? f.move : null;
+    // étourdi : étoiles et oiseaux qui tournent autour de la tête
+    if (f.state === 'dizzy') { for (let i = 0; i < 3; i++) { const a = t * 4 + i * TAU / 3; star(c, hx + Math.cos(a) * 110, hy - 90 + Math.sin(a) * 26, 24, 10, 5, JA, NV, 4) }
+      for (let i = 0; i < 2; i++) { const a = -t * 3 + i * Math.PI; oiseau(c, hx + Math.cos(a) * 140, hy - 120 + Math.sin(a) * 30, .9, t + i) } }
+    // crocodile sous l'eau : on ne voit que ses yeux et ses narines qui glissent
+    if (f.cache) { const x = f.x + f.face * 200 * K, y = FLOOR - 6;
+      c.save(); c.globalAlpha = .9; c.strokeStyle = '#E8F7FF'; c.lineWidth = 6; c.beginPath(); c.moveTo(x - f.face * 40, y); c.lineTo(x - f.face * 200, y - 16); c.moveTo(x - f.face * 40, y); c.lineTo(x - f.face * 200, y + 12); c.stroke(); c.restore();
+      c.fillStyle = '#4E8A2E'; c.strokeStyle = NV; c.lineWidth = 4;
+      for (const dx of [-26, 26]) { c.beginPath(); c.ellipse(x + dx, y - 16, 22, 17, 0, Math.PI, TAU); c.fill(); c.stroke(); c.fillStyle = '#FFE36B'; c.beginPath(); c.ellipse(x + dx, y - 22, 10, 9, 0, 0, TAU); c.fill(); c.fillStyle = NV; c.beginPath(); c.ellipse(x + dx + f.face * 2, y - 22, 3, 8, 0, 0, TAU); c.fill(); c.fillStyle = '#4E8A2E' }
+      c.beginPath(); c.ellipse(x + f.face * 90, y - 8, 16, 9, 0, Math.PI, TAU); c.fill(); c.stroke() }
+    // hippo : la queue-hélice
+    if (m && m.dos && f.ph !== 'rec') { const x = f.x + f.face * 675 * K, y = FLOOR - f.h - 548 * K, a = t * 38;
+      c.save(); c.translate(x, y); c.globalAlpha = f.ph === 'act' ? .85 : .4; c.strokeStyle = 'rgba(255,255,255,.8)'; c.lineWidth = 5; c.beginPath(); c.arc(0, 0, 52, 0, TAU); c.stroke();
+      c.fillStyle = '#6E5A7E'; for (let i = 0; i < 3; i++) { c.save(); c.rotate(a + i * TAU / 3); c.beginPath(); c.ellipse(26, 0, 30, 9, 0, 0, TAU); c.fill(); c.restore() } c.restore() }
+    // lion : une couronne pendant la charge du roi
+    if (m && f.kind === 'lion' && f.mk === 'SUPER') { c.save(); c.translate(hx - f.face * 20, hy - 150 + 8 * Math.sin(t * 12)); c.rotate(-.1 * f.face);
+      c.fillStyle = JA; c.strokeStyle = NV; c.lineWidth = 6; c.beginPath(); c.moveTo(-70, 30); c.lineTo(-80, -30); c.lineTo(-40, 0); c.lineTo(0, -45); c.lineTo(40, 0); c.lineTo(80, -30); c.lineTo(70, 30); c.closePath(); c.fill(); c.stroke();
+      for (const [x, col] of [[-45, '#FF5A6E'], [0, '#12A4C4'], [45, '#7BD35A']]) { c.fillStyle = col; c.beginPath(); c.arc(x, 14, 10, 0, TAU); c.fill(); c.stroke() } c.restore() }
+    // ruées : traits de vitesse derrière l'animal
+    if (m && m.rush && f.ph === 'act' && !f.cache) { c.save(); c.strokeStyle = 'rgba(255,248,236,.7)'; c.lineCap = 'round';
+      for (let i = 0; i < 5; i++) { const y = FLOOR - f.h - 80 - i * 90 * K / .44, l = 160 + 90 * Math.sin(t * 20 + i * 2), x = f.x - f.face * (240 + (i % 2) * 60) * K / .44; c.lineWidth = 9 - i; c.beginPath(); c.moveTo(x, y); c.lineTo(x - f.face * l, y); c.stroke() } c.restore() }
+    // victoires qui font rire : le gorille fredonne, le lion fait la sieste, le crocodile pleure s'il perd
+    if (f.state === 'win' && f.t > 40) {
+      if (f.kind === 'gorille') for (let i = 0; i < 3; i++) { const k = ((t * .7 + i / 3) % 1); c.globalAlpha = 1 - k; txt(c, i % 2 ? '♪' : '♫', hx + f.face * (40 + 60 * k) + 30 * Math.sin(k * 9 + i), hy - 80 - 220 * k, 70, JA, { out: 8 }); c.globalAlpha = 1 }
+      if (f.kind === 'lion' && f.t > 120) for (let i = 0; i < 3; i++) { const k = ((t * .5 + i / 3) % 1); c.globalAlpha = 1 - k; txt(c, 'Z', hx + f.face * (30 + 90 * k), hy - 60 - 200 * k, 50 + 40 * k, PA, { out: 8 }); c.globalAlpha = 1 }
+    }
+    if ((f.state === 'lose' || f.state === 'ko') && f.kind === 'croco' && G.phase === 'ko') { for (let i = 0; i < 3; i++) { const k = ((t * 1.3 + i / 3) % 1); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3; c.beginPath(); c.ellipse(hx - f.face * 60, hy + 10 + 150 * k, 9, 13, 0, 0, TAU); c.fill(); c.stroke() } }
+  }
+  // ratel : SUPER « la furie » = nuage de bagarre de dessin animé
+  for (const f of G.f) if (f.kind === 'ratel' && f.state === 'atk' && f.mk === 'SUPER' && f.ph === 'act' && f.hit) {
+    const o = G.f.find(g => g !== f), x = (f.x + o.x) / 2, y = FLOOR - 300, r = rng(Math.floor(t * 12));
+    c.save(); c.fillStyle = '#F4E2C0'; c.strokeStyle = NV; c.lineWidth = 7;
+    for (let i = 0; i < 9; i++) { const a = i / 9 * TAU, R = 230 + 30 * Math.sin(t * 20 + i); c.beginPath(); c.arc(x + Math.cos(a) * R * .8, y + Math.sin(a) * R * .45, 110 + 20 * r(), 0, TAU); c.fill(); c.stroke() }
+    c.beginPath(); c.ellipse(x, y, 260, 170, 0, 0, TAU); c.fill();
+    for (let i = 0; i < 5; i++) txt(c, ['★', '@', '#', '!', '%', 'POW'][Math.floor(r() * 6)], x + (r() - .5) * 360, y + (r() - .5) * 200, 50 + r() * 30, [JA, OR, NV, '#FF5A6E'][i % 4], { out: 6 });
+    for (let i = 0; i < 3; i++) { const a = r() * TAU; c.lineWidth = 16; c.strokeStyle = i % 2 ? '#3A3A48' : o.d.col; c.beginPath(); c.moveTo(x + Math.cos(a) * 180, y + Math.sin(a) * 110); c.lineTo(x + Math.cos(a) * 300, y + Math.sin(a) * 180); c.stroke() }
+    c.restore();
+  }
+}
+function dessineFlaques(c) {
+  if (!G.f.length) return;
+  for (const f of G.f) {
+    const dansEau = f.cache || (f.state === 'atk' && f.move && f.move.plonge && (f.ph === 'st' || f.t < f.move.st + 8));
+    if (!dansEau) continue;
+    const w = G.arene === 'riviere' ? 180 : 260;
+    c.save(); c.fillStyle = G.arene === 'riviere' ? 'rgba(210,240,255,.35)' : '#3FA9E0'; c.strokeStyle = G.arene === 'riviere' ? 'rgba(255,255,255,.6)' : NV; c.lineWidth = 6;
+    c.beginPath(); c.ellipse(f.x, FLOOR + 4, w, 38, 0, 0, TAU); c.fill(); c.stroke();
+    c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.ellipse(f.x - 60, FLOOR - 6, 70, 9, 0, 0, TAU); c.fill(); c.restore();
+  }
+}
+// rivière : l'eau passe devant les pattes (tout le monde a pied), reflets qui ondulent, ronds autour des pattes
+function eau(c, t) {
+  const y0 = FLOOR - 34, gr = c.createLinearGradient(0, y0, 0, H + 60);
+  gr.addColorStop(0, 'rgba(140,205,225,0)'); gr.addColorStop(.1, 'rgba(140,205,225,.5)'); gr.addColorStop(1, 'rgba(70,140,170,.62)');
+  c.fillStyle = gr; c.fillRect(-300, y0, W + 600, H - y0 + 120);
+  c.save(); c.strokeStyle = 'rgba(255,255,255,.5)'; c.lineWidth = 4; c.lineCap = 'round';
+  for (let i = 0; i < 16; i++) { const x = ((i * 167 + t * 38 * (1 + i % 3 * .3)) % (W + 400)) - 200, y = y0 + 16 + (i % 4) * 24 + Math.sin(t * 2 + i) * 4, l = 40 + (i % 3) * 32;
+    c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + l / 2, y - 7, x + l, y); c.stroke() }
+  for (const f of G.f) { if (f.h > 40 || f.cache) continue; const w = 220 * f.d.K / .44 * (1 + .07 * Math.sin(t * 5 + f.side * 2)); c.strokeStyle = 'rgba(255,255,255,.6)'; c.lineWidth = 5; c.beginPath(); c.ellipse(f.x, FLOOR - 6, w, 17, 0, 0, TAU); c.stroke() }
+  c.restore();
+}
+function plouf(f, s) { if (G.arene !== 'riviere') return; addFx({ k: 'eclabousse', x: f.x + (Math.random() - .5) * 80, y: FLOOR - 10, s }); if (s >= 1) sfx('eclaboussure', Math.min(1, .35 + .35 * s)); else if (Math.random() < .5) sfx('plouf', .12) }
+function dizzy(c, f, t) { const x = f.x + f.face * (f.d.spr ? 560 * f.d.K : 250 * f.d.K / .44), y = f.d.spr ? FLOOR - 170 : FLOOR - 210; for (let i = 0; i < 3; i++) { const a = t * 5 + i * TAU / 3; star(c, x + Math.cos(a) * 70, y + Math.sin(a) * 22, 22, 9, 5, JA, NV, 4) } }
+function poseOf(f) {
+  const st0 = f.state; if (st0 === 'bstun') f.state = f.crouchB ? 'cblock' : 'block';
+  const res = (f.d.spr ? spritePose : f.kind === 'tigre' ? tigerPose : gorillaPose)(f.R, f, G.time); f.state = st0; f.flipV = !!res.flip;
+  if (f.ghost && f.ghost.k > 0) f.ghost.k--;
+  // pose dessinée (illustration entière) : fondu-traîne avec l'image précédente
+  const sp = res.spr || null;
+  if (sp !== (f.spr || null)) { if (f.M) f.ghost = { M: f.M, only: f.spr || null, roar: f.roar, k: 4 }; f.spr = sp; f.pp = null; f.blendT = 0; f.lastState = f.state; }
+  if (sp) { f.pose = res.pose; f.roar = res.roar; f.M = Skin.matrices(f.R, f.pose); return; }
+  // fondu entre deux poses (évite les sauts)
+  if (f.pp && f.blendT > 0) {
+    const k = f.blendT / 5;
+    for (const bn in f.pp) { const a = f.pp[bn], b = res.pose[bn] || (res.pose[bn] = {}); for (const q of ['r', 'x', 'y']) { const av = a[q] || 0, bv = b[q] || 0; b[q] = bv + (av - bv) * k } }
+    f.blendT--;
+  }
+  if (f.lastState !== f.state) { f.pp = JSON.parse(JSON.stringify(f.pose || res.pose)); f.blendT = ['hurt', 'bstun', 'atk'].includes(f.state) ? 2 : 5; f.lastState = f.state }
+  f.pose = res.pose; f.roar = res.roar; f.M = Skin.matrices(f.R, f.pose);
+}
+
+// ---------------------------------------------------------------------
+//  Boucle de jeu
+// ---------------------------------------------------------------------
+const G = { proj: [], zones: [], phase: 'loading', mode: 1, niv: 0, aide: 0, pick: ['tigre', 'gorille'], f: [], round: 1, timer: 99 * 60, time: 0, frame: 0, pt: 0, stop: 0, shake: 0, slow: 0, freeze: 0, debug: false };
+function step() {
+  if (NET.on && NET.role === 'invite') return netPasInvite();
+  G.time += 1 / 60; G.frame++;
+  if (!['fight', 'intro', 'ko'].includes(G.phase)) return;
+  G.pt++;
+  if (G.shake > 0) G.shake *= .86;
+  const [a, b] = G.f; for (const f of G.f) if (f.flash > 0) f.flash--;
+  if (G.freeze > 0) { G.freeze--; for (const f of G.f) poseOf(f); updateCam(); return }
+  if (G.stop > 0) { G.stop--; updateCam(); return }
+  if (G.phase === 'ko' && G.slow > 0) { G.slow--; if (G.slow % 3) { updateCam(); return } }
+  if (G.phase === 'intro' && G.pt >= 180) { G.phase = 'fight'; G.pt = 0; for (const f of G.f) setS(f, 'idle') }
+  if (G.phase === 'fight') G.chrono = (G.chrono || 0) + 1;
+  if (G.god && G.mode === 1 && !NET.on) for (const f of G.f) if (!f.cpu) f.meter = 100; // GOD MODE : SUPER illimité
+  if (G.tuto) tutoPas();
+  const ia = a.cpu ? brain(a, b) : lire(0), ib = b.tuto ? tutoBrain(b, a) : b.cpu ? brain(b, a) : NET.on ? netEntreeDistante() : lire(1);
+  update(a, b, ia); update(b, a, ib);
+  // ils ne se traversent pas au sol
+  if ((a.h <= 0 && b.h <= 0 || Math.min(a.h, b.h) < 60) && !a.cache && !b.cache) {
+    const L = a.x < b.x ? a : b, Rr = L === a ? b : a, min = L.d.push[1] + Rr.d.push[1], dx = Rr.x - L.x;
+    if (dx < min) { const p = (min - dx) / 2; L.x -= p; Rr.x += p; if (L.x < STAGE_L) { Rr.x += STAGE_L - L.x; L.x = STAGE_L } if (Rr.x > STAGE_R) { L.x -= Rr.x - STAGE_R; Rr.x = STAGE_R } }
+  }
+  for (const f of G.f) poseOf(f);
+  if (G.phase === 'fight') majEffets();
+  if (G.phase === 'fight') {
+    strike(a, b); if (G.phase === 'fight') strike(b, a); if (G.phase === 'fight') majProj();
+    if (G.phase === 'fight' && --G.timer <= 0) { G.timeUp = true; const ka = a.hp / a.d.hp, kb = b.hp / b.d.hp; G.roundWinner = Math.abs(ka - kb) < .001 ? null : ka > kb ? a : b; G.phase = 'ko'; G.pt = 0; sfx('gong') }
+  }
+  if (G.phase === 'intro' && G.pt === 20) { sfx(a.kind, .6) } if (G.phase === 'intro' && G.pt === 45) { sfx(b.kind, .6) }
+  if (G.phase === 'intro' && G.pt === 74) annonceur(G.round >= 3 || (G.f[0].wins === 1 && G.f[1].wins === 1) ? 'final_round' : 'round_' + G.round);
+  if (G.phase === 'intro' && G.pt === 142) sfx('gong');
+  if (G.phase === 'intro' && G.pt === 156) annonceur('fight');
+  if (G.phase === 'ko') {
+    const v = G.roundWinner, l = v ? (v === a ? b : a) : null;
+    if (G.pt === 100) { if (v) { setS(v, 'win'); v.vx = 0; sfx(v.kind) } if (l && !['hurt', 'down', 'ko'].includes(l.state)) setS(l, 'lose'); if (!v) { setS(a, 'lose'); setS(b, 'lose') } }
+    if (v && v.state === 'win' && v.kind === 'gorille' && G.pt % 6 === 0 && G.pt < 190) sfx('tam', .6);
+    if (G.pt === 8 && G.timeUp) annonceur('time');
+    if (G.pt === 136 && G.perfect && v) annonceur('flawless_victory');
+    if (G.pt >= 250) endRound();
+  }
+  updateCam();
+  if (NET.on && NET.role === 'hote' && G.f.length) envoie(capture());
+}
+function newRound() {
+  const [a, b] = G.f;
+  for (const [f, x, face] of [[a, 590, 1], [b, 1330, -1]]) Object.assign(f, { poison: null, sale: 0, cache: false, glisse: 0, x, face, h: 0, vx: 0, vy: 0, hp: f.d.hp, shown: f.d.hp, trail: f.d.hp, state: 'intro', t: 0, combo: 0, knock: false, stun: 0, inv: 0, hist: [], prev: {}, pose: null, pp: null, ai: { t: 0, hold: {}, react: 0 } });
+  G.timer = 99 * 60; G.phase = 'intro'; G.pt = 0; G.timeUp = false; G.roundWinner = null; G.perfect = false; FX = []; G.proj = []; G.zones = [];
+  cam.z = 1; cam.cx = 960;
+}
+function endRound() {
+  const [a, b] = G.f, v = G.roundWinner; if (v) v.wins++;
+  // l'ordinateur se calme quand l'enfant perd une manche (jusqu'à 2 crans), et se réveille quand il gagne un match
+  if (G.mode === 1 && v && v.cpu) G.aide = Math.min(2, G.aide + 1);
+  if (a.wins >= 2 || b.wins >= 2 || G.round >= 5) return endMatch();
+  G.round++; newRound();
+}
+// « TON TIGRE », « TA HYÈNE » (h aspiré), « TON OURSE BRUNE » (voyelle)
+const FEMININ = /^(HYÈNE|OURSE|LIONNE|TIGRESSE|AUTRUCHE|ORQUE|GIRAFE|MANTE|ABEILLE|GUÊPE|PANTHÈRE|VIPÈRE|MOUFFETTE|MÈRE|BUFFLONNE)/;
+function ton(nom) { return (FEMININ.test(nom) && !/^[AEIOUYÉÈÊÂÎÔ]/.test(nom) ? 'TA ' : 'TON ') + nom }
+// « le GORILLE », « la HYÈNE », « l’OURS POLAIRE » (dans une phrase)
+function leNom(k, gras) { const a = CHARS[k] ? CHARS[k].art : k, m = a.match(/^(LE |LA |L’)(.*)$/), art = m ? m[1].toLowerCase() : '', n = m ? m[2] : a; return art + (gras ? '<b>' + n + '</b>' : n) }
+function endMatch() {
+  if (NET.on && NET.role === 'hote') envoie({ t: 'fin', s: capture(), st: G.f.map(f => f.st), pf: G.f.map(f => !!f.parfait) });
+  if (NET.on) G.f.forEach((f, i) => f.distant = i !== NET.moi);
+  G.phase = 'fin'; const [a, b] = G.f, v = a.wins > b.wins ? a : b.wins > a.wins ? b : null, l = v ? (v === a ? b : a) : null;
+  if (G.mode === 1 && v && !v.cpu) G.aide = Math.max(0, G.aide - 1);
+  const humain = v && !v.cpu, nv = [];
+  let t = !v ? 'MATCH NUL !' : NET.on ? (v.distant ? 'TON AMI GAGNE !' : 'TU GAGNES !') : G.mode === 1 ? (v.cpu ? `${v.d.art} DE L’ORDI GAGNE !` : `${ton(v.d.nom)} GAGNE !`) : (v === a ? 'JOUEUR 1' : 'JOUEUR 2') + ' GAGNE !';
+  // étoiles (contre l'ordi) : 1 = gagné, 2 = sans perdre de manche, 3 = en plus une manche parfaite
+  let n = 0;
+  if (G.mode === 1 && humain && !G.god) { n = 1 + (l.wins === 0 ? 1 : 0) + (v.parfait ? 1 : 0); SAVE.etoiles[v.kind] = Math.max(SAVE.etoiles[v.kind] || 0, n);
+    SAVE.gagneAvec[v.kind] = 1; badge('premiere', nv); if (G.niv === 2) badge('costaud', nv); if (Object.keys(SAVE.gagneAvec).length >= 4) badge('explo', nv) }
+  if (!G.god) for (const f of G.f) if (!f.cpu && !f.distant) { if (f.st.final) badge('combo', nv); if ((f.st.parades || 0) >= 10) badge('mur', nv); if (f.st.super) badge('super', nv); if (f.parfait) badge('parfait', nv) }
+  if (G.mode === 2) badge('duo', nv);
+  // carte « Le savais-tu ? » : on découvre l'animal qu'on vient de battre
+  let fait = null, neuf = false;
+  if (v && !v.cpu && !v.distant) { const k = l.kind, vu = SAVE.cartes[k] || (SAVE.cartes[k] = []), reste = FAITS[k].map((_, i) => i).filter(i => !vu.includes(i));
+    if (reste.length) { const i = reste[Math.floor(Math.random() * reste.length)]; vu.push(i); fait = FAITS[k][i]; neuf = true } }
+  if (!fait) { const k = (l || a).kind; fait = FAITS[k][Math.floor(Math.random() * FAITS[k].length)] }
+  if (nbCartes() >= 10) badge('cartes', nv); if (nbCartes() >= totalCartes()) badge('toutes', nv);
+  // tournoi
+  let suite = false;
+  if (G.mode === 1 && G.tournoi) { if (humain) { G.tournoi.i++; if (G.tournoi.i >= G.tournoi.liste.length) { if (G.tournoi.liste.length >= 2 || ORDRE.filter(debloque).length <= 2) { badge('champion', nv); t = 'CHAMPION DE L’ARÈNE !' } G.tournoi.i = 0 } else suite = true } }
+  sauve();
+  { const gagne = v && (NET.on ? !v.distant : G.mode === 2 ? true : !v.cpu); if (!G.livre) setTimeout(() => sfx(gagne ? 'victoire' : 'defaite'), 250); setTimeout(() => annonceur(!v ? 'tie' : G.mode === 2 && !NET.on ? 'winner' : gagne ? 'you_win' : 'you_lose'), 1100); if (nv.length) setTimeout(() => sfx('badge'), 1500) }
+  if (window.apresMatch) apresMatch(v, n, nv); // bonus : God Mode, quête du légendaire, défis
+  if (G.livre && !NET.on && G.mode === 1) { verdictLivre(v, n, nv); return }
+  $('gagnant').textContent = t;
+  { const ph = v && PHRASES[v.kind]; $('fin-phrase').hidden = !ph; if (ph) $('fin-phrase').textContent = '« ' + hasard(ph) + ' »' }
+  $('fin-etoiles').innerHTML = G.mode === 1 && humain && !G.god ? etoiles(n) : '';
+  $('fin-badges').innerHTML = nv.map(id => `<span>NOUVEAU BADGE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
+  $('fait-titre').textContent = neuf ? `NOUVELLE CARTE ! ${nbCartes()}/${totalCartes()} · LE SAVAIS-TU ?` : 'LE SAVAIS-TU ?';
+  $('fait-txt').textContent = fait;
+  $('fin-img').src = (v || a).kind + '_fin.webp';
+  $('revanche').textContent = suite ? 'ADVERSAIRE SUIVANT ▶' : G.mode === 1 && G.tournoi && humain ? 'NOUVEAU TOURNOI' : NET.on ? 'REJOUER' : 'REVANCHE !';
+  show('fin');
+}
+function startMatch() {
+  const [p1, p2] = G.pick;
+  G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
+  G.chrono = 0;
+  G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
+  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45] }[p2]; // variante de couleur
+  if (G.livre && G.livre.noms) G.f.forEach((f, i) => f.nomAff = G.livre.noms[i]);
+  G.round = 1; newRound(); show(null);
+  document.body.classList.toggle('deux', G.mode === 2 && !NET.on);
+  for (const T of [TOUCH, TOUCH2]) { T.x = T.y = 0; T.L = T.H = T.S = T.G = false }
+}
+function pause() { if (NET.on) return; if (G.phase === 'pause') { G.phase = G.before; show(null) } else { G.before = G.phase; G.phase = 'pause'; KEYS.clear(); show('pause') } }
+
+let acc = 0, last = performance.now();
+function loop(now) {
+  acc += Math.min(100, now - last); last = now;
+  while (acc >= 1000 / 60) { step(); acc -= 1000 / 60 }
+  render(); requestAnimationFrame(loop);
+}
+
+// ---------------------------------------------------------------------
+//  Écrans (menu, choix, VS, fin) et commandes tactiles
+// ---------------------------------------------------------------------
+const ECRANS = ['titre', 'choix', 'arenes', 'vs', 'pause', 'fin', 'code', 'trophees', 'enligne', 'appli', 'quiz', 'adeux', 'livre', 'pari', 'verdict', 'invite', 'parents', 'defi', 'legende', 'tuto', 'nom'];
+function show(id) {
+  for (const e of ECRANS) { const el = $(e); if (el) el.hidden = e !== id }
+  document.body.classList.toggle('en-combat', !id || id === 'pause'); document.body.classList.toggle('en-pause', id === 'pause'); document.body.classList.toggle('en-menu-titre', id === 'titre'); document.body.classList.toggle('en-menu', !!id && id !== 'pause' && id !== 'titre');
+  if (id) G.screen = id;
+  document.body.dataset.ecran = id || 'combat';
+}
+let selCursor = 0, selStage = 0;
+const PLACES = 12; // 12 animaux du livre (les derniers arrivent au fur et à mesure)
+function menuKey(code) {
+  if (G.phase === 'menu' && G.screen === 'titre' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('jouer').click(); return }
+  if (G.phase === 'menu' && G.screen === 'choix') {
+    const n = ORDRE.length;
+    if (['KeyA', 'ArrowLeft'].includes(code)) { selCursor = (selCursor + n - 1) % n; majChoix(); sfx('clic') }
+    if (['KeyD', 'ArrowRight'].includes(code)) { selCursor = (selCursor + 1) % n; majChoix(); sfx('clic') }
+    if (['KeyW', 'ArrowUp', 'KeyS', 'ArrowDown'].includes(code)) { selCursor = (selCursor + 4) % Math.max(4, n); if (selCursor >= n) selCursor = n - 1; majChoix(); sfx('clic') }
+    if (['Enter', 'Space', 'KeyF', 'KeyJ', 'Numpad1', 'Comma'].includes(code)) clicCarte(ORDRE[selCursor]);
+  }
+  if (G.phase === 'menu' && G.screen === 'arenes') {
+    const n = ARENES.length + 1;
+    if (['KeyA', 'ArrowLeft'].includes(code)) { selArene = (selArene + n - 1) % n; majArenes(); sfx('clic') }
+    if (['KeyD', 'ArrowRight'].includes(code)) { selArene = (selArene + 1) % n; majArenes(); sfx('clic') }
+    if (['KeyW', 'ArrowUp', 'KeyS', 'ArrowDown'].includes(code)) { selArene = (selArene + 4) % n; majArenes(); sfx('clic') }
+    if (['Enter', 'Space', 'KeyF', 'KeyJ', 'Numpad1', 'Comma'].includes(code)) prendArene(selArene);
+    if (code === 'Escape' || code === 'Backspace') $('arenes-retour').click();
+  }
+  if (G.phase === 'menu' && G.screen === 'choix' && (code === 'Escape' || code === 'Backspace') && selStage === 1) $('retour-choix').click();
+  if (G.phase === 'menu' && G.screen === 'code' && code === 'Enter') $('code-ok').click();
+  if (G.phase === 'menu' && G.screen === 'enligne' && (code === 'Enter' || code === 'NumpadEnter') && !$('net-invite').hidden) $('net-ok').click();
+  if (G.phase === 'fin' && ['Enter', 'Space'].includes(code)) $('revanche').click();
+}
+function etoiles(n, max = 3) { let s = ''; for (let i = 0; i < max; i++) s += i < n ? '<b>★</b>' : '★'; return s }
+function construitCartes() {
+  const box = $('cartes'); box.innerHTML = '';
+  for (let i = 0; i < PLACES; i++) {
+    const k = ORDRE[i], b = document.createElement('button'); b.type = 'button';
+    if (!k) { b.className = 'carte bientot'; b.disabled = true; b.innerHTML = '<span class="img"></span><span class="nom">BIENTÔT…</span><span class="ets">&nbsp;</span>'; box.appendChild(b); continue }
+    const d = CHARS[k], ok = debloque(k);
+    b.className = 'carte ' + k + (ok ? '' : ' verrou') + (selStage === 1 && G.pick[0] === k && !NET.on ? ' pris1' : ''); b.id = 'c-' + k;
+    if (selStage === 1 && G.pick[0] === k && !NET.on) b.dataset.tag = G.mode === 2 ? 'J1' : 'TOI';
+    b.innerHTML = `<span class="img"><img src="${k}_corps.webp" alt=""></span><span class="nom">${d.nom}</span><span class="ets${ok ? '' : ' quiz'}">${ok ? etoiles(SAVE.etoiles[k] || 0) : '🔒 QUIZ DU LIVRE'}</span>`;
+    b.onclick = () => { selCursor = i; majChoix(); clicCarte(k) };
+    b.onmouseenter = () => { selCursor = i; majChoix() };
+    box.appendChild(b);
+  }
+  majChoix();
+}
+function majChoix() {
+  document.querySelectorAll('#cartes .carte').forEach((c, i) => c.classList.toggle('curseur', i === selCursor));
+  if (!NET.on) $('choix-titre').textContent = selStage === 0 ? (G.mode === 2 ? 'JOUEUR 1 : CHOISIS TON ANIMAL' : 'CHOISIS TON ANIMAL') : G.mode === 2 ? 'JOUEUR 2 : À TOI DE CHOISIR' : 'CHOISIS TON ADVERSAIRE';
+  const k = ORDRE[selCursor], d = k && CHARS[k], s1 = selStage === 1 && !NET.on;
+  $('retour-choix').hidden = !!NET.on; $('hasard-btn').hidden = !s1; $('tournoi-btn').hidden = !(s1 && G.mode === 1); $('trophees-btn').hidden = s1;
+  $('detail').innerHTML = !d ? '' : !debloque(k) ? 'Animal secret : réponds au <b>quiz du livre</b> pour le débloquer !'
+    : `<b>${d.nom}</b> · ★ Spécial : <b>${d.moves.S.nom}</b> · Super : <b>${d.moves.SUPER.nom}</b>`;
+}
+function clicCarte(k) {
+  if (!debloque(k)) { if (NET.on) return; ouvreQuiz(k); return }
+  choisir(k);
+}
+function choisir(k) {
+  sonInit(); sfx('valide'); sfx(k, .6);
+  if (NET.on) { netChoisit(k); return }
+  if (selStage === 0) { G.pick[0] = k; selStage = 1; G.tournoi = null; construitCartes(); return }
+  // 1 joueur : on choisit son adversaire (Vincent) ; 2 joueurs : le joueur 2 choisit son animal
+  G.pick[1] = k; G.tournoi = null; ouvreArenes();
+}
+// 1 joueur : le tournoi enchaîne tous les autres animaux, dans le désordre
+function lanceTournoi() {
+  const k = G.pick[0], autres = ORDRE.filter(x => x !== k && debloque(x)).sort(() => Math.random() - .5);
+  G.tournoi = { liste: autres.length ? autres : [k], i: 0 }; G.pick[1] = G.tournoi.liste[0]; sfx('valide'); ouvreArenes();
+}
+function adversaireAuHasard() { const l = ORDRE.filter(debloque); choisir(l[Math.floor(Math.random() * l.length)]) }
+// --- chargement d'un animal (images + squelette), une seule fois
+const CHARGE = {};
+function chargeAnimal(k) {
+  if (!CHARGE[k]) CHARGE[k] = Promise.all([Skin.load(k, ''), new Promise((r, j) => { const i = new Image(); i.onload = () => r(i); i.onerror = j; i.src = k + '_tete.webp' })])
+    .then(([rig, tete]) => { G.rigs[k] = rig; G.heads[k] = tete; return rig });
+  return CHARGE[k];
+}
+// --- choix de l'arène
+let selArene = 0; G.arene = 'savane'; G.bgs = {};
+function chargeArene(k) {
+  const a = ARENES.find(x => x.k === k) || ARENES[0];
+  if (!G.bgs[a.k]) G.bgs[a.k] = new Promise((r, j) => { const i = new Image(); i.onload = () => r(i); i.onerror = j; i.src = a.img });
+  return G.bgs[a.k];
+}
+function ouvreArenes() {
+  G.phase = 'menu'; show('arenes');
+  const box = $('arenes-liste'); box.innerHTML = '';
+  $('arenes-titre').textContent = NET.on ? 'TU CHOISIS L’ARÈNE' : 'CHOISIS L’ARÈNE';
+  [...ARENES, { k: 'hasard', nom: 'AU HASARD' }].forEach((a, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'arene' + (a.k === 'hasard' ? ' hasard' : '');
+    if (a.k !== 'hasard') b.style.backgroundImage = `url(mini_${a.k}.webp)`; else b.innerHTML = '<b>🎲</b>';
+    b.innerHTML += `<span>${a.nom}</span>`;
+    b.onclick = () => { selArene = i; majArenes(); prendArene(i) }; b.onmouseenter = () => { selArene = i; majArenes() };
+    box.appendChild(b);
+  });
+  const i = ARENES.findIndex(x => x.k === G.arene); selArene = i < 0 ? 0 : i; majArenes();
+  for (const a of ARENES) chargeArene(a.k).catch(() => { });
+}
+function majArenes() { document.querySelectorAll('#arenes-liste .arene').forEach((c, i) => c.classList.toggle('curseur', i === selArene)) }
+function prendArene(i) {
+  const a = ARENES[i]; G.arene = a ? a.k : ARENES[Math.floor(Math.random() * ARENES.length)].k; G.areneHasard = !a;
+  sfx('valide');
+  if (NET.on) { envoie({ t: 'go', pick: G.pick, arene: G.arene }); }
+  vs();
+}
+function vs() {
+  G.phase = 'vs'; show('vs');
+  chargeArene(G.arene).then(i => { G.bgImg = i }).catch(() => { });
+  $('vs-g').src = G.pick[0] + '_vs.webp'; $('vs-d').src = G.pick[1] + '_vs.webp';
+  $('vs-nom-g').textContent = G.livre && G.livre.noms ? G.livre.noms[0] : CHARS[G.pick[0]].nom; $('vs-nom-d').textContent = G.livre && G.livre.noms ? G.livre.noms[1] : CHARS[G.pick[1]].nom;
+  $('vs').classList.remove('anim'); void $('vs').offsetWidth; $('vs').classList.add('anim');
+  sfx('boum', .8); sfx('foule', .45);
+  const pret = Promise.all([chargeAnimal(G.pick[0]), chargeAnimal(G.pick[1]), chargeArene(G.arene).then(i => { G.bgImg = i }).catch(() => { })]);
+  const attente = new Promise(r => setTimeout(r, 2600));
+  Promise.all([pret, attente]).then(() => { if (G.phase === 'vs') { startMatch(); if (NET.on && NET.role === 'invite') { G.phase = 'intro' } } })
+    .catch(() => { $('charge').hidden = false; $('charge').textContent = 'Oups, une image n’a pas pu se charger. Recharge la page.' });
+}
+function toMenu() { if (NET.on) netFerme(); const livre = G.livre; G.livre = null; G.phase = 'menu'; G.f = []; selStage = 0; selCursor = 0; if (livre && window.ouvreLivre) ouvreLivre(); else show('titre') }
+// --- code secret
+function ouvreCode() { G.phase = 'menu'; show('code'); $('code-msg').textContent = ''; $('code-in').value = ''; setTimeout(() => $('code-in').focus(), 50) }
+function valideCode() {
+  const v = $('code-in').value.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const k = CODES[v];
+  if (!k) { $('code-msg').textContent = 'Ce n’est pas le bon code… Cherche bien dans le livre !'; sfx('erreur'); return }
+  if (debloque(k)) { $('code-msg').textContent = `Tu as déjà débloqué ${CHARS[k].art} !`; return }
+  SAVE.debloques.push(k); const nv = []; badge('secret', nv); sauve();
+  $('code-msg').textContent = `BRAVO ! ${CHARS[k].art} rejoint l’arène !`; sonInit(); sfx('super'); sfx(k, 1);
+  setTimeout(() => { show('choix'); construitCartes(); selCursor = ORDRE.indexOf(k); majChoix() }, 1400);
+}
+// --- quiz du livre
+const Q = {};
+function melange(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] } return a }
+function ouvreQuiz(k) {
+  const z = QUIZ[k]; if (!z) return;
+  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz');
+  Object.assign(Q, { k, qs: melange(z.q).slice(0, 3), i: 0, bloque: false });
+  $('quiz-titre').textContent = `DÉBLOQUE ${CHARS[k].art} !`;
+  $('quiz-intro').innerHTML = `Réponds juste à <b>3 questions</b> sur le livre. Indice : relis les <b>pages ${z.pages}</b>.`;
+  $('quiz-img').style.backgroundImage = `url(${k}_corps.webp)`; $('quiz-img').classList.add('ombre');
+  const s = $('quiz-suite'); s.hidden = true; s.textContent = 'RECOMMENCER'; s.onclick = () => { sfx('clic'); ouvreQuiz(Q.k) }; poseQuestion();
+}
+function poseQuestion() {
+  const [txt, reps] = Q.qs[Q.i];
+  $('quiz-pas').innerHTML = Q.qs.map((_, i) => `<i class="${i < Q.i ? 'ok' : i === Q.i ? 'en' : ''}"></i>`).join('');
+  $('quiz-q').textContent = `${Q.i + 1}. ${txt}`; $('quiz-msg').textContent = ''; Q.bloque = false;
+  const box = $('quiz-rep'); box.innerHTML = '';
+  for (const r of melange(reps)) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = r; b.onclick = () => repond(b, r === reps[0]); box.appendChild(b) }
+}
+function repond(b, juste) {
+  if (Q.bloque) return; Q.bloque = true;
+  const [, reps, page] = Q.qs[Q.i];
+  document.querySelectorAll('#quiz-rep .btn').forEach(x => { x.disabled = true; if (x.textContent === reps[0]) x.classList.add('bon') });
+  if (juste) {
+    sfx('valide'); $('quiz-msg').textContent = ['BRAVO !', 'EXACT !', 'TOUT JUSTE !'][Q.i] || 'BRAVO !';
+    setTimeout(() => { Q.i++; if (Q.i >= Q.qs.length) quizGagne(); else poseQuestion() }, 1000);
+  } else {
+    b.classList.add('faux'); sfx('erreur');
+    $('quiz-msg').textContent = `Raté ! La réponse est à la page ${page}. Relis-la et réessaie !`;
+    $('quiz-suite').hidden = false;
+  }
+}
+function quizGagne() {
+  const k = Q.k, nv = [];
+  if (!SAVE.debloques.includes(k)) SAVE.debloques.push(k); SAVE.quiz[k] = Date.now();
+  badge('secret', nv); if (Object.keys(QUIZ).every(x => SAVE.debloques.includes(x))) badge('lecteur', nv); sauve();
+  $('quiz-pas').innerHTML = '<i class="ok"></i><i class="ok"></i><i class="ok"></i>';
+  $('quiz-img').classList.remove('ombre'); $('quiz-q').textContent = `BRAVO ! ${CHARS[k].art} REJOINT L’ARÈNE !`;
+  $('quiz-rep').innerHTML = ''; $('quiz-msg').innerHTML = (nv.length ? 'NOUVEAU BADGE : ' + nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ') : '') + (window.codeAOffrir ? codeAOffrir(k) : '');
+  sfx('badge'); setTimeout(() => sfx(k, 1), 700);
+  const s = $('quiz-suite'); s.hidden = false; s.textContent = 'JOUER AVEC LUI ▶';
+  s.onclick = () => { sfx('valide'); G.phase = 'menu'; selStage = 0; show('choix'); selCursor = ORDRE.indexOf(k); construitCartes() };
+}
+// --- trophées
+function ouvreTrophees(retour) {
+  G.phase = 'menu'; G.retourTroph = retour; show('trophees');
+  $('troph-badges').innerHTML = BADGES.map(([id, nom, txt]) => `<div class="badge${SAVE.badges[id] ? ' ok' : ''}"><i>★</i><b>${nom}</b><small>${txt}</small></div>`).join('');
+  $('troph-cartes').innerHTML = ORDRE.map(k => { const vu = SAVE.cartes[k] || [];
+    return `<div class="anim"><h3>${CHARS[k].nom} · ${vu.length}/${FAITS[k].length}</h3>${FAITS[k].map((f, i) => vu.includes(i) ? `<p>★ ${f}</p>` : '<p class="non">??? Gagne contre cet animal pour découvrir cette carte.</p>').join('')}</div>` }).join('');
+  ongletTroph('badges');
+}
+function ongletTroph(t) { $('troph-badges').hidden = t !== 'badges'; $('troph-cartes').hidden = t !== 'cartes'; $('tab-badges').setAttribute('aria-pressed', t === 'badges'); $('tab-cartes').setAttribute('aria-pressed', t === 'cartes') }
+function initUI() {
+  $('jouer').onclick = () => { sonInit(); sfx('valide'); G.livre = null; G.defi = null; G.jour = null; $('m1').onclick(); const choix = () => { G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
+    if (!SAVE.tuto && window.lanceTuto) { chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(choix) }) } else choix() };
+  $('livre-titre').onclick = () => { sonInit(); sfx('valide'); ouvreLivre() };
+  $('livre-retour').onclick = () => { sfx('retour'); G.livre = null; show('titre') };
+  $('pari-retour').onclick = () => { sfx('retour'); ouvreLivre() };
+  $('v-menu').onclick = () => { sfx('clic'); ouvreLivre() };
+  // À DEUX : sur le même écran, ou chacun son téléphone
+  $('adeux-titre').onclick = () => { sonInit(); sfx('clic'); G.phase = 'menu'; show('adeux') };
+  $('adeux-retour').onclick = () => { sfx('retour'); show('titre') };
+  $('deux-ecran').onclick = () => { sonInit(); sfx('valide'); $('m2').onclick(); G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
+  $('deux-tel').onclick = () => { sonInit(); $('m3').onclick() };
+  for (const [id, m] of [['m1', 1], ['m2', 2]]) $(id).onclick = () => { G.mode = m; G.tournoi = null; $('m1').setAttribute('aria-pressed', m === 1); $('m2').setAttribute('aria-pressed', m === 2); $('niveaux').hidden = m === 2; selStage = 0; construitCartes(); sfx('clic') };
+  document.querySelectorAll('#niveaux .btn').forEach(b => b.onclick = () => { G.niv = +b.dataset.niv; document.querySelectorAll('#niveaux .btn').forEach(x => x.setAttribute('aria-pressed', x === b)); sfx('clic') });
+  $('code-ok').onclick = valideCode; $('code-retour').onclick = () => { show('choix'); construitCartes() };
+  $('trophees-btn').onclick = () => { sfx('clic'); ouvreTrophees('choix') };
+  $('quiz-retour').onclick = () => { sfx('retour'); G.phase = 'menu'; show('choix'); construitCartes() };
+  $('quiz-suite').onclick = () => { sfx('clic'); ouvreQuiz(Q.k) };
+  $('retour-choix').onclick = () => { sfx('clic'); if (selStage === 0) { G.phase = 'menu'; show(G.mode === 2 ? 'adeux' : 'titre'); return } selStage = 0; G.tournoi = null; selCursor = Math.max(0, ORDRE.indexOf(G.pick[0])); construitCartes() };
+  $('hasard-btn').onclick = () => { sfx('clic'); adversaireAuHasard() };
+  $('tournoi-btn').onclick = () => lanceTournoi();
+  $('arenes-retour').onclick = () => { sfx('clic'); if (NET.on) { G.phase = 'menu'; show('choix'); $('choix-titre').textContent = 'EN ATTENTE…'; return } G.phase = 'menu'; show('choix'); selStage = 1; construitCartes() }; $('trophees-titre').onclick = () => { sonInit(); sfx('clic'); ouvreTrophees('titre') };
+  $('troph-retour').onclick = () => { if (G.retourTroph === 'choix') { show('choix'); construitCartes() } else show('titre') };
+  $('m3').onclick = () => { sonInit(); sfx('clic'); G.phase = 'menu'; show('enligne'); netEcran('accueil'); netStatut('') };
+  $('net-cree').onclick = () => { sfx('clic'); netCree() }; $('net-rejoint').onclick = () => { sfx('clic'); netEcran('invite'); netStatut(''); setTimeout(() => $('net-in').focus(), 50) };
+  $('net-ok').onclick = () => { sfx('clic'); netRejoint() }; $('net-retour').onclick = () => { netFerme(); sfx('retour'); show('adeux') }; for (const id of ['net-retour2', 'net-retour3']) $(id).onclick = () => { netFerme(); sfx('retour'); netEcran('accueil'); netStatut('') };
+  $('tab-badges').onclick = () => ongletTroph('badges'); $('tab-cartes').onclick = () => ongletTroph('cartes');
+  $('revanche').onclick = () => { sonInit(); G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const j = ARENES.findIndex(x => x.k === G.arene); G.arene = ARENES[(j + 1) % ARENES.length].k } vs() };
+  $('menu-btn').onclick = toMenu; $('quitter').onclick = toMenu; $('reprendre').onclick = pause; $('pause-btn').onclick = () => { if (['fight', 'intro'].includes(G.phase)) pause() };
+  // bouton SON : musique + bruitages → bruitages seuls → muet (choix gardé sur l'appareil)
+  const majSon = () => { const m = SAVE.son || 0; SON.on = m < 2; SON.musOff = m === 1; $('son-btn').textContent = ['♪ SON', '♪ SANS MUSIQUE', '♪ MUET'][m]; if (SON.master) SON.master.gain.value = SON.on ? .8 : 0 };
+  $('son-btn').onclick = () => { SAVE.son = ((SAVE.son || 0) + 1) % 3; sauve(); majSon(); sonInit() }; majSon();
+  // plein écran : possible sur Android, iPad et ordinateur ; sur iPhone, seul le mode « appli » (écran d'accueil) enlève la barre d'adresse
+  const APPLI = matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || navigator.standalone;
+  const PEUT_PLEIN = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+  if (APPLI) $('plein').hidden = true;
+  else if (!PEUT_PLEIN && /iPhone|iPod|iPad|Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 0) $('appli-titre').hidden = false;
+  const ouvreAppli = () => { sfx('clic'); G.retourAppli = G.screen; G.avantAppli = G.phase; if (['fight', 'intro'].includes(G.phase)) { G.before = G.phase; G.phase = 'pause' } show('appli') };
+  $('appli-titre').onclick = ouvreAppli;
+  $('appli-ok').onclick = () => { sfx('clic'); if (G.phase === 'pause' && G.avantAppli !== 'pause') { G.phase = G.before; show(null) } else show(G.retourAppli || 'titre') };
+  $('plein').onclick = () => {
+    if (!PEUT_PLEIN) { ouvreAppli(); return }
+    const el = document.documentElement; try { (document.fullscreenElement || document.webkitFullscreenElement ? (document.exitFullscreen || document.webkitExitFullscreen).call(document) : (el.requestFullscreen || el.webkitRequestFullscreen).call(el))?.catch?.(() => { }) } catch (e) { } try { screen.orientation.lock('landscape').catch(() => { }) } catch (e) { } };
+  // commandes tactiles (joueur 1, et joueur 2 en mode 2 joueurs sur la même tablette)
+  for (const [pad, T] of [[$('pad'), TOUCH], [$('pad2'), TOUCH2]]) {
+    const joy = pad.querySelector('.joy'), knob = pad.querySelector('.knob');
+    let jid = null, jc = [0, 0];
+    const jmove = e => { const r = joy.getBoundingClientRect(), rad = r.width / 2; let dx = (e.clientX - jc[0]) / rad, dy = (e.clientY - jc[1]) / rad; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m } T.x = dx; T.y = dy; knob.style.transform = `translate(${dx * rad * .55}px,${dy * rad * .55}px)` };
+    joy.addEventListener('pointerdown', e => { e.preventDefault(); sonInit(); jid = e.pointerId; const r = joy.getBoundingClientRect(); jc = [r.left + r.width / 2, r.top + r.height / 2]; try { joy.setPointerCapture(jid) } catch (_) { } jmove(e) });
+    joy.addEventListener('pointermove', e => { if (e.pointerId === jid) jmove(e) });
+    const jend = e => { if (e.pointerId !== jid) return; jid = null; T.x = T.y = 0; knob.style.transform = '' };
+    joy.addEventListener('pointerup', jend); joy.addEventListener('pointercancel', jend);
+    pad.querySelectorAll('.tb').forEach(el => { const k = el.dataset.k;
+      el.addEventListener('pointerdown', e => { e.preventDefault(); sonInit(); T[k] = true; el.classList.add('on'); try { el.setPointerCapture(e.pointerId) } catch (_) { } });
+      const off = e => { T[k] = false; el.classList.remove('on') }; el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('lostpointercapture', off) });
+  }
+  if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) document.body.classList.add('tactile');
+}
+// bouton ★ tactile : devient « SUPER » quand la jauge est pleine
+setInterval(() => { for (const [i, id] of [[0, 'tb-s'], [1, 'tb-s2']]) { const f = G.f[i], s = $(id); if (s && f) s.classList.toggle('super', f.meter >= 100 && !f.cpu) } }, 150);
+
+// ---------------------------------------------------------------------
+//  Démarrage
+// ---------------------------------------------------------------------
+function majU() { const c = $('cadre'); if (c) document.documentElement.style.setProperty('--u', (c.getBoundingClientRect().width / 100).toFixed(2) + 'px') }
+addEventListener('resize', majU); addEventListener('orientationchange', () => setTimeout(majU, 350)); try { new ResizeObserver(majU).observe($('cadre')) } catch (e) { } majU();
+(async () => {
+  initUI();
+  const ok = Skin.init(glC);
+  if (!ok) { $('charge').textContent = 'Ton appareil ne peut pas afficher ce jeu (WebGL indisponible).'; return }
+  const load = src => new Promise((r, j) => { const i = new Image(); i.onload = () => r(i); i.onerror = j; i.src = src });
+  G.rigs = {}; G.heads = {};
+  const [, , bgi] = await Promise.all([chargeAnimal('tigre'), chargeAnimal('gorille'), load('arene.webp')]); G.bgImg = bgi; G.bgs.savane = Promise.resolve(bgi);
+  // les autres animaux se chargent ensuite, en tâche de fond (le jeu démarre plus vite)
+  (async () => { for (const k of ORDRE) { try { await chargeAnimal(k) } catch (e) { } } })();
+  try { await document.fonts.load('900 40px Rubik') } catch (e) { }
+  $('charge').hidden = true; G.phase = 'menu'; show('titre');
+  if (window.initBonus) { initBonus(); if (window.lienRecu) lienRecu() }
+  requestAnimationFrame(loop);
+  window.__stat = null; window.__jeu = { G, step, render, KEYS, TOUCH, TOUCH2, lire, joyDir, startMatch, show, vs, chargeAnimal, CHARS };
+})().catch(e => { $('charge').textContent = 'Erreur de chargement : ' + e.message });
