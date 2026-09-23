@@ -81,6 +81,9 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .carte.buffle .img{background:radial-gradient(circle at 50% 110%,#D5E3EA,#56707E 70%)}
 .carte.morse .img{background:radial-gradient(circle at 50% 110%,#FFE3D3,#B97A63 70%)}
 .carte.trex .img{background:radial-gradient(circle at 50% 110%,#FFE08A,#3E7A3A 70%)}
+.cartes.treize{grid-template-columns:repeat(5,17.2cqw);gap:1cqw}.cartes.treize .carte .img{height:9.4cqw}.cartes.treize .carte .nom{font-size:1.7cqw}
+.carte.legende{border-color:var(--jaune);box-shadow:0 0 0 .3cqw #FF8A00,0 0 1.6cqw #FFC629,0 .6cqw 0 rgba(0,0,0,.4);position:relative}
+.carte.legende::before{content:"LÉGENDAIRE";position:absolute;top:-.9cqw;left:50%;transform:translateX(-50%);z-index:2;background:linear-gradient(#FFE08A,#FF9F1C);color:var(--marine);font:900 1cqw Rubik,"Arial Black",sans-serif;letter-spacing:.08em;padding:.2cqw .8cqw;border-radius:.8cqw;border:.2cqw solid var(--marine);white-space:nowrap}
 .bas-choix{align-items:center}.detail{font-size:1.35cqw;color:#D8E4FF;max-width:48cqw;text-align:left}.detail b{color:var(--jaune)}
 .etoiles{font:900 5cqw Rubik,"Arial Black",sans-serif;letter-spacing:.3cqw;color:rgba(255,255,255,.18);line-height:1;text-shadow:.25cqw .25cqw 0 var(--marine)}
 .etoiles b{color:var(--jaune);display:inline-block;animation:pop .45s cubic-bezier(.2,1.6,.4,1) both}.etoiles b:nth-child(2){animation-delay:.25s}.etoiles b:nth-child(3){animation-delay:.5s}
@@ -394,6 +397,8 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 .defi-txt{font-size:1.9cqw;line-height:1.4;max-width:70cqw;margin:0}.defi-txt b{color:var(--jaune)}
 .legende-titre{margin:0;font-size:4.2cqw;color:var(--jaune);text-shadow:.35cqw .35cqw 0 #7A4FC8;animation:slam .6s both}
 #legende img{height:24cqw;filter:drop-shadow(0 0 2cqw #FFC629);animation:pop .8s .3s both}
+#legende{background:repeating-conic-gradient(from 0deg at 50% 48%,#1d4f9e 0deg 9deg,#0B2A5B 9deg 18deg)!important}
+#legende .petit{font-size:1.9cqw;max-width:62cqw;line-height:1.35;background:rgba(8,31,69,.75);padding:.6cqw 1.4cqw;border-radius:1cqw}
 .tuto-bulle{position:absolute;left:50%;top:20%;transform:translateX(-50%);z-index:7;background:rgba(255,248,236,.95);color:var(--marine);border:.4cqw solid var(--marine);border-radius:1.6cqw;padding:.8cqw 2.2cqw;text-align:center;display:flex;flex-direction:column;gap:.2cqw;pointer-events:none;box-shadow:0 .5cqw 0 rgba(0,0,0,.35);animation:pop .3s both}
 .tuto-bulle b{font-size:2.8cqw;color:var(--orange)}.tuto-bulle small{font:900 1.2cqw Rubik,sans-serif;color:#6f86b5}.tuto-bulle span{font-size:1.6cqw}
 .tuto-passer{position:absolute;right:1.5cqw;top:12.5cqw;z-index:8;font-size:1.5cqw;background:rgba(11,42,91,.85)}
@@ -403,6 +408,17 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 #tourne .tourne-logo{width:min(70vw,320px);height:auto;filter:drop-shadow(0 4px 0 rgba(0,0,0,.35))}
 #tourne .tourne-tel{width:90px;height:90px;animation:tourne 2.2s ease-in-out infinite}
 @keyframes tourne{0%,25%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+
+/* 12 animaux : 6 colonnes × 2 rangées (tout tient sur l'écran, boutons compris) · 13 avec le légendaire : 7 colonnes */
+#choix .cartes{grid-template-columns:repeat(6,14.2cqw);gap:1cqw}
+#choix .carte .img{height:9cqw}
+#choix .carte .nom{font-size:1.45cqw}
+#choix .carte .ets{font-size:1.1cqw}
+#choix .carte .ets.quiz{font-size:.9cqw}
+#choix .carte.verrou .img::after{font-size:4.6cqw}
+#choix .cartes.treize{grid-template-columns:repeat(7,12.3cqw);gap:.8cqw}
+#choix .cartes.treize .carte .img{height:8cqw}
+#choix .cartes.treize .carte .nom{font-size:1.3cqw}
 </style></head><body>
 
 <div id="cadre">
@@ -638,10 +654,10 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790183762"></script>
-<script src="anim.js?v=1790183762"></script>
-<script src="game.js?v=1790183762"></script>
-<script src="net.js?v=1790183762"></script>
-<script src="livre.js?v=1790183762"></script>
-<script src="bonus.js?v=1790183762"></script>
+<script src="skin.js?v=1790188234"></script>
+<script src="anim.js?v=1790188234"></script>
+<script src="game.js?v=1790188234"></script>
+<script src="net.js?v=1790188234"></script>
+<script src="livre.js?v=1790188234"></script>
+<script src="bonus.js?v=1790188234"></script>
 </body></html>

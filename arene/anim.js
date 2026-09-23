@@ -256,7 +256,7 @@ function spritePose(R, f, T) {
       if (f.h > 0) return SP('touche', { r: -.25, y: 40 }); return SP('touche', { x: -20 * f.hurtK, r: -.05 * f.hurtK });
     case 'down': case 'ko': if (f.h > 0) return SP('touche', { r: -.45, y: 40 }); return SP('ko', { sy: 1 + .01 * Math.sin(t * 3) });
     case 'getup': return SP('accroupi', { sy: .85 + .15 * u });
-    case 'win': if (f.kind === 'grizzly' && f.t > 100) return SP('saumon', { sy: 1 + .012 * Math.sin(t * 4) }); if (f.kind === 'hyene' && f.t > 100) return SP('os', { sy: 1 + .012 * Math.sin(t * 9), x: 3 * Math.sin(t * 18) }); return SP('victoire', { sy: 1 + .015 * Math.sin(t * 5) }, true);
+    case 'win': if (f.kind === 'grizzly' && f.t > 100) return SP('saumon', { sy: 1 + .012 * Math.sin(t * 4) }); if (f.kind === 'hyene' && f.t > 100) return SP('os', { sy: 1 + .012 * Math.sin(t * 9), x: 3 * Math.sin(t * 18) }); if (f.kind === 'morse' && f.t > 110) return SP('bouee', { sy: 1 + .02 * Math.sin(t * 2.2) }); if (f.kind === 'trex' && f.t > 90 && f.t % 180 < 70) return SP('rugit', { sy: 1 + .02 * Math.sin(t * 20) }, true); return SP('victoire', { sy: 1 + .015 * Math.sin(t * 5) }, true);
     case 'lance': { // il tient l'adversaire puis le lance
       const fin = f.t >= (f.prise && f.prise.prise.t || 20) - 6, n = f.mkPrise === 'T' ? 'fort' : (f.d.poseLance || 'fort');
       if (f.kind === 'gorille' && f.mkPrise === 'SF') return fin ? SP('bas', { x: 40, y: 20, sy: .94 }, true) : SP('fort', { y: -12 + 4 * Math.sin(t * 30) }, true);
@@ -266,7 +266,7 @@ function spritePose(R, f, T) {
     case 'dizzy': return SP('touche', { r: .07 * Math.sin(t * 6), x: 10 * Math.sin(t * 6), sy: .98 + .02 * Math.sin(t * 12) });
     case 'fuite': { const k = Math.floor(f.t / 6) % 2; return Object.assign(SP(k ? 'marche' : 'base', { y: -14 * Math.abs(Math.sin(f.t * .5)), r: .04 }), { flip: true }) }
     case 'lose': return SP('touche', { sy: .97, r: .04 });
-    case 'intro': if (f.t > 20 && f.t < 80) return SP(f.kind === 'grizzly' ? 'rugit' : f.kind === 'hyene' ? 'rire' : 'victoire', { sy: 1 + .02 * Math.sin(t * (f.kind === 'hyene' ? 30 : 7)) }, true); return repos();
+    case 'intro': if (f.t > 20 && f.t < 80) return SP(f.kind === 'grizzly' || f.kind === 'trex' ? 'rugit' : f.kind === 'hyene' ? 'rire' : 'victoire', { sy: 1 + .02 * Math.sin(t * (f.kind === 'hyene' ? 30 : 7)) }, true); return repos();
     case 'atk': {
       const k = f.mk;
       if (f.kind === 'gorille') return gorilleSpr(f, t, u, ph, k, repos);
@@ -379,6 +379,28 @@ const SPECIAUX = {
     if (k === 'SF') { if (ph === 'st') return SP('accroupi', { x: -12 * u, sy: .95 }); if (ph === 'act') return SP(Math.floor(f.t / 5) % 2 ? 'saut' : 'marche', { y: -10 * Math.abs(Math.sin(t * 16)), r: .04 }, true); return u < .5 ? SP('coup', { x: 20 * (1 - u) }) : repos(); }
     if (k === 'SD') { if (ph === 'rec' && u > .5) return repos(); return SP('rugit', { x: ph === 'act' ? 4 * Math.sin(t * 60) : 0, sx: 1.02 }, true); }
     if (k === 'SUPER') { if (ph === 'st') return SP('fort', { sy: 1 + .02 * Math.sin(t * 30) }, true); if (ph === 'act') return Math.floor(f.t / 5) % 2 ? SP('coup', { x: 50, sx: 1.05 }, true) : SP('special', { y: -10 }, true); return repos(); }
+  },
+  // T. rex : ★ le pas qui fait trembler · → ★ la morsure géante (prise, poses génériques) · ↓ ★ le coup de queue · SUPER le rugissement du roi
+  trex(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('fort', { y: -8 * u, sy: 1 + .02 * u }, true); if (ph === 'act' || u < .4) return SP('bas', { y: 10, sy: .95 }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('garde', { x: -10 * u }); if (ph === 'act' || u < .5) return SP('queue', { x: ph === 'act' ? 20 : 0, r: ph === 'act' ? .04 * Math.sin(t * 40) : 0 }, true); return repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('accroupi', { sy: .92 + .04 * Math.sin(t * 30) }, true); if (ph === 'act' || u < .6) return SP('rugit', { x: 6 * Math.sin(t * 60), sy: 1.03 }, true); return repos(); }
+  },
+  // morse : ★ le mur de défenses (contre) · → ★ il marche avec ses dents (bond) · ↓ ★ l'aspirateur à moustaches · SUPER le canapé d'une tonne et demie
+  morse(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (f.contre) return f.t - f.hitT < 8 ? SP('fort', { y: -10 }, true) : SP('coup', { x: 40, sx: 1.05 }, true);
+      if (ph === 'rec' && u > .4) return repos(); return SP('garde', { sx: 1 + .015 * Math.sin(t * 20), sy: .99 }, true); }
+    if (k === 'SF') { if (ph === 'st') return SP('accroupi', { sy: .94 }); if (f.h > 0) return SP('saut', { r: f.vy < 0 ? -.06 : .1, y: 30 }, true); return SP('coup', { x: 30, sx: 1.04 }, true); }
+    if (k === 'SD') { if (ph === 'rec' && u > .5) return repos(); return SP('slurp', { x: ph === 'act' ? 4 * Math.sin(t * 50) : 0, sx: ph === 'act' ? 1.02 + .02 * Math.sin(t * 30) : 1 }, true); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('fort', { sy: 1 + .02 * Math.sin(t * 30) }, true); if (f.h > 0) return SP('saut', { r: f.vy < 0 ? -.08 : .15, y: 40 }, true); return SP('accroupi', { sy: .9 + .1 * Math.min(1, (f.t - (f.landT || f.t)) / 12), sx: 1.05 }, true); }
+  },
+  // buffle : ★ la charge tête baissée · → ★ le lancer de cornes · ↓ ★ il se secoue (mordu, mais pas vaincu) · SUPER la charge de 550 kg
+  buffle(f, t, u, ph, k, repos) {
+    if (k === 'S' || k === 'SUPER') { if (ph === 'st') return SP(f.t % 10 < 5 ? 'accroupi' : 'garde', { x: -8 * u, sy: .96 + .02 * Math.sin(t * 40) }, true);
+      if (ph === 'act') return f.hit && f.t - f.hitT < 6 ? SP('coup', { x: 40, sx: 1.05 }, true) : SP(Math.floor(f.t / 5) % 2 ? 'special' : 'marche', { y: -10 * Math.abs(Math.sin(t * 16)), r: .03 }, true);
+      return u < .5 ? SP('coup', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('accroupi', { sy: .92 }); if (ph === 'act' || u < .45) return SP('fort', { y: ph === 'act' ? -14 : -14 * (1 - u) }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('garde', { sy: .97 }); if (ph === 'act') return SP('secoue', { x: 12 * Math.sin(t * 60), r: .035 * Math.sin(t * 47) }, true); return u < .4 ? SP('secoue', {}) : repos(); }
   },
   // hyène : ★ le rire qui énerve · → ★ elle ne lâche jamais (poursuite qui mordille) · ↓ ★ croque-os (prise) · SUPER le clan arrive
   hyene(f, t, u, ph, k, repos) {
