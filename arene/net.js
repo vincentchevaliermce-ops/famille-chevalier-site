@@ -118,6 +118,7 @@ function branche(c) {
     if (NET.conn !== c) return;
     NET.on = true; document.body.classList.add('en-ligne'); sfx('valide');
     G.mode = 2; selStage = 0; NET.pret = {}; G.phase = 'menu'; show('choix'); construitCartes();
+    if (NET.role === 'hote') envoie({ t: 'monde', m: G.monde }); // les deux téléphones affichent le même monde (celui de l'hôte au départ)
     $('choix-titre').textContent = NET.role === 'hote' ? 'CHOISIS TON ANIMAL (tu es J1, à gauche)' : 'CHOISIS TON ANIMAL (tu es J2, à droite)';
   });
   c.on('data', m => { if (NET.conn === c) recoit(m) });
@@ -132,10 +133,12 @@ function netChoisit(k) {
 }
 function netLance() {
   if (NET.role !== 'hote' || !NET.pret[0] || !NET.pret[1]) return;
+  if (mondeDe(NET.pret[0]) !== mondeDe(NET.pret[1])) { const m0 = mondeDe(NET.pret[0]); NET.pret = {}; G.monde = m0; envoie({ t: 'monde', m: m0, raz: 1 }); construitCartes(); $('choix-titre').textContent = 'LE MÊME MONDE POUR LES DEUX ! CHOISISSEZ À NOUVEAU'; return } // sécurité : un animal de la mer n'affronte que la mer
   G.pick = [NET.pret[0], NET.pret[1]]; envoie({ t: 'arene' }); ouvreArenes(); // l'hôte choisit l'arène
 }
 function recoit(m) {
   if (m.t === 'choix') { NET.pret[1] = m.k; netLance() }
+  else if (m.t === 'monde') { if (MONDES[m.m]) { if (G.monde === m.m) { NET.pret = {}; selStage = 0; if (G.screen === 'choix') construitCartes() } else changeMonde(m.m, true) } }
   else if (m.t === 'arene') { $('choix-titre').textContent = 'TON AMI CHOISIT L’ARÈNE…' }
   else if (m.t === 'go') { G.pick = m.pick; G.mode = 2; if (m.arene) G.arene = m.arene; vs() }
   else if (m.t === 'i') { NET.entree = m.k }

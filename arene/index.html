@@ -85,6 +85,8 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .carte.porcepic .img{background:radial-gradient(circle at 50% 110%,#FFF5E0,#9C7B5B 70%)}
 .carte.guepard .img{background:radial-gradient(circle at 50% 110%,#FFF3B0,#C9A227 70%)}
 .carte.autruche .img{background:radial-gradient(circle at 50% 110%,#FFE1EA,#E48CA8 70%)}
+.carte.orque .img{background:radial-gradient(circle at 50% 110%,#BFE9FF,#1D5FA8 72%)}
+.carte.requin .img{background:radial-gradient(circle at 50% 110%,#D6F4FF,#2A86C9 72%)}
 .cartes.treize{grid-template-columns:repeat(5,17.2cqw);gap:1cqw}.cartes.treize .carte .img{height:9.4cqw}.cartes.treize .carte .nom{font-size:1.7cqw}
 .carte.legende{border-color:var(--jaune);box-shadow:0 0 0 .3cqw #FF8A00,0 0 1.6cqw #FFC629,0 .6cqw 0 rgba(0,0,0,.4);position:relative}
 .carte.legende::before{content:"LÉGENDAIRE";position:absolute;top:-.9cqw;left:50%;transform:translateX(-50%);z-index:2;background:linear-gradient(#FFE08A,#FF9F1C);color:var(--marine);font:900 1cqw Rubik,"Arial Black",sans-serif;letter-spacing:.08em;padding:.2cqw .8cqw;border-radius:.8cqw;border:.2cqw solid var(--marine);white-space:nowrap}
@@ -277,6 +279,20 @@ body.clavier #quiz{justify-content:flex-start;padding-top:1.2cqw}body.clavier #q
 /* choix de l'animal : le mode se choisit sur l'écran titre ; niveau et boutons plus gros */
 #choix .grp[aria-label="Mode de jeu"]{display:none}
 #choix #niveaux .btn{font-size:2cqw;padding:.65cqw 2.2cqw;border-radius:1cqw}
+#titre #jouer.nouveau-mer{position:relative}
+#titre #jouer.nouveau-mer::after{content:"🌊 NOUVEAU : LA MER !";position:absolute;top:-2.1cqw;right:-6.5cqw;white-space:nowrap;background:#12A4C4;color:#fff;font:900 1.35cqw Rubik,"Arial Black",sans-serif;letter-spacing:.03em;padding:.4cqw .9cqw;border:.25cqw solid var(--marine);border-radius:.9cqw;transform:rotate(7deg);box-shadow:0 .3cqw 0 rgba(0,0,0,.4);animation:nouveau 1.1s ease-in-out infinite alternate}
+#choix #mondes .btn{font-size:2cqw;padding:.65cqw 1.6cqw;border-radius:1cqw;position:relative}
+#choix #mondes .btn:disabled{opacity:.3;cursor:default}
+#choix #mondes .btn.nouveau::after{content:"NOUVEAU !";position:absolute;top:-1.2cqw;right:-1.3cqw;background:#FF5A1F;color:#fff;font:900 .95cqw Rubik,"Arial Black",sans-serif;letter-spacing:.04em;padding:.25cqw .55cqw;border-radius:.6cqw;transform:rotate(9deg);box-shadow:0 .2cqw 0 rgba(0,0,0,.45);animation:nouveau 1.1s ease-in-out infinite alternate}
+@keyframes nouveau{to{transform:rotate(9deg) scale(1.12)}}
+#choix .cartes.quatre{grid-template-columns:repeat(4,17.5cqw);gap:1.5cqw}
+#choix .cartes.quatre .carte .img{height:11.5cqw}
+#choix .cartes.quatre .carte .nom{font-size:1.75cqw}
+#choix .cartes.quatre .carte .ets{font-size:1.2cqw}
+#choix .cartes.quatre .carte .ets.quiz{font-size:1.05cqw}
+#choix .cartes.quatre .carte.verrou .img::after{font-size:5.6cqw}
+#choix .cartes[data-monde="mer"] .carte.bientot .img{background:repeating-linear-gradient(-30deg,#0f4a8a 0 1cqw,#0d3d75 1cqw 2cqw)}
+.arenes.peu{grid-template-columns:repeat(3,25cqw)}.arenes.peu .arene{height:14cqw}
 #choix #niveaux::before{content:"L’ORDI :";align-self:center;font:900 1.6cqw Rubik,"Arial Black",sans-serif;color:var(--creme);margin:0 .6cqw 0 .4cqw}
 #choix-titre{font-size:2.9cqw}
 .carte .nom{letter-spacing:.01em}
@@ -327,6 +343,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 .livre-score{display:flex;align-items:center;gap:.8cqw;background:var(--marine);color:var(--creme);border-radius:1.2cqw;padding:.3cqw 1.2cqw;font-size:1.8cqw}
 .livre-score b{color:var(--jaune);font-size:2.2cqw}.livre-score img{height:3.4cqw}.livre-score .boss-et{color:var(--jaune)}
 .duels{display:grid;grid-template-columns:repeat(3,28.5cqw);gap:.9cqw}
+.duels.quatre{grid-template-columns:repeat(4,22.2cqw);gap:.8cqw}.duels.quatre .duel{grid-template-columns:3.6cqw 1fr;padding:.5cqw .7cqw}.duels.quatre .duel .num{font-size:2.3cqw}.duels.quatre .duel .q{font-size:1.2cqw}.duels.quatre .duel .etat{font-size:1.05cqw}.duels.quatre .duel .tetes img,.duels.quatre .duel .tetes i{width:3.3cqw;height:3.3cqw}
 .duel{display:grid;grid-template-columns:4.4cqw 1fr;grid-template-rows:auto auto auto;align-items:center;gap:.1cqw .8cqw;padding:.55cqw .8cqw;border-radius:1.2cqw;border:.3cqw solid var(--marine);background:var(--creme);color:var(--marine);cursor:pointer;text-align:left;box-shadow:0 .4cqw 0 rgba(11,42,91,.35);font:inherit;transition:transform .1s}
 .duel:hover{transform:translateY(-.2cqw)}
 .duel .num{grid-row:span 3;font-size:2.6cqw;color:var(--orange);text-shadow:.15cqw .15cqw 0 var(--marine);text-align:center}
@@ -469,6 +486,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <section class="ecran" id="choix" hidden>
     <div class="ligne">
       <div class="grp" role="group" aria-label="Mode de jeu"><button class="btn" id="m1" type="button" aria-pressed="true">1 JOUEUR</button><button class="btn" id="m2" type="button" aria-pressed="false">2 JOUEURS</button><button class="btn" id="m3" type="button">2 TÉLÉPHONES</button></div>
+      <div class="grp" role="group" aria-label="Monde" id="mondes"><button class="btn monde" data-monde="terre" type="button" aria-pressed="true">🌍 TERRE</button><button class="btn monde" data-monde="mer" type="button" aria-pressed="false">🌊 MER</button></div>
       <div class="grp" role="group" aria-label="Niveau de l’ordinateur" id="niveaux"><button class="btn" data-niv="0" type="button" aria-pressed="true">FACILE</button><button class="btn" data-niv="1" type="button" aria-pressed="false">NORMAL</button><button class="btn" data-niv="2" type="button" aria-pressed="false">COSTAUD</button></div>
     </div>
     <h2 id="choix-titre" class="R">CHOISIS TON ANIMAL</h2>
@@ -675,10 +693,10 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790251642"></script>
-<script src="anim.js?v=1790251642"></script>
-<script src="game.js?v=1790251642"></script>
-<script src="net.js?v=1790251642"></script>
-<script src="livre.js?v=1790251642"></script>
-<script src="bonus.js?v=1790251642"></script>
+<script src="skin.js?v=1790259049"></script>
+<script src="anim.js?v=1790259049"></script>
+<script src="game.js?v=1790259049"></script>
+<script src="net.js?v=1790259049"></script>
+<script src="livre.js?v=1790259049"></script>
+<script src="bonus.js?v=1790259049"></script>
 </body></html>

@@ -4,7 +4,7 @@
 //  Rien ne sort de l'appareil : pas de compte, pas de nom réel, pas de serveur (les défis passent par le lien).
 // =====================================================================
 const PUBLIC = 'https://editions-chevalier.fr/arene/'; // adresse publique du jeu (liens partagés, QR)
-const EMOJI = { tigre: '🐯', gorille: '🦍', lion: '🦁', ours: '🐻‍❄️', croco: '🐊', hippo: '🦛', ratel: '🦡', komodo: '🦎', grizzly: '🐻', hyene: '🐾', buffle: '🐃', morse: '🦭', trex: '🦖', leopard: '🐆', porcepic: '🦔', guepard: '⚡', autruche: '🪶' };
+const EMOJI = { tigre: '🐯', gorille: '🦍', lion: '🦁', ours: '🐻‍❄️', croco: '🐊', hippo: '🦛', ratel: '🦡', komodo: '🦎', grizzly: '🐻', hyene: '🐾', buffle: '🐃', morse: '🦭', trex: '🦖', leopard: '🐆', porcepic: '🦔', guepard: '⚡', autruche: '🪶', orque: '🐋', requin: '🦈' };
 const NIVEAUX = ['FACILE', 'NORMAL', 'COSTAUD'];
 SAVE.codes = SAVE.codes || {}; SAVE.godBattus = SAVE.godBattus || {};
 // ---------------------------------------------------------------------
@@ -32,7 +32,7 @@ function valideCodeSecret() {
   if (debloqueVrai(k)) { msg(`Tu as déjà ${CHARS[k].art} !`); return }
   SAVE.debloques.push(k); const nv = []; badge('secret', nv); sauve(); sonInit(); sfx('super'); sfx(k, 1);
   msg(`BRAVO ! ${CHARS[k].art} rejoint l’arène !`);
-  setTimeout(() => { if (G.screen === 'code') { G.phase = 'menu'; show('choix'); selStage = 0; construitCartes(); selCursor = ORDRE.indexOf(k); majChoix() } }, 1500);
+  setTimeout(() => { if (G.screen === 'code') { G.phase = 'menu'; show('choix'); selStage = 0; vaVers(k); construitCartes() } }, 1500);
 }
 // ---------------------------------------------------------------------
 //  GOD MODE : invincible, SUPER toujours plein, tous les animaux (en solo seulement)
@@ -54,7 +54,7 @@ function revelerCodeGod() {
 //  La quête du légendaire : en GOD MODE, battre les 12 animaux réveille le T. REX
 // ---------------------------------------------------------------------
 const LEGENDAIRE = 'trex';
-const aBattre = () => ORDRE.filter(k => k !== LEGENDAIRE && (!LIVRE_EN_MAIN[k] || debloqueVrai(k))); // les animaux « livre en main » comptent une fois débloqués
+const aBattre = () => ORDRE.filter(k => k !== LEGENDAIRE && mondeDe(k) === 'terre' && (!LIVRE_EN_MAIN[k] || debloqueVrai(k))); // le T. rex est le légendaire de la TERRE ; les animaux « livre en main » comptent une fois débloqués
 function questeTxt() { const l = aBattre(), n = l.filter(k => SAVE.godBattus[k]).length; return { n, tot: l.length } }
 function apresMatch(v, n, nv) {
   G.dernier = null; G.dernierJour = !!G.jour; G.finExtra = ''; // G.finExtra : messages ajoutés sous le résultat (écran de fin ou verdict du livre)
@@ -105,8 +105,9 @@ function lisDefi() {
   const m = location.hash.match(/#defi=([^&]+)/); if (!m) return null;
   const p = m[1].split('.'); if (p.length < 7) return null;
   const [moi, adv, arene, niv, temps, etoiles] = p, nom = decodeURIComponent(p.slice(6).join('.')).slice(0, 24);
-  if (!CHARS[moi] || !CHARS[adv]) return null;
-  return { moi, adv, arene: ARENES.some(a => a.k === arene) ? arene : 'savane', niv: Math.max(0, Math.min(2, +niv || 0)), temps: +temps || 99, etoiles: Math.max(0, Math.min(3, +etoiles || 0)), nom: nom.replace(/[<>&"]/g, '') };
+  if (!CHARS[moi] || !CHARS[adv] || mondeDe(moi) !== mondeDe(adv)) return null; // un animal n'affronte que son monde
+  const L = arenesDe(mondeDe(moi));
+  return { moi, adv, arene: L.some(a => a.k === arene) ? arene : L[0].k, niv: Math.max(0, Math.min(2, +niv || 0)), temps: +temps || 99, etoiles: Math.max(0, Math.min(3, +etoiles || 0)), nom: nom.replace(/[<>&"]/g, '') };
 }
 async function partage(titre, texte, url, fichier) {
   const data = { title: titre, text: texte }; if (url) data.url = url;
@@ -161,8 +162,10 @@ function dateDuJour() { const d = new Date(); return d.getFullYear() + '-' + Str
 function defiDuJour() {
   const date = dateDuJour(); let s = 0; for (const ch of 'arene' + date) s = (s * 31 + ch.charCodeAt(0)) >>> 0;
   const r = () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296;
-  const l = ORDRE.filter(k => k !== LEGENDAIRE); const a = l[Math.floor(r() * l.length)]; let b = l[Math.floor(r() * l.length)]; if (b === a) b = l[(l.indexOf(a) + 1) % l.length];
-  const arene = ARENES[Math.floor(r() * ARENES.length)].k;
+  // un jour sur cinq, le défi se passe dans la MER (s'il y a au moins deux animaux marins) ; même pour tous les enfants
+  const monde = ORDRE.filter(k => mondeDe(k) === 'mer').length >= 2 && r() < .2 ? 'mer' : 'terre';
+  const l = ORDRE.filter(k => k !== LEGENDAIRE && mondeDe(k) === monde); const a = l[Math.floor(r() * l.length)]; let b = l[Math.floor(r() * l.length)]; if (b === a) b = l[(l.indexOf(a) + 1) % l.length];
+  const A = arenesDe(monde), arene = A[Math.floor(r() * A.length)].k;
   return { date, a, b, arene, niv: 1 };
 }
 function lanceJour() {
@@ -242,7 +245,7 @@ function initBonus() {
   on('fin-photo', photoVictoire); on('fin-defi', partageDefi); on('v-defi', () => { partageDefi() });
   on('nom-autre', () => { sfx('clic'); proposeNoms() }); on('nom-retour', () => { sfx('retour'); show(G.retourNom || 'titre') });
   on('defi-go', releveDefi); on('defi-non', () => { sfx('retour'); G.defi = null; history.replaceState(null, '', location.pathname); show('titre') });
-  on('legende-ok', () => { sfx('valide'); G.phase = 'menu'; selStage = 0; show('choix'); construitCartes(); selCursor = Math.max(0, ORDRE.indexOf(LEGENDAIRE)); majChoix() });
+  on('legende-ok', () => { sfx('valide'); G.phase = 'menu'; selStage = 0; show('choix'); vaVers(LEGENDAIRE); construitCartes() });
   on('tuto-passer', () => { sfx('clic'); finTuto(true) });
   on('comment-jouer', () => { sfx('clic'); lanceTuto(() => { show('choix'); construitCartes() }) });
   const pi = $('porte-in'); if (pi) pi.addEventListener('keydown', e => { if (e.key === 'Enter') valideParents() });

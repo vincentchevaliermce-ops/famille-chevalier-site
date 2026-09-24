@@ -1,10 +1,16 @@
 // =====================================================================
 //  DUELS DU LIVRE — comme dans « C'est qui le plus fort ? » :
 //  1. tu paries (contre Gigi), 2. tu te bats avec ton champion, 3. tu découvres la vraie réponse.
-//  Textes repris MOT POUR MOT du livre imprimé (TEXTE_IMPRIME_V17, 24/09) : page du duel (p) et page de la réponse (pv).
-//  Contrôle : python3 verif/sync_livre.py TEXTE_IMPRIME_V17_74P.md
+//  Textes repris MOT POUR MOT du livre imprimé (TEXTE_IMPRIME_V17, identique au V18 pour le jeu, 24/09) : page du duel (p) et page de la réponse (pv).
+//  Contrôle : python3 verif/sync_livre.py TEXTE_IMPRIME_V18_74P.md
 // =====================================================================
 const DUELS = [
+  { n: 2, lieu: 'OCÉAN', q: 'ORQUE OU GRAND REQUIN BLANC ?', a: 'orque', b: 'requin', noms: ['ORQUE', 'GRAND REQUIN BLANC'], arene: 'ocean', p: 7, pv: 8,
+    intro: 'Deux tueurs des mers. Aucun ennemi connu… sauf peut-être l’autre. Près de l’Afrique du Sud, ils se croisent pour de vrai. Qui fait fuir l’autre ?',
+    fiches: [['jusqu’à 10 tonnes', 'des dents de 8 cm', 'un coup de queue qui assomme', 'elle doit remonter respirer'], ['jusqu’à 2 tonnes', '300 dents sur 7 rangées', 'il attaque par en dessous', 'sur le dos, il ne bouge plus']],
+    gigi: { pari: 'orque', dit: 'L’orque.', pourquoi: 'Un dauphin géant ! J’adore les dauphins.', apres: 'J’AVAIS BON ! Je suis un génie.' },
+    rep: { g: 'orque', titre: 'LA VRAIE RÉPONSE', cri: 'L’ORQUE !', punch: 'Le grand méchant requin ? Un poisson rouge !', tampon: 'vert', label: 'FILMÉ OU PHOTOGRAPHIÉ',
+      film: 'Toute seule, une orque attrape un jeune requin blanc par la nageoire. En deux minutes, c’est fini. Elle repart avec son morceau préféré : le foie, une bombe d’énergie ! En Californie, il suffit que des orques passent : tous les requins blancs filent, parfois pour un an entier !' } },
   { n: 3, lieu: 'AFRIQUE CONTRE ASIE', q: 'LION OU TIGRE ?', a: 'lion', b: 'tigre', noms: ['LION', 'TIGRE DU BENGALE'], arene: 'colisee', p: 9, pv: 10,
     intro: 'La crinière contre les rayures. Dans la nature, ils ne se croisent plus. Mais face à face… un contre un, qui gagne ?',
     fiches: [['environ 190 kg', 'des crocs de 7 cm', 'il étouffe sa proie', 'sa crinière lui donne chaud'], ['environ 220 kg', 'des griffes de 10 cm', 'il attaque par surprise', 'il évite les bagarres']],
@@ -94,7 +100,7 @@ const nomDuel = (D, k) => D.noms[k === D.a ? 0 : 1];
 // --- écran 1 : la liste des duels
 function ouvreLivre() {
   sonInit(); G.phase = 'menu'; G.livre = null; show('livre');
-  const s = scoreLivre(), box = $('duels-liste'); box.innerHTML = '';
+  const s = scoreLivre(), box = $('duels-liste'); box.innerHTML = ''; box.classList.toggle('quatre', DUELS.length > 9); // plus de 9 duels : 4 colonnes, pour que tout tienne sur l'écran
   $('livre-score').innerHTML = `<span>TOI <b>${s.toi}</b></span><img src="gigi/duel_03_recto.svg" alt=""><span>GIGI <b>${s.gigi}</b></span>` + (s.etoiles ? `<span class="boss-et">${'★'.repeat(s.etoiles)}</span>` : '');
   for (const D of DUELS) {
     const b = document.createElement('button'); b.type = 'button'; const ok = duelOuvert(D), r = SAVE.livre[D.n];

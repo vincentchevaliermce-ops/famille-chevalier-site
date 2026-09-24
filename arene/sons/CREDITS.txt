@@ -72,3 +72,9 @@ ailes.mp3 → « Flight of a Pigeon » (son 0840) — Joseph SARDIN — BigSound
 Mentions demandées ou appréciées par les sources :
   · « Additional sounds: Joseph SARDIN - BigSoundBank.com »
   · Enregistrements de Yellowstone : merci de citer le « National Park Service ».
+
+Monde MER (24/09/2026 au soir : orque, grand requin blanc) :
+orque.mp3, orque_grr.mp3 → « Resident Killer Whale Vocalizations » — NPS / C. Gabriele, Glacier Bay National Park (hydrophone du National Park Service) — https://home.nps.gov/glba/learn/nature/soundclips.htm — domaine public (œuvre du gouvernement fédéral américain : https://www.nps.gov/aboutus/disclaimer.htm) (deux cris courts, filtrés et normalisés)
+sonar.mp3 → fabriqué pour le jeu (clics et « ping » synthétisés) — libre
+bulle.mp3 → « Water Bubbles » (son 0150) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (une seconde de bulles)
+requin.mp3 → « Chattering teeth #1 » (son 0789) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (ralenti et plus grave : la mâchoire du requin, qui n'a pas de voix)

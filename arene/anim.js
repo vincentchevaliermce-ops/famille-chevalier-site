@@ -266,7 +266,7 @@ function spritePose(R, f, T) {
     case 'dizzy': return SP('touche', { r: .07 * Math.sin(t * 6), x: 10 * Math.sin(t * 6), sy: .98 + .02 * Math.sin(t * 12) });
     case 'fuite': { const k = Math.floor(f.t / 6) % 2; return Object.assign(SP(k ? 'marche' : 'base', { y: -14 * Math.abs(Math.sin(f.t * .5)), r: .04 }), { flip: true }) }
     case 'lose': return SP('touche', { sy: .97, r: .04 });
-    case 'intro': if (f.t > 20 && f.t < 80) return SP(f.kind === 'grizzly' || f.kind === 'trex' ? 'rugit' : f.kind === 'hyene' ? 'rire' : 'victoire', { sy: 1 + .02 * Math.sin(t * (f.kind === 'hyene' ? 30 : 7)) }, true); return repos();
+    case 'intro': if (f.t > 20 && f.t < 80) return SP(f.kind === 'grizzly' || f.kind === 'trex' ? 'rugit' : f.kind === 'hyene' ? 'rire' : f.kind === 'orque' ? 'appel' : 'victoire', { sy: 1 + .02 * Math.sin(t * (f.kind === 'hyene' ? 30 : 7)) }, true); return repos();
     case 'atk': {
       const k = f.mk;
       if (f.kind === 'gorille') return gorilleSpr(f, t, u, ph, k, repos);
@@ -444,5 +444,19 @@ const SPECIAUX = {
     if (k === 'S') { if (ph === 'st') return SP('accroupi', { x: -10 * u }); if (ph === 'act') return SP('special', { y: -4 * Math.abs(Math.sin(t * 20)) }, true); return u < .5 ? SP('accroupi', {}) : repos(); }
     if (k === 'SUPER') { if (ph === 'st') return SP('fort', { sy: 1 + .02 * Math.sin(t * 30) }, true);
       if (ph === 'act') return f.t % 12 < 6 ? SP('fort', { x: -10, sy: 1.02 }, true) : SP('coup', { x: 40, r: .12, sx: 1.04 }, true); return repos(); }
+  },
+  // orque (MER) : ★ le coup de queue qui assomme · → ★ le sonar · ↓ ★ le plongeon de 10 tonnes (elle remonte respirer, puis retombe) · SUPER la bande d'orques
+  orque(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -20 * e, r: -.08 * e, sy: .97 }) } if (ph === 'act') return SP('fort', { x: 30, r: .06, sx: 1.04 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('appel', { sy: 1 + .02 * Math.sin(t * 40), r: -.03 * u }, true); if (ph === 'act' || u < .5) return SP('appel', { x: -8, sx: 1.03 }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('saut', { r: -.35, y: -20 }, true); if (f.h > 0) return SP('bas', { r: .25, y: 20 }, true); return u < .5 ? SP('accroupi', { sy: .92 }) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('appel', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return SP('appel', { sy: 1 + .02 * Math.sin(t * 12), r: -.02 }, true); return repos(); }
+  },
+  // grand requin blanc (MER) : ★ l'attaque par en dessous (on ne voit que l'aileron, puis il surgit) · → ★ la torpille · ↓ ★ le radar (contre) · SUPER les 300 dents
+  requin(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('accroupi', { y: 220 * Math.min(1, f.t / 10) }); if (ph === 'act' && f.h > 0) return SP('special', { r: f.vy < 0 ? -.05 : .15, y: 20 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
+    if (k === 'SD') { if (f.contre) return SP('coup', { x: 45, sx: 1.05 }, true); if (ph === 'rec') return repos(); return SP('radar', { x: 3 * Math.sin(t * 60), sy: 1 + .01 * Math.sin(t * 20) }, true); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -14 * u, sy: .97 }); if (ph === 'act') return SP('coup', { x: 20, sx: 1.06, r: .03 }, true); return u < .5 ? SP('coup', { x: 15 * (1 - u) }) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('coup', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('coup', { x: 40, sx: 1.05 }, true) : SP('garde', { x: 10 }, true); return repos(); }
   },
 };
