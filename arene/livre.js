@@ -1,8 +1,8 @@
 // =====================================================================
 //  DUELS DU LIVRE — comme dans « C'est qui le plus fort ? » :
 //  1. tu paries (contre Gigi), 2. tu te bats avec ton champion, 3. tu découvres la vraie réponse.
-//  Textes repris MOT POUR MOT du livre imprimé (TEXTE_IMPRIME_V17, identique au V18 pour le jeu, 24/09) : page du duel (p) et page de la réponse (pv).
-//  Contrôle : python3 verif/sync_livre.py TEXTE_IMPRIME_V18_74P.md
+//  Textes repris MOT POUR MOT du livre imprimé (TEXTE_IMPRIME_V19, 25/09) : page du duel (p) et page de la réponse (pv).
+//  Contrôle : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md
 // =====================================================================
 const DUELS = [
   { n: 2, lieu: 'OCÉAN', q: 'ORQUE OU GRAND REQUIN BLANC ?', a: 'orque', b: 'requin', noms: ['ORQUE', 'GRAND REQUIN BLANC'], arene: 'ocean', p: 7, pv: 8,
@@ -40,12 +40,12 @@ const DUELS = [
     fiches: [['environ 190 kg', 'des crocs de 7 cm', 'il plaque sa proie au sol', 'il chasse mal en plein jour'], ['jusqu’à 13 kg', 'de longues griffes', 'la bombe puante', 'surpris, il fonce sans réfléchir']],
     gigi: { pari: 'ratel', dit: 'Le ratel !', pourquoi: 'J’ai vu la vidéo : il est INVINCIBLE.', apres: 'Internet m’a menti. Je suis très déçu.' },
     rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'Courageux… mais pas fou !', tampon: 'vert', label: 'VU DANS LA NATURE',
-      film: 'Dans le désert du Kalahari, des lions et des léopards ont tué des ratels, adultes comme petits. Son vrai talent ? Il ne gagne pas : il dégoûte. Il mord, il pue… et parfois, le fauve renonce !' } },
+      film: 'Dans le désert du Kalahari, des lions et des léopards ont déjà tué des ratels. Son vrai talent ? Il ne gagne pas : il dégoûte. Il mord, il pue… et parfois, le fauve renonce !' } },
   { n: 10, boss: 1, lieu: 'ÎLE DE KOMODO', q: 'DRAGON DE KOMODO OU BUFFLE ?', a: 'komodo', b: 'buffle', noms: ['DRAGON DE KOMODO', 'BUFFLE D’EAU'], arene: 'jungle', p: 23, pv: 24,
     intro: 'Voici le plus gros lézard du monde : trois mètres de long. Il attaque un buffle sept fois plus lourd que lui. Qui gagne, ce jour-là ?',
     fiches: [['environ 80 kg', '60 dents coupantes', 'une morsure à venin', 'il entend très mal'], ['jusqu’à 550 kg', 'de grandes cornes', 'il charge tête baissée', 'ses blessures guérissent mal']],
     gigi: { pari: 'komodo', dit: 'Le dragon.', pourquoi: 'C’est un DRAGON. Je rappelle.', apres: 'Un DRAGON battu par une vache. Je ne crois plus aux dragons.' },
-    rep: { g: 'buffle', titre: 'LA VRAIE RÉPONSE', cri: 'LE BUFFLE !', punch: 'Mordu, mais pas vaincu !', tampon: 'vert', label: 'VU DANS LA NATURE',
+    rep: { g: 'buffle', titre: 'LA VRAIE RÉPONSE', cri: 'LE BUFFLE !', punch: 'Même pas peur du dragon !', tampon: 'vert', label: 'VU DANS LA NATURE',
       film: 'Le dragon mord une patte du buffle et tire de toutes ses forces. Le buffle se secoue, se dégage et repart. C’est ce qui arrive le plus souvent !' } },
   { n: 13, lieu: 'BANQUISE', q: 'OURS POLAIRE OU MORSE ?', a: 'ours', b: 'morse', noms: ['OURS POLAIRE', 'MORSE'], arene: 'banquise', p: 31, pv: 32,
     intro: 'L’ours polaire sent un phoque à plus d’un kilomètre, même sous la neige. Aujourd’hui, il a trouvé mieux : une plage couverte de morses. Qui gagne ?',
@@ -54,8 +54,8 @@ const DUELS = [
     rep: { g: 'morse', titre: 'LA VRAIE RÉPONSE', cri: 'LE MORSE !', punch: 'Pas touche au troupeau !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
       film: 'L’ours fonce sur le troupeau de morses pour lui faire peur. Les adultes font face, défenses en avant. L’ours freine. 23 sur 25 attaques d’ours contre des morses ont raté.' } },
   { n: 16, lieu: 'SAVANE', q: 'GUÉPARD OU AUTRUCHE ?', a: 'guepard', b: 'autruche', noms: ['GUÉPARD', 'AUTRUCHE'], arene: 'savane', p: 37, pv: 38,
-    intro: 'Le coureur le plus rapide du monde a faim. Devant lui, une autruche : un oiseau géant qui ne vole pas, mais qui court très vite. Le guépard est seul. Qui l’emportera ?',
-    fiches: [['jusqu’à 65 kg', 'une griffe-crochet au poignet', 'il fait trébucher sa proie', 'de toutes petites dents'], ['jusqu’à 130 kg', 'une griffe au bout du pied', 'un coup de pied à tuer un lion', 'elle frappe seulement devant']],
+    intro: 'Un guépard affamé guette une autruche. Lui, c’est le champion du sprint. Elle cache une arme au bout de ses longues pattes… Le guépard est seul. Qui l’emportera ?',
+    fiches: [['jusqu’à 65 kg', 'une griffe-crochet au poignet', 'il fait trébucher sa proie', 'de toutes petites dents'], ['jusqu’à 130 kg', 'une griffe au bout du pied', 'un coup de pied à tuer un lion', 'elle ne peut pas s’envoler']],
     gigi: { pari: 'guepard', dit: 'Le guépard.', pourquoi: 'Il aura gagné avant la fin de ma phr… Trop tard.', apres: 'Une poule de 130 kg qui fait du karaté. OK.' },
     rep: { g: 'autruche', titre: 'CE QUE DISENT LES INDICES', cri: 'L’AUTRUCHE !', punch: 'Le guépard a préféré garder ses pattes.', tampon: 'bleu', label: 'D’APRÈS LES INDICES',
       film: 'Au Kalahari, des chercheurs ont noté ce que mangent les guépards. De l’autruche ? Presque jamais ! Elle pèse deux fois plus que lui, et gare à son coup de pied ! Alors, seul, il passe son chemin.' } },
@@ -63,14 +63,14 @@ const DUELS = [
     intro: 'Ce soir, une hyène et un lion mâle veulent la même carcasse. Qui vole le repas de l’autre ?',
     fiches: [['environ 60 kg', 'des mâchoires casse-os', 'elle fatigue ses proies', 'son vacarme attire les voleurs'], ['environ 190 kg', 'des crocs de 7 cm', 'un coup de patte mortel', 'un cœur tout petit pour sa taille']],
     gigi: { pari: 'lion', dit: 'Le lion.', pourquoi: 'La hyène rigole, mais elle va moins rigoler.', apres: 'J’AVAIS BON ! Pourquoi tu as l’air surpris ?' },
-    rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'La carcasse est pour lui !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
+    rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'Table réservée au patron !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
       film: 'Une hyène seule n’a aucune chance face à lui. Nombreuses, elles volent le repas des lionnes. Mais avec un lion mâle, c’est perdu d’avance.' } },
   { n: 24, lieu: 'FORÊT RUSSE', q: 'OURSE BRUNE OU TIGRE DE SIBÉRIE ?', a: 'grizzly', b: 'tigre', noms: ['OURSE BRUNE', 'TIGRE DE SIBÉRIE'], arene: 'foret', p: 55, pv: 56,
-    intro: 'Dans les forêts glacées de Russie, un tigre croise une grande ourse brune. Qui mange l’autre ?',
-    fiches: [['presque 200 kg', 'des griffes de 6 cm', 'elle frappe de la patte', 'un peu plus légère que lui'], ['Dima : 206 kg', 'des griffes de 10 cm', 'il mord la nuque', 'un gros ours lui vole ses proies']],
+    intro: 'En Russie, des ours tuent parfois des tigres ! Dans la forêt glacée, un tigre croise une ourse brune. Qui mange l’autre ?',
+    fiches: [['presque 200 kg', 'des griffes de 6 cm', 'elle frappe de la patte', 'un peu plus légère que lui'], ['celui-ci : 206 kg', 'des griffes de 10 cm', 'il mord la nuque', 'un gros ours lui vole ses proies']],
     gigi: { pari: 'tigre', dit: 'Pile, le tigre.', pourquoi: 'Face, l’ourse… Pile !', apres: 'Ma pièce ne se trompe jamais. Je la garde.' },
     rep: { g: 'tigre', titre: 'CE QUE DISENT LES INDICES', cri: 'LE TIGRE !', punch: 'Une morsure, et l’ourse n’a rien vu venir.', tampon: 'bleu', label: 'D’APRÈS LES INDICES',
-      film: 'Des chercheurs suivent Dima, un tigre, grâce à son collier GPS. Ils trouvent les restes d’une grande ourse. Les traces le disent : Dima a bondi du haut d’une petite pente.' } },
+      film: 'Des chercheurs suivent Dima, un tigre, grâce à son collier radio. Ils trouvent les restes d’une grande ourse. Les traces le disent : Dima a bondi du haut d’un talus raide.' } },
   { n: 30, boss: 3, lieu: 'FINALE', q: 'TIGRE OU GORILLE ?', a: 'tigre', b: 'gorille', noms: ['TIGRE DE SIBÉRIE', 'GORILLE'], arene: 'colisee', p: 67, pv: 68,
     intro: 'Ce duel de rêve n’a jamais eu lieu : le tigre vit en Asie, le gorille en Afrique. On a enquêté, round par round. Qui gagnerait ?',
     fiches: [['environ 175 kg', 'les plus longs crocs des félins', 'la morsure à la gorge', 'à la chasse, il rate 9 fois sur 10'], ['environ 160 kg', 'de longues canines', 'il charge en hurlant', 'il ne chasse jamais']],

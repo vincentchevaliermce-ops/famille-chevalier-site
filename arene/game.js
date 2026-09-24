@@ -423,32 +423,32 @@ const mondeDe = k => (CHARS[k] && CHARS[k].monde) || 'terre';
 const arenesDe = m => ARENES.filter(a => (a.monde || 'terre') === m);
 // cartes de l'écran de choix : les animaux du monde affiché (le légendaire seulement une fois gagné)
 const LISTE = (m = G.monde) => ORDRE.filter(k => mondeDe(k) === m && (k !== MONDES[m].legende || debloque(k)));
-const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V17, mot pour mot (// p. N) ou à peine adaptées (// ≈ p. N : sujet ajouté).
+const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, mot pour mot (// p. N) ou à peine adaptées (// ≈ p. N : sujet ajouté).
   // Aucune carte ne donne le résultat d'un duel. Une carte ne se gagne que contre un animal déjà débloqué (sinon elle donnerait les réponses du quiz).
   tigre: [
     'Si on rasait un tigre, il resterait rayé : ses rayures sont aussi dessinées sur sa peau !', // p. 9
     'La nuit, le tigre voit six fois mieux que toi. Et il traverse à la nage des rivières larges de 8 km !', // p. 67
     'Le tigre approche sans un bruit, puis il bondit : jusqu’à 10 mètres d’un coup ! Plus que deux voitures garées l’une derrière l’autre.', // p. 55
     '1 tonne : le poids des plus gros gaurs, des bœufs sauvages. Un tigre peut en tuer un !', // p. 10
-    'Chaque tigre a son propre motif de rayures. Les chercheurs comparent les photos pour reconnaître chaque animal. Pas besoin de collier avec son prénom !', // p. 70
+    'Dans les années 1940, il ne restait qu’une quarantaine de tigres de Sibérie. Protégés, ils sont aujourd’hui environ 750 en Russie !', // p. 70
   ],
   gorille: [
     'Le gorille se frappe la poitrine les mains en coupe, pas avec les poings. Au cinéma, on se trompe souvent !', // ≈ p. 68
-    '1 km : c’est la distance à laquelle on entend un gorille se frapper la poitrine. Un vrai tambour !', // p. 68
+    '2,40 m d’une main à l’autre : les bras écartés d’un gorille mâle. Écarte les tiens !', // p. 68
     'Devant ses plantes préférées, le gorille chantonne ! Sans doute une façon de dire : « Je mange, ne me dérange pas. »', // p. 67
     'Un dos argenté (un grand mâle gorille) ne recule pas.', // p. 68
     'Gare à la charge du gorille ! Il est bien plus fort qu’un humain. De combien ? Personne n’a pu le mesurer !', // p. 68
   ],
   lion: [
-    'La nuit, le rugissement du lion s’entend à 8 km : de l’autre bout de la ville ! Il veut dire : « Ici, c’est chez moi. »', // p. 9
-    'Le lion passe environ 20 heures par jour à ne rien faire. Un vrai flemmard !', // p. 19
-    'La langue à pointes du lion racle la viande sur les os et nettoie son pelage. Une toilette pareille, ça frotte !', // ≈ p. 10
+    'La nuit, le rugissement du lion s’entend jusqu’à 8 km : de l’autre bout de la ville ! Il veut dire : « Ici, c’est chez moi. »', // p. 9
+    'Le lion se repose environ 20 heures par jour. Flemmard ? Non : il garde ses forces pour chasser !', // p. 19
+    'À la naissance, le lionceau est couvert de petites taches ! Elles pâlissent en grandissant.', // p. 10
     'Certains lions cachent une petite pointe dure dans le pompon de leur queue. À quoi sert-elle ? Personne ne le sait !', // p. 41
     'Comme une équipe de foot : chaque lionne a son poste ! Les plus légères poussent la proie vers les plus lourdes, cachées au centre !', // p. 51
   ],
   ours: [
-    'Les poils de l’ours polaire sont creux, comme des pailles : ils gardent la chaleur… et l’aident à flotter !', // p. 15
-    'L’ours polaire est blanc ? Faux ! Ses poils sont transparents et sa peau est noire. Il paraît blanc… comme la neige, faite de glace transparente !', // p. 32
+    'Les grands poils de l’ours polaire sont creux, comme des pailles, et pleins d’air : ils gardent bien la chaleur !', // p. 15
+    'L’ours polaire a des poils blancs ? Faux ! Ses poils sont transparents et sa peau est noire. Il paraît blanc… comme la neige, faite de glace transparente !', // ≈ p. 32
     '687 km nagés par une ourse polaire, 9 jours sans s’arrêter. Autant que de Paris à Marseille… à la nage !', // p. 16
     'Sous ses pattes, l’ours polaire porte de minuscules bosses. Elles accrochent la glace et l’aident à ne pas glisser.', // p. 26
     'Pour les scientifiques, l’ours polaire est un mammifère marin, comme le phoque et la baleine ! Il vit surtout sur la glace de mer.', // p. 31
@@ -511,7 +511,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V17, 
   ],
   komodo: [
     'Voici le plus gros lézard du monde : trois mètres de long.', // p. 23
-    'Le dragon « goûte » l’air avec sa langue fourchue : il repère un animal mort à plus de 4 km !', // p. 23
+    'Le dragon « goûte » l’air avec sa langue fourchue : il repère un animal mort jusqu’à 4 km !', // p. 23
     '24 kg de pâtes en un repas : ce que tu avalerais si tu mangeais comme un dragon de Komodo !', // p. 24
     'Les jeunes dragons de Komodo vivent perchés dans les arbres. Pourquoi ? Les dragons adultes mangent les petits !', // ≈ p. 24
     '« Le dragon tue avec les microbes de sa bouche. » Pas vraiment : son venin… et la mare sale !', // p. 24
@@ -533,13 +533,13 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V17, 
   guepard: [
     'En moins de trois secondes, le guépard passe de l’arrêt à 70 km/h. Il démarre plus vite que la voiture de tes parents !', // p. 37
     'Le guépard ne sait pas rugir. À la place, il ronronne, il miaule… et il pousse de petits cris aigus, comme un oiseau !', // p. 47
-    'Le guépard est le coureur le plus rapide du monde !', // ≈ p. 37
+    'Le guépard est le champion du sprint !', // ≈ p. 37
     'Le coup spécial du guépard : il fait trébucher sa proie.', // ≈ p. 37
     'Le point faible du guépard : de toutes petites dents.', // ≈ p. 37
   ],
   autruche: [
     'L’autruche est le seul oiseau à deux doigts par pied. Et elle court à 50 km/h pendant très longtemps !', // p. 37
-    'L’autruche fait 5 mètres en un seul pas, en pleine course ! Et toi, il te faut combien de pas ?', // ≈ p. 38
+    '5 mètres en un seul pas d’autruche, en pleine course ! Et toi, combien de pas ?', // p. 38
     'Autruche : un œil de 5 cm. Son œil est plus gros qu’une balle de ping-pong ! C’est le plus gros œil de tous les animaux de la terre ferme.', // p. 38
     'L’autruche cache sa tête dans le sable ? Faux ! Pour se cacher, elle se couche, le cou à plat sur le sol. De loin, on dirait un tas de terre !', // ≈ p. 38
     'Le coup spécial de l’autruche : un coup de pied à tuer un lion !', // ≈ p. 37
@@ -561,11 +561,11 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V17, 
 
 // ---------------------------------------------------------------------
 //  Quiz du livre : 3 bonnes réponses de suite pour débloquer un animal.
-//  Règles (24/09, texte imprimé V17) :
+//  Règles (24/09, texte imprimé V17 ; resynchronisé sur la V19 le 25/09) :
 //  - réponses prises MOT POUR MOT sur une page de fiches (avant la réponse du duel) : aucune question ne dévoile un résultat ;
 //  - jamais une réponse que le jeu affiche déjà pour cet animal (nom de coup, cri, carte) : il faut ouvrir le livre ;
 //  - une erreur ne montre jamais la bonne réponse : « Relis la page N du livre », puis nouvel essai avec d'autres questions.
-//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V17_74P.md
+//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md
 // ---------------------------------------------------------------------
 const QUIZ = {
   croco: { pages: 'pages 13 et 59', q: [
@@ -622,7 +622,7 @@ const QUIZ = {
   komodo: { pages: 'page 23', q: [
     ['Combien de dents coupantes a le dragon de Komodo ?', ['60', '600', '6 000'], 23],
     ['Avec quoi le dragon de Komodo « goûte »-t-il l’air ?', ['sa langue fourchue', 'sa queue', 'ses griffes'], 23],
-    ['Le dragon de Komodo repère un animal mort à plus de…', ['4 km', '400 m', '40 km'], 23],
+    ['Le dragon de Komodo repère un animal mort jusqu’à…', ['4 km', '400 m', '40 km'], 23],
     ['Le dragon de Komodo est le plus gros…', ['lézard du monde', 'serpent du monde', 'crocodile du monde'], 23],
     ['Combien mesure le dragon de Komodo ?', ['trois mètres de long', 'trente centimètres de long', 'un mètre de long'], 23],
   ] },
@@ -633,7 +633,7 @@ const QUIZ = {
 //  Règles : pages de fiches (recto) ou pages bonus, jamais une page de réponse ; jamais un mot que le jeu affiche ailleurs ;
 //  majuscules, accents et une petite faute acceptés ; en cas d'erreur, on ne montre jamais la réponse.
 //  Pas de code à offrir pour ces animaux, et le GOD MODE ne les ouvre pas : c'est le livre qui les débloque.
-//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V17_74P.md
+//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md
 // ---------------------------------------------------------------------
 const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r : le mot à écrire · x : le passage du livre qui le contient (le jeu ne doit jamais l'afficher)
   leopard: [
