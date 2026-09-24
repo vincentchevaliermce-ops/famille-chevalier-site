@@ -87,6 +87,11 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .carte.autruche .img{background:radial-gradient(circle at 50% 110%,#FFE1EA,#E48CA8 70%)}
 .carte.orque .img{background:radial-gradient(circle at 50% 110%,#BFE9FF,#1D5FA8 72%)}
 .carte.requin .img{background:radial-gradient(circle at 50% 110%,#D6F4FF,#2A86C9 72%)}
+.carte.pieuvre .img{background:radial-gradient(circle at 50% 110%,#FFE3D6,#C94A36 72%)}
+.carte.aiguillat .img{background:radial-gradient(circle at 50% 110%,#E8F1F8,#4F7FA8 72%)}
+.carte.espadon .img{background:radial-gradient(circle at 50% 110%,#F4E8FF,#6A4E9E 72%)}
+.carte.requinbleu .img{background:radial-gradient(circle at 50% 110%,#DDF0FF,#1F5FC9 72%)}
+.carte.megalo .img{background:radial-gradient(circle at 50% 110%,#C9D8E8,#1B2D48 72%)}
 .cartes.treize{grid-template-columns:repeat(5,17.2cqw);gap:1cqw}.cartes.treize .carte .img{height:9.4cqw}.cartes.treize .carte .nom{font-size:1.7cqw}
 .carte.legende{border-color:var(--jaune);box-shadow:0 0 0 .3cqw #FF8A00,0 0 1.6cqw #FFC629,0 .6cqw 0 rgba(0,0,0,.4);position:relative}
 .carte.legende::before{content:"LÉGENDAIRE";position:absolute;top:-.9cqw;left:50%;transform:translateX(-50%);z-index:2;background:linear-gradient(#FFE08A,#FF9F1C);color:var(--marine);font:900 1cqw Rubik,"Arial Black",sans-serif;letter-spacing:.08em;padding:.2cqw .8cqw;border-radius:.8cqw;border:.2cqw solid var(--marine);white-space:nowrap}
@@ -107,7 +112,14 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .badge i{grid-row:span 2;font:900 3cqw Rubik,sans-serif;font-style:normal;text-align:center;filter:grayscale(1);opacity:.35}
 .badge b{font:900 1.35cqw Rubik,"Arial Black",sans-serif;color:#9fb3d8}.badge small{font-size:1.05cqw;color:#c8d6f0;line-height:1.2}
 .badge.ok{background:rgba(255,198,41,.14);border-color:var(--jaune)}.badge.ok i{filter:none;opacity:1}.badge.ok b{color:var(--jaune)}
-.troph-grille[hidden],.troph-cartes[hidden]{display:none!important}
+.troph-grille[hidden],.troph-cartes[hidden],.troph-liste[hidden]{display:none!important}
+.troph-liste{touch-action:pan-y!important;max-height:31cqw;overflow:auto;width:88cqw;margin:0 auto;text-align:left}
+.troph-tete{display:flex;align-items:baseline;gap:1.5cqw;justify-content:center;margin:.3cqw 0 .6cqw}.troph-tete b{font:900 2.2cqw Rubik,'Arial Black',sans-serif;color:var(--jaune)}.troph-tete small{font-size:1.2cqw;color:var(--creme)}
+.troph-recomp{display:grid;grid-template-columns:repeat(4,1fr);gap:.8cqw;margin-bottom:.6cqw}.troph-recomp div{background:rgba(255,255,255,.06);border:.2cqw dashed rgba(255,255,255,.25);border-radius:1cqw;padding:.5cqw .7cqw}.troph-recomp div.ok{border:.2cqw solid var(--jaune);background:rgba(255,198,41,.12)}.troph-recomp b{display:block;font:900 1.1cqw Rubik,'Arial Black',sans-serif;color:#9fb3d8}.troph-recomp .ok b{color:var(--jaune)}.troph-recomp small{font-size:.95cqw;color:#c8d6f0}
+.troph-fam{margin:.9cqw 0 .4cqw;font:900 1.6cqw Rubik,'Arial Black',sans-serif;color:var(--creme)}.troph-fam small{color:#9fb3d8;font-size:1.2cqw;margin-left:.6cqw}
+.troph-liste .troph-grille{grid-template-columns:repeat(4,1fr)}.badge.secret{border-style:dashed}.badge.secret b{color:#7f93bd}
+#bandeau-troph{position:fixed;left:50%;top:0;transform:translate(-50%,-130%);z-index:99;background:linear-gradient(#FFD23F,#F5A623);color:#3A1E00;font:900 clamp(15px,2.3vw,30px) Rubik,'Arial Black',sans-serif;padding:.5em 1.4em;border-radius:0 0 .8em .8em;border:3px solid #7A3E00;border-top:0;box-shadow:0 .3em 0 rgba(0,0,0,.35);transition:transform .35s cubic-bezier(.2,1.4,.5,1);pointer-events:none;white-space:nowrap}
+#bandeau-troph.vu{transform:translate(-50%,0)}#bandeau-troph.gros{background:linear-gradient(#7FE3FF,#3FA9F5);color:#062447;border-color:#0B2A5B}
 .troph-cartes{touch-action:pan-y!important;display:grid;grid-template-columns:repeat(2,42cqw);gap:1cqw;max-height:30cqw;overflow:auto;text-align:left}
 .troph-cartes .anim{background:rgba(255,255,255,.06);border-radius:1.2cqw;padding:.8cqw 1.2cqw}.troph-cartes h3{margin:0 0 .4cqw;font:900 1.7cqw Rubik,"Arial Black",sans-serif;color:var(--jaune)}
 .troph-cartes p{margin:.25cqw 0;font-size:1.15cqw;line-height:1.3;color:var(--creme)}.troph-cartes p.non{color:#6f86b5}
@@ -491,7 +503,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
     </div>
     <h2 id="choix-titre" class="R">CHOISIS TON ANIMAL</h2>
     <div class="cartes" id="cartes"></div>
-    <div class="ligne bas-choix"><button class="btn" id="retour-choix" type="button" hidden>◀ RETOUR</button><span id="detail" class="detail"></span><button class="btn" id="hasard-btn" type="button" hidden>🎲 AU HASARD</button><button class="btn" id="tournoi-btn" type="button" hidden>🏆 TOURNOI</button><button class="btn" id="comment-jouer" type="button">❓ COMMENT JOUER</button><button class="btn" id="trophees-btn" type="button">TROPHÉES</button></div>
+    <div class="ligne bas-choix"><button class="btn" id="retour-choix" type="button" hidden>◀ RETOUR</button><span id="detail" class="detail"></span><button class="btn" id="hasard-btn" type="button" hidden>🎲 AU HASARD</button><button class="btn" id="tournoi-btn" type="button" hidden>🏆 TOURNOI</button><button class="btn" id="tenue-btn" type="button" hidden>🎨 NORMAL</button><button class="btn" id="comment-jouer" type="button">❓ COMMENT JOUER</button><button class="btn" id="trophees-btn" type="button">TROPHÉES</button></div>
     <p class="petit clavier">Clavier : <b>Z Q S D</b> pour bouger · <b>F</b> rapide · <b>G</b> fort · <b>H</b> ★ spécial (2ᵉ joueur : flèches + <b>1 2 3</b> du pavé ou <b>, ; !</b>). Pour te protéger : <b>vers le bas</b> (ou recule). Baisse-toi pour esquiver.</p>
   </section>
 
@@ -548,8 +560,8 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 
   <section class="ecran" id="trophees" hidden>
     <h2 class="titre R">MES TROPHÉES</h2>
-    <div class="ligne"><button class="btn" id="tab-badges" type="button" aria-pressed="true">BADGES</button><button class="btn" id="tab-cartes" type="button" aria-pressed="false">CARTES « LE SAVAIS-TU ? »</button></div>
-    <div id="troph-badges" class="troph-grille"></div>
+    <div class="ligne"><button class="btn" id="tab-badges" type="button" aria-pressed="true">🏆 TROPHÉES</button><button class="btn" id="tab-cartes" type="button" aria-pressed="false">CARTES « LE SAVAIS-TU ? »</button></div>
+    <div id="troph-badges" class="troph-liste"></div>
     <div id="troph-cartes" class="troph-cartes" hidden></div>
     <p class="petit" id="garde-trophees">Astuce : ajoute le jeu à l’écran d’accueil (menu Partager ▸ « Sur l’écran d’accueil ») : il s’ouvre en plein écran et garde tes trophées.</p>
     <button class="btn go" id="troph-retour" type="button">RETOUR</button>
@@ -622,6 +634,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
       <p>L’Arène des Duels accompagne le livre <b>« C’est qui le plus fort ? »</b> (Vincent Chevalier, 2026) : 30 duels d’animaux, des paris, et à chaque fois la vraie réponse, vérifiée. Ce bonus est gratuit.</p>
       <p><b>Pas de compte, pas de publicité, pas de discussion entre joueurs, pas de vrai prénom</b> : les défis utilisent un « nom de champion » inventé. La progression est enregistrée uniquement sur cet appareil.</p>
       <p>Seul le mode « chacun son téléphone » passe par un service de mise en relation (PeerJS) pour relier les deux appareils le temps d’une partie : seuls les gestes du jeu circulent, rien n’est conservé.</p>
+      <p><b>Caisses surprises et pièges d’arène</b> (bonus qui tombent pendant les combats, noix de coco, vagues…) : <button class="btn" id="opt-surprises" type="button">OUI</button></p>
       <p><a href="https://editions-chevalier.fr/" target="_blank" rel="noopener">Découvrir le livre sur editions-chevalier.fr ↗</a></p>
     </div>
     <button class="btn" id="parents-retour" type="button">◀ RETOUR</button>
@@ -644,7 +657,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <section class="ecran" id="legende" hidden>
     <p class="legende-titre R">ANIMAL LÉGENDAIRE DÉBLOQUÉ !</p>
     <img id="legende-img" alt="">
-    <p class="petit">Tu as battu tous les animaux en GOD MODE… et tu as réveillé le T. REX ! Il est à toi pour toujours.</p>
+    <p class="petit" id="legende-txt">Tu as battu tous les animaux en GOD MODE… et tu as réveillé le T. REX ! Il est à toi pour toujours.</p>
     <button class="btn go" id="legende-ok" type="button">JOUER AVEC LUI ▶</button>
   </section>
 
@@ -693,10 +706,11 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790271157"></script>
-<script src="anim.js?v=1790271157"></script>
-<script src="game.js?v=1790271157"></script>
-<script src="net.js?v=1790271157"></script>
-<script src="livre.js?v=1790271157"></script>
-<script src="bonus.js?v=1790271157"></script>
+<script src="skin.js?v=1790273875"></script>
+<script src="anim.js?v=1790273875"></script>
+<script src="game.js?v=1790273875"></script>
+<script src="net.js?v=1790273875"></script>
+<script src="livre.js?v=1790273875"></script>
+<script src="bonus.js?v=1790273875"></script>
+<script src="surprises.js?v=1790273875"></script>
 </body></html>

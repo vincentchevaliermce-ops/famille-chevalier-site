@@ -41,6 +41,12 @@ const DUELS = [
     gigi: { pari: 'ratel', dit: 'Le ratel !', pourquoi: 'J’ai vu la vidéo : il est INVINCIBLE.', apres: 'Internet m’a menti. Je suis très déçu.' },
     rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'Courageux… mais pas fou !', tampon: 'vert', label: 'VU DANS LA NATURE',
       film: 'Dans le désert du Kalahari, des lions et des léopards ont déjà tué des ratels. Son vrai talent ? Il ne gagne pas : il dégoûte. Il mord, il pue… et parfois, le fauve renonce !' } },
+  { n: 9, lieu: 'AQUARIUM', q: 'PIEUVRE GÉANTE OU REQUIN ?', a: 'pieuvre', b: 'aiguillat', noms: ['PIEUVRE GÉANTE', 'REQUIN AIGUILLAT'], arene: 'aquarium', p: 21, pv: 22,
+    intro: 'D’un côté, un aiguillat : un requin d’un mètre. De l’autre, un gros sac mou à huit bras. Ils partagent le même bassin. Qui mange l’autre ?',
+    fiches: [['souvent plus de 20 kg', 'des bras à ventouses', 'elle mord avec un bec caché', 'vite fatiguée en nageant'], ['moins de 10 kg', 'deux épines à venin', 'il se plie et pique', 'petit, pour un requin']],
+    gigi: { pari: 'aiguillat', dit: 'Le requin.', pourquoi: 'Il a des dents, lui !', apres: 'Il avait des dents, lui ! Elle, un bec caché. Tricheuse !' },
+    rep: { g: 'pieuvre', titre: 'LA VRAIE RÉPONSE', cri: 'LA PIEUVRE !', punch: 'Huit bras, zéro pitié.', tampon: 'vert', label: 'OBSERVÉ EN AQUARIUM',
+      film: 'Aquarium de Seattle. On installe une pieuvre géante chez les requins. Les soigneurs ont peur… pour elle. Les jours passent. Un requin a disparu. Puis un autre. Puis encore un. C’est elle ! La pieuvre attrapait les requins un par un.' } },
   { n: 10, boss: 1, lieu: 'ÎLE DE KOMODO', q: 'DRAGON DE KOMODO OU BUFFLE ?', a: 'komodo', b: 'buffle', noms: ['DRAGON DE KOMODO', 'BUFFLE D’EAU'], arene: 'jungle', p: 23, pv: 24,
     intro: 'Voici le plus gros lézard du monde : trois mètres de long. Il attaque un buffle sept fois plus lourd que lui. Qui gagne, ce jour-là ?',
     fiches: [['environ 80 kg', '60 dents coupantes', 'une morsure à venin', 'il entend très mal'], ['jusqu’à 550 kg', 'de grandes cornes', 'il charge tête baissée', 'ses blessures guérissent mal']],
@@ -159,6 +165,10 @@ function verdictLivre(v, etoilesCombat, nv) {
   // le pari ne compte qu'une fois (le premier), comme dans le livre
   let r = deja;
   if (!deja) { r = SAVE.livre[D.n] = { pari: L.pari, bon: L.pari === R.g, etoiles: gagneArene ? etoilesCombat : 0, date: Date.now() } }
+  if (window.trophee) { // trophées du livre
+    if (!deja) { if (r.bon) { trophee('pari1', true); if (Object.values(SAVE.livre).filter(x => x.bon).length >= 5) trophee('pari5', true) } if (L.pari === D.gigi.pari) trophee('gigi', true) }
+    if (DUELS.every(x => SAVE.livre[x.n])) trophee('duels', true);
+    if (gagneArene && D.boss) { SAVE.bossGagnes = SAVE.bossGagnes || {}; SAVE.bossGagnes[D.n] = 1; if ([10, 20, 30].every(n => SAVE.bossGagnes[n])) trophee('boss', true) } }
   else if (gagneArene) r.etoiles = Math.max(r.etoiles || 0, etoilesCombat);
   sauve();
   G.phase = 'menu'; show('verdict');
@@ -175,7 +185,7 @@ function verdictLivre(v, etoilesCombat, nv) {
   $('v-gigi').innerHTML = `<b>GIGI</b> avait parié : ${D.gigi.dit} ${D.gigi.pari === R.g ? '✔' : '✘'}<br><i>${D.gigi.apres}</i>`;
   const s = scoreLivre(); $('v-score').innerHTML = `TOI <b>${s.toi}</b> · GIGI <b>${s.gigi}</b>`;
   $('v-page').textContent = `La suite de l’enquête est à la page ${D.pv} du livre !`;
-  $('v-badges').innerHTML = (nv || []).map(id => `<span>NOUVEAU BADGE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
+  $('v-badges').innerHTML = (nv || []).map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
   // bouton suivant : prochain duel ouvert, sinon la liste
   const suivant = DUELS.find(x => !fait(x) && duelOuvert(x));
   $('v-suite').textContent = suivant ? 'DUEL SUIVANT ▶' : 'MES DUELS ▶';

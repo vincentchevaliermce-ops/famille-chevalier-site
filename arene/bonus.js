@@ -4,7 +4,7 @@
 //  Rien ne sort de l'appareil : pas de compte, pas de nom réel, pas de serveur (les défis passent par le lien).
 // =====================================================================
 const PUBLIC = 'https://editions-chevalier.fr/arene/'; // adresse publique du jeu (liens partagés, QR)
-const EMOJI = { tigre: '🐯', gorille: '🦍', lion: '🦁', ours: '🐻‍❄️', croco: '🐊', hippo: '🦛', ratel: '🦡', komodo: '🦎', grizzly: '🐻', hyene: '🐾', buffle: '🐃', morse: '🦭', trex: '🦖', leopard: '🐆', porcepic: '🦔', guepard: '⚡', autruche: '🪶', orque: '🐋', requin: '🦈' };
+const EMOJI = { tigre: '🐯', gorille: '🦍', lion: '🦁', ours: '🐻‍❄️', croco: '🐊', hippo: '🦛', ratel: '🦡', komodo: '🦎', grizzly: '🐻', hyene: '🐾', buffle: '🐃', morse: '🦭', trex: '🦖', leopard: '🐆', porcepic: '🦔', guepard: '⚡', autruche: '🪶', orque: '🐋', requin: '🦈', pieuvre: '🐙', aiguillat: '🦈', espadon: '🐟', requinbleu: '💙', megalo: '🦷' };
 const NIVEAUX = ['FACILE', 'NORMAL', 'COSTAUD'];
 SAVE.codes = SAVE.codes || {}; SAVE.godBattus = SAVE.godBattus || {};
 // ---------------------------------------------------------------------
@@ -23,7 +23,7 @@ function valideCodeSecret() {
   if (!v) return;
   if (v === CODE_GOD) {
     SAVE.codes.god = 1; G.god = true; sauve(); sonInit(); sfx('super'); sfx('tigre', .8); vibre([60, 40, 90]);
-    msg(`⚡ GOD MODE ACTIVÉ ! Invincible, SUPER illimité, tous les animaux. Bats les ${questeTxt().tot} animaux pour réveiller… le LÉGENDAIRE !`); majGodBtn(); return;
+    msg(`⚡ GOD MODE ACTIVÉ ! Invincible, SUPER illimité, tous les animaux. Bats les ${questeTxt().tot} animaux de la TERRE pour réveiller… le LÉGENDAIRE ! Et dans la MER, un autre géant attend…`); majGodBtn(); return;
   }
   if (v === 'PROUT') { G.prout = !G.prout; sfx('prout', 1); msg(G.prout ? 'MODE PROUT activé pour ta partie. Tu es prévenu…' : 'Mode prout désactivé. Ouf.'); return }
   const k = CODES_ANIMAUX[v] || (typeof CODES !== 'undefined' && CODES[v]);
@@ -53,41 +53,46 @@ function revelerCodeGod() {
 // ---------------------------------------------------------------------
 //  La quête du légendaire : en GOD MODE, battre les 12 animaux réveille le T. REX
 // ---------------------------------------------------------------------
-const LEGENDAIRE = 'trex';
-const aBattre = () => ORDRE.filter(k => k !== LEGENDAIRE && mondeDe(k) === 'terre' && (!LIVRE_EN_MAIN[k] || debloqueVrai(k))); // le T. rex est le légendaire de la TERRE ; les animaux « livre en main » comptent une fois débloqués
-function questeTxt() { const l = aBattre(), n = l.filter(k => SAVE.godBattus[k]).length; return { n, tot: l.length } }
+const LEGENDAIRE = 'trex'; // (le légendaire de la TERRE ; celui de la MER est le mégalodon : MONDES.mer.legende)
+const LEGENDAIRES = () => Object.values(MONDES).map(m => m.legende).filter(Boolean);
+const estLegendaire = k => LEGENDAIRES().includes(k);
+// TERRE : les animaux « livre en main » comptent une fois débloqués. MER : ils sont tous « livre en main », il faut donc les avoir TOUS débloqués.
+const aBattre = (m = 'terre') => ORDRE.filter(k => !estLegendaire(k) && mondeDe(k) === m && (m !== 'terre' || !LIVRE_EN_MAIN[k] || debloqueVrai(k))); // le T. rex est le légendaire de la TERRE ; les animaux « livre en main » comptent une fois débloqués
+function questeTxt(m = 'terre') { const l = aBattre(m), n = l.filter(k => SAVE.godBattus[k] && (m === 'terre' || debloqueVrai(k))).length; return { n, tot: l.length } }
 function apresMatch(v, n, nv) {
   G.dernier = null; G.dernierJour = !!G.jour; G.finExtra = ''; // G.finExtra : messages ajoutés sous le résultat (écran de fin ou verdict du livre)
   if (!G.f.length) return;
   const [a, b] = G.f, moi = a, adv = b, gagne = v === a && !a.cpu;
   G.dernier = { moi: moi.kind, adv: adv.kind, arene: G.arene, niv: G.niv, gagne, etoiles: gagne ? n : 0, temps: Math.max(1, Math.round((G.chrono || 0) / 60)), god: !!G.god };
   // quête du légendaire (GOD MODE, en solo)
-  if (G.god && G.mode === 1 && !NET.on && gagne && adv.kind !== LEGENDAIRE) {
-    SAVE.godBattus[adv.kind] = 1; const q = questeTxt(); sauve();
-    G.finExtra += `<span class="quete">⚡ QUÊTE DU LÉGENDAIRE : ${q.n} / ${q.tot}</span>`;
-    if (q.n >= q.tot && !debloqueVrai(LEGENDAIRE) && pret(LEGENDAIRE)) { SAVE.debloques.push(LEGENDAIRE); sauve(); setTimeout(ceremonieLegendaire, 1800) }
+  if (G.god && G.mode === 1 && !NET.on && gagne && !estLegendaire(adv.kind)) {
+    const m = mondeDe(adv.kind), leg = MONDES[m].legende; SAVE.godBattus[adv.kind] = 1; const q = questeTxt(m); sauve();
+    if (leg) G.finExtra += `<span class="quete">⚡ QUÊTE DU LÉGENDAIRE ${MONDES[m].ico} : ${q.n} / ${q.tot}${m === 'mer' && q.n < q.tot ? ' (débloque-les tous avec le livre !)' : ''}</span>`;
+    if (leg && q.tot && q.n >= q.tot && !debloqueVrai(leg) && pret(leg)) { SAVE.debloques.push(leg); sauve(); setTimeout(() => ceremonieLegendaire(leg), 1800) }
   }
   // défi d'un copain : on compare
   if (G.defi && G.defi.enCours && G.mode === 1) { G.defi.enCours = false; const d = G.defi, moiRes = G.dernier;
     const mieux = moiRes.gagne && (moiRes.etoiles > d.etoiles || (moiRes.etoiles === d.etoiles && moiRes.temps < d.temps));
     G.finExtra += `<span class="defi-res ${mieux ? 'ok' : ''}">${mieux ? `DÉFI RÉUSSI ! Tu as fait mieux que ${d.nom} !` : moiRes.gagne ? `Gagné… mais ${d.nom} avait fait mieux (${d.temps} s, ${'★'.repeat(d.etoiles)}). Réessaie !` : `DÉFI RATÉ… ${d.nom} rigole. Réessaie !`}</span>`;
-    if (mieux) sfx('badge') }
+    if (mieux) { sfx('badge'); if (window.trophee) trophee('defi', true) } }
   // défi du jour
   if (G.jour && G.mode === 1) { const j = G.jour, r = G.dernier; G.jour = null;
     const best = SAVE.jour && SAVE.jour.date === j.date ? SAVE.jour : null;
     if (!best || (r.gagne && (!best.gagne || r.etoiles > best.etoiles || (r.etoiles === best.etoiles && r.temps < best.temps)))) SAVE.jour = { date: j.date, gagne: r.gagne, etoiles: r.etoiles, temps: r.temps, a: j.a, b: j.b };
+    if (r.gagne && window.trophee) { SAVE.joursReussis = SAVE.joursReussis || {}; SAVE.joursReussis[j.date] = 1; trophee('jour', true); if (Object.keys(SAVE.joursReussis).length >= 5) trophee('jour5', true) }
     sauve(); G.finExtra += `<span class="defi-res ${r.gagne ? 'ok' : ''}">⚡ DÉFI DU JOUR : ${r.gagne ? 'RÉUSSI !' : 'raté… réessaie !'}</span>` }
   majBoutonsFin();
 }
-function ceremonieLegendaire() {
-  G.phase = 'menu'; show('legende'); sfx('dino', 1); sfx('boum', 1); vibre([100, 60, 200]);
-  $('legende-img').src = LEGENDAIRE + '_vs.webp';
+function ceremonieLegendaire(k = LEGENDAIRE) {
+  G.phase = 'menu'; show('legende'); G.legendeVu = k; sfx(k === 'trex' ? 'dino' : 'requin', 1); sfx('boum', 1); vibre([100, 60, 200]);
+  $('legende-img').src = k + '_vs.webp';
+  const t = $('legende-txt'); if (t) t.textContent = k === 'trex' ? 'Tu as battu tous les animaux de la TERRE en GOD MODE… et tu as réveillé le T. REX ! Il est à toi pour toujours.' : 'Tu as battu tous les animaux de la MER en GOD MODE… et le MÉGALODON est remonté des profondeurs ! Il est à toi pour toujours.';
 }
 // ---------------------------------------------------------------------
 //  Nom de champion (inventé : jamais le vrai prénom)
 // ---------------------------------------------------------------------
 const MOTS_NOM = ['TONNERRE', 'ÉCLAIR', 'TORNADE', 'VOLCAN', 'TURBO', 'NINJA', 'COMÈTE', 'TEMPÊTE', 'MÉTÉORE', 'BOLIDE', 'FANTÔME', 'MYSTÈRE', 'DE FEU', 'DES NEIGES', 'SUPERSTAR', 'PIRATE', 'COSMIQUE', 'GÉANT'];
-function nomsAuHasard() { const a = ORDRE.filter(k => k !== LEGENDAIRE), r = []; while (r.length < 3) { const n = (CHARS[a[Math.floor(Math.random() * a.length)]].nom.split(' ')[0]) + ' ' + MOTS_NOM[Math.floor(Math.random() * MOTS_NOM.length)]; if (!r.includes(n)) r.push(n) } return r }
+function nomsAuHasard() { const a = ORDRE.filter(k => !estLegendaire(k)), r = []; while (r.length < 3) { const n = (CHARS[a[Math.floor(Math.random() * a.length)]].nom.split(' ')[0]) + ' ' + MOTS_NOM[Math.floor(Math.random() * MOTS_NOM.length)]; if (!r.includes(n)) r.push(n) } return r }
 function demandeNom(ensuite) {
   if (SAVE.nom) { ensuite(); return }
   G.apresNom = ensuite; G.retourNom = G.screen; show('nom'); proposeNoms();
@@ -164,7 +169,7 @@ function defiDuJour() {
   const r = () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296;
   // un jour sur cinq, le défi se passe dans la MER (s'il y a au moins deux animaux marins) ; même pour tous les enfants
   const monde = ORDRE.filter(k => mondeDe(k) === 'mer').length >= 2 && r() < .2 ? 'mer' : 'terre';
-  const l = ORDRE.filter(k => k !== LEGENDAIRE && mondeDe(k) === monde); const a = l[Math.floor(r() * l.length)]; let b = l[Math.floor(r() * l.length)]; if (b === a) b = l[(l.indexOf(a) + 1) % l.length];
+  const l = ORDRE.filter(k => !estLegendaire(k) && mondeDe(k) === monde); const a = l[Math.floor(r() * l.length)]; let b = l[Math.floor(r() * l.length)]; if (b === a) b = l[(l.indexOf(a) + 1) % l.length];
   const A = arenesDe(monde), arene = A[Math.floor(r() * A.length)].k;
   return { date, a, b, arene, niv: 1 };
 }
@@ -245,7 +250,7 @@ function initBonus() {
   on('fin-photo', photoVictoire); on('fin-defi', partageDefi); on('v-defi', () => { partageDefi() });
   on('nom-autre', () => { sfx('clic'); proposeNoms() }); on('nom-retour', () => { sfx('retour'); show(G.retourNom || 'titre') });
   on('defi-go', releveDefi); on('defi-non', () => { sfx('retour'); G.defi = null; history.replaceState(null, '', location.pathname); show('titre') });
-  on('legende-ok', () => { sfx('valide'); G.phase = 'menu'; selStage = 0; show('choix'); vaVers(LEGENDAIRE); construitCartes() });
+  on('legende-ok', () => { sfx('valide'); G.phase = 'menu'; selStage = 0; show('choix'); vaVers(G.legendeVu || LEGENDAIRE); construitCartes() });
   on('tuto-passer', () => { sfx('clic'); finTuto(true) });
   on('comment-jouer', () => { sfx('clic'); lanceTuto(() => { show('choix'); construitCartes() }) });
   const pi = $('porte-in'); if (pi) pi.addEventListener('keydown', e => { if (e.key === 'Enter') valideParents() });

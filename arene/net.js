@@ -151,17 +151,26 @@ const TOUCHES = ['left', 'right', 'up', 'down', 'L', 'H', 'S', 'G'];
 function netEntreeDistante() { const r = {}; for (const k of TOUCHES) r[k] = !!(NET.entree && NET.entree[k]); return r }
 function capture() {
   const [a, b] = G.f;
-  const F = f => [Math.round(f.x), Math.round(f.h * 10) / 10, f.face, f.state, f.t, Math.round(f.u * 100) / 100, f.ph, f.mk, f.hp, Math.round(f.meter), f.wins, Math.round(f.dist), Math.round(f.vy * 10) / 10, Math.round(f.hurtK * 100) / 100, f.flash, f.landed ? 1 : 0, f.crouchB ? 1 : 0, f.cache ? 1 : 0, f.poison ? 1 : 0, f.sale || 0];
+  const F = f => [Math.round(f.x), Math.round(f.h * 10) / 10, f.face, f.state, f.t, Math.round(f.u * 100) / 100, f.ph, f.mk, f.hp, Math.round(f.meter), f.wins, Math.round(f.dist), Math.round(f.vy * 10) / 10, Math.round(f.hurtK * 100) / 100, f.flash, f.landed ? 1 : 0, f.crouchB ? 1 : 0, f.cache ? 1 : 0, f.poison ? 1 : 0, f.sale || 0, f.boost ? [f.boost.k, f.boost.t] : 0];
   return { t: 's', a: F(a), b: F(b), g: [G.phase, G.pt, G.timer, G.round, G.freeze, G.superBy ? G.superBy.side : -1, G.stop, Math.round(G.shake), G.timeUp ? 1 : 0, G.roundWinner ? G.roundWinner.side : -1, G.perfect ? 1 : 0],
-    p: G.proj.map(p => [Math.round(p.x), p.t, p.life, p.dir, p.y0, p.y1, p.w, p.a.side, p.blob ? Math.round(p.yy) : null]), z: (G.zones || []).map(z => [Math.round(z.x), z.r, z.t, z.life]), fx: NET.fx.splice(0), so: NET.sons.splice(0) };
+    p: G.proj.map(p => [Math.round(p.x), p.t, p.life, p.dir, p.y0, p.y1, p.w, p.a.side, p.blob ? Math.round(p.yy) : null]), z: (G.zones || []).map(z => [Math.round(z.x), z.r, z.t, z.life, z.genre || 0]), fx: NET.fx.splice(0), so: NET.sons.splice(0),
+    // surprises (surprises.js) : caisse, piège de l'arène, éclair, banane, bandeau du bonus
+    cs: G.caisse ? [Math.round(G.caisse.x), Math.round(G.caisse.y), G.caisse.t, G.caisse.life, G.caisse.mer ? 1 : 0, G.caisse.pose ? 1 : 0] : 0,
+    pg: G.piege ? [G.piege.k, Math.round(G.piege.x), G.piege.t, G.piege.dir, G.piege.poisson ? Math.round(G.piege.poisson.y) : null] : 0,
+    ec: G.eclair ? [Math.round(G.eclair.x), G.eclair.t] : 0, bn: G.banane ? [Math.round(G.banane.x), G.banane.t] : 0, fe: G.flashEcran || 0,
+    ba: G.bonusAff ? [G.bonusAff.ico, G.bonusAff.nom, G.bonusAff.col, Math.round(G.bonusAff.x), Math.round((G.time - G.bonusAff.t0) * 60)] : 0 };
 }
 function appliqueSnap(s) {
-  const put = (f, v) => { [f.x, f.h, f.face, f.state, f.t, f.u, f.ph, f.mk, f.hp, f.meter, f.wins, f.dist, f.vy, f.hurtK, f.flash] = v; f.landed = !!v[15]; f.crouchB = !!v[16]; f.cache = !!v[17]; f.poison = v[18] ? (f.poison || { t: 1, n: 0, tick: 999, dmg: 0 }) : null; f.sale = v[19] || 0; if (f.mk) f.move = f.d.moves[f.mk] };
+  const put = (f, v) => { [f.x, f.h, f.face, f.state, f.t, f.u, f.ph, f.mk, f.hp, f.meter, f.wins, f.dist, f.vy, f.hurtK, f.flash] = v; f.landed = !!v[15]; f.crouchB = !!v[16]; f.cache = !!v[17]; f.poison = v[18] ? (f.poison || { t: 1, n: 0, tick: 999, dmg: 0 }) : null; f.sale = v[19] || 0; const bo = v[20] || null; if ((bo && bo[0]) !== (f.boost && f.boost.k)) { f.boost = bo ? { k: bo[0], t: bo[1], T: bo[1] } : null; if (window.appliqueBoost) appliqueBoost(f) } else if (bo && f.boost) f.boost.t = bo[1]; if (f.mk) f.move = f.d.moves[f.mk] };
   const [a, b] = G.f; put(a, s.a); put(b, s.b);
   const g = s.g; G.phase = g[0] === 'fin' ? G.phase : g[0]; G.pt = g[1]; G.timer = g[2]; G.round = g[3]; G.freeze = g[4]; G.superBy = g[5] >= 0 ? G.f[g[5]] : null;
   G.stop = g[6]; G.shake = g[7]; G.timeUp = !!g[8]; G.roundWinner = g[9] >= 0 ? G.f[g[9]] : null; G.perfect = !!g[10];
   G.proj = (s.p || []).map(p => ({ x: p[0], t: p[1], life: p[2], dir: p[3], y0: p[4], y1: p[5], w: p[6], a: G.f[p[7]], blob: p[8] != null, yy: p[8] }));
-  G.zones = (s.z || []).map(z => ({ x: z[0], r: z[1], t: z[2], life: z[3], a: null }));
+  G.zones = (s.z || []).map(z => ({ x: z[0], r: z[1], t: z[2], life: z[3], genre: z[4] || undefined, a: null }));
+  G.caisse = s.cs ? { x: s.cs[0], y: s.cs[1], t: s.cs[2], life: s.cs[3], mer: !!s.cs[4], pose: !!s.cs[5] } : null;
+  G.piege = s.pg && typeof PIEGES !== 'undefined' && PIEGES[G.arene] ? { k: s.pg[0], x: s.pg[1], t: s.pg[2], dir: s.pg[3], P: PIEGES[G.arene], poisson: s.pg[4] != null ? { x: s.pg[1], y: s.pg[4] } : null } : null;
+  G.eclair = s.ec ? { x: s.ec[0], t: s.ec[1] } : null; G.banane = s.bn ? { x: s.bn[0], t: s.bn[1] } : null; if (s.fe) G.flashEcran = s.fe;
+  G.bonusAff = s.ba ? { ico: s.ba[0], nom: s.ba[1], col: s.ba[2], x: s.ba[3], t0: G.time - s.ba[4] / 60 } : null;
   for (const e of s.fx || []) { e.t0 = G.time; if (e.k === 'combo' || e.k === 'mot') FX = FX.filter(x => x.k !== e.k || e.k === 'mot'); FX.push(e) }
   for (const [k, v] of s.so || []) sfx(k, v, true);
 }

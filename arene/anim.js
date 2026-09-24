@@ -266,7 +266,7 @@ function spritePose(R, f, T) {
     case 'dizzy': return SP('touche', { r: .07 * Math.sin(t * 6), x: 10 * Math.sin(t * 6), sy: .98 + .02 * Math.sin(t * 12) });
     case 'fuite': { const k = Math.floor(f.t / 6) % 2; return Object.assign(SP(k ? 'marche' : 'base', { y: -14 * Math.abs(Math.sin(f.t * .5)), r: .04 }), { flip: true }) }
     case 'lose': return SP('touche', { sy: .97, r: .04 });
-    case 'intro': if (f.t > 20 && f.t < 80) return SP(f.kind === 'grizzly' || f.kind === 'trex' ? 'rugit' : f.kind === 'hyene' ? 'rire' : f.kind === 'orque' ? 'appel' : 'victoire', { sy: 1 + .02 * Math.sin(t * (f.kind === 'hyene' ? 30 : 7)) }, true); return repos();
+    case 'intro': if (f.t > 20 && f.t < 80) return SP(f.kind === 'grizzly' || f.kind === 'trex' || f.kind === 'megalo' ? 'rugit' : f.kind === 'hyene' ? 'rire' : f.kind === 'orque' ? 'appel' : 'victoire', { sy: 1 + .02 * Math.sin(t * (f.kind === 'hyene' ? 30 : 7)) }, true); return repos();
     case 'atk': {
       const k = f.mk;
       if (f.kind === 'gorille') return gorilleSpr(f, t, u, ph, k, repos);
@@ -332,14 +332,14 @@ const SPECIAUX = {
     if (k === 'SD') { if (ph === 'st') return SP('grimpe', { y: -30 }, true); if (f.h > 0) return SP('special', { r: .7, y: 20 }, true); return u < .5 ? SP('accroupi', { sy: .9 }) : repos(); }
     if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .02 * Math.sin(t * 30) }, true); if (ph === 'act') return Math.floor(f.t / 5) % 2 ? SP('coup', { x: 50, sx: 1.05 }, true) : SP('fort', { x: 30 }, true); return repos(); }
   },
-  // porc-épic : ★ la charge en marche arrière (il montre ses piquants) · → ★ tchik-tchik (le hochet qui contre) · ↓ ★ la boule piquante · SUPER qui s’y frotte s’y pique
+  // porc-épic : → ★ la charge en marche arrière (il montre ses piquants) · ★ tchik-tchik (le hochet qui contre) · ↓ ★ la boule piquante · SUPER qui s’y frotte s’y pique
   porcepic(f, t, u, ph, k, repos) {
-    if (k === 'S' || k === 'SUPER') {
+    if (k === 'SF' || k === 'SUPER') {
       if (ph === 'st') return u < .5 ? SP('base', { sx: Math.max(.08, 1 - u * 1.9) }) : SP('special', { sx: Math.max(.08, (u - .5) * 2) }, true); // il se retourne
       if (ph === 'act') return SP('special', { y: -6 * Math.abs(Math.sin(t * 20)), x: 3 * Math.sin(t * 50) }, true);
       return u < .45 ? SP('special', { sx: Math.max(.08, 1 - u * 2.2) }) : SP('base', { sx: Math.max(.08, (u - .45) * 1.9) });
     }
-    if (k === 'SF') { if (f.contre) return f.t - f.hitT < 8 ? SP('fort', { y: -10 }, true) : SP('coup', { x: 30, sx: 1.04 }, true); if (ph === 'rec' && u > .4) return repos(); return SP('hochet', { x: 4 * Math.sin(t * 70), sx: 1 + .01 * Math.sin(t * 50) }, true); }
+    if (k === 'S') { if (f.contre) return f.t - f.hitT < 8 ? SP('fort', { y: -10 }, true) : SP('coup', { x: 30, sx: 1.04 }, true); if (ph === 'rec' && u > .4) return repos(); return SP('hochet', { x: 4 * Math.sin(t * 70), sx: 1 + .01 * Math.sin(t * 50) }, true); }
     if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .9 }); if (f.h > 0) return SP('garde', { r: f.vy < 0 ? -.2 : .2, y: 20 }, true); return SP('accroupi', { sy: .94 + .06 * u }); }
   },
   // guépard : ★ le croche-patte (glissade basse) · → ★ le démarrage turbo · ↓ ★ le saut de l’éclair · SUPER la tornade tachetée
@@ -451,6 +451,41 @@ const SPECIAUX = {
     if (k === 'SF') { if (ph === 'st') return SP('appel', { sy: 1 + .02 * Math.sin(t * 40), r: -.03 * u }, true); if (ph === 'act' || u < .5) return SP('appel', { x: -8, sx: 1.03 }, true); return repos(); }
     if (k === 'SD') { if (ph === 'st') return SP('saut', { r: -.35, y: -20 }, true); if (f.h > 0) return SP('bas', { r: .25, y: 20 }, true); return u < .5 ? SP('accroupi', { sy: .92 }) : repos(); }
     if (k === 'SUPER') { if (ph === 'st') return SP('appel', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return SP('appel', { sy: 1 + .02 * Math.sin(t * 12), r: -.02 }, true); return repos(); }
+  },
+  // pieuvre (MER) : ★ le bec caché (prise) · → ★ le nuage d'encre · ↓ ★ le camouflage (contre, presque invisible) · SUPER la danse des 8 bras
+  pieuvre(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -16 * u, sy: .97 }); if (ph === 'act') return SP('special', { x: 24, sx: 1.04 }, true); return u < .5 ? SP('special', { x: 12 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('encre', { sy: 1 + .03 * Math.sin(t * 40), x: -6 * u }, true); if (ph === 'act' || u < .4) return SP('encre', { x: -10, sx: 1.02 }, true); return repos(); }
+    if (k === 'SD') { if (f.contre) return f.t - f.hitT < 8 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 30 }, true); if (ph === 'rec') return repos(); return SP('accroupi', { sy: .96 + .02 * Math.sin(t * 6) }, true); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 8 < 4 ? SP('fort', { x: 30, sx: 1.04 }, true) : SP('coup', { x: 40, r: .04 }, true); return repos(); }
+  },
+  // aiguillat (MER) : ★ il se plie et pique · → ★ la flèche grise · ↓ ★ l'épine du dos (anti-aérien) · SUPER la bande des mille
+  aiguillat(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -14 * e, r: -.06 * e, sy: .97 }) } if (ph === 'act') return SP('special', { x: 16, sx: 1.03 }, true); return u < .5 ? SP('special', { x: 8 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -14 * u, sy: .97 }); if (ph === 'act') return SP('coup', { x: 20, sx: 1.06, r: .03 }, true); return u < .5 ? SP('coup', { x: 12 * (1 - u) }) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .92 }); if (f.h > 0) return SP('epine', { r: f.vy < 0 ? -.12 : .1 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('coup', { x: 30, sx: 1.04 }, true) : SP('fort', { x: 20 }, true); return repos(); }
+  },
+  // espadon (MER) : ★ le coup de tête qui tranche · → ★ la charge de l'épée (qui peut se coincer dans le mur) · ↓ ★ l'épée vers le ciel · SUPER la tempête d'épée
+  espadon(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -22 * e, r: .12 * e, sy: .97 }) } if (ph === 'act') return SP('special', { x: 24, r: -.05 }, true); return u < .5 ? SP('special', { x: 12 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -16 * u, sy: .97 }); if (ph === 'act') return SP('coup', { x: 24, sx: 1.06 }, true); return u < .5 ? SP('coup', { x: 12 * (1 - u) }) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .92 }); if (f.h > 0) return SP('ciel', { r: f.vy < 0 ? -.08 : .12 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') { const c = Math.floor(f.t / 5) % 3; return c === 0 ? SP('coup', { x: 30, sx: 1.05 }, true) : c === 1 ? SP('fort', { x: 20 }, true) : SP('special', { x: 24 }, true) } return repos(); }
+  },
+  // requin bleu (MER) : ★ il tourne autour (il disparaît, puis mord par-derrière) · → ★ les dents en scie · ↓ ★ le museau en l'air · SUPER la tornade bleue
+  requinbleu(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('special', {}, true); if (ph === 'act') return SP('fort', { x: 30, sx: 1.05 }, true); return u < .5 ? SP('fort', { x: 14 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -14 * u, sy: .97 }); if (ph === 'act') return f.t % 8 < 4 ? SP('fort', { x: 24, sx: 1.04 }, true) : SP('coup', { x: 30 }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .92 }); if (f.h > 0) return SP('museau', { r: f.vy < 0 ? -.1 : .12 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('special', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 12 < 6 ? SP('special', { r: .1 * Math.sin(t * 30) }, true) : SP('fort', { x: 20 }, true); return repos(); }
+  },
+  // mégalodon (légendaire de la MER) : ★ la mâchoire géante · → ★ la vague géante · ↓ ★ surgi des profondeurs · SUPER les dents de 18 cm
+  megalo(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -20 * e, r: -.06 * e, sy: .97 }) } if (ph === 'act') return SP('fort', { x: 30, sx: 1.05 }, true); return u < .5 ? SP('fort', { x: 14 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('rugit', { sy: 1 + .02 * Math.sin(t * 40) }, true); if (ph === 'act' || u < .4) return SP('coup', { x: -10 }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { y: 220 * Math.min(1, f.t / 10) }); if (ph === 'act' && f.h > 0) return SP('special', { r: f.vy < 0 ? -.05 : .15, y: 20 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('rugit', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 10 }, true); return repos(); }
   },
   // grand requin blanc (MER) : ★ l'attaque par en dessous (on ne voit que l'aileron, puis il surgit) · → ★ la torpille · ↓ ★ le radar (contre) · SUPER les 300 dents
   requin(f, t, u, ph, k, repos) {

@@ -78,3 +78,7 @@ orque.mp3, orque_grr.mp3 → « Resident Killer Whale Vocalizations » — NPS /
 sonar.mp3 → fabriqué pour le jeu (clics et « ping » synthétisés) — libre
 bulle.mp3 → « Water Bubbles » (son 0150) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (une seconde de bulles)
 requin.mp3 → « Chattering teeth #1 » (son 0789) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (ralenti et plus grave : la mâchoire du requin, qui n'a pas de voix)
+
+Monde MER, 2e vague (25/09/2026 : pieuvre géante, aiguillat, espadon, requin bleu, mégalodon) :
+aucun nouveau fichier — ces animaux réutilisent des sons déjà crédités ci-dessus (slurp, splotch, gloups, bulle, requin joué plus aigu ou plus grave, fouet, vent).
+Caisses surprises, pièges d'arène et trophées (25/09/2026) : sons déjà présents (pop, badge, boing, pouet, sifflet, chute, plouf, flac, vapeur, vent_long, foule) et sons synthétisés par le jeu.
