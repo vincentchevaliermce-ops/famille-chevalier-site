@@ -105,6 +105,7 @@ const PIEGES = {
   foret: { k: 'chute', obj: 'pomme', mot: 'POMME DE PIN !', dmg: 7 },
   volcan: { k: 'chute', obj: 'lave', mot: 'PIERRE DE LAVE !', dmg: 9 },
   nuit: { k: 'chute', obj: 'fruit', mot: 'UN FRUIT TOMBE !', dmg: 6 },
+  pantanal: { k: 'chute', obj: 'coco', mot: 'UNE NOIX DE PALME !', dmg: 6 },
   colisee: { k: 'chute', obj: 'coussin', mot: 'LE PUBLIC LANCE UN COUSSIN !', dmg: 0 },
   savane: { k: 'vent', mot: 'TOURBILLON DE POUSSIÈRE !', col: '#E8C27A' },
   desert: { k: 'vent', mot: 'TEMPÊTE DE SABLE !', col: '#E9C98B' },

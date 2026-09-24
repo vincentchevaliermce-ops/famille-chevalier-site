@@ -111,8 +111,8 @@ function lisDefi() {
   const m = location.hash.match(/#defi=([^&]+)/); if (!m) return null;
   const p = m[1].split('.'); if (p.length < 7) return null;
   const [moi, adv, arene, niv, temps, etoiles] = p, nom = decodeURIComponent(p.slice(6).join('.')).slice(0, 24);
-  if (!CHARS[moi] || !CHARS[adv] || mondeDe(moi) !== mondeDe(adv)) return null; // un animal n'affronte que son monde
-  const L = arenesDe(mondeDe(moi));
+  if (!CHARS[moi] || !CHARS[adv] || !memeMonde(moi, adv)) return null; // un animal n'affronte que son monde (le crocodile nage aussi en mer)
+  const L = arenesDe(mondeDuel(moi, adv));
   return { moi, adv, arene: L.some(a => a.k === arene) ? arene : L[0].k, niv: Math.max(0, Math.min(2, +niv || 0)), temps: +temps || 99, etoiles: Math.max(0, Math.min(3, +etoiles || 0)), nom: nom.replace(/[<>&"]/g, '') };
 }
 async function partage(titre, texte, url, fichier) {

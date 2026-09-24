@@ -91,6 +91,8 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .carte.aiguillat .img{background:radial-gradient(circle at 50% 110%,#E8F1F8,#4F7FA8 72%)}
 .carte.espadon .img{background:radial-gradient(circle at 50% 110%,#F4E8FF,#6A4E9E 72%)}
 .carte.requinbleu .img{background:radial-gradient(circle at 50% 110%,#DDF0FF,#1F5FC9 72%)}
+.carte.jaguar .img{background:radial-gradient(circle at 50% 110%,#FBE3A6,#8A5A12 72%)}
+.carte.anaconda .img{background:radial-gradient(circle at 50% 110%,#F6F0A8,#6B6A1E 72%)}
 .carte.megalo .img{background:radial-gradient(circle at 50% 110%,#C9D8E8,#1B2D48 72%)}
 .cartes.treize{grid-template-columns:repeat(5,17.2cqw);gap:1cqw}.cartes.treize .carte .img{height:9.4cqw}.cartes.treize .carte .nom{font-size:1.7cqw}
 .carte.legende{border-color:var(--jaune);box-shadow:0 0 0 .3cqw #FF8A00,0 0 1.6cqw #FFC629,0 .6cqw 0 rgba(0,0,0,.4);position:relative}
@@ -469,6 +471,9 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 #choix .cartes.trois .carte .ets{font-size:.95cqw}
 #choix .cartes.trois .carte .ets.quiz{font-size:.8cqw}
 #choix .cartes.trois .carte.verrou .img::after{font-size:3.6cqw}
+#choix .cartes.defile{max-width:92cqw;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;padding:.4cqw .4cqw 1cqw;-webkit-overflow-scrolling:touch;scrollbar-color:var(--jaune) rgba(8,31,69,.6);scrollbar-width:thin}
+#choix .cartes.defile .carte{scroll-snap-align:start}
+#choix .cartes.defile::-webkit-scrollbar{height:.8cqw}#choix .cartes.defile::-webkit-scrollbar-thumb{background:var(--jaune);border-radius:1cqw}#choix .cartes.defile::-webkit-scrollbar-track{background:rgba(8,31,69,.6);border-radius:1cqw}
 </style></head><body>
 
 <div id="cadre">
@@ -706,11 +711,11 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790279488"></script>
-<script src="anim.js?v=1790279488"></script>
-<script src="game.js?v=1790279488"></script>
-<script src="net.js?v=1790279488"></script>
-<script src="livre.js?v=1790279488"></script>
-<script src="bonus.js?v=1790279488"></script>
-<script src="surprises.js?v=1790279488"></script>
+<script src="skin.js?v=1790283292"></script>
+<script src="anim.js?v=1790283292"></script>
+<script src="game.js?v=1790283292"></script>
+<script src="net.js?v=1790283292"></script>
+<script src="livre.js?v=1790283292"></script>
+<script src="bonus.js?v=1790283292"></script>
+<script src="surprises.js?v=1790283292"></script>
 </body></html>

@@ -187,7 +187,7 @@ const CHARS = {
   },
   // --- CROCODILE : l'embuscade (il plonge, il attrape et tourne, coup de queue)
   croco: {
-    nom: 'CROCODILE', art: 'LE CROCODILE', force: 0.966, spr: true, col: '#4E8A2E', clair: '#A8DC6E', fond: '#6DB33F', K: .46, hp: 110, walk: 5.6, back: 4.2, dash: 16, jumpV: 20, jumpX: 7, grav: 1.25, etour: 50,
+    nom: 'CROCODILE', art: 'LE CROCODILE', amphibie: true, force: 0.966, spr: true, col: '#4E8A2E', clair: '#A8DC6E', fond: '#6DB33F', K: .46, hp: 110, walk: 5.6, back: 4.2, dash: 16, jumpV: 20, jumpX: 7, grav: 1.25, etour: 50,
     aie: ['CLAC ?!', 'AÏE LES ÉCAILLES !', 'GLOUPS !'], ia: { saut: .6 },
     hurt: { stand: [-560, 700, -800, 0], crouch: [-560, 700, -420, 0], air: [-500, 650, -600, 0] },
     push: [230, 300], reach: 690, speMin: 330, speMax: 780,
@@ -480,6 +480,48 @@ const CHARS = {
       SUPER: { st: 12, act: 48, rec: 22, dmg: 4, hits: 7, hs: 16, bs: 8, kb: 3, kd: true, box: [150, 1100, -700, 0], rush: 12, dents: true, lvl: 'mid', mots: ['CROC !', 'CHOMP !', 'DES DENTS DE 18 CM !'], son: 'h', nom: 'Les dents de 18 cm' },
     },
   },
+  // --- JAGUAR (« livre en main », duels 7 et 15, p. 17 et 35) : la morsure perce-crâne, l'attaque par-derrière, la griffe vers le ciel, le jaguar tout noir.
+  //     Points faibles (livre) : « des pattes courtes pour un félin » (il saute moins haut que les autres chats) ; « repéré, il rate son coup » (l'attaque par-derrière rate si l'autre se protège).
+  jaguar: {
+    nom: 'JAGUAR', art: 'LE JAGUAR', force: .88, spr: true, hPose: ['garde', 'fort'], col: '#9A6A1C', clair: '#F5CD7A', fond: '#B98A2E', K: .46, hp: 108, walk: 6.6, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.12, etour: 50,
+    aie: ['MIAOU ?!', 'MON MUSEAU !', 'OUILLE, MES PATTES !'], ia: { saut: .7 },
+    hurt: { stand: [-480, 600, -640, 0], crouch: [-480, 620, -420, 0], air: [-440, 580, -560, 0] },
+    push: [200, 240], reach: 700, speMin: 300, speMax: 1100,
+    moves: {
+      L: { st: 4, act: 4, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [520, 980, -660, -60], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PAF !', 'SCRITCH !', 'GRIFF !'], son: 'l' },
+      cL: { st: 4, act: 4, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [500, 960, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'SCRITCH !'], son: 'l' },
+      H: { st: 11, act: 5, rec: 18, dmg: 12, hs: 20, bs: 15, kb: 12, box: [480, 1040, -640, -40], lvl: 'mid', lunge: 5, chain: ['S', 'SUPER'], mots: ['CRAC !', 'CROC !', 'CROC DE FER !'], son: 'h' },
+      cH: { st: 8, act: 4, rec: 22, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [480, 1000, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 8, hs: 18, bs: 11, kb: 7, box: [250, 900, -420, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['D’EN HAUT !', 'GRIFF !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP LÀ !'], son: 'h' },
+      S: { st: 10, act: 5, rec: 24, dmg: 15, hs: 24, bs: 18, kb: 14, kd: true, casse: true, lunge: 7, box: [440, 1000, -700, -120], lvl: 'mid', mots: ['PERCE-CRÂNE !', 'CRAC !', 'MORSURE DE FER !'], son: 's', nom: 'La morsure perce-crâne', ia: [0, 900, 1.2] },
+      SF: { st: 30, act: 6, rec: 22, dmg: 13, hs: 22, bs: 15, kb: 12, kd: true, contourne: 'herbe', repere: true, box: [100, 940, -600, -40], lvl: 'mid', mots: ['COUCOU, DERRIÈRE !', 'PAR-DERRIÈRE !', 'SURPRISE !'], son: 's', nom: 'L’attaque par-derrière', ia: [200, 1200, 1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 11, hs: 0, bs: 14, kb: 6, kd: true, lance: 19, aa: true, inv: 8, saute: [3, 19], land: true, box: [150, 800, -900, -200], lvl: 'mid', mots: ['LA PATTE EN L’AIR !', 'GRIFF !'], son: 's', nom: 'La griffe vers le ciel', ia: [0, 0, 0] },
+      SUPER: { st: 16, act: 50, rec: 22, dmg: 5, hits: 6, hs: 20, bs: 8, kb: 3, kd: true, box: [200, 1000, -700, 0], rush: 11, noir: true, lvl: 'mid', mots: ['TOUT NOIR !', 'DANS L’OMBRE…', 'CROC !'], son: 'h', nom: 'Le jaguar tout noir' }, // (livre p. 35 : un jaguar au pelage tout noir ; le mot du titre de cet encart est une réponse du léopard : jamais affiché)
+    },
+  },
+
+  // --- ANACONDA (« livre en main », duel 7, p. 17) : un corps de près de 4 m, il serre à bloquer le sang, caché dans l'herbe, sous l'eau, les bébés anacondas.
+  //     Point faible (livre) : « lent et maladroit sur terre » → la marche la plus lente (plus vif dans la rivière, le marais et le Pantanal).
+  anaconda: {
+    nom: 'ANACONDA', art: 'L’ANACONDA', serpent: true, expose: true, maladroit: true, force: .88, spr: true, poseLance: 'serre', hPose: ['garde', 'fort'], col: '#8A8A2A', clair: '#F2EDA0', fond: '#A6A23A', K: .44, hp: 104, walk: 4, back: 3.6, dash: 18, jumpV: 18, jumpX: 8, grav: 1.1, etour: 50,
+    aie: ['SSS ?!', 'MA QUEUE !', 'AÏE, MES ÉCAILLES !'], ia: {},
+    hurt: { stand: [-480, 580, -660, 0], crouch: [-500, 700, -260, 0], air: [-440, 560, -600, 0] },
+    push: [200, 240], reach: 700, speMin: 300, speMax: 1200,
+    moves: {
+      L: { st: 6, act: 4, rec: 10, dmg: 6, hs: 15, bs: 11, kb: 6, box: [520, 1000, -560, -200], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['SSSCLAC !', 'CROC !', 'TCHAC !'], son: 'l' },
+      cL: { st: 4, act: 4, rec: 11, dmg: 5, hs: 15, bs: 11, kb: 5, box: [520, 900, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['FLIC !', 'FOUETTÉ !'], son: 'l' },
+      H: { st: 11, act: 6, rec: 19, dmg: 12, hs: 20, bs: 15, kb: 11, box: [600, 1150, -560, -160], lvl: 'mid', lunge: 4, chain: ['S', 'SUPER'], mots: ['SSSCHLAC !', 'GROSSE MORSURE !', 'CROC !'], son: 'h' },
+      cH: { st: 8, act: 5, rec: 22, dmg: 9, hs: 18, bs: 12, kb: 9, kd: true, box: [500, 900, -240, 0], lvl: 'low', chain: ['S'], mots: ['PAR EN BAS !', 'SSSCLAC !'], son: 'h' },
+      A: { st: 4, act: 99, rec: 8, dmg: 8, hs: 18, bs: 12, kb: 8, box: [150, 880, -420, 160], lvl: 'high', air: true, land: true, dive: 4, chain: ['L', 'cL', 'H'], mots: ['D’EN HAUT !', 'SSSCLAC !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 110, t: 22 }, mots: ['ENROULÉ !', 'HOP, PAR-DESSUS !'], son: 'h' },
+      S: { st: 8, act: 12, rec: 24, dmg: 13, hs: 0, bs: 0, kb: 8, kd: true, rush: 10, lvl: 'mid', serre: true, prise: { portee: 150, t: 46, degage: false, mot: 'IL SERRE !', haut: 10, loin: 6, rec: 6 }, mots: ['JE SERRE !', 'SERRÉ !', 'PLUS UN GESTE !'], son: 'h', nom: 'Il serre à bloquer le sang', ia: [150, 700, 1.1] },
+      SF: { land: true, st: 36, act: 99, rec: 26, dmg: 12, hs: 22, bs: 15, kb: 8, kd: true, lance: 19, box: [-260, 560, -760, 60], plonge: true, surgit: 20, lvl: 'mid', mots: ['SURPRISE DE L’EAU !', 'SPLASH !', 'SSSCLAC !'], son: 's', nom: 'Sous l’eau', ia: [500, 1400, .4] },
+      SD: { st: 4, act: 28, rec: 20, dmg: 0, hs: 0, bs: 0, kb: 0, lvl: 'mid', camoufle: 'herbe', contre: { dmg: 12, hs: 24, bs: 0, kb: 14, kd: true, lvl: 'mid', mots: ['CACHÉ DANS L’HERBE !', 'SURPRISE !'], son: 'h' }, motsContre: ['TU NE M’AVAIS PAS VU !', 'CACHÉ DANS L’HERBE !', 'SSSURPRISE !'], mots: ['CHUT… DANS L’HERBE'], son: 's', nom: 'Caché dans l’herbe', ia: [0, 700, .8] },
+      SUPER: { st: 16, act: 44, rec: 22, dmg: 5, hits: 6, hs: 18, bs: 8, kb: 3, kd: true, box: [150, 1300, -500, 0], lvl: 'mid', clan: 'anaconda', mots: ['LES BÉBÉS !', '40 BÉBÉS D’UN COUP !', 'SSSSS !'], son: 'h', nom: 'Les bébés anacondas' },
+    },
+  },
+
 };
 // phrases de victoire (drôles, tirées du livre) : le gagnant parle sur l'écran de fin
 const PHRASES = {
@@ -507,6 +549,8 @@ const PHRASES = {
   requinbleu: ['Je tourne, je tourne… et je gagne !', 'À 1 km/h, mais j’arrive toujours !', 'Des dents en scie : scritch, scritch !'],
   megalo: ['Le plus gros requin de tous les temps !', 'Des dents de 18 cm : souris !', 'Revenu des profondeurs… pour gagner !'],
   requin: ['Tu as vu mon sourire ? 300 dents, toutes brossées !', 'Je t’ai senti arriver de loin.', 'Mes dents repoussent toute ma vie : pratique !'],
+  jaguar: ['Un coup de dents, et crac !', 'Même dans l’eau, je nage mieux que toi !', 'Petites pattes, grandes dents !'],
+  anaconda: ['Je t’ai serré fort, hein ?', 'Lent sur terre, mais champion quand même !', 'Sssuper victoire !'],
 };
 const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
 
@@ -516,6 +560,8 @@ const ARENES = [
   { k: 'colisee', nom: 'COLISÉE', img: 'arene_colisee.webp' }, { k: 'riviere', nom: 'RIVIÈRE', img: 'arene_riviere.webp' },
   { k: 'nuit', nom: 'SAVANE DE NUIT', img: 'arene_nuit.webp' }, { k: 'plage', nom: 'PLAGE D’ALASKA', img: 'arene_plage.webp' },
   { k: 'foret', nom: 'FORÊT RUSSE', img: 'arene_foret.webp' }, { k: 'volcan', nom: 'VOLCAN', img: 'arene_volcan.webp' },
+  // les lieux des derniers duels du livre
+  { k: 'pantanal', nom: 'PANTANAL', img: 'arene_pantanal.webp' },
   // MER : on se bat sous l'eau, au-dessus du sable
   { k: 'ocean', nom: 'OCÉAN', img: 'arene_ocean.webp', monde: 'mer' }, { k: 'recif', nom: 'RÉCIF DE CORAIL', img: 'arene_recif.webp', monde: 'mer' },
   { k: 'aquarium', nom: 'AQUARIUM', img: 'arene_aquarium.webp', monde: 'mer' }, { k: 'abysses', nom: 'ABYSSES', img: 'arene_abysses.webp', monde: 'mer' },
@@ -525,14 +571,18 @@ const ARENES = [
 ];
 const estMer = () => (ARENES.find(a => a.k === G.arene) || {}).monde === 'mer';
 // couleur de la poussière soulevée, selon le sol de l'arène
-const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', lune: '#C9CCD6', prehisto: '#9C8A6A' };
-const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
+const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', lune: '#C9CCD6', prehisto: '#9C8A6A' };
+const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
 // MONDES (décision de Vincent, 24/09) : un animal n'affronte que les animaux de son monde (TERRE, MER ; PETITES BÊTES plus tard)
 const MONDES = { terre: { nom: 'TERRE', ico: '🌍', places: 16, legende: 'trex', titre: 'CHOISIS TON ANIMAL' }, mer: { nom: 'MER', ico: '🌊', places: 8, legende: 'megalo', titre: 'CHOISIS TON ANIMAL DE LA MER' } };
 const mondeDe = k => (CHARS[k] && CHARS[k].monde) || 'terre';
 const arenesDe = m => ARENES.filter(a => (a.monde || 'terre') === m && (!a.secret || (window.recompense && recompense(a.secret)))); // arènes secrètes : récompenses de trophées (surprises.js)
 // cartes de l'écran de choix : les animaux du monde affiché (le légendaire seulement une fois gagné)
-const LISTE = (m = G.monde) => ORDRE.filter(k => mondeDe(k) === m && (k !== MONDES[m].legende || debloque(k)));
+const amphibie = (k, m) => m === 'mer' && CHARS[k] && CHARS[k].amphibie; // le crocodile marin nage aussi en mer (livre, duel 26)
+const memeMonde = (a, b) => mondeDe(a) === mondeDe(b) || amphibie(a, mondeDe(b)) || amphibie(b, mondeDe(a));
+const mondeDuel = (a, b) => mondeDe(a) === 'mer' || mondeDe(b) === 'mer' ? 'mer' : 'terre';
+const LISTE = (m = G.monde) => { const l = ORDRE.filter(k => (mondeDe(k) === m || amphibie(k, m)) && (k !== MONDES[m].legende || debloque(k))), leg = MONDES[m].legende; // (les amphibies juste avant le légendaire)
+  return l.filter(k => !amphibie(k, m) && k !== leg).concat(l.filter(k => amphibie(k, m)), l.filter(k => k === leg)) };
 const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, mot pour mot (// p. N) ou à peine adaptées (// ≈ p. N : sujet ajouté).
   // Aucune carte ne donne le résultat d'un duel. Une carte ne se gagne que contre un animal déjà débloqué (sinon elle donnerait les réponses du quiz).
   tigre: [
@@ -705,6 +755,20 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Les bébés mégalodons grandissaient à l’abri, dans des baies peu profondes.', // NHM · Smithsonian
     'Le mégalodon a disparu il y a des millions d’années : on ne trouve ses dents que dans de très vieilles roches.', // NHM
   ],
+  jaguar: [
+    'Le jaguar : environ 100 kg, et une morsure perce-carapace !', // ≈ p. 17
+    'Le coup spécial du jaguar : il mord l’arrière du crâne !', // ≈ p. 17
+    'Le point faible du jaguar : des pattes courtes pour un félin !', // ≈ p. 17
+    'Le jaguar : le 3e plus grand félin du monde !', // ≈ p. 36
+  ],
+  anaconda: [
+    'L’anaconda jaune : environ 30 kg, et un corps de près de 4 m !', // ≈ p. 17
+    'Le coup spécial de l’anaconda : il serre à bloquer le sang !', // ≈ p. 17
+    'Le point faible de l’anaconda : lent et maladroit sur terre !', // ≈ p. 17
+    'Une femelle anaconda a eu des bébés… sans aucun papa !', // p. 18
+    'D’habitude, une maman anaconda en a 20 à 40 d’un coup.', // p. 18
+    'L’anaconda peut rester environ 10 minutes sous l’eau sans respirer. Toi ? Sûrement moins d’une minute !', // ≈ p. 18
+  ],
 };
 
 // ---------------------------------------------------------------------
@@ -835,6 +899,14 @@ const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r
   requinbleu: [
     { p: 39, ou: 'le requin bleu, dans l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'blindée', x: 'UNE PEAU BLINDÉE' },
     { p: 39, ou: 'le requin bleu, dans l’encart « LE TRUC FOU »', q: 'La femelle a une peau trois fois plus… que celle du mâle ?', r: 'épaisse', x: 'trois fois plus épaisse que celle du mâle' },
+  ],
+  jaguar: [
+    { p: 17, ou: 'le jaguar, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'bond', x: 'IL TUE D’UN SEUL BOND' },
+    { p: 17, ou: 'le jaguar, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel animal de 34 kg un jaguar a-t-il traîné sur 90 m ?', r: 'tortue', x: 'traîner une tortue de mer de 34 kg sur 90 m' },
+  ],
+  anaconda: [
+    { p: 17, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'géante', x: 'MADAME EST UNE GÉANTE' },
+    { p: 17, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Chez l’anaconda vert, qui peut peser près de 100 kg : le mâle ou la… ?', r: 'femelle', x: 'La femelle, elle, peut peser près de 100 kg' },
   ],
 };
 
@@ -1392,7 +1464,7 @@ function update(f, o, inp) {
   }
   // physique
   if (f.h > 0 || f.vy < 0) {
-    f.h -= f.vy; f.vy += f.d.grav * (G.arene === 'lune' ? .55 : 1); // sur la Lune, on saute très haut
+    f.h -= f.vy; f.vy += f.d.grav * (G.arene === 'lune' ? .55 : 1) * (!f.d.nage && estMer() ? .55 : 1); // sur la Lune, on saute très haut ; sous l'eau, le crocodile aussi flotte un peu
     if (f.h <= 0) {
       f.h = 0; f.vy = 0;
       if (f.state === 'air') { setS(f, 'land'); sfx('sol', .35); plouf(f, 1) }
@@ -1413,6 +1485,8 @@ function hurtBox(f) {
   const hb = f.d.hurt;
   if (f.h > 0) return box(f, hb.air);
   if (hb.aplat && f.state === 'atk' && f.move && f.move.aplat && f.ph === 'st') return box(f, hb.aplat); // autruche couchée, le cou à plat : les coups passent au-dessus
+  // serpents (et long cou) : quand la tête part en avant, elle peut être touchée
+  if (f.d.expose && f.state === 'atk' && f.move && f.move.box && f.ph !== 'st' && !f.move.air) { const b = f.move.box, h0 = f.mk === 'cL' || f.mk === 'cH' ? hb.crouch : hb.stand; return box(f, [h0[0], Math.max(h0[1], b[1] - 60), Math.min(h0[2], b[2] - 40), h0[3]]) }
   if (['crouch', 'cblock'].includes(f.state) || (f.state === 'atk' && f.mk === 'cL') || (f.state === 'bstun' && f.crouchB)) return box(f, hb.crouch);
   if (f.kind === 'gorille' && (f.state === 'block' || f.state === 'win' || (f.state === 'atk' && (f.mk === 'S' || f.mk === 'SUPER' || f.mk === 'H') && f.ph === 'st'))) return box(f, hb.up);
   return box(f, hb.stand);
@@ -2026,7 +2100,7 @@ function render() {
   dessineFoule(fx); hud(fx); annonce(fx);
 }
 // position de la tête (px image depuis le point au sol, pose de base)
-const TETE = { megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
+const TETE = { anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
 function tete(f) { const p = f.d.tete || TETE[f.kind] || [450, -550], K = f.d.K; return [f.x + f.face * p[0] * K, FLOOR - f.h + p[1] * K] }
 function oiseau(c, x, y, s, t) { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3;
   c.beginPath(); c.ellipse(0, 0, 16, 11, 0, 0, TAU); c.fill(); c.stroke(); c.beginPath(); c.arc(12, -8, 8, 0, TAU); c.fill(); c.stroke();
@@ -2049,9 +2123,10 @@ function clan(c, e, u) {
       const img = im[(Math.floor(u * 6) + i) % im.length], s = .27 + (i % 2) * .05, w = img.naturalWidth * s, h = img.naturalHeight * s, y = FLOOR - 70 - h - [40, 250, 120, 330][i] + Math.sin(u * 9 + i * 2) * 22;
       c.save(); c.globalAlpha = Math.min(1, 3 * (1.3 - u)); c.translate(x, 0); c.scale(e.dir, 1); c.drawImage(img, -w / 2, y, w, h); c.restore(); if (i % 2 === 0 && Math.floor(u * 60) % 7 === 0) addFx({ k: 'bulles', x: x - e.dir * w * .45, y: y + h * .5, n: 2, w: 40 }) }
     return }
-  for (let i = 0; i < 5; i++) {
-    const d = u * 1500 - i * 150, x = e.x - e.dir * (700 + i * 110) + e.dir * d * 1.35; if (d < 0) continue;
-    const img = im[(Math.floor(u * 14) + i) % im.length], s = .3 + (i % 2) * .05, w = img.naturalWidth * s, h = img.naturalHeight * s, y = FLOOR + 6 - h - Math.abs(Math.sin(u * 22 + i)) * 26;
+  const [nb, s0, pas] = { anaconda: [10, .12, 85], caiman: [8, .2, 120], lionne: [3, .33, 190] }[e.qui] || [5, .3, 110]; // les bébés anacondas sont tout petits ; la troupe : deux lionnes de plus
+  for (let i = 0; i < nb; i++) {
+    const d = u * 1500 - i * 150 * pas / 110, x = e.x - e.dir * (700 + i * pas) + e.dir * d * 1.35; if (d < 0) continue;
+    const img = im[(Math.floor(u * 14) + i) % im.length], s = s0 + (i % 2) * s0 / 6, w = img.naturalWidth * s, h = img.naturalHeight * s, y = FLOOR + 6 - h - Math.abs(Math.sin(u * 22 + i)) * 26 * s0 / .3;
     c.save(); c.globalAlpha = Math.min(1, 3 * (1.3 - u)); c.translate(x, 0); c.scale(e.dir, 1); c.drawImage(img, -w / 2, y, w, h); c.restore();
   }
 }
@@ -2076,7 +2151,7 @@ function dessineDetails(c, t) {
         c.strokeStyle = '#222'; c.beginPath(); c.moveTo((px + ex) / 2, (py + ey) / 2); c.lineTo(ex, ey); c.stroke() } c.restore() }
     // requin : dans les profondeurs, on ne voit que son aileron qui glisse sur le sable… puis il surgit par en dessous
     if (f.cache && !f.ciel && f.state === 'atk' && f.move && f.move.contourne === 'herbe') { const o = G.f.find(g => g !== f), u = f.t / f.move.st, ang = u * TAU * 1.25 + (f.face > 0 ? Math.PI : 0), x = o.x + Math.cos(ang) * 330; // jaguar : l'herbe bouge là où il rampe
-      c.save(); c.strokeStyle = '#4E7A2A'; c.lineWidth = 9; c.lineCap = 'round'; for (let i = -3; i <= 3; i++) { const bx = x + i * 26, hh = 70 + 30 * Math.sin(t * 14 + i), pen = Math.sin(t * 16 + i) * 18; c.beginPath(); c.moveTo(bx, FLOOR + 6); c.quadraticCurveTo(bx + pen * .5, FLOOR - hh * .5, bx + pen, FLOOR - hh); c.stroke() } c.restore(); continue }
+      c.save(); c.lineCap = 'round'; for (let i = -5; i <= 5; i++) { c.strokeStyle = i % 2 ? '#4E7A2A' : '#7BAA3A'; c.lineWidth = 13; const bx = x + i * 30, hh = 150 + 50 * Math.sin(t * 14 + i), pen = Math.sin(t * 16 + i) * 30; c.beginPath(); c.moveTo(bx, FLOOR + 6); c.quadraticCurveTo(bx + pen * .5, FLOOR - hh * .5, bx + pen, FLOOR - hh); c.stroke() } c.restore(); continue }
     if (f.cache && !f.ciel && f.state === 'atk' && f.move && f.move.contourne) { const o = G.f.find(g => g !== f), u = f.t / f.move.st, ang = u * TAU * 1.25 + (f.face > 0 ? Math.PI : 0), x = o.x + Math.cos(ang) * 330, y = FLOOR + 14 + Math.sin(ang) * 26, dir = -Math.sin(ang) >= 0 ? 1 : -1;
       c.save(); c.globalAlpha = .3; c.fillStyle = '#0B2A5B'; c.beginPath(); c.ellipse(o.x, FLOOR + 10, 360, 34, 0, 0, TAU); c.fill(); c.globalAlpha = 1; c.fillStyle = f.d.col; c.strokeStyle = NV; c.lineWidth = 6;
       c.beginPath(); c.moveTo(x - dir * 70, y); c.quadraticCurveTo(x - dir * 40, y - 90, x + dir * 30, y - 150); c.quadraticCurveTo(x + dir * 26, y - 70, x + dir * 64, y); c.closePath(); c.fill(); c.stroke(); c.restore(); continue }
@@ -2084,6 +2159,7 @@ function dessineDetails(c, t) {
       c.fillStyle = f.d.col; c.strokeStyle = NV; c.lineWidth = 6; c.beginPath(); c.moveTo(x - f.face * 70, y); c.quadraticCurveTo(x - f.face * 40 + w, y - 90, x + f.face * 30 + w, y - 150); c.quadraticCurveTo(x + f.face * 26, y - 70, x + f.face * 64, y); c.closePath(); c.fill(); c.stroke();
       c.fillStyle = JA; c.strokeStyle = NV; c.lineWidth = 5; c.font = '900 90px Rubik, sans-serif'; c.textAlign = 'center'; c.globalAlpha = cl(.4 + .6 * Math.sin(t * 9) ** 2, 0, 1); c.strokeText('!', x, FLOOR - 200); c.fillText('!', x, FLOOR - 200); c.restore(); continue }
     if (f.kind === 'requin' && m && m.radar && f.ph !== 'rec' && G.frame % 5 === 0) addFx({ k: 'etincelles', x: hx + f.face * 40, y: hy + 30 });
+    if (m && m.camoufle === 'herbe' && f.state === 'atk' && f.ph !== 'rec' && !f.contre) { c.save(); c.lineCap = 'round'; for (let i = -6; i <= 6; i++) { c.strokeStyle = i % 2 ? '#4E7A2A' : '#7BAA3A'; c.lineWidth = 12; const bx = f.x + i * 34, hh = 160 + 40 * Math.sin(i * 1.7) + 10 * Math.sin(t * 3 + i), pen = Math.sin(t * 2 + i) * 14; c.beginPath(); c.moveTo(bx, FLOOR + 6); c.quadraticCurveTo(bx + pen * .5, FLOOR - hh * .5, bx + pen, FLOOR - hh); c.stroke() } c.restore() } // l'anaconda caché dans l'herbe
     if (m && m.radar === 'chaleur' && f.state === 'atk' && f.ph !== 'rec' && !f.contre && G.frame % 7 === 0) addFx({ k: 'chaleur', x: hx + f.face * 60, y: hy + 20, dir: f.face }); // python : il « voit » la chaleur
     if (m && m.dents && f.ph === 'act' && f.hit) { const o = G.f.find(g => g !== f), ox = o.x, oy = FLOOR - o.h - 260 * o.d.K / .44, ouv = Math.abs(Math.sin(t * 16)) * 120 + 30;
       c.save(); c.fillStyle = '#FFFFFF'; c.strokeStyle = NV; c.lineWidth = 6;
@@ -2132,7 +2208,7 @@ function dessineFlaques(c) {
   if (!G.f.length) return;
   for (const f of G.f) {
     const dansEau = (f.cache && !f.ciel) || (f.state === 'atk' && f.move && f.move.plonge && (f.ph === 'st' || f.t < f.move.st + 8));
-    if (!dansEau || estMer()) continue; // sous la mer, pas de flaque
+    if (!dansEau || estMer() || (f.move && f.move.contourne === 'herbe' && f.state === 'atk')) continue; // sous la mer, pas de flaque ; le jaguar rampe dans l'herbe (pas d'eau)
     const w = G.arene === 'riviere' ? 180 : 260;
     c.save(); c.fillStyle = G.arene === 'riviere' ? 'rgba(210,240,255,.35)' : '#3FA9E0'; c.strokeStyle = G.arene === 'riviere' ? 'rgba(255,255,255,.6)' : NV; c.lineWidth = 6;
     c.beginPath(); c.ellipse(f.x, FLOOR + 4, w, 38, 0, 0, TAU); c.fill(); c.stroke();
@@ -2236,7 +2312,7 @@ function endRound() {
   G.round++; newRound();
 }
 // « TON TIGRE », « TA HYÈNE » (h aspiré), « TON OURSE BRUNE » (voyelle)
-const FEMININ = /^(HYÈNE|OURSE|LIONNE|TIGRESSE|AUTRUCHE|ORQUE|GIRAFE|MANTE|ABEILLE|GUÊPE|PANTHÈRE|VIPÈRE|MOUFFETTE|MÈRE|BUFFLONNE)/;
+const FEMININ = /^(HYÈNE|OURSE|LIONNE|TIGRESSE|AUTRUCHE|ORQUE|GIRAFE|MANTE|ABEILLE|GUÊPE|PANTHÈRE|VIPÈRE|MOUFFETTE|MÈRE|BUFFLONNE|PIEUVRE|MANGOUSTE|BALEINE|MYGALE|VEUVE|CREVETTE|CHAUVE|SCOLOPENDRE)/;
 function ton(nom) { return (FEMININ.test(nom) && !/^[AEIOUYÉÈÊÂÎÔ]/.test(nom) ? 'TA ' : 'TON ') + nom }
 // « le GORILLE », « la HYÈNE », « l’OURS POLAIRE » (dans une phrase)
 function leNom(k, gras) { const a = CHARS[k] ? CHARS[k].art : k, m = a.match(/^(LE |LA |L’)(.*)$/), art = m ? m[1].toLowerCase() : '', n = m ? m[2] : a; return art + (gras ? '<b>' + n + '</b>' : n) }
@@ -2283,7 +2359,7 @@ function startMatch() {
   G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
   G.chrono = 0;
   G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
-  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] }[p2]; // variante de couleur
+  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] }[p2]; // variante de couleur
   if (G.livre && G.livre.noms) G.f.forEach((f, i) => f.nomAff = G.livre.noms[i]);
   if (NET.on) G.f.forEach((f, i) => f.distant = i !== NET.moi); // en ligne : l'animal de l'ami (ses trophées, ses sons « SUPER prêt ») n'est pas le nôtre
   G.nvTroph = [];
@@ -2319,7 +2395,7 @@ function vaVers(k) { G.monde = mondeDe(k); selCursor = Math.max(0, LISTE().index
 function menuKey(code) {
   if (G.phase === 'menu' && G.screen === 'titre' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('jouer').click(); return }
   if (G.phase === 'menu' && G.screen === 'choix') {
-    const n = nbCartesChoix(), pl = places(), col = pl <= 4 ? 4 : pl > 14 ? 6 : pl > 12 ? 7 : 6;
+    const n = nbCartesChoix(), pl = places(), col = pl <= 4 ? 4 : pl > 18 ? Math.ceil(pl / 3) : pl > 14 ? 6 : pl > 12 ? 7 : 6; // (plus de 18 cartes : 3 lignes qui défilent de côté)
     if (['KeyA', 'ArrowLeft'].includes(code)) { selCursor = (selCursor + n - 1) % n; majChoix(); sfx('clic') }
     if (['KeyD', 'ArrowRight'].includes(code)) { selCursor = (selCursor + 1) % n; majChoix(); sfx('clic') }
     if (['KeyW', 'ArrowUp', 'KeyS', 'ArrowDown'].includes(code)) { selCursor = (selCursor + col) % Math.max(col, n); if (selCursor >= n) selCursor = n - 1; majChoix(); sfx('clic') }
@@ -2340,7 +2416,7 @@ function menuKey(code) {
 }
 function etoiles(n, max = 3) { let s = ''; for (let i = 0; i < max; i++) s += i < n ? '<b>★</b>' : '★'; return s }
 function construitCartes() {
-  const box = $('cartes'); box.innerHTML = ''; const L = LISTE(), pl = places(); box.classList.toggle('treize', pl > 12 && pl <= 14); box.classList.toggle('trois', pl > 14); box.classList.toggle('quatre', pl <= 4); box.dataset.monde = G.monde; if (selCursor >= L.length) selCursor = 0;
+  const box = $('cartes'); box.innerHTML = ''; const L = LISTE(), pl = places(); box.classList.toggle('treize', pl > 12 && pl <= 14); box.classList.toggle('trois', pl > 14); box.classList.toggle('defile', pl > 18); box.style.gridTemplateColumns = pl > 18 ? `repeat(${Math.ceil(pl / 3)}, 13.6cqw)` : ''; box.classList.toggle('quatre', pl <= 4); box.dataset.monde = G.monde; if (selCursor >= L.length) selCursor = 0;
   majMondes();
   for (let i = 0; i < pl; i++) {
     const k = L[i], b = document.createElement('button'); b.type = 'button';
@@ -2368,7 +2444,7 @@ function changeMonde(m, distant) {
   construitCartes();
 }
 function majChoix() {
-  document.querySelectorAll('#cartes .carte').forEach((c, i) => c.classList.toggle('curseur', i === selCursor));
+  document.querySelectorAll('#cartes .carte').forEach((c, i) => { c.classList.toggle('curseur', i === selCursor); if (i === selCursor && $('cartes').classList.contains('defile') && c.scrollIntoView) c.scrollIntoView({ block: 'nearest', inline: 'nearest' }) });
   if (!NET.on) $('choix-titre').textContent = selStage === 0 ? (G.mode === 2 ? 'JOUEUR 1 : CHOISIS TON ANIMAL' : MONDES[G.monde].titre) : G.mode === 2 ? 'JOUEUR 2 : À TOI DE CHOISIR' : 'CHOISIS TON ADVERSAIRE';
   const k = LISTE()[selCursor], d = k && CHARS[k], s1 = selStage === 1 && !NET.on;
   $('retour-choix').hidden = !!NET.on; $('hasard-btn').hidden = !s1; $('tournoi-btn').hidden = !(s1 && G.mode === 1); $('trophees-btn').hidden = s1;
@@ -2411,7 +2487,7 @@ function ouvreArenes() {
   G.phase = 'menu'; show('arenes');
   const box = $('arenes-liste'); box.innerHTML = '';
   $('arenes-titre').textContent = NET.on ? 'TU CHOISIS L’ARÈNE' : 'CHOISIS L’ARÈNE';
-  const L = G.arenesListe = arenesDe(mondeDe(G.pick[0])); box.classList.toggle('peu', L.length <= 2); // les arènes du monde des deux animaux
+  const L = G.arenesListe = arenesDe(mondeDuel(G.pick[0], G.pick[1] || G.pick[0])); box.classList.toggle('peu', L.length <= 2); // les arènes du monde des deux animaux
   [...L, { k: 'hasard', nom: 'AU HASARD' }].forEach((a, i) => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'arene' + (a.k === 'hasard' ? ' hasard' : '');
     if (a.k !== 'hasard') b.style.backgroundImage = `url(mini_${a.k}.webp)`; else b.innerHTML = '<b>🎲</b>';
@@ -2570,7 +2646,7 @@ function initUI() {
   $('net-cree').onclick = () => { sfx('clic'); netCree() }; $('net-rejoint').onclick = () => { sfx('clic'); netEcran('invite'); netStatut(''); setTimeout(() => $('net-in').focus(), 50) };
   $('net-ok').onclick = () => { sfx('clic'); netRejoint() }; $('net-retour').onclick = () => { netFerme(); sfx('retour'); show('adeux') }; for (const id of ['net-retour2', 'net-retour3']) $(id).onclick = () => { netFerme(); sfx('retour'); netEcran('accueil'); netStatut('') };
   $('tab-badges').onclick = () => ongletTroph('badges'); $('tab-cartes').onclick = () => ongletTroph('cartes');
-  $('revanche').onclick = () => { sonInit(); G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const L = arenesDe(mondeDe(G.pick[0])), j = L.findIndex(x => x.k === G.arene); G.arene = L[(j + 1) % L.length].k } vs() };
+  $('revanche').onclick = () => { sonInit(); G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const L = arenesDe(mondeDuel(G.pick[0], G.pick[1])), j = L.findIndex(x => x.k === G.arene); G.arene = L[(j + 1) % L.length].k } vs() };
   $('menu-btn').onclick = toMenu; $('quitter').onclick = toMenu; $('reprendre').onclick = pause; $('pause-btn').onclick = () => { if (['fight', 'intro'].includes(G.phase)) pause() };
   // bouton SON : musique + bruitages → bruitages seuls → muet (choix gardé sur l'appareil)
   const majSon = () => { const m = SAVE.son || 0; SON.on = m < 2; SON.musOff = m === 1; $('son-btn').textContent = ['♪ SON', '♪ SANS MUSIQUE', '♪ MUET'][m]; if (SON.master) SON.master.gain.value = SON.on ? .8 : 0 };

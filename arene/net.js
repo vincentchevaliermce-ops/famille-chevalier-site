@@ -133,7 +133,7 @@ function netChoisit(k) {
 }
 function netLance() {
   if (NET.role !== 'hote' || !NET.pret[0] || !NET.pret[1]) return;
-  if (mondeDe(NET.pret[0]) !== mondeDe(NET.pret[1])) { const m0 = mondeDe(NET.pret[0]); NET.pret = {}; G.monde = m0; envoie({ t: 'monde', m: m0, raz: 1 }); construitCartes(); $('choix-titre').textContent = 'LE MÊME MONDE POUR LES DEUX ! CHOISISSEZ À NOUVEAU'; return } // sécurité : un animal de la mer n'affronte que la mer
+  if (!memeMonde(NET.pret[0], NET.pret[1])) { const m0 = mondeDe(NET.pret[0]); NET.pret = {}; G.monde = m0; envoie({ t: 'monde', m: m0, raz: 1 }); construitCartes(); $('choix-titre').textContent = 'LE MÊME MONDE POUR LES DEUX ! CHOISISSEZ À NOUVEAU'; return } // sécurité : un animal de la mer n'affronte que la mer
   G.pick = [NET.pret[0], NET.pret[1]]; envoie({ t: 'arene' }); ouvreArenes(); // l'hôte choisit l'arène
 }
 function recoit(m) {

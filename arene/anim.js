@@ -243,6 +243,7 @@ function spritePose(R, f, T) {
   switch (st) {
     case 'walk': case 'walkB': case 'dash': {
       const p = Math.abs(f.dist) * (st === 'dash' ? .012 : .02), k = Math.floor(p) % 2;
+      if (f.d.serpent && st !== 'dash') return SP('base', { x: 10 * Math.sin(p * Math.PI * 2), sx: 1 + .035 * Math.sin(p * Math.PI * 2), sy: 1 - .02 * Math.sin(p * Math.PI * 2) }); // serpent : il ondule sur place (pas de pattes !)
       return SP(k ? 'marche' : 'base', { y: -10 * Math.abs(Math.sin(p * Math.PI)), r: st === 'dash' ? .05 : .015 * Math.sin(p * Math.PI) });
     }
     case 'crouch': return SP('accroupi', { sy: 1 + .012 * br });
