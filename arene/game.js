@@ -286,14 +286,16 @@ const ARENES = [
   { k: 'banquise', nom: 'BANQUISE', img: 'arene_banquise.webp' }, { k: 'desert', nom: 'DÉSERT', img: 'arene_desert.webp' },
   { k: 'colisee', nom: 'COLISÉE', img: 'arene_colisee.webp' }, { k: 'riviere', nom: 'RIVIÈRE', img: 'arene_riviere.webp' },
 ];
+// couleur de la poussière soulevée, selon le sol de l'arène
+const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE' };
 const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
-const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V16, mot pour mot (// p. N) ou à peine adaptées (// ≈ p. N : sujet ajouté).
+const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V17, mot pour mot (// p. N) ou à peine adaptées (// ≈ p. N : sujet ajouté).
   // Aucune carte ne donne le résultat d'un duel. Une carte ne se gagne que contre un animal déjà débloqué (sinon elle donnerait les réponses du quiz).
   tigre: [
     'Si on rasait un tigre, il resterait rayé : ses rayures sont aussi dessinées sur sa peau !', // p. 9
     'La nuit, le tigre voit six fois mieux que toi. Et il traverse à la nage des rivières larges de 8 km !', // p. 67
     'Le tigre approche sans un bruit, puis il bondit : jusqu’à 10 mètres d’un coup ! Plus que deux voitures garées l’une derrière l’autre.', // p. 55
-    '1 tonne : le poids des plus gros gaurs, des bœufs sauvages. Un tigre peut en tuer un : presque cinq fois son poids !', // p. 10
+    '1 tonne : le poids des plus gros gaurs, des bœufs sauvages. Un tigre peut en tuer un !', // p. 10
     'Chaque tigre a son propre motif de rayures. Les chercheurs comparent les photos pour reconnaître chaque animal. Pas besoin de collier avec son prénom !', // p. 70
   ],
   gorille: [
@@ -301,11 +303,11 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V16, 
     '1 km : c’est la distance à laquelle on entend un gorille se frapper la poitrine. Un vrai tambour !', // p. 68
     'Devant ses plantes préférées, le gorille chantonne ! Sans doute une façon de dire : « Je mange, ne me dérange pas. »', // p. 67
     'Un dos argenté (un grand mâle gorille) ne recule pas.', // p. 68
-    'Le gorille charge en hurlant. Il est bien plus fort qu’un humain. De combien ? Personne n’a pu le mesurer !', // p. 68
+    'Gare à la charge du gorille ! Il est bien plus fort qu’un humain. De combien ? Personne n’a pu le mesurer !', // p. 68
   ],
   lion: [
     'La nuit, le rugissement du lion s’entend à 8 km : de l’autre bout de la ville ! Il veut dire : « Ici, c’est chez moi. »', // p. 9
-    'Le lion passe environ 20 heures par jour à ne rien faire. Un vrai chat… de 190 kg !', // p. 19
+    'Le lion passe environ 20 heures par jour à ne rien faire. Un vrai flemmard !', // p. 19
     'La langue à pointes du lion racle la viande sur les os et nettoie son pelage. Une toilette pareille, ça frotte !', // ≈ p. 10
     'Certains lions cachent une petite pointe dure dans le pompon de leur queue. À quoi sert-elle ? Personne ne le sait !', // p. 41
     'Comme une équipe de foot : chaque lionne a son poste ! Les plus légères poussent la proie vers les plus lourdes, cachées au centre !', // p. 51
@@ -314,11 +316,11 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V16, 
     'Les poils de l’ours polaire sont creux, comme des pailles : ils gardent la chaleur… et l’aident à flotter !', // p. 15
     'L’ours polaire est blanc ? Faux ! Ses poils sont transparents et sa peau est noire. Il paraît blanc… comme la neige, faite de glace transparente !', // p. 32
     '687 km nagés par une ourse polaire, 9 jours sans s’arrêter. Autant que de Paris à Marseille… à la nage !', // p. 16
-    'Sous ses pattes, l’ours polaire porte de minuscules bosses. Elles accrochent la glace et l’aident à ne pas glisser. Des semelles antidérapantes intégrées !', // p. 26
+    'Sous ses pattes, l’ours polaire porte de minuscules bosses. Elles accrochent la glace et l’aident à ne pas glisser.', // p. 26
     'Pour les scientifiques, l’ours polaire est un mammifère marin, comme le phoque et la baleine ! Il vit surtout sur la glace de mer.', // p. 31
   ],
   croco: [
-    'Une famille en bateau aperçoit Brutus, un crocodile géant de 5,50 m. Il lui manque une patte avant, arrachée par un requin… ou par un autre croco.', // p. 60
+    'Brutus, le vieux crocodile, a perdu une patte avant : arrachée par un requin… ou par un autre croco. Et il a perdu des dents !', // ≈ p. 60
     'La morsure du crocodile marin est la plus forte jamais mesurée. Un croco de 6 m mordrait presque comme un T. rex !', // p. 59
     '590 km parcourus en 25 jours par un crocodile marin qui « surfe » sur les courants de la mer !', // p. 60
     'Crocodile : fille ou garçon ? C’est la température du nid qui décide ! Vers 31,6 °C : des mâles. Plus chaud ou plus froid : des femelles.', // p. 60
@@ -329,13 +331,13 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V16, 
     'L’hippo ne nage pas : il marche au fond de l’eau. Il y dort même, et remonte respirer sans se réveiller !', // p. 13
     'Un hippopotame peut peser jusqu’à 3 200 kg.', // ≈ p. 13
     'L’hippopotame mâle agite sa queue pour éparpiller ses crottes et marquer son territoire. Mieux vaut ne pas être derrière !', // p. 14
-    'L’hippopotame ? Un gros pépère qui broute. Faux ! Il renverse même des bateaux ! C’est l’un des animaux les plus dangereux d’Afrique.', // p. 14
+    'L’hippopotame ? Un gros pépère tout gentil. Faux ! Il renverse même des bateaux ! C’est l’un des animaux les plus dangereux d’Afrique.', // p. 14
   ],
   ratel: [
     'Sur Internet, des vidéos montrent le ratel, une sorte de blaireau d’Afrique, tenir tête à des lions. 13 kilos de rage contre 190 !', // p. 19
     'La peau du ratel, épaisse et trop grande pour lui, résiste aux morsures de chien. Si on l’attrape, il se retourne dans sa peau… et mord !', // p. 19
     '5 heures après une morsure de vipère au visage, un ratel chassait de nouveau des serpents !', // p. 20
-    'Dans une ruche, le ratel mange le miel… et les larves, les bébés des abeilles ! Les piqûres ? Sa peau épaisse s’en moque.', // p. 20
+    'Dans une ruche, le ratel mange le miel… et les larves, les bébés des abeilles ! Les piqûres ? Il s’en moque !', // p. 20
     'Le coup spécial du ratel : la bombe puante !', // ≈ p. 19
   ],
   grizzly: [
@@ -346,7 +348,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V16, 
     'Les oursons naissent dans la tanière, pendant que leur mère hiberne. Ils pèsent moins qu’une brique de lait !', // p. 55
   ],
   hyene: [
-    'Mangeuse de restes, la hyène ? Faux : elle chasse elle-même la plupart de ses repas. Des gnous, des zèbres… parfois trois fois plus lourds qu’elle !', // p. 41
+    'La hyène, une mangeuse de restes ? Non : elle chasse elle-même la plupart de ses repas. Des gnous, des zèbres… parfois trois fois plus lourds qu’elle !', // p. 41
     '7 cm : l’épaisseur des os de girafe qu’une hyène peut casser avec ses dents. Plus épais que ton poignet !', // p. 42
     'Chez les hyènes, les femelles commandent ! Et leur « rire » ? Pas une blague : du stress.', // p. 42
     '« La hyène est un chien sauvage. » Faux : c’est une cousine des chats ! Elle a sa propre famille : les hyènes.', // p. 42
@@ -377,24 +379,24 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V16, 
     'Voici le plus gros lézard du monde : trois mètres de long.', // p. 23
     'Le dragon « goûte » l’air avec sa langue fourchue : il repère un animal mort à plus de 4 km !', // p. 23
     '24 kg de pâtes en un repas : ce que tu avalerais si tu mangeais comme un dragon de Komodo !', // p. 24
-    'Dragon : les bébés vivent dans les arbres. Pourquoi ? Les dragons adultes mangent les petits ! Alors les jeunes vivent perchés.', // p. 24
+    'Les jeunes dragons de Komodo vivent perchés dans les arbres. Pourquoi ? Les dragons adultes mangent les petits !', // ≈ p. 24
     '« Le dragon tue avec les microbes de sa bouche. » Pas vraiment : son venin… et la mare sale !', // p. 24
   ],
 };
 
 // ---------------------------------------------------------------------
 //  Quiz du livre : 3 bonnes réponses de suite pour débloquer un animal.
-//  Règles (24/09, texte imprimé V16) :
+//  Règles (24/09, texte imprimé V17) :
 //  - réponses prises MOT POUR MOT sur une page de fiches (avant la réponse du duel) : aucune question ne dévoile un résultat ;
 //  - jamais une réponse que le jeu affiche déjà pour cet animal (nom de coup, cri, carte) : il faut ouvrir le livre ;
 //  - une erreur ne montre jamais la bonne réponse : « Relis la page N du livre », puis nouvel essai avec d'autres questions.
-//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V16_74P.md
+//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V17_74P.md
 // ---------------------------------------------------------------------
 const QUIZ = {
   croco: { pages: 'pages 13 et 59', q: [
     ['Des crocodiles font un demi-cercle dans la rivière pour pêcher. Ça fait…', ['un filet vivant', 'une échelle', 'un barrage'], 13],
     ['Quel est le point faible du crocodile du Nil ?', ['un élastique lui ferme la gueule', 'une lumière vive l’aveugle', 'il ne sait pas nager'], 13],
-    ['Combien pèse un crocodile du Nil, au maximum ?', ['750 kg', '75 kg', '7 500 kg'], 13],
+    ['Combien pèse un crocodile du Nil, au maximum ?', ['750 kg', '150 kg', '75 kg'], 13],
     ['Comment s’appelle le crocodile géant du duel 26 ?', ['Brutus', 'Titan', 'Goliath'], 59],
     ['Quel est le point faible du crocodile marin ?', ['il lui manque une patte', 'il est aveugle', 'il a peur des bateaux'], 59],
     ['La morsure du crocodile marin est…', ['la plus forte jamais mesurée', 'plus faible que celle du requin', 'la plus venimeuse du monde'], 59],
@@ -417,8 +419,8 @@ const QUIZ = {
   ] },
   grizzly: { pages: 'pages 15 et 55', q: [
     ['Grizzly + ours polaire, ça donne…', ['un « pizzly »', 'un « grizzlaire »', 'un ours panda'], 15],
-    ['Grizzly + ours polaire : combien en a-t-on trouvé dans la nature ?', ['8', '800', 'aucun'], 15],
-    ['Quelle longueur font les griffes du grizzly ?', ['6 cm', '6 mm', '60 cm'], 15],
+    ['Grizzly + ours polaire : combien en a-t-on trouvé dans la nature ?', ['8', '80', '800'], 15],
+    ['Quelle longueur font les griffes du grizzly ?', ['6 cm', '16 cm', '60 cm'], 15],
     ['Quel est le point faible du grizzly face à l’ours polaire ?', ['deux à trois fois plus léger', 'trois fois plus lent', 'il a peur de la neige'], 15],
     ['Les oursons bruns naissent pendant que leur mère…', ['hiberne', 'nage', 'chasse'], 55],
     ['À la naissance, un ourson brun pèse…', ['moins qu’une brique de lait', 'autant qu’un chien', 'plus que ton cartable'], 55],
@@ -427,14 +429,14 @@ const QUIZ = {
     ['Quel est le coup spécial de la hyène ?', ['elle fatigue ses proies', 'elle crache du venin', 'elle plaque sa proie au sol'], 41],
     ['Quel est le point faible de la hyène ?', ['son vacarme attire les voleurs', 'sa queue la gêne pour courir', 'elle a peur de l’eau'], 41],
     ['« La hyène mange les restes des autres. » Vrai ou faux ?', ['faux : elle chasse elle-même la plupart de ses repas', 'faux : elle ne mange que des fruits', 'vrai : elle ne chasse jamais'], 41],
-    ['Combien pèse une hyène tachetée, environ ?', ['60 kg', '6 kg', '600 kg'], 41],
+    ['Combien pèse une hyène tachetée, environ ?', ['60 kg', '6 kg', '16 kg'], 41],
     ['Au duel 18, que veulent la hyène et le lion ?', ['la même carcasse', 'le même point d’eau', 'la même tanière'], 41],
   ] },
   buffle: { pages: 'page 23', q: [
     ['Quel fromage est fait avec le lait de la bufflonne ?', ['la mozzarella', 'la raclette', 'le camembert'], 23],
     ['La bufflonne, c’est…', ['la femelle du buffle d’eau', 'le mâle du buffle d’eau', 'un bébé buffle'], 23],
     ['Quel est le point faible du buffle ?', ['ses blessures guérissent mal', 'ses cornes sont fragiles', 'il a peur de l’eau'], 23],
-    ['Combien de fois le buffle est-il plus lourd que le dragon de Komodo ?', ['sept fois', 'deux fois', 'cent fois'], 23],
+    ['Combien de fois le buffle est-il plus lourd que le dragon de Komodo ?', ['sept fois', 'deux fois', 'trois fois'], 23],
   ] },
   morse: { pages: 'pages 31 et 48', q: [
     ['Les défenses du morse l’aident à…', ['monter sur la glace', 'casser la coque des bateaux', 'creuser un terrier'], 31],
@@ -443,11 +445,11 @@ const QUIZ = {
     ['Pour dormir debout dans l’eau, le morse a sous sa gorge…', ['une poche qu’il gonfle d’air, comme une bouée', 'une ventouse qui colle aux rochers', 'une réserve de graisse, comme un radeau'], 48],
   ] },
   komodo: { pages: 'page 23', q: [
-    ['Combien de dents coupantes a le dragon de Komodo ?', ['60', '6', '600'], 23],
+    ['Combien de dents coupantes a le dragon de Komodo ?', ['60', '600', '6 000'], 23],
     ['Avec quoi le dragon de Komodo « goûte »-t-il l’air ?', ['sa langue fourchue', 'sa queue', 'ses griffes'], 23],
-    ['Le dragon de Komodo repère un animal mort à plus de…', ['4 km', '40 km', '400 km'], 23],
+    ['Le dragon de Komodo repère un animal mort à plus de…', ['4 km', '400 m', '40 km'], 23],
     ['Le dragon de Komodo est le plus gros…', ['lézard du monde', 'serpent du monde', 'crocodile du monde'], 23],
-    ['Combien mesure le dragon de Komodo ?', ['trois mètres de long', 'trente centimètres de long', 'dix mètres de long'], 23],
+    ['Combien mesure le dragon de Komodo ?', ['trois mètres de long', 'trente centimètres de long', 'un mètre de long'], 23],
   ] },
 };
 
@@ -874,6 +876,12 @@ function update(f, o, inp) {
             f.vx = f.t < m.st - 14 ? Math.sign(o.x - f.x) * Math.min(17, Math.abs(o.x - f.x) * .2) : 0; if (f.t % 5 === 0) addFx({ k: 'vague', x: f.x, y: FLOOR }) }
           if (f.t === m.st) { f.cache = false; f.face = o.x >= f.x ? 1 : -1; f.vy = -27; f.h = .1; f.vx = 0; sfx('croco', 1.1); sfx('plouf', 1); G.shake = 14; addFx({ k: 'eclabousse', x: f.x, y: FLOOR }); addFx({ k: 'eclabousse', x: f.x + 60, y: FLOOR }) }
         }
+        // léopard : il bondit hors de l'écran (dans « son arbre »), suit l'adversaire, puis lui tombe dessus (son ombre le trahit)
+        if (m.ciel) {
+          if (f.t === 1) { f.vy = -38; f.h = .1; f.vx = 0; sfx('vent', 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 640, mot: hasard(['HOP, DANS L’ARBRE !', 'À TOUT DE SUITE…', 'JE REVIENS !']), col: JA }) }
+          if (ph === 'st' && f.t > 10) { f.cache = true; f.ciel = true; f.inv = 3; f.h = 1500; f.vy = 0; f.vx = Math.sign(o.x - f.x) * Math.min(19, Math.abs(o.x - f.x) * .2) }
+          if (f.t === m.st) { f.cache = false; f.ciel = false; f.face = o.x >= f.x ? 1 : -1; f.h = 1050; f.vy = 12; f.vx = 0; sfx(f.kind, 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 760, mot: hasard(['TOMBÉ DU CIEL !', 'SURPRISE D’EN HAUT !']), col: JA }) }
+        }
         // hippopotame : le ventilateur à crottes
         // ★ : dos tourné, la queue-hélice mitraille (les crottes partent de la queue) · SUPER : le déluge
         if (m.jet && ph === 'act' && f.t % m.jet.every === 0) { const j = m.jet, K = f.d.K, rd = (a, b) => a + Math.random() * (b - a);
@@ -1000,6 +1008,9 @@ function touche(a, d, m, hb, hu, o) {
   if (d.combo > 1) { FX = FX.filter(e => e.k !== 'combo'); addFx({ k: 'combo', n: d.combo, side: d.side ? 0 : 1 }); }
   const rage = f => f.hp / f.d.hp < .3 ? 1.6 : 1;
   jauge(a, 7 * rage(a)); jauge(d, 5 * rage(d));
+  // porc-épic : qui s'y frotte s'y pique ! Un coup au corps à corps plante un piquant dans l'attaquant (il ne lance RIEN : les piquants restent plantés)
+  if (d.d.piquants && !o.proj && !o.prise && !m.blob && dmg > 0 && a.hp > 1) pique(a, d.d.piquants, d);
+  if (m.pique && dmg > 0 && d.hp > 0) pique(d, m.pique, a);
   // hyène : elle fatigue ses proies (la jauge SUPER de l'adversaire se vide)
   if (m.vide) { d.meter = Math.max(0, d.meter - m.vide); jauge(a, m.vide * .4) }
   // étourdissement : trop de coups en peu de temps → il voit des étoiles (une fois par manche)
@@ -1058,10 +1069,19 @@ function etourdit(f) {
   sfx('oiseaux', 1); sfx('boing', .6);
   addFx({ k: 'mot', x: f.x, y: FLOOR - 760 * f.d.K / .44, mot: hasard(['IL VOIT DES ÉTOILES !', 'TOUT TOURNE !', 'CUI-CUI !']), col: JA });
 }
+// piquants plantés (porc-épic) : chaque piquant fait un peu mal, puis tombe
+function pique(f, n, par) {
+  const p = f.piques || (f.piques = { n: 0, t: 0 }); const avant = p.n; p.n = Math.min(8, p.n + n); p.t = 300; if (!p.pos) p.pos = [];
+  while (p.pos.length < p.n) p.pos.push([.2 + Math.random() * .75, .25 + Math.random() * .55, -.6 + Math.random() * 1.2]);
+  f.hp = Math.max(1, f.hp - n); if (par) jauge(par, 3 * n);
+  if (avant === 0 || Math.random() < .5) addFx({ k: 'mot', x: f.x, y: FLOOR - 560, mot: hasard(['AÏE, ÇA PIQUE !', 'OUILLE, LES PIQUANTS !', 'QUI S’Y FROTTE S’Y PIQUE !']), col: '#F5F0E6' });
+  sfx('porcepic', .45);
+}
 // venin (dragon de Komodo) et nuage puant (ratel) : des effets qui durent
 function majEffets() {
   for (const f of G.f) {
     if (f.sale > 0) f.sale--;
+    const q = f.piques; if (q && q.n > 0) { q.t--; if (q.t % 60 === 0 && f.hp > 1 && f.state !== 'ko') f.hp = Math.max(1, f.hp - 1); if (q.t <= 0) { q.n--; q.pos.pop(); q.t = q.n ? 90 : 0 } }
     const p = f.poison; if (!p) continue;
     p.t--; p.n++;
     if (p.n % p.tick === 0 && f.hp > 1 && !['ko'].includes(f.state)) { f.hp = Math.max(1, f.hp - p.dmg); addFx({ k: 'bulle', x: f.x + (Math.random() - .5) * 160, y: FLOOR - 200 - Math.random() * 120 }) }
@@ -1267,7 +1287,7 @@ function drawFx(c) {
     } else if (e.k === 'poussiere') {
       const k = P(u, 0, .8); if (k >= 1) continue; const r = rng(Math.floor(e.t0 * 1000));
       for (let i = 0; i < 9; i++) { const dir = (r() - .5) * 2, sp = 60 + r() * 170, px = e.x + dir * sp * eo(k), py = e.y - 10 - r() * 60 * eo(k), rad = (20 + r() * 30) * (.5 + k);
-        c.globalAlpha = (1 - k) * .85; c.fillStyle = '#F2D7A8'; c.beginPath(); c.arc(px, py, rad, 0, TAU); c.fill() } c.globalAlpha = 1;
+        c.globalAlpha = (1 - k) * .85; c.fillStyle = POUSSIERE[G.arene] || '#F2D7A8'; c.beginPath(); c.arc(px, py, rad, 0, TAU); c.fill() } c.globalAlpha = 1;
     } else if (e.k === 'onde') {
       const k = P(u, 0, .7); if (k >= 1) continue; c.save(); c.globalAlpha = 1 - k; c.strokeStyle = JA; c.lineWidth = 16 * (1 - k) + 3;
       for (const s of [-1, 1]) { c.beginPath(); c.ellipse(e.x, e.y, 60 + 900 * eo(k), 30 + 60 * eo(k), 0, s < 0 ? Math.PI : 0, s < 0 ? TAU : Math.PI, false); c.stroke() } c.restore();
@@ -1462,8 +1482,15 @@ function dessineDetails(c, t) {
     // étourdi : étoiles et oiseaux qui tournent autour de la tête
     if (f.state === 'dizzy') { for (let i = 0; i < 3; i++) { const a = t * 4 + i * TAU / 3; star(c, hx + Math.cos(a) * 110, hy - 90 + Math.sin(a) * 26, 24, 10, 5, JA, NV, 4) }
       for (let i = 0; i < 2; i++) { const a = -t * 3 + i * Math.PI; oiseau(c, hx + Math.cos(a) * 140, hy - 120 + Math.sin(a) * 30, .9, t + i) } }
+    // piquants du porc-épic plantés dans le pelage (noir et blanc)
+    if (f.piques && f.piques.n > 0 && !f.cache) { c.save(); c.lineCap = 'round';
+      for (const [u, v, r] of f.piques.pos) { const px = f.x + f.face * (u - .35) * 620 * K / .44, py = FLOOR - f.h - v * 520 * K / .44, a = -Math.PI / 2 + r * .9 - f.face * .5, L = 70;
+        const ex = px + Math.cos(a) * L, ey = py + Math.sin(a) * L; c.strokeStyle = NV; c.lineWidth = 9; c.beginPath(); c.moveTo(px, py); c.lineTo(ex, ey); c.stroke();
+        c.strokeStyle = '#F5F0E6'; c.lineWidth = 5; c.beginPath(); c.moveTo(px, py); c.lineTo((px + ex) / 2, (py + ey) / 2); c.stroke();
+        c.strokeStyle = '#222'; c.beginPath(); c.moveTo((px + ex) / 2, (py + ey) / 2); c.lineTo(ex, ey); c.stroke() } c.restore() }
     // crocodile sous l'eau : on ne voit que ses yeux et ses narines qui glissent
-    if (f.cache) { const x = f.x + f.face * 200 * K, y = FLOOR - 6;
+    if (f.cache && f.ciel) { const k = cl(.4 + .6 * Math.sin(t * 9) ** 2, 0, 1); c.save(); c.globalAlpha = .55; c.fillStyle = '#1A0E05'; c.beginPath(); c.ellipse(f.x, FLOOR + 4, 170 * K / .44, 26, 0, 0, TAU); c.fill(); c.globalAlpha = k; c.fillStyle = JA; c.strokeStyle = NV; c.lineWidth = 5; c.font = '900 90px Rubik, sans-serif'; c.textAlign = 'center'; c.strokeText('!', f.x, FLOOR - 40); c.fillText('!', f.x, FLOOR - 40); c.restore() }
+    else if (f.cache) { const x = f.x + f.face * 200 * K, y = FLOOR - 6;
       c.save(); c.globalAlpha = .9; c.strokeStyle = '#E8F7FF'; c.lineWidth = 6; c.beginPath(); c.moveTo(x - f.face * 40, y); c.lineTo(x - f.face * 200, y - 16); c.moveTo(x - f.face * 40, y); c.lineTo(x - f.face * 200, y + 12); c.stroke(); c.restore();
       c.fillStyle = '#4E8A2E'; c.strokeStyle = NV; c.lineWidth = 4;
       for (const dx of [-26, 26]) { c.beginPath(); c.ellipse(x + dx, y - 16, 22, 17, 0, Math.PI, TAU); c.fill(); c.stroke(); c.fillStyle = '#FFE36B'; c.beginPath(); c.ellipse(x + dx, y - 22, 10, 9, 0, 0, TAU); c.fill(); c.fillStyle = NV; c.beginPath(); c.ellipse(x + dx + f.face * 2, y - 22, 3, 8, 0, 0, TAU); c.fill(); c.fillStyle = '#4E8A2E' }
@@ -1500,7 +1527,7 @@ function dessineDetails(c, t) {
 function dessineFlaques(c) {
   if (!G.f.length) return;
   for (const f of G.f) {
-    const dansEau = f.cache || (f.state === 'atk' && f.move && f.move.plonge && (f.ph === 'st' || f.t < f.move.st + 8));
+    const dansEau = (f.cache && !f.ciel) || (f.state === 'atk' && f.move && f.move.plonge && (f.ph === 'st' || f.t < f.move.st + 8));
     if (!dansEau) continue;
     const w = G.arene === 'riviere' ? 180 : 260;
     c.save(); c.fillStyle = G.arene === 'riviere' ? 'rgba(210,240,255,.35)' : '#3FA9E0'; c.strokeStyle = G.arene === 'riviere' ? 'rgba(255,255,255,.6)' : NV; c.lineWidth = 6;
@@ -1587,7 +1614,7 @@ function step() {
 }
 function newRound() {
   const [a, b] = G.f;
-  for (const [f, x, face] of [[a, 590, 1], [b, 1330, -1]]) Object.assign(f, { poison: null, sale: 0, cache: false, glisse: 0, x, face, h: 0, vx: 0, vy: 0, hp: f.d.hp, shown: f.d.hp, trail: f.d.hp, state: 'intro', t: 0, combo: 0, knock: false, stun: 0, inv: 0, hist: [], prev: {}, pose: null, pp: null, ai: { t: 0, hold: {}, react: 0 } });
+  for (const [f, x, face] of [[a, 590, 1], [b, 1330, -1]]) Object.assign(f, { poison: null, piques: null, sale: 0, cache: false, ciel: false, glisse: 0, x, face, h: 0, vx: 0, vy: 0, hp: f.d.hp, shown: f.d.hp, trail: f.d.hp, state: 'intro', t: 0, combo: 0, knock: false, stun: 0, inv: 0, hist: [], prev: {}, pose: null, pp: null, ai: { t: 0, hold: {}, react: 0 } });
   G.timer = 99 * 60; G.phase = 'intro'; G.pt = 0; G.timeUp = false; G.roundWinner = null; G.perfect = false; FX = []; G.proj = []; G.zones = [];
   cam.z = 1; cam.cx = 960;
 }
@@ -1698,7 +1725,7 @@ function menuKey(code) {
 }
 function etoiles(n, max = 3) { let s = ''; for (let i = 0; i < max; i++) s += i < n ? '<b>★</b>' : '★'; return s }
 function construitCartes() {
-  const box = $('cartes'); box.innerHTML = ''; const places = Math.max(PLACES, nbCartesChoix()); box.classList.toggle('treize', places > 12);
+  const box = $('cartes'); box.innerHTML = ''; const places = Math.max(PLACES, nbCartesChoix()); box.classList.toggle('treize', places > 12 && places <= 14); box.classList.toggle('trois', places > 14);
   for (let i = 0; i < places; i++) {
     const k = ORDRE[i], b = document.createElement('button'); b.type = 'button';
     if (!k) { b.className = 'carte bientot'; b.disabled = true; b.innerHTML = '<span class="img"></span><span class="nom">BIENTÔT…</span><span class="ets">&nbsp;</span>'; box.appendChild(b); continue }

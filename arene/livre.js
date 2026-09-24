@@ -1,18 +1,18 @@
 // =====================================================================
 //  DUELS DU LIVRE — comme dans « C'est qui le plus fort ? » :
 //  1. tu paries (contre Gigi), 2. tu te bats avec ton champion, 3. tu découvres la vraie réponse.
-//  Textes repris MOT POUR MOT du livre imprimé (TEXTE_IMPRIME_V16, 24/09) : page du duel (p) et page de la réponse (pv).
-//  Contrôle : python3 verif/sync_livre.py TEXTE_IMPRIME_V16_74P.md
+//  Textes repris MOT POUR MOT du livre imprimé (TEXTE_IMPRIME_V17, 24/09) : page du duel (p) et page de la réponse (pv).
+//  Contrôle : python3 verif/sync_livre.py TEXTE_IMPRIME_V17_74P.md
 // =====================================================================
 const DUELS = [
   { n: 3, lieu: 'AFRIQUE CONTRE ASIE', q: 'LION OU TIGRE ?', a: 'lion', b: 'tigre', noms: ['LION', 'TIGRE DU BENGALE'], arene: 'colisee', p: 9, pv: 10,
     intro: 'La crinière contre les rayures. Dans la nature, ils ne se croisent plus. Mais face à face… un contre un, qui gagne ?',
     fiches: [['environ 190 kg', 'des crocs de 7 cm', 'il étouffe sa proie', 'sa crinière lui donne chaud'], ['environ 220 kg', 'des griffes de 10 cm', 'il attaque par surprise', 'il évite les bagarres']],
     gigi: { pari: 'lion', dit: 'Le lion.', pourquoi: 'C’est le roi, c’est écrit partout !', apres: '« Le roi », c’était écrit partout. Sauf ici !' },
-    rep: { g: 'tigre', titre: 'L’AVIS DES EXPERTS', cri: 'LE TIGRE !', punch: 'Tout seul, le roi perd sa couronne !', tampon: 'bleu', label: 'JAMAIS VU DANS LA NATURE',
+    rep: { g: 'tigre', titre: 'L’AVIS DES EXPERTS', cri: 'LE TIGRE !', punch: 'Un contre un, les rayures gagnent !', tampon: 'bleu', label: 'JAMAIS VU DANS LA NATURE',
       film: 'Le tigre pèse environ 30 kg de plus que le lion. Selon un expert, le tigre va droit à la gorge. Le lion, lui, cogne et joue avec l’adversaire. Mais attention… Un lion vient rarement seul : à deux ou trois, les lions battraient le tigre.' } },
   { n: 5, lieu: 'RIVIÈRE', q: 'HIPPOPOTAME OU CROCODILE DU NIL ?', a: 'hippo', b: 'croco', noms: ['HIPPOPOTAME', 'CROCODILE DU NIL'], arene: 'riviere', p: 13, pv: 14,
-    intro: 'Même rivière, même boue, même mauvais caractère. L’hippo broute l’herbe. Le croco est un tueur à la mâchoire d’acier. Alors, qui commande dans l’eau ?',
+    intro: 'Même rivière, même boue. L’hippo broute l’herbe. Le croco est un tueur à la mâchoire d’acier. Alors, qui commande dans l’eau ?',
     fiches: [['jusqu’à 3 200 kg', 'des crocs géants', 'il charge gueule ouverte', 'sa peau craque au soleil'], ['jusqu’à 750 kg', 'une morsure qui serre fort', 'il attaque caché sous l’eau', 'un élastique lui ferme la gueule']],
     gigi: { pari: 'hippo', dit: 'L’hippo.', pourquoi: 'Plus grande bouche = plus fort. Logique.', apres: 'Logique de Gigi : 1. Reste du monde : 0.' },
     rep: { g: 'hippo', titre: 'LA VRAIE RÉPONSE', cri: 'L’HIPPOPOTAME !', punch: 'Trois tonnes de mauvaise humeur.', tampon: 'vert', label: 'FILMÉ OU PHOTOGRAPHIÉ',
@@ -20,15 +20,15 @@ const DUELS = [
   { n: 6, lieu: 'GRAND NORD', q: 'OURS POLAIRE OU GRIZZLY ?', a: 'ours', b: 'grizzly', noms: ['OURS POLAIRE', 'GRIZZLY'], arene: 'banquise', p: 15, pv: 16,
     intro: 'Sur une plage d’Alaska, des restes de baleine : un festin. Des ours polaires énormes sont déjà à table. Arrive un grizzly, un ours brun, tout seul. Qui mange ?',
     fiches: [['de 350 à 545 kg', 'des griffes en crochet', 'un coup de patte de géant', 'il a vite trop chaud en courant'], ['environ 180 kg', 'des griffes de 6 cm', 'il attrape les saumons au vol', 'deux à trois fois plus léger']],
-    gigi: { pari: 'ours', dit: 'L’ours polaire.', pourquoi: 'Il est assorti à la neige : trop la classe.', apres: 'La classe ne suffit pas ? Personne ne m’avait prévenu.' },
+    gigi: { pari: 'ours', dit: 'L’ours polaire.', pourquoi: 'Il est assorti à la neige : trop la classe.', apres: 'La classe ne suffit pas ? On aurait pu me prévenir !' },
     rep: { g: 'grizzly', titre: 'LA VRAIE RÉPONSE', cri: 'LE GRIZZLY !', punch: 'Le plus petit fait la loi !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
-      film: 'Une quinzaine d’ours polaires se régalent sur la plage. Un grizzly arrive, tranquille. À côté d’eux, il a l’air bien plus petit. Ce jour-là, sans même grogner, il fait filer tous les ours polaires, sauf un !' } },
+      film: 'Une quinzaine d’ours polaires se régalent sur la plage. Un grizzly arrive, tranquille. Ce jour-là, sans même grogner, il fait filer tous les ours polaires, sauf un !' } },
   { n: 8, lieu: 'SAVANE', q: 'LION OU RATEL ?', a: 'lion', b: 'ratel', noms: ['LION', 'RATEL'], arene: 'desert', p: 19, pv: 20,
     intro: 'Sur Internet, des vidéos montrent le ratel, une sorte de blaireau d’Afrique, tenir tête à des lions. 13 kilos de rage contre 190 ! Des chercheurs sont allés vérifier. Alors, qui gagne ?',
     fiches: [['environ 190 kg', 'des crocs de 7 cm', 'il plaque sa proie au sol', 'il chasse mal en plein jour'], ['jusqu’à 13 kg', 'de longues griffes', 'la bombe puante', 'surpris, il fonce sans réfléchir']],
     gigi: { pari: 'ratel', dit: 'Le ratel !', pourquoi: 'J’ai vu la vidéo : il est INVINCIBLE.', apres: 'Internet m’a menti. Je suis très déçu.' },
-    rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'Courageux, oui. Invincible, non.', tampon: 'vert', label: 'VU DANS LA NATURE',
-      film: 'Dans le désert du Kalahari, des lions et des léopards ont tué des ratels, adultes comme petits. Son vrai talent ? Il ne gagne pas : il dégoûte. Il mord, il pue… et parfois, le fauve laisse tomber !' } },
+    rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'Courageux… mais pas fou !', tampon: 'vert', label: 'VU DANS LA NATURE',
+      film: 'Dans le désert du Kalahari, des lions et des léopards ont tué des ratels, adultes comme petits. Son vrai talent ? Il ne gagne pas : il dégoûte. Il mord, il pue… et parfois, le fauve renonce !' } },
   { n: 10, boss: 1, lieu: 'ÎLE DE KOMODO', q: 'DRAGON DE KOMODO OU BUFFLE ?', a: 'komodo', b: 'buffle', noms: ['DRAGON DE KOMODO', 'BUFFLE D’EAU'], arene: 'jungle', p: 23, pv: 24,
     intro: 'Voici le plus gros lézard du monde : trois mètres de long. Il attaque un buffle sept fois plus lourd que lui. Qui gagne, ce jour-là ?',
     fiches: [['environ 80 kg', '60 dents coupantes', 'une morsure à venin', 'il entend très mal'], ['jusqu’à 550 kg', 'de grandes cornes', 'il charge tête baissée', 'ses blessures guérissent mal']],
@@ -36,7 +36,7 @@ const DUELS = [
     rep: { g: 'buffle', titre: 'LA VRAIE RÉPONSE', cri: 'LE BUFFLE !', punch: 'Mordu, mais pas vaincu !', tampon: 'vert', label: 'VU DANS LA NATURE',
       film: 'Le dragon mord une patte du buffle et tire de toutes ses forces. Le buffle se secoue, se dégage et repart. C’est ce qui arrive le plus souvent !' } },
   { n: 13, lieu: 'BANQUISE', q: 'OURS POLAIRE OU MORSE ?', a: 'ours', b: 'morse', noms: ['OURS POLAIRE', 'MORSE'], arene: 'banquise', p: 31, pv: 32,
-    intro: 'Le roi de la banquise sent un phoque à plus d’un kilomètre, même caché sous la neige. Aujourd’hui, il a trouvé mieux : une plage couverte de morses. Les gros mâles dépassent une tonne. Qui gagne ?',
+    intro: 'L’ours polaire sent un phoque à plus d’un kilomètre, même sous la neige. Aujourd’hui, il a trouvé mieux : une plage couverte de morses. Qui gagne ?',
     fiches: [['jusqu’à 545 kg', 'des griffes en crochet', 'il fait paniquer le troupeau', 'l’été, sans banquise, il a faim'], ['jusqu’à 1 500 kg', 'des défenses de 90 cm', 'il frappe avec ses défenses', 'affolé, le troupeau écrase ses petits']],
     gigi: { pari: 'ours', dit: 'L’ours.', pourquoi: 'Le morse, c’est un canapé à moustaches.', apres: 'Un canapé d’une tonne et demie, avec des épées.' },
     rep: { g: 'morse', titre: 'LA VRAIE RÉPONSE', cri: 'LE MORSE !', punch: 'Pas touche au troupeau !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
@@ -45,20 +45,20 @@ const DUELS = [
     intro: 'Ce soir, une hyène et un lion mâle veulent la même carcasse. Qui vole le repas de l’autre ?',
     fiches: [['environ 60 kg', 'des mâchoires casse-os', 'elle fatigue ses proies', 'son vacarme attire les voleurs'], ['environ 190 kg', 'des crocs de 7 cm', 'un coup de patte mortel', 'un cœur tout petit pour sa taille']],
     gigi: { pari: 'lion', dit: 'Le lion.', pourquoi: 'La hyène rigole, mais elle va moins rigoler.', apres: 'J’AVAIS BON ! Pourquoi tu as l’air surpris ?' },
-    rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'Rira bien qui rira le dernier.', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
-      film: 'Une hyène seule n’a aucune chance : un coup de patte peut la tuer. Nombreuses, elles volent le repas des lionnes. Mais avec un lion mâle, c’est perdu d’avance.' } },
+    rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'La carcasse est pour lui !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
+      film: 'Une hyène seule n’a aucune chance face à lui. Nombreuses, elles volent le repas des lionnes. Mais avec un lion mâle, c’est perdu d’avance.' } },
   { n: 24, lieu: 'FORÊT RUSSE', q: 'OURSE BRUNE OU TIGRE DE SIBÉRIE ?', a: 'grizzly', b: 'tigre', noms: ['OURSE BRUNE', 'TIGRE DE SIBÉRIE'], arene: 'banquise', p: 55, pv: 56,
-    intro: 'Dans les forêts glacées de Russie, un tigre de 206 kg croise une grande ourse brune, presque aussi lourde que lui. Qui mange l’autre ?',
-    fiches: [['presque 200 kg', 'des griffes de 6 cm', 'un coup de patte énorme', 'un peu plus légère que lui'], ['Dima : 206 kg', 'des griffes de 10 cm', 'il mord la nuque', 'un gros ours lui vole ses proies']],
+    intro: 'Dans les forêts glacées de Russie, un tigre croise une grande ourse brune. Qui mange l’autre ?',
+    fiches: [['presque 200 kg', 'des griffes de 6 cm', 'elle frappe de la patte', 'un peu plus légère que lui'], ['Dima : 206 kg', 'des griffes de 10 cm', 'il mord la nuque', 'un gros ours lui vole ses proies']],
     gigi: { pari: 'tigre', dit: 'Pile, le tigre.', pourquoi: 'Face, l’ourse… Pile !', apres: 'Ma pièce ne se trompe jamais. Je la garde.' },
-    rep: { g: 'tigre', titre: 'CE QUE DISENT LES INDICES', cri: 'LE TIGRE !', punch: 'Un bond, une morsure : l’ourse n’a rien vu venir.', tampon: 'bleu', label: 'D’APRÈS LES INDICES',
-      film: 'Des chercheurs suivent Dima, un tigre de 206 kg, grâce à son collier GPS. Ils trouvent les restes d’une grande ourse. Les traces le disent : Dima a bondi du haut d’une petite pente.' } },
+    rep: { g: 'tigre', titre: 'CE QUE DISENT LES INDICES', cri: 'LE TIGRE !', punch: 'Une morsure, et l’ourse n’a rien vu venir.', tampon: 'bleu', label: 'D’APRÈS LES INDICES',
+      film: 'Des chercheurs suivent Dima, un tigre, grâce à son collier GPS. Ils trouvent les restes d’une grande ourse. Les traces le disent : Dima a bondi du haut d’une petite pente.' } },
   { n: 30, boss: 3, lieu: 'FINALE', q: 'TIGRE OU GORILLE ?', a: 'tigre', b: 'gorille', noms: ['TIGRE DE SIBÉRIE', 'GORILLE'], arene: 'colisee', p: 67, pv: 68,
     intro: 'Ce duel de rêve n’a jamais eu lieu : le tigre vit en Asie, le gorille en Afrique. On a enquêté, round par round. Qui gagnerait ?',
     fiches: [['environ 175 kg', 'les plus longs crocs des félins', 'la morsure à la gorge', 'à la chasse, il rate 9 fois sur 10'], ['environ 160 kg', 'de longues canines', 'il charge en hurlant', 'il ne chasse jamais']],
     gigi: { pari: 'gorille', dit: 'Le gorille !', pourquoi: 'Tu as vu ses bras ?', apres: '2 rounds à 1 ?! L’arbitre était un tigre, c’est sûr !' },
-    rep: { g: 'tigre', titre: 'NOTRE VERDICT', cri: 'LE TIGRE !', punch: 'Crocs 2, biceps 1… et ça se discute !', tampon: 'violet', label: 'DUEL IMAGINÉ',
-      film: 'Round 1, la surprise : tigre. Round 2, la charge : gorille. Round 3, le chasseur : tigre. Le tigre tue pour vivre. Le gorille, lui, gagne ses disputes en faisant peur.' } },
+    rep: { g: 'tigre', titre: 'NOTRE VERDICT', cri: 'LE TIGRE !', punch: 'Crocs 2, biceps 1 !', tampon: 'violet', label: 'DUEL IMAGINÉ',
+      film: 'Round 1, l’embuscade : tigre. Round 2, la charge : gorille. Round 3, le chasseur : tigre. Le tigre tue pour vivre. Le gorille, lui, gagne ses disputes en faisant peur.' } },
 ];
 const LIVRE_TOTAL = 30; // duels dans le livre
 SAVE.livre = SAVE.livre || {};
