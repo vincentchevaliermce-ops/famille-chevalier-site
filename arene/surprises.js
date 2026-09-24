@@ -64,7 +64,7 @@ function prendCaisse(f) {
   G.bonusAff = { ico: (mer && B.icoMer) || B.ico, nom: (mer && B.nomMer) || B.nom, col: B.col, x: c.x, t0: G.time, qui: f.side };
   if (!f.cpu && !f.distant) { SAVE.compte = SAVE.compte || {}; SAVE.compte.caisses = (SAVE.compte.caisses || 0) + 1; trophee('caisse1', f); if (SAVE.compte.caisses >= 25) trophee('caisse25', f) }
   switch (c.k) {
-    case 'soin': f.hp = Math.min(f.d.hp, f.hp + 20); addFx({ k: 'mot', x: f.x, y: FLOOR - 700 * f.d.K / .44, mot: '+20', col: '#7BD35A' }); sfx('slurp', .7); break;
+    case 'soin': { const g = f.d.gourmand ? 2 : 1; f.hp = Math.min(f.d.hp, f.hp + 20 * g); addFx({ k: 'mot', x: f.x, y: FLOOR - 700 * f.d.K / .44, mot: g > 1 ? 'GOURMAND ! +40' : '+20', col: '#7BD35A' }); sfx('slurp', .7); break } // l'ours noir, « plus gourmand que bagarreur » (livre) : deux fois plus
     case 'super': jauge(f, 100); sfx('super', .6); break;
     case 'mini': donneBoost(o, 'mini', B.t); sfx('pouet', .8); break;
     case 'banane': if (mer) { if (blesse(o, 6, { mot: 'BZZZ ! MÉDUSE !', col: '#E7A6FF', stun: 40 })) { o.meduse = 40; sfx('sonar', .5) } }
@@ -115,6 +115,9 @@ const PIEGES = {
   recif: { k: 'trou', obj: 'bulles', mot: 'BLOUB ! BULLES GÉANTES !', dmg: 5 },
   abysses: { k: 'trou', obj: 'chaud', mot: 'EAU BOUILLANTE !', dmg: 7 },
   aquarium: { k: 'repas', mot: 'L’HEURE DU REPAS !' },
+  epave: { k: 'repas', obj: 'tresor', mot: 'UNE PIÈCE D’OR !' }, // le premier qui l'attrape remplit sa jauge SUPER
+  lune: { k: 'chute', obj: 'meteorite', mot: 'MÉTÉORITE !', dmg: 7 },
+  prehisto: { k: 'chute', obj: 'oeuf', mot: 'UN ŒUF TOMBE DU NID !', dmg: 5 },
 };
 function nouveauPiege() {
   const P = PIEGES[G.arene]; if (!P) return;
@@ -145,7 +148,9 @@ function majPieges() {
     if (p.t > 140) G.piege = null;
   } else if (p.k === 'repas') { // un poisson tombe du haut du bassin : le premier qui le touche reprend des forces
     if (p.t === 50) { p.poisson = { x: p.x, y: FLOOR - 1150 }; sfx('plouf', .6) }
-    const q = p.poisson; if (q) { if (q.y < FLOOR - 100) q.y += 7; for (const f of G.f) if (!p.fait && Math.abs(f.x - q.x) < f.d.push[1] + 80 && f.state !== 'ko') { p.fait = true; f.hp = Math.min(f.d.hp, f.hp + 10); addFx({ k: 'mot', x: f.x, y: FLOOR - 650 * f.d.K / .44, mot: 'MIAM ! +10', col: '#7BD35A' }); sfx('slurp', .8); p.poisson = null; p.t = 400 } }
+    const q = p.poisson; if (q) { if (q.y < FLOOR - 100) q.y += 7; for (const f of G.f) if (!p.fait && Math.abs(f.x - q.x) < f.d.push[1] + 80 && f.state !== 'ko') { p.fait = true;
+      if (P.obj === 'tresor') { jauge(f, 35); addFx({ k: 'mot', x: f.x, y: FLOOR - 650 * f.d.K / .44, mot: 'TRÉSOR ! +SUPER', col: '#FFD23F' }); sfx('badge', .8) }
+      else { f.hp = Math.min(f.d.hp, f.hp + 10); addFx({ k: 'mot', x: f.x, y: FLOOR - 650 * f.d.K / .44, mot: 'MIAM ! +10', col: '#7BD35A' }); sfx('slurp', .8) } p.poisson = null; p.t = 400 } }
     if (p.t > 420) G.piege = null;
   }
 }
@@ -176,6 +181,9 @@ function dessineObjet(c, obj, x, y, s = 1) {
   else if (obj === 'pomme') { c.fillStyle = '#8A5A2B'; c.beginPath(); c.ellipse(0, 0, 40, 62, 0, 0, TAU); c.fill(); c.stroke(); c.strokeStyle = '#4B2E12'; c.lineWidth = 4; for (let i = -2; i <= 2; i++) { c.beginPath(); c.moveTo(-36, i * 22); c.lineTo(0, i * 22 + 14); c.lineTo(36, i * 22); c.stroke() } }
   else if (obj === 'lave') { c.fillStyle = '#3B3432'; c.beginPath(); c.moveTo(-60, 10); c.lineTo(-30, -50); c.lineTo(30, -56); c.lineTo(62, 0); c.lineTo(30, 48); c.lineTo(-40, 44); c.closePath(); c.fill(); c.stroke(); c.fillStyle = '#FF7A1A'; c.beginPath(); c.arc(-8, -6, 18, 0, TAU); c.arc(22, 18, 10, 0, TAU); c.fill() }
   else if (obj === 'fruit') { c.fillStyle = '#F2A33A'; c.beginPath(); c.ellipse(0, 0, 44, 56, .4, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#5DAA3A'; c.beginPath(); c.ellipse(18, -52, 22, 10, -.5, 0, TAU); c.fill(); c.stroke() }
+  else if (obj === 'meteorite') { c.fillStyle = '#6B625C'; c.beginPath(); c.moveTo(-58, 6); c.lineTo(-34, -48); c.lineTo(24, -58); c.lineTo(60, -8); c.lineTo(36, 46); c.lineTo(-30, 50); c.closePath(); c.fill(); c.stroke(); c.fillStyle = '#FFB347'; for (const [a, b, r] of [[-14, -10, 12], [20, 16, 8], [8, -30, 6]]) { c.beginPath(); c.arc(a, b, r, 0, TAU); c.fill() } }
+  else if (obj === 'oeuf') { c.fillStyle = '#F4EBD2'; c.beginPath(); c.ellipse(0, 0, 44, 60, 0, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#B98A55'; for (const [a, b, r] of [[-14, -20, 9], [16, -4, 7], [-6, 22, 8], [18, 28, 5]]) { c.beginPath(); c.arc(a, b, r, 0, TAU); c.fill() } }
+  else if (obj === 'piece') { c.fillStyle = '#FFD23F'; c.beginPath(); c.arc(0, 0, 46, 0, TAU); c.fill(); c.stroke(); c.strokeStyle = '#C8920F'; c.lineWidth = 5; c.beginPath(); c.arc(0, 0, 32, 0, TAU); c.stroke(); c.fillStyle = '#FFF4B8'; c.beginPath(); c.ellipse(-14, -16, 10, 6, -.6, 0, TAU); c.fill() }
   else if (obj === 'coussin') { c.fillStyle = '#E8466B'; rr(c, -62, -46, 124, 92, 30); c.fill(); c.stroke(); c.fillStyle = '#FFD23F'; for (const [a, b] of [[-62, -46], [62, -46], [-62, 46], [62, 46]]) { c.beginPath(); c.arc(a, b, 12, 0, TAU); c.fill(); c.stroke() } }
   c.restore();
 }
@@ -208,7 +216,7 @@ function dessineSurprisesDevant(c) { // (devant les animaux)
       else if (P.obj === 'poisson') poisson(c, p.x, FLOOR - 120 - Math.sin(Math.min(1, (p.t - 70) / 50) * Math.PI) * 420, -1.2 + (p.t - 70) * .06, 1.6);
       else { for (let i = 0; i < 16; i++) { const k = ((p.t - 70) * 9 + i * 37) % 420; c.fillStyle = P.obj === 'chaud' ? 'rgba(255,190,120,.75)' : 'rgba(220,245,255,.85)'; c.beginPath(); c.arc(p.x + Math.sin(i * 2.3 + p.t * .2) * 60, FLOOR - k * u, 10 + (i % 4) * 7, 0, TAU); c.fill() } }
       c.restore() }
-    if (p.k === 'repas' && p.poisson) poisson(c, p.poisson.x, p.poisson.y, Math.sin(t * 8) * .3, 1.4);
+    if (p.k === 'repas' && p.poisson) { if (P.obj === 'tresor') dessineObjet(c, 'piece', p.poisson.x, p.poisson.y, 1); else poisson(c, p.poisson.x, p.poisson.y, Math.sin(t * 8) * .3, 1.4) }
   }
   if (G.banane) { const u = G.banane.t / 70; c.save(); c.globalAlpha = 1 - u; c.translate(G.banane.x, FLOOR - 40 - Math.sin(u * Math.PI) * 300); c.rotate(u * 12); c.font = '110px sans-serif'; c.textAlign = 'center'; c.fillText('🍌', 0, 0); c.restore() }
   const e = G.eclair; if (e) { const [sx] = versEcran(c, e.x, 0), [, sy] = versEcran(c, e.x, FLOOR - 120); c.save(); c.setTransform(1, 0, 0, 1, 0, 0);
@@ -291,6 +299,7 @@ const INDICE = Object.fromEntries(NOUVEAUX_TROPHEES.filter(t => t[4]).map(t => [
 // récompenses : tous les 10 trophées, une surprise se débloque
 const RECOMPENSES = [
   [10, 'dore', '✨ TENUES DORÉES', 'Ton animal peut briller en or (bouton ✨ sur l’écran de choix).'],
+  [15, 'epave', '⚓ ARÈNE SECRÈTE DE LA MER : L’ÉPAVE AU TRÉSOR', 'Un vieux bateau coulé… et une pièce d’or à attraper !'],
   [20, 'lune', '🌙 ARÈNE SECRÈTE : LA LUNE', 'On y saute très haut !'],
   [30, 'arcenciel', '🌈 TENUES ARC-EN-CIEL', 'Ton animal change de couleur en combattant.'],
   [40, 'prehisto', '🦕 ARÈNE SECRÈTE : L’ÎLE PRÉHISTORIQUE', 'Là où vivaient les géants d’autrefois.'],

@@ -65,6 +65,12 @@ const DUELS = [
     gigi: { pari: 'guepard', dit: 'Le guépard.', pourquoi: 'Il aura gagné avant la fin de ma phr… Trop tard.', apres: 'Une poule de 130 kg qui fait du karaté. OK.' },
     rep: { g: 'autruche', titre: 'CE QUE DISENT LES INDICES', cri: 'L’AUTRUCHE !', punch: 'Le guépard a préféré garder ses pattes.', tampon: 'bleu', label: 'D’APRÈS LES INDICES',
       film: 'Au Kalahari, des chercheurs ont noté ce que mangent les guépards. De l’autruche ? Presque jamais ! Elle pèse deux fois plus que lui, et gare à son coup de pied ! Alors, seul, il passe son chemin.' } },
+  { n: 17, lieu: 'OCÉAN', q: 'ESPADON OU REQUIN BLEU ?', a: 'espadon', b: 'requinbleu', noms: ['ESPADON', 'REQUIN BLEU'], arene: 'ocean', p: 39, pv: 40,
+    intro: 'L’espadon ferait un bon repas pour le requin bleu. Seulement voilà : ce poisson-là porte une épée. Le requin s’approche quand même. Qui gagne ?',
+    fiches: [['jusqu’à 650 kg', 'une épée sur le nez', 'il tranche d’un coup de tête', 'ni dents ni écailles'], ['jusqu’à 240 kg', 'des dents en scie', 'il tourne autour de sa proie', 'il se balade à 1 km/h']],
+    gigi: { pari: 'requinbleu', dit: 'Le requin.', pourquoi: 'Un grand nez, ça ne fait pas peur.', apres: 'Un grand nez POINTU. Je n’avais pas vu le pointu.' },
+    rep: { g: 'espadon', titre: 'CE QUE DISENT LES INDICES', cri: 'L’ESPADON !', punch: 'En garde, requin !', tampon: 'bleu', label: 'D’APRÈS LES INDICES',
+      film: 'En Espagne, des scientifiques examinent des requins bleus morts, rejetés par la mer. Dans plusieurs têtes, ils trouvent… des bouts d’épée d’espadon ! En Libye aussi : là-bas, la mer rejette un requin-renard mort, de 4,50 m. Près des branchies : une pointe d’épée !' } },
   { n: 18, lieu: 'SAVANE', q: 'HYÈNE OU LION ?', a: 'hyene', b: 'lion', noms: ['HYÈNE TACHETÉE', 'LION'], arene: 'savane', p: 41, pv: 42,
     intro: 'Ce soir, une hyène et un lion mâle veulent la même carcasse. Qui vole le repas de l’autre ?',
     fiches: [['environ 60 kg', 'des mâchoires casse-os', 'elle fatigue ses proies', 'son vacarme attire les voleurs'], ['environ 190 kg', 'des crocs de 7 cm', 'un coup de patte mortel', 'un cœur tout petit pour sa taille']],
@@ -178,7 +184,7 @@ function verdictLivre(v, etoilesCombat, nv) {
   const carte = $('v-carte'); carte.classList.remove('tamponne'); carte.hidden = true;
   $('v-tampon').className = 'tampon ' + R.tampon; $('v-tampon').textContent = R.label;
   $('v-titre').textContent = R.titre; $('v-cri').textContent = R.cri; $('v-punch').textContent = R.punch; $('v-film').textContent = R.film;
-  $('v-img').src = R.g + '_fin.webp';
+  $('v-img').src = R.img || R.g + '_fin.webp'; // (duel 20 : match nul → une image avec les deux animaux)
   const pariTxt = r.pari === 'nul' ? 'MATCH NUL' : nomDuel(D, r.pari);
   $('v-toi').innerHTML = deja && L.rejoue ? `Ton pari (déjà compté) : <b>${pariTxt}</b> ${r.bon ? '✔' : '✘'}` : r.bon ? `Ton pari : <b>${pariTxt}</b> ✔ BON PARI ! +1 point${D.boss ? ' + 1 étoile de boss ★' : ''}` : `Ton pari : <b>${pariTxt}</b> ✘ raté… Ce n’est pas grave : dans la nature, le plus fort ne gagne pas à tous les coups !`;
   $('v-gigi-img').src = `gigi/duel_${String(D.n).padStart(2, '0')}_verso.svg`;

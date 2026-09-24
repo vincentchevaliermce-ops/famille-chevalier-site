@@ -82,3 +82,7 @@ requin.mp3 → « Chattering teeth #1 » (son 0789) — Joseph SARDIN — BigSou
 Monde MER, 2e vague (25/09/2026 : pieuvre géante, aiguillat, espadon, requin bleu, mégalodon) :
 aucun nouveau fichier — ces animaux réutilisent des sons déjà crédités ci-dessus (slurp, splotch, gloups, bulle, requin joué plus aigu ou plus grave, fouet, vent).
 Caisses surprises, pièges d'arène et trophées (25/09/2026) : sons déjà présents (pop, badge, boing, pouet, sifflet, chute, plouf, flac, vapeur, vent_long, foule) et sons synthétisés par le jeu.
+
+Nouveaux animaux du livre (25/09/2026)
+loup.mp3 → « Wolves », enregistré le 25/12/2013 — NPS & MSU Acoustic Atlas / Jennifer Jerrett, National Park Service (Yellowstone Sound Library) — https://www.nps.gov/yell/learn/photosmultimedia/sounds-wolves.htm — domaine public (« The files available here were recorded in the park and are in the public domain. They may be downloaded and used without limitation » : https://www.nps.gov/yell/learn/photosmultimedia/soundlibrary.htm) (un hurlement, de 49,8 s à 53,2 s, filtré sous 180 Hz)
+loup_meute.mp3 → « Chorus of Wolves », enregistré le 11/01/2016 — NPS & MSU Acoustic Atlas / Jennifer Jerrett, National Park Service (Yellowstone Sound Library) — même page, domaine public (7 s d'un chœur de loups, de 63,8 s à 70,8 s, filtré sous 180 Hz)

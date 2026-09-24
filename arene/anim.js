@@ -256,7 +256,7 @@ function spritePose(R, f, T) {
       if (f.h > 0) return SP('touche', { r: -.25, y: 40 }); return SP('touche', { x: -20 * f.hurtK, r: -.05 * f.hurtK });
     case 'down': case 'ko': if (f.h > 0) return SP('touche', { r: -.45, y: 40 }); return SP('ko', { sy: 1 + .01 * Math.sin(t * 3) });
     case 'getup': return SP('accroupi', { sy: .85 + .15 * u });
-    case 'win': if (f.kind === 'grizzly' && f.t > 100) return SP('saumon', { sy: 1 + .012 * Math.sin(t * 4) }); if (f.kind === 'hyene' && f.t > 100) return SP('os', { sy: 1 + .012 * Math.sin(t * 9), x: 3 * Math.sin(t * 18) }); if (f.kind === 'morse' && f.t > 110) return SP('bouee', { sy: 1 + .02 * Math.sin(t * 2.2) }); if (f.kind === 'trex' && f.t > 90 && f.t % 180 < 70) return SP('rugit', { sy: 1 + .02 * Math.sin(t * 20) }, true); if (f.kind === 'porcepic' && f.t > 90 && f.t % 150 < 60) return SP('hochet', { x: 4 * Math.sin(t * 70) }, true); if (f.kind === 'leopard' && f.t > 110 && f.t % 200 < 80) return SP('grimpe', { sy: 1 + .01 * Math.sin(t * 6) }, true); return SP('victoire', { sy: 1 + .015 * Math.sin(t * 5) }, true);
+    case 'win': if (f.kind === 'grizzly' && f.t > 100) return SP('saumon', { sy: 1 + .012 * Math.sin(t * 4) }); if (f.kind === 'hyene' && f.t > 100) return SP('os', { sy: 1 + .012 * Math.sin(t * 9), x: 3 * Math.sin(t * 18) }); if (f.kind === 'morse' && f.t > 110) return SP('bouee', { sy: 1 + .02 * Math.sin(t * 2.2) }); if (f.kind === 'trex' && f.t > 90 && f.t % 180 < 70) return SP('rugit', { sy: 1 + .02 * Math.sin(t * 20) }, true); if (f.kind === 'porcepic' && f.t > 90 && f.t % 150 < 60) return SP('hochet', { x: 4 * Math.sin(t * 70) }, true); if (f.kind === 'leopard' && f.t > 110 && f.t % 200 < 80) return SP('grimpe', { sy: 1 + .01 * Math.sin(t * 6) }, true); if (f.kind === 'loup' && f.t > 90 && f.t % 180 < 70) return SP('hurle', { sy: 1 + .02 * Math.sin(t * 8) }, true); if (f.kind === 'oursnoir' && f.t > 110 && f.t % 200 < 90) return SP('mange', { sy: 1 + .015 * Math.sin(t * 9) }, true); if (f.kind === 'caiman' && f.t > 110 && f.t % 220 < 100) return SP('sieste', { sy: 1 + .015 * Math.sin(t * 2.5) }, true); return SP('victoire', { sy: 1 + .015 * Math.sin(t * 5) }, true);
     case 'lance': { // il tient l'adversaire puis le lance
       const fin = f.t >= (f.prise && f.prise.prise.t || 20) - 6, n = f.mkPrise === 'T' ? 'fort' : (f.d.poseLance || 'fort');
       if (f.kind === 'gorille' && f.mkPrise === 'SF') return fin ? SP('bas', { x: 40, y: 20, sy: .94 }, true) : SP('fort', { y: -12 + 4 * Math.sin(t * 30) }, true);
@@ -266,7 +266,7 @@ function spritePose(R, f, T) {
     case 'dizzy': return SP('touche', { r: .07 * Math.sin(t * 6), x: 10 * Math.sin(t * 6), sy: .98 + .02 * Math.sin(t * 12) });
     case 'fuite': { const k = Math.floor(f.t / 6) % 2; return Object.assign(SP(k ? 'marche' : 'base', { y: -14 * Math.abs(Math.sin(f.t * .5)), r: .04 }), { flip: true }) }
     case 'lose': return SP('touche', { sy: .97, r: .04 });
-    case 'intro': if (f.t > 20 && f.t < 80) return SP(f.kind === 'grizzly' || f.kind === 'trex' || f.kind === 'megalo' ? 'rugit' : f.kind === 'hyene' ? 'rire' : f.kind === 'orque' ? 'appel' : 'victoire', { sy: 1 + .02 * Math.sin(t * (f.kind === 'hyene' ? 30 : 7)) }, true); return repos();
+    case 'intro': if (f.t > 20 && f.t < 80) return SP(f.kind === 'grizzly' || f.kind === 'trex' || f.kind === 'megalo' ? 'rugit' : f.kind === 'hyene' ? 'rire' : f.kind === 'orque' ? 'appel' : f.kind === 'loup' ? 'hurle' : f.kind === 'cobra' ? 'capuchon' : f.kind === 'glouton' ? 'gronde' : f.kind === 'mangouste' ? 'dresse' : 'victoire', { sy: 1 + .02 * Math.sin(t * (f.kind === 'hyene' ? 30 : 7)) }, true); return repos();
     case 'atk': {
       const k = f.mk;
       if (f.kind === 'gorille') return gorilleSpr(f, t, u, ph, k, repos);
@@ -325,6 +325,92 @@ function gorilleSpr(f, t, u, ph, k, repos) {
   return repos();
 }
 const SPECIAUX = {
+  // ===== les animaux du livre ajoutés le 25/09 (duels 7, 11, 14, 15, 19, 20, 22, 23, 26, 27) =====
+  // jaguar : ★ la morsure perce-crâne · → ★ l'attaque par-derrière (il rampe dans l'herbe) · ↓ ★ la griffe vers le ciel · SUPER le jaguar tout noir
+  jaguar(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -20 * e, sy: .96 }, true) } if (ph === 'act') return SP('fort', { x: 50, sx: 1.06 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('rampe', { sy: .96 }, true); if (ph === 'act') return SP('fort', { x: 40, sx: 1.05 }, true); return u < .5 ? SP('rampe', {}) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .02 * Math.sin(t * 30) }, true); if (ph === 'act') return Math.floor(f.t / 5) % 2 ? SP('coup', { x: 50, sx: 1.05 }, true) : SP('fort', { x: 30 }, true); return repos(); }
+  },
+  // anaconda : ★ il serre à bloquer le sang (prise) · → ★ sous l'eau · ↓ ★ caché dans l'herbe (contre) · SUPER les bébés anacondas
+  anaconda(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -10 * u }, true); return SP('fort', { x: 40, sx: 1.05 }, true) }
+    if (k === 'SF') { if (ph === 'st') return SP('accroupi', { y: 220 * Math.min(1, f.t / 10) }); if (f.h > 0) return SP('special', { r: f.vy < 0 ? -.05 : .15, y: 20 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
+    if (k === 'SD') { if (f.contre) return SP('fort', { x: 45, sx: 1.05 }, true); if (ph === 'rec') return repos(); return SP('accroupi', { sy: .95 + .01 * Math.sin(t * 8) }, true); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return SP('victoire', { sy: 1 + .02 * Math.sin(t * 12) }, true); return repos(); }
+  },
+  // caïman : ★ il plonge pour se cacher · → ★ la sieste au soleil (contre) · ↓ ★ la mâchoire vers le ciel · SUPER les 10 millions du Pantanal
+  caiman(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('accroupi', { y: 220 * Math.min(1, f.t / 10) }); if (f.h > 0) return SP('special', { r: f.vy < 0 ? -.05 : .15, y: 20 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
+    if (k === 'SF') { if (f.contre) return SP('fort', { x: 45, sx: 1.06 }, true); if (ph === 'rec') return repos(); return SP('sieste', { sy: 1 + .015 * Math.sin(t * 2.5) }, true); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return SP('victoire', { sy: 1 + .02 * Math.sin(t * 12) }, true); return repos(); }
+  },
+  // puma : ★ il saute sur le dos et mord (prise) · → ★ le saut de 5,50 m · ↓ ★ les grosses pattes griffues · SUPER 2 400 km à pied
+  puma(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('accroupi', { x: -12 * u, sy: .94 }); return SP('dos', { x: 30, y: -20 }, true) }
+    if (k === 'SF') { if (ph === 'st') return SP('accroupi', { sy: .9 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'special', { r: f.vy < 0 ? -.1 : .2, y: 40 }, true); return SP('accroupi', { sy: .92 + .08 * u }); }
+  },
+  // loup : ★ il blesse, puis il attend · → ★ le hurlement (l'autre prend peur) · ↓ ★ le croc en l'air · SUPER la meute
+  loup(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -14 * u }, true); if (ph === 'act') return SP('fort', { x: 40, sx: 1.05 }, true); return SP('garde', { x: -30 * u }, true) }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { sy: .97 }, true); if (ph === 'act') return SP('hurle', { sy: 1 + .02 * Math.sin(t * 30) }, true); return repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('hurle', { sy: 1 + .03 * Math.sin(t * 30) }, true); if (ph === 'act') return SP('victoire', { sy: 1 + .02 * Math.sin(t * 12) }, true); return repos(); }
+  },
+  // mangouste : ★ elle esquive, puis mord la tête (contre) · → ★ la vitesse · ↓ ★ le saut sur la tête · SUPER la danse
+  mangouste(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (f.contre) return SP('fort', { x: 50, y: -40, sx: 1.06 }, true); if (ph === 'rec') return repos(); return SP('dresse', { x: 26 * Math.sin(t * 9), r: .08 * Math.sin(t * 9) }, true); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('dresse', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('dresse', { x: 60 * Math.sin(t * 12), r: .1 * Math.sin(t * 12) }, true) : SP('fort', { x: 40, sx: 1.05 }, true); return repos(); }
+  },
+  // cobra : ★ il ouvre son capuchon (l'autre prend peur) · → ★ dressé, il poursuit l'ennemi · ↓ ★ la morsure vers le ciel · SUPER le venin royal
+  cobra(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { sy: .96 + .04 * u }, true); if (ph === 'act') return SP('capuchon', { sy: 1 + .02 * Math.sin(t * 30) }, true); return repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('capuchon', { sy: .98 }, true); if (ph === 'act') return f.hit ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('capuchon', { y: -8 * Math.abs(Math.sin(t * 16)), r: .04 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('capuchon', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 20 }, true); return repos(); }
+  },
+  // ours noir : ★ il charge pour faire peur · → ★ la pause goûter · ↓ ★ les griffes courbes · SUPER l'ours esprit (tout blanc)
+  oursnoir(f, t, u, ph, k, repos) {
+    if (k === 'SF') { if (ph === 'act') return SP('mange', { sy: 1 + .02 * Math.sin(t * 9), x: 2 * Math.sin(t * 20) }, true); return SP('accroupi', { sy: .96 }); }
+  },
+  // glouton : ★ il gronde et fonce · → ★ la dent pour la viande gelée · ↓ ★ le grimpeur · SUPER il ne recule jamais
+  glouton(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('gronde', { x: 4 * Math.sin(t * 50), sy: 1 + .02 * Math.sin(t * 30) }, true); if (ph === 'act') return SP(Math.floor(f.t / 5) % 2 ? 'coup' : 'marche', { y: -8 * Math.abs(Math.sin(t * 18)), r: .05 }, true); return u < .5 ? SP('coup', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('gronde', { x: -16 * u }, true); if (ph === 'act') return SP('fort', { x: 45, sx: 1.06 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+  },
+  // girafe : ★ le coup de pied qui assomme · → ★ le rodéo (elle se secoue) · ↓ ★ le coup de cou · SUPER les pattes de 1,80 m
+  girafe(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -16 * e }, true) } if (ph === 'act') return SP('fort', { x: 40, sx: 1.04 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'act') return SP(f.t % 8 < 4 ? 'garde' : 'touche', { x: 18 * Math.sin(t * 40), r: .06 * Math.sin(t * 40) }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('garde', { r: -.08 }, true); if (ph === 'act') return SP('cou', { r: .04 }, true); return u < .5 ? SP('cou', {}) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 40, sx: 1.04 }, true) : SP('coup', { x: 20 }, true); return repos(); }
+  },
+  // lionne : ★ elles sautent sur le dos (prise) · → ★ l'embuscade dans l'herbe · ↓ ★ les griffes pour s'accrocher · SUPER l'équipe de foot
+  lionne(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('accroupi', { x: -12 * u, sy: .94 }); return SP('special', { x: 30, y: -20 }, true) }
+    if (k === 'SF') { if (ph === 'st') return SP('rampe', { x: -10 * u }, true); if (ph === 'act') return f.hit ? SP('fort', { x: 40 }, true) : SP('rampe', { y: -4 * Math.abs(Math.sin(t * 16)), x: 10 * Math.sin(t * 16) }, true); return u < .5 ? SP('rampe', {}) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return SP('victoire', { sy: 1 + .02 * Math.sin(t * 12) }, true); return repos(); }
+  },
+  // python : ★ l'attaque surprise (immobile comme une branche) · → ★ il mord, puis il s'enroule (prise) · ↓ ★ il « voit » la chaleur (contre) · SUPER il avale tout rond
+  python(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('accroupi', { sy: .97 }); if (ph === 'act') return SP('fort', { x: 60, sx: 1.06 }, true); return u < .5 ? SP('fort', { x: 30 * (1 - u) }) : repos(); }
+    if (k === 'SF' || k === 'SUPER') { if (ph === 'st') return SP('garde', { x: -10 * u }, true); return SP('fort', { x: 40, sx: 1.05 }, true) }
+    if (k === 'SD') { if (f.contre) return SP('fort', { x: 45, sx: 1.05 }, true); if (ph === 'rec') return repos(); return SP('garde', { sy: 1 + .01 * Math.sin(t * 20) }, true); }
+  },
+  // alligator : ★ il mord, puis il roule · → ★ le grondement qui fait danser l'eau · ↓ ★ la mâchoire aux 80 dents · SUPER le chef des marais
+  alligator(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('accroupi', { x: -10 * u }); if (ph === 'act') return f.hit ? SP('roule', { r: .15 * Math.sin(t * 20) }, true) : SP('fort', { x: 30, sx: 1.04 }, true); return repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: 5 * Math.sin(t * 60), sy: 1 + .02 * Math.sin(t * 40) }, true); if (ph === 'act') return SP('garde', { x: 3 * Math.sin(t * 60) }, true); return repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('fort', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 10 }, true); return repos(); }
+  },
+  // requin-bouledogue (MER) : ★ il cogne, puis il mord · → ★ le requin de rivière · ↓ ★ la morsure record · SUPER le bagarreur
+  bouledogue(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -14 * u }, true); if (ph === 'act') return f.hit >= 1 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('cogne', { x: 30 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+  },
+  // baleine bleue (MER) : ★ le chant (onde) · → ★ elle file à 32 km/h · ↓ ★ le souffle de 9 m · SUPER la grande gorgée
+  baleine(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { sy: 1 + .02 * Math.sin(t * 20) }, true); if (ph === 'act') return SP('coup', { x: 10 }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (ph === 'act') return SP('souffle', { sy: 1 + .02 * Math.sin(t * 20) }, true); return u < .5 ? SP('souffle', {}) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('fort', { sy: 1 + .03 * Math.sin(t * 30) }, true); if (ph === 'act') return SP('fort', { x: 20 + 10 * Math.sin(t * 10), sx: 1.04 }, true); return repos(); }
+  },
   // léopard : ★ le bond de 6 m · → ★ le repas dans l’arbre (prise : il grimpe avec sa proie) · ↓ ★ tombé du ciel · SUPER l’ombre de la nuit
   leopard(f, t, u, ph, k, repos) {
     if (k === 'S') { if (ph === 'st') return SP('accroupi', { x: -12 * u, sy: .94 }); if (f.h > 0) return SP('special', { r: f.vy < 0 ? -.08 : .12, y: 30 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }

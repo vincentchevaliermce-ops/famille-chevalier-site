@@ -86,6 +86,7 @@ function apresMatch(v, n, nv) {
 function ceremonieLegendaire(k = LEGENDAIRE) {
   G.phase = 'menu'; show('legende'); G.legendeVu = k; sfx(k === 'trex' ? 'dino' : 'requin', 1); sfx('boum', 1); vibre([100, 60, 200]);
   $('legende-img').src = k + '_vs.webp';
+  if (window.trophee && (k === 'trex' || k === 'megalo')) trophee(k, true); // le trophée tout de suite (pas au combat suivant)
   const t = $('legende-txt'); if (t) t.textContent = k === 'trex' ? 'Tu as battu tous les animaux de la TERRE en GOD MODE… et tu as réveillé le T. REX ! Il est à toi pour toujours.' : 'Tu as battu tous les animaux de la MER en GOD MODE… et le MÉGALODON est remonté des profondeurs ! Il est à toi pour toujours.';
 }
 // ---------------------------------------------------------------------
