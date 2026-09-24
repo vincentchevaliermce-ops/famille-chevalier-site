@@ -15,6 +15,8 @@ const BONUS = {
   mini: { ico: '🐜', nom: 'TOUT PETIT !', p: 1.5, t: 420, col: '#C99BFF', autre: true }, // c'est l'adversaire qui rétrécit
   banane: { ico: '🍌', icoMer: '🪼', nom: 'PEAU DE BANANE !', nomMer: 'MÉDUSE !', p: 2, col: '#FFE14D', autre: true },
   orage: { ico: '⛈️', nom: 'ZAP ! L’ÉCLAIR !', p: 1.5, col: '#FFF36B', autre: true },
+  etoile: { ico: '⭐', nom: 'ÉTOILE : INVINCIBLE !', p: 1.2, t: 300, col: '#FFE66B' }, // plus de bobo pendant 5 s
+  miel: { ico: '🍯', nom: 'COLLÉ AU MIEL !', p: 1.5, t: 360, col: '#F2B233', autre: true }, // l'adversaire avance tout doucement
 };
 const surprisesOn = () => G.phase === 'fight' && !G.tuto && !G.sansSurprise && G.mode !== 3 && (SAVE.opt || {}).surprises !== false;
 // le bonus change l'animal pour un moment : on lui donne une « fiche » qui hérite de la vraie (taille, vitesse, force…)
@@ -27,6 +29,7 @@ function appliqueBoost(f) {
   if (b.k === 'piment') d.force = (base.force || 1) * 1.35;
   if (b.k === 'turbo') { d.walk = base.walk * 1.5; d.back = base.back * 1.5; d.dash = base.dash * 1.3; d.jumpX = base.jumpX * 1.25 }
   if (b.k === 'bouclier') d.peau = (base.peau || 1) * .5;
+  if (b.k === 'miel') { d.walk = base.walk * .5; d.back = base.back * .5; d.dash = base.dash * .6; d.jumpV = base.jumpV * .85; d.jumpX = base.jumpX * .6 }
   f.d = d;
 }
 function donneBoost(f, k, t) { f.boost = { k, t, T: t }; appliqueBoost(f) }
@@ -67,10 +70,11 @@ function prendCaisse(f) {
     case 'soin': { const g = f.d.gourmand ? 2 : 1; f.hp = Math.min(f.d.hp, f.hp + 20 * g); addFx({ k: 'mot', x: f.x, y: FLOOR - 700 * f.d.K / .44, mot: g > 1 ? 'GOURMAND ! +40' : '+20', col: '#7BD35A' }); sfx('slurp', .7); break } // l'ours noir, « plus gourmand que bagarreur » (livre) : deux fois plus
     case 'super': jauge(f, 100); sfx('super', .6); break;
     case 'mini': donneBoost(o, 'mini', B.t); sfx('pouet', .8); break;
+    case 'miel': donneBoost(o, 'miel', B.t); sfx('splotch', .8); addFx({ k: 'mot', x: o.x, y: FLOOR - 640 * o.d.K / .44, mot: 'TOUT COLLANT !', col: '#F2B233' }); break;
     case 'banane': if (mer) { if (blesse(o, 6, { mot: 'BZZZ ! MÉDUSE !', col: '#E7A6FF', stun: 40 })) { o.meduse = 40; sfx('sonar', .5) } }
       else { G.banane = { x: o.x, t: 0 }; if (blesse(o, 6, { chute: true, haut: 9, mot: 'GLISSADE !', col: '#FFE14D' })) { sfx('boing', 1); sfx('pouet', .6); if (!f.cpu && !f.distant) trophee('banane', f) } } break;
     case 'orage': G.eclair = { x: o.x, t: 0, cible: o, par: f }; sfx('vent', .5); break;
-    default: donneBoost(f, c.k, B.t); if (c.k === 'geant') { trophee('geant', f); sfx('boum', .6) } if (c.k === 'turbo') sfx('vent', .6); if (c.k === 'piment') sfx('vapeur', .7); if (c.k === 'bouclier') sfx('garde', .8)
+    default: donneBoost(f, c.k, B.t); if (c.k === 'geant') { trophee('geant', f); sfx('boum', .6) } if (c.k === 'turbo') sfx('vent', .6); if (c.k === 'piment') sfx('vapeur', .7); if (c.k === 'bouclier') sfx('garde', .8); if (c.k === 'etoile') { sfx('super', .8); sfx('badge', .6) }
   }
 }
 function majCaisses() {
@@ -91,6 +95,7 @@ function majBoosts() {
   for (const f of G.f) { const b = f.boost; if (!b) continue; b.t--;
     if (b.k === 'piment' && G.frame % 6 === 0) addFx({ k: 'etincelles', x: f.x + (Math.random() - .5) * 200 * f.d.K / .44, y: FLOOR - f.h - 200 - Math.random() * 300 * f.d.K / .44 });
     if (b.k === 'turbo' && G.frame % 5 === 0 && Math.abs(f.vx) > 2) addFx({ k: 'poussiere', x: f.x - Math.sign(f.vx) * 120, y: FLOOR });
+    if (b.k === 'etoile' && G.frame % 5 === 0) addFx({ k: 'etincelles', x: f.x + (Math.random() - .5) * 320 * f.d.K / .44, y: FLOOR - f.h - 120 - Math.random() * 420 * f.d.K / .44 });
     if (b.t <= 0) { finBoost(f); addFx({ k: 'mot', x: f.x, y: FLOOR - 620 * f.d.K / .44, mot: 'FINI !', col: '#C8D6F0' }) } }
   if (G.banane) { G.banane.t++; if (G.banane.t > 70) G.banane = null }
   const e = G.eclair; if (e) { e.t++; if (e.cible && e.t < 30) e.x += (e.cible.x - e.x) * .12;
@@ -107,6 +112,9 @@ const PIEGES = {
   nuit: { k: 'chute', obj: 'fruit', mot: 'UN FRUIT TOMBE !', dmg: 6 },
   pantanal: { k: 'chute', obj: 'coco', mot: 'UNE NOIX DE PALME !', dmg: 6 },
   marais: { k: 'trou', obj: 'grenouille', mot: 'CÔA ! UNE GRENOUILLE !', dmg: 3 },
+  montagnes: { k: 'trou', obj: 'marmotte', mot: 'COUCOU ! UNE MARMOTTE !', dmg: 4 },
+  inde: { k: 'chute', obj: 'fruit', mot: 'LE SINGE LANCE UNE MANGUE !', dmg: 6 },
+  nord: { k: 'chute', obj: 'neige', mot: 'PAQUET DE NEIGE !', dmg: 5 },
   colisee: { k: 'chute', obj: 'coussin', mot: 'LE PUBLIC LANCE UN COUSSIN !', dmg: 0 },
   savane: { k: 'vent', mot: 'TOURBILLON DE POUSSIÈRE !', col: '#E8C27A' },
   desert: { k: 'vent', mot: 'TEMPÊTE DE SABLE !', col: '#E9C98B' },
@@ -145,7 +153,7 @@ function majPieges() {
     if (p.t > 60 && p.t < 160) for (const f of G.f) { if (f.state === 'ko' || f.cache) continue; const k = f.blocking ? .35 : 1; f.x = Math.max(STAGE_L, Math.min(STAGE_R, f.x + p.dir * 3.2 * k)) }
     if (p.t > 180) G.piege = null;
   } else if (p.k === 'trou') { // le sol bouillonne (70 images), puis ça jaillit
-    if (p.t === 70) { p.fait = true; sfx(P.obj === 'phoque' ? 'morse' : P.obj === 'poisson' ? 'flac' : P.obj === 'grenouille' ? 'boing' : 'plouf', .9);
+    if (p.t === 70) { p.fait = true; sfx(P.obj === 'phoque' ? 'morse' : P.obj === 'poisson' ? 'flac' : P.obj === 'grenouille' ? 'boing' : P.obj === 'marmotte' ? 'sifflet' : 'plouf', .9);
       for (const f of G.f) if (Math.abs(f.x - p.x) < 170 && f.h < 200) { if (blesse(f, P.dmg, { chute: true, haut: 17, mot: P.mot, dir: Math.sign(f.x - p.x) || 1, vx: 3 })) piegeTouche(f) } }
     if (p.t > 140) G.piege = null;
   } else if (p.k === 'repas') { // un poisson tombe du haut du bassin : le premier qui le touche reprend des forces
@@ -184,6 +192,7 @@ function dessineObjet(c, obj, x, y, s = 1) {
   else if (obj === 'lave') { c.fillStyle = '#3B3432'; c.beginPath(); c.moveTo(-60, 10); c.lineTo(-30, -50); c.lineTo(30, -56); c.lineTo(62, 0); c.lineTo(30, 48); c.lineTo(-40, 44); c.closePath(); c.fill(); c.stroke(); c.fillStyle = '#FF7A1A'; c.beginPath(); c.arc(-8, -6, 18, 0, TAU); c.arc(22, 18, 10, 0, TAU); c.fill() }
   else if (obj === 'fruit') { c.fillStyle = '#F2A33A'; c.beginPath(); c.ellipse(0, 0, 44, 56, .4, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#5DAA3A'; c.beginPath(); c.ellipse(18, -52, 22, 10, -.5, 0, TAU); c.fill(); c.stroke() }
   else if (obj === 'meteorite') { c.fillStyle = '#6B625C'; c.beginPath(); c.moveTo(-58, 6); c.lineTo(-34, -48); c.lineTo(24, -58); c.lineTo(60, -8); c.lineTo(36, 46); c.lineTo(-30, 50); c.closePath(); c.fill(); c.stroke(); c.fillStyle = '#FFB347'; for (const [a, b, r] of [[-14, -10, 12], [20, 16, 8], [8, -30, 6]]) { c.beginPath(); c.arc(a, b, r, 0, TAU); c.fill() } }
+  else if (obj === 'neige') { c.fillStyle = '#F6FBFF'; c.strokeStyle = '#8FB3D9'; c.beginPath(); for (const [a, b, r] of [[-34, 6, 38], [6, -18, 44], [38, 8, 34], [0, 20, 40]]) { c.moveTo(a + r, b); c.arc(a, b, r, 0, TAU) } c.fill(); c.stroke(); c.fillStyle = '#DCEBFA'; c.beginPath(); c.arc(-10, 24, 20, 0, TAU); c.fill() } // un paquet de neige qui tombe d'un sapin
   else if (obj === 'oeuf') { c.fillStyle = '#F4EBD2'; c.beginPath(); c.ellipse(0, 0, 44, 60, 0, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#B98A55'; for (const [a, b, r] of [[-14, -20, 9], [16, -4, 7], [-6, 22, 8], [18, 28, 5]]) { c.beginPath(); c.arc(a, b, r, 0, TAU); c.fill() } }
   else if (obj === 'piece') { c.fillStyle = '#FFD23F'; c.beginPath(); c.arc(0, 0, 46, 0, TAU); c.fill(); c.stroke(); c.strokeStyle = '#C8920F'; c.lineWidth = 5; c.beginPath(); c.arc(0, 0, 32, 0, TAU); c.stroke(); c.fillStyle = '#FFF4B8'; c.beginPath(); c.ellipse(-14, -16, 10, 6, -.6, 0, TAU); c.fill() }
   else if (obj === 'coussin') { c.fillStyle = '#E8466B'; rr(c, -62, -46, 124, 92, 30); c.fill(); c.stroke(); c.fillStyle = '#FFD23F'; for (const [a, b] of [[-62, -46], [62, -46], [-62, 46], [62, 46]]) { c.beginPath(); c.arc(a, b, 12, 0, TAU); c.fill(); c.stroke() } }
@@ -202,6 +211,18 @@ function grenouille(c, x, y, saute, s, dir = 1) { // une petite grenouille verte
   c.lineWidth = 5; c.beginPath(); c.arc(40, -2, 16, .2, 1.3); c.stroke(); // le sourire
   c.restore();
 }
+function dessineMarmotte(c, x, y, u) { // montagnes : une marmotte sort de son terrier en sifflant
+  c.save(); c.translate(x, y - u * 200); c.lineWidth = 7; c.strokeStyle = NV; c.lineJoin = 'round';
+  c.fillStyle = '#9A7148'; c.beginPath(); c.ellipse(0, 60, 72, 100, 0, 0, TAU); c.fill(); c.stroke(); // le corps
+  c.fillStyle = '#D9B98A'; c.beginPath(); c.ellipse(0, 78, 44, 70, 0, 0, TAU); c.fill(); // le ventre
+  for (const s of [-1, 1]) { c.fillStyle = '#9A7148'; c.beginPath(); c.arc(s * 40, -78, 16, 0, TAU); c.fill(); c.stroke() } // les oreilles
+  c.fillStyle = '#A97D52'; c.beginPath(); c.arc(0, -40, 56, 0, TAU); c.fill(); c.stroke(); // la tête
+  c.fillStyle = '#E8D2AE'; c.beginPath(); c.ellipse(0, -18, 30, 22, 0, 0, TAU); c.fill(); // le museau
+  for (const s of [-1, 1]) { c.fillStyle = '#fff'; c.beginPath(); c.arc(s * 22, -52, 12, 0, TAU); c.fill(); c.stroke(); c.fillStyle = NV; c.beginPath(); c.arc(s * 22 + 2, -52, 6, 0, TAU); c.fill() } // les yeux
+  c.fillStyle = NV; c.beginPath(); c.ellipse(0, -28, 11, 8, 0, 0, TAU); c.fill(); // le nez
+  c.fillStyle = '#fff'; c.lineWidth = 3; c.fillRect(-9, -14, 8, 14); c.strokeRect(-9, -14, 8, 14); c.fillRect(1, -14, 8, 14); c.strokeRect(1, -14, 8, 14); // les deux dents
+  c.lineWidth = 6; c.fillStyle = '#9A7148'; for (const s of [-1, 1]) { c.beginPath(); c.ellipse(s * 26, 18, 14, 20, s * .4, 0, TAU); c.fill(); c.stroke() } // les petites pattes
+  c.restore() }
 function dessinePhoque(c, x, y, u) { c.save(); c.translate(x, y - u * 220); c.lineWidth = 7; c.strokeStyle = NV; c.fillStyle = '#9AA6B2';
   c.beginPath(); c.ellipse(0, 40, 80, 110, 0, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#fff'; c.beginPath(); c.arc(-26, -10, 16, 0, TAU); c.arc(26, -10, 16, 0, TAU); c.fill(); c.stroke();
   c.fillStyle = NV; c.beginPath(); c.arc(-24, -8, 7, 0, TAU); c.arc(28, -8, 7, 0, TAU); c.fill(); c.beginPath(); c.ellipse(0, 22, 16, 11, 0, 0, TAU); c.fill();
@@ -211,7 +232,7 @@ function dessineSurprises(c) { // (sur le décor, derrière les animaux)
   const cc = G.caisse; if (cc) { const blink = cc.life - cc.t < 120 && Math.floor(cc.t / 6) % 2; if (!blink) { if (cc.pose) { c.save(); c.globalAlpha = .35 + .2 * Math.sin(cc.t * .2); c.fillStyle = JA; c.beginPath(); c.ellipse(cc.x, FLOOR + 4, 130, 26, 0, 0, TAU); c.fill(); c.restore() } dessineCaisse(c, cc.x, cc.y, cc.t, cc.mer) } }
   const p = G.piege; if (p) { const P = p.P;
     if (p.k === 'chute' && p.t < 70) { const u = p.t / 70; c.save(); c.globalAlpha = .25 + .45 * u; c.fillStyle = '#1B0E05'; c.beginPath(); c.ellipse(p.x, FLOOR + 6, 60 + 110 * u, 14 + 20 * u, 0, 0, TAU); c.fill(); c.restore() }
-    if (p.k === 'trou' && p.t < 70) { c.save(); for (let i = 0; i < 6; i++) { const a = (p.t * 7 + i * 60) % 360 * Math.PI / 180; c.fillStyle = P.obj === 'chaud' ? 'rgba(255,170,90,.8)' : P.obj === 'phoque' ? '#5E7C95' : 'rgba(200,240,255,.85)'; c.beginPath(); c.arc(p.x + Math.cos(a) * 80, FLOOR - 6 + Math.sin(a) * 10, 12 + (i % 3) * 5, 0, TAU); c.fill() } c.fillStyle = P.obj === 'phoque' ? '#2B4458' : 'rgba(20,40,60,.5)'; c.beginPath(); c.ellipse(p.x, FLOOR + 4, 110, 22, 0, 0, TAU); c.fill(); c.restore() }
+    if (p.k === 'trou' && p.t < 70) { c.save(); for (let i = 0; i < 6; i++) { const a = (p.t * 7 + i * 60) % 360 * Math.PI / 180; c.fillStyle = P.obj === 'chaud' ? 'rgba(255,170,90,.8)' : P.obj === 'phoque' ? '#5E7C95' : P.obj === 'marmotte' ? '#8A6A45' : 'rgba(200,240,255,.85)'; c.beginPath(); c.arc(p.x + Math.cos(a) * 80, FLOOR - 6 + Math.sin(a) * 10, 12 + (i % 3) * 5, 0, TAU); c.fill() } c.fillStyle = P.obj === 'phoque' ? '#2B4458' : P.obj === 'marmotte' ? '#3A2A1A' : 'rgba(20,40,60,.5)'; c.beginPath(); c.ellipse(p.x, FLOOR + 4, 110, 22, 0, 0, TAU); c.fill(); c.restore() }
   }
 }
 // monde → écran (le zoom de la caméra peut couper le haut du décor)
@@ -228,6 +249,7 @@ function dessineSurprisesDevant(c) { // (devant les animaux)
     if (p.k === 'trou' && p.t >= 70 && p.t < 140) { const u = Math.min(1, (p.t - 70) / 12), v = p.t > 110 ? (140 - p.t) / 30 : 1;
       c.save(); c.globalAlpha = v;
       if (P.obj === 'phoque') dessinePhoque(c, p.x, FLOOR, u);
+      else if (P.obj === 'marmotte') dessineMarmotte(c, p.x, FLOOR, u);
       else if (P.obj === 'poisson') poisson(c, p.x, FLOOR - 120 - Math.sin(Math.min(1, (p.t - 70) / 50) * Math.PI) * 420, -1.2 + (p.t - 70) * .06, 1.6);
       else if (P.obj === 'grenouille') { const w = Math.min(1, (p.t - 70) / 40); grenouille(c, p.x + p.dir * w * 300, FLOOR - 40 - Math.sin(w * Math.PI) * 380, w < 1 ? 1 : 0, 1.3, p.dir) }
       else { for (let i = 0; i < 16; i++) { const k = ((p.t - 70) * 9 + i * 37) % 420; c.fillStyle = P.obj === 'chaud' ? 'rgba(255,190,120,.75)' : 'rgba(220,245,255,.85)'; c.beginPath(); c.arc(p.x + Math.sin(i * 2.3 + p.t * .2) * 60, FLOOR - k * u, 10 + (i % 4) * 7, 0, TAU); c.fill() } }
@@ -241,6 +263,9 @@ function dessineSurprisesDevant(c) { // (devant les animaux)
     c.restore() }
   for (const f of G.f) { const b = f.boost; if (!b || f.cache) continue; const R = 380 * f.d.K / .44, y = FLOOR - f.h - 260 * f.d.K / .44, fin = b.t < 90 && Math.floor(b.t / 6) % 2; if (fin) continue;
     if (b.k === 'bouclier') { c.save(); c.globalAlpha = .28 + .1 * Math.sin(t * 8); c.strokeStyle = '#9FD8FF'; c.lineWidth = 16; c.beginPath(); c.arc(f.x, y, R, 0, TAU); c.stroke(); c.globalAlpha *= .5; c.fillStyle = '#CFEFFF'; c.fill(); c.restore() }
+    if (b.k === 'etoile') { c.save(); c.globalAlpha = .35 + .15 * Math.sin(t * 12); c.strokeStyle = `hsl(${Math.floor(t * 420) % 360},100%,62%)`; c.lineWidth = 18; c.beginPath(); c.arc(f.x, y, R, 0, TAU); c.stroke(); c.restore() }
+    if (b.k === 'miel') { c.save(); c.fillStyle = '#E8A21C'; c.strokeStyle = '#8A5A10'; c.lineWidth = 5; c.globalAlpha = .9; c.beginPath(); c.ellipse(f.x, FLOOR - f.h + 6, 190 * f.d.K / .44, 30, 0, 0, TAU); c.fill(); c.stroke(); // une flaque de miel sous les pattes, et des gouttes
+      for (let i = 0; i < 4; i++) { const gx = f.x + (i - 1.5) * 90 * f.d.K / .44, gy = FLOOR - f.h - 40 - ((t * 60 + i * 37) % 90); c.beginPath(); c.ellipse(gx, gy, 12, 18, 0, 0, TAU); c.fill() } c.restore() }
     if (b.k === 'piment') { c.save(); c.globalAlpha = .3 + .1 * Math.sin(t * 20); const g = c.createRadialGradient(f.x, y, 10, f.x, y, R); g.addColorStop(0, 'rgba(255,90,40,.7)'); g.addColorStop(1, 'rgba(255,90,40,0)'); c.fillStyle = g; c.beginPath(); c.arc(f.x, y, R, 0, TAU); c.fill(); c.restore() }
     const [ix, iy] = versEcran(c, f.x, FLOOR - f.h - 640 * f.d.K / .44); c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.font = '60px sans-serif'; c.textAlign = 'center'; c.fillText(BONUS[b.k].ico, ix, Math.max(215, iy) - 8 * Math.sin(t * 5)); c.restore() }
   // bandeau du bonus qui vient d'être pris
