@@ -81,6 +81,10 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .carte.buffle .img{background:radial-gradient(circle at 50% 110%,#D5E3EA,#56707E 70%)}
 .carte.morse .img{background:radial-gradient(circle at 50% 110%,#FFE3D3,#B97A63 70%)}
 .carte.trex .img{background:radial-gradient(circle at 50% 110%,#FFE08A,#3E7A3A 70%)}
+.carte.leopard .img{background:radial-gradient(circle at 50% 110%,#F7C77B,#6E4A9E 72%)}
+.carte.porcepic .img{background:radial-gradient(circle at 50% 110%,#FFF5E0,#9C7B5B 70%)}
+.carte.guepard .img{background:radial-gradient(circle at 50% 110%,#FFF3B0,#C9A227 70%)}
+.carte.autruche .img{background:radial-gradient(circle at 50% 110%,#FFE1EA,#E48CA8 70%)}
 .cartes.treize{grid-template-columns:repeat(5,17.2cqw);gap:1cqw}.cartes.treize .carte .img{height:9.4cqw}.cartes.treize .carte .nom{font-size:1.7cqw}
 .carte.legende{border-color:var(--jaune);box-shadow:0 0 0 .3cqw #FF8A00,0 0 1.6cqw #FFC629,0 .6cqw 0 rgba(0,0,0,.4);position:relative}
 .carte.legende::before{content:"LÉGENDAIRE";position:absolute;top:-.9cqw;left:50%;transform:translateX(-50%);z-index:2;background:linear-gradient(#FFE08A,#FF9F1C);color:var(--marine);font:900 1cqw Rubik,"Arial Black",sans-serif;letter-spacing:.08em;padding:.2cqw .8cqw;border-radius:.8cqw;border:.2cqw solid var(--marine);white-space:nowrap}
@@ -246,6 +250,14 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .quiz-rep .btn{font-family:Nunito,system-ui,sans-serif;font-weight:900;font-size:1.75cqw;line-height:1.2;padding:1cqw 1cqw;background:#123a7a;min-height:7.4cqw}
 .quiz-rep .btn.bon{background:#2FA85B;border-color:#DFF7E6}.quiz-rep .btn.faux{background:#C8372D;border-color:#FFD9D3}
 .quiz-rep .btn[disabled]{cursor:default}
+.quiz-rep .lem{grid-column:1/-1;display:flex;gap:1cqw;justify-content:center;align-items:center}
+.lem input{font:900 max(16px,2.6cqw) Rubik,"Arial Black",sans-serif;width:34cqw;padding:.7cqw 1.2cqw;border-radius:1.1cqw;border:.35cqw solid var(--creme);background:#FFFDF6;color:var(--marine);text-align:center;text-transform:uppercase;letter-spacing:.06em;outline:none}
+.lem input:focus{border-color:var(--jaune);box-shadow:0 0 0 .35cqw rgba(255,198,41,.45)}
+.lem input::placeholder{color:#9AA8C2;font-size:.75em;letter-spacing:.02em}
+.lem .btn{font-size:2.2cqw;padding:.8cqw 2.2cqw}
+.quiz-q .lem-ou{display:block;margin-bottom:.5cqw;font:800 1.7cqw Nunito,system-ui,sans-serif;color:#D8E4FF;text-shadow:none}
+.quiz-q .lem-ou b{color:var(--marine);background:var(--jaune);border-radius:.8cqw;padding:.1cqw .7cqw;font-weight:900}
+body.clavier #quiz{justify-content:flex-start;padding-top:1.2cqw}body.clavier #quiz .quiz-tete,body.clavier #quiz #quiz-pas{display:none}
 .quiz-q .quiz-page{display:inline-block;vertical-align:middle;margin-left:.6cqw;font:900 1.25cqw Nunito,system-ui,sans-serif;color:var(--marine);background:var(--jaune);border-radius:.8cqw;padding:.15cqw .8cqw;text-shadow:none;white-space:nowrap}
 .carte .ets.quiz{font:900 1.1cqw Rubik,"Arial Black",sans-serif;color:var(--jaune);letter-spacing:.06em}
 
@@ -663,10 +675,10 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790243449"></script>
-<script src="anim.js?v=1790243449"></script>
-<script src="game.js?v=1790243449"></script>
-<script src="net.js?v=1790243449"></script>
-<script src="livre.js?v=1790243449"></script>
-<script src="bonus.js?v=1790243449"></script>
+<script src="skin.js?v=1790251642"></script>
+<script src="anim.js?v=1790251642"></script>
+<script src="game.js?v=1790251642"></script>
+<script src="net.js?v=1790251642"></script>
+<script src="livre.js?v=1790251642"></script>
+<script src="bonus.js?v=1790251642"></script>
 </body></html>

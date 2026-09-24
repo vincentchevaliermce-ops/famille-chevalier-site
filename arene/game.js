@@ -262,6 +262,82 @@ const CHARS = {
       SUPER: { st: 22, act: 16, rec: 24, dmg: 14, hs: 24, bs: 16, kb: 10, kd: true, box: [480, 1150, -660, 0], rush: 19, venin: { t: 420, tick: 18, dmg: 1, lent: .6 }, lvl: 'mid', mots: ['MORSURE ROYALE !', 'VENIN XXL !'], son: 'h', nom: 'La morsure royale' },
     },
   },
+  // --- LÉOPARD : le chasseur de la nuit (bond de 6 m, il emporte sa proie dans son arbre, il tombe du ciel, l'ombre de la nuit)
+  leopard: {
+    nom: 'LÉOPARD', art: 'LE LÉOPARD', force: .83, spr: true, poseLance: 'grimpe', hPose: ['garde', 'fort'], col: '#A8651F', clair: '#F7C77B', fond: '#C27F36', K: .42, hp: 104, walk: 7, back: 5.3, dash: 18, jumpV: 26, jumpX: 9, grav: 1.12, etour: 46,
+    aie: ['MIAOU ?!', 'MES TACHES !', 'OUILLE LE MUSEAU !'], ia: { saut: 1.2 },
+    hurt: { stand: [-470, 600, -760, 0], crouch: [-470, 620, -480, 0], air: [-420, 580, -640, 0] },
+    push: [190, 230], reach: 700, speMin: 300, speMax: 1100,
+    moves: {
+      L: { st: 4, act: 4, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [520, 1000, -720, -340], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PAF !', 'SCRITCH !', 'GRIFFOUILLE !'], son: 'l' },
+      cL: { st: 4, act: 4, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [500, 960, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'SCRITCH !'], son: 'l' },
+      H: { st: 11, act: 5, rec: 18, dmg: 12, hs: 20, bs: 15, kb: 12, box: [480, 1060, -680, -40], lvl: 'mid', lunge: 5, chain: ['S', 'SUPER'], mots: ['CRAC !', 'CROC !', 'TACHETÉ !'], son: 'h' },
+      cH: { st: 8, act: 4, rec: 22, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [480, 1020, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 8, hs: 18, bs: 11, kb: 7, box: [250, 900, -420, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['D’EN HAUT !', 'GRIFF !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP LÀ !'], son: 'h' },
+      S: { st: 9, act: 99, rec: 18, dmg: 12, hs: 0, bs: 16, kb: 15, kd: true, box: [250, 900, -600, 0], saute: [18, 16], land: true, lvl: 'mid', mots: ['BOND DE 6 M !', 'HOP !', 'SURPRISE !'], son: 's', nom: 'Le bond de 6 m', ia: [500, 1150, 1.2] },
+      SF: { st: 7, act: 12, rec: 24, dmg: 15, hs: 0, bs: 0, kb: 8, kd: true, rush: 13, lvl: 'mid', prise: { portee: 110, t: 34, degage: false, mot: 'LE REPAS DANS L’ARBRE !', haut: 26, loin: 3, rec: 6 }, mots: ['MIAM !', 'HOP, DANS L’ARBRE !'], son: 'h', nom: 'Le repas dans l’arbre', ia: [150, 600, 1.1] },
+      SD: { st: 46, act: 99, rec: 28, dmg: 12, hs: 22, bs: 16, kb: 10, kd: true, box: [-260, 480, -520, 120], ciel: true, land: true, lvl: 'high', mots: ['TOMBÉ DU CIEL !', 'COUCOU D’EN HAUT !'], son: 's', nom: 'Tombé du ciel', ia: [400, 1500, .5] },
+      SUPER: { st: 16, act: 50, rec: 22, dmg: 5, hits: 6, hs: 20, bs: 8, kb: 3, kd: true, box: [200, 1000, -700, 0], rush: 10, ombre: true, lvl: 'mid', mots: ['CHUT…', 'SCRITCH !', 'DANS LE NOIR !'], son: 'h', nom: 'L’ombre de la nuit' },
+    },
+  },
+  // --- PORC-ÉPIC : la pelote d'épingles (qui le touche se pique ! charge en marche arrière, le hochet qui contre, la boule piquante)
+  porcepic: {
+    nom: 'PORC-ÉPIC', art: 'LE PORC-ÉPIC', force: .73, spr: true, piquants: 1, hPose: ['accroupi', 'fort'], col: '#6B4A33', clair: '#FFF5E0', fond: '#9C7B5B', K: .34, hp: 104, walk: 6.2, back: 4.8, dash: 15, jumpV: 22, jumpX: 7.5, grav: 1.2, etour: 50,
+    aie: ['PIC ?!', 'MES PIQUANTS !', 'OUILLE LE NEZ !'], ia: {},
+    hurt: { stand: [-560, 560, -640, 0], crouch: [-560, 580, -460, 0], air: [-520, 540, -560, 0] },
+    push: [160, 170], reach: 560, speMin: 250, speMax: 900,
+    moves: {
+      L: { st: 4, act: 4, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 5, box: [420, 880, -420, -60], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['CROC !', 'GNAC !', 'MORDU !'], son: 'l' },
+      cL: { st: 4, act: 4, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 4, box: [400, 860, -220, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['MORDILLE !', 'GNAC !'], son: 'l' },
+      H: { st: 10, act: 6, rec: 19, dmg: 11, hs: 20, bs: 15, kb: 12, box: [200, 960, -700, 0], pique: 1, lvl: 'mid', chain: ['S', 'SUPER'], mots: ['PIQUE !', 'HÉRISSÉ !', 'AÏE AÏE AÏE !'], son: 'h' },
+      cH: { st: 8, act: 5, rec: 22, dmg: 9, hs: 18, bs: 12, kb: 9, kd: true, box: [300, 880, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 4, act: 99, rec: 7, dmg: 8, hs: 18, bs: 12, kb: 8, box: [-100, 700, -500, 150], pique: 1, lvl: 'high', air: true, land: true, dive: 6, chain: ['L', 'cL', 'H'], mots: ['BOULE PIQUANTE !', 'PIQUE !'], son: 'h' },
+      T: { st: 4, act: 3, rec: 22, dmg: 11, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['ROULÉ-BOULÉ !', 'HOP LÀ !'], son: 'h' },
+      S: { st: 10, act: 20, rec: 22, dmg: 11, hs: 0, bs: 16, kb: 16, kd: true, box: [-300, 700, -620, 0], rush: 17, stopHit: true, pique: 2, armor: true, lvl: 'mid', mots: ['MARCHE ARRIÈRE !', 'PIQUE !', 'BIP BIP, JE RECULE !'], son: 's', nom: 'La charge en marche arrière', ia: [300, 1000, 1.2] },
+      SF: { st: 4, act: 26, rec: 20, dmg: 0, hs: 0, bs: 0, kb: 0, lvl: 'mid', hochet: true, contre: { dmg: 9, hs: 24, bs: 0, kb: 16, kd: true, lvl: 'mid', pique: 3, mots: ['QUI S’Y FROTTE…', '…S’Y PIQUE !'], son: 'h' }, mots: ['TCHIK-TCHIK !'], son: 's', nom: 'Tchik-tchik !', ia: [0, 700, .8] },
+      SD: { st: 4, act: 99, rec: 24, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 16, aa: true, inv: 8, saute: [-2, 19], land: true, box: [-350, 550, -800, 0], pique: 1, lvl: 'mid', mots: ['BOULE PIQUANTE !', 'HÉRISSÉ !'], son: 's', nom: 'La boule piquante', ia: [0, 0, 0] },
+      SUPER: { st: 16, act: 44, rec: 24, dmg: 5, hits: 5, hs: 18, bs: 8, kb: 3, kd: true, box: [-300, 760, -640, 0], rush: 14, pique: 1, armor: true, lvl: 'mid', mots: ['PIQUE !', 'PIQUE-PIQUE !', 'QUI S’Y FROTTE S’Y PIQUE !'], son: 'h', nom: 'Qui s’y frotte s’y pique !' },
+    },
+  },
+  // --- GUÉPARD : la tornade tachetée (le plus rapide et le plus fragile : croche-patte, démarrage turbo, saut de l'éclair)
+  guepard: {
+    nom: 'GUÉPARD', art: 'LE GUÉPARD', force: .94, spr: true, hPose: ['garde', 'fort'], col: '#B8961E', clair: '#FFF3B0', fond: '#D8BA4E', K: .38, hp: 96, walk: 8.4, back: 6.4, dash: 22, jumpV: 25, jumpX: 10, grav: 1.15, etour: 42,
+    aie: ['CUI-CUI ?!', 'AÏE AÏE !', 'MES TACHES !'], ia: { saut: 1 },
+    hurt: { stand: [-470, 600, -900, 0], crouch: [-470, 620, -560, 0], air: [-420, 580, -760, 0] },
+    push: [175, 215], reach: 720, speMin: 300, speMax: 1300,
+    moves: {
+      L: { st: 3, act: 3, rec: 8, dmg: 5, hs: 14, bs: 10, kb: 5, box: [460, 980, -780, -420], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PAF !', 'SCRITCH !', 'TROP VITE !'], son: 'l' },
+      cL: { st: 3, act: 3, rec: 9, dmg: 4, hs: 13, bs: 10, kb: 4, box: [440, 940, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'TAC !'], son: 'l' },
+      H: { st: 9, act: 5, rec: 16, dmg: 11, hs: 19, bs: 14, kb: 11, box: [420, 1060, -600, -80], lvl: 'mid', lunge: 8, chain: ['S', 'SUPER'], mots: ['FIOU !', 'CRAC !', 'ZOU !'], son: 'h' },
+      cH: { st: 6, act: 4, rec: 20, dmg: 8, hs: 17, bs: 12, kb: 8, kd: true, box: [420, 1000, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 7, hs: 17, bs: 11, kb: 7, box: [250, 900, -420, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['ZOU !', 'GRIFF !'], son: 'l' },
+      T: { st: 3, act: 3, rec: 20, dmg: 11, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 18 }, mots: ['VOLTIGE !', 'HOP LÀ !'], son: 'h' },
+      S: { st: 7, act: 12, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 10, kd: true, box: [300, 950, -260, 0], rush: 24, stopHit: true, vitesse: true, lvl: 'low', mots: ['CROCHE-PATTE !', 'BADABOUM !', 'TRÉBUCHÉ !'], son: 's', nom: 'Le croche-patte', ia: [300, 950, 1.2] },
+      SF: { st: 5, act: 10, rec: 26, dmg: 11, hs: 20, bs: 14, kb: 12, kd: true, box: [250, 950, -700, 0], rush: 34, stopHit: true, vitesse: true, lvl: 'mid', mots: ['FIOUUU !', 'ZOOOM !', 'TU M’AS VU ? NON !'], son: 's', nom: 'Le démarrage turbo', ia: [400, 1500, 1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 18, aa: true, inv: 8, saute: [4, 22], land: true, box: [150, 800, -900, -200], lvl: 'mid', mots: ['L’ÉCLAIR !', 'HOP, EN L’AIR !'], son: 's', nom: 'Le saut de l’éclair', ia: [0, 0, 0] },
+      SUPER: { st: 12, act: 48, rec: 22, dmg: 4, hits: 7, hs: 16, bs: 8, kb: 3, kd: true, box: [150, 1000, -700, 0], rush: 22, vitesse: true, lvl: 'mid', mots: ['FIOUUU !', 'ZOOM !', 'TORNADE !'], son: 'h', nom: 'La tornade tachetée' },
+    },
+  },
+  // --- AUTRUCHE : la karatéka géante (très longues pattes, pas de géant, couchée comme un tas de terre, karaté-poule !)
+  autruche: {
+    nom: 'AUTRUCHE', art: 'L’AUTRUCHE', fem: true, force: .93, spr: true, hPose: ['garde', 'fort'], col: '#3B3B46', clair: '#FFC6D5', fond: '#E48CA8', K: .45, hp: 104, walk: 7.4, back: 5.6, dash: 20, jumpV: 23, jumpX: 8.4, grav: 1.2, etour: 50,
+    aie: ['COT COT ?!', 'MES PLUMES !', 'AÏE, MON ŒIL !'], ia: {},
+    hurt: { stand: [-470, 540, -960, 0], crouch: [-470, 560, -540, 0], air: [-440, 520, -860, 0], aplat: [-480, 560, -200, 0] },
+    push: [175, 185], reach: 780, speMin: 300, speMax: 1300,
+    moves: {
+      L: { st: 4, act: 4, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [300, 760, -760, -180], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PIC !', 'TOC !', 'COUP DE BEC !'], son: 'l' },
+      cL: { st: 4, act: 4, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [300, 760, -260, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['PIC-PIC !', 'TOC !'], son: 'l' },
+      H: { st: 10, act: 5, rec: 18, dmg: 13, hs: 20, bs: 15, kb: 14, box: [200, 820, -620, -160], lvl: 'mid', chain: ['S', 'SUPER'], mots: ['HI-YAAA !', 'VLAN !', 'KARATÉ !'], son: 'h' },
+      cH: { st: 8, act: 5, rec: 22, dmg: 9, hs: 18, bs: 12, kb: 9, kd: true, box: [200, 800, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 4, act: 99, rec: 7, dmg: 9, hs: 18, bs: 12, kb: 8, box: [100, 800, -500, 100], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H'], mots: ['KARATÉ VOLANT !', 'HI-YA !'], son: 'h' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP, PAR-DESSUS !'], son: 'h' },
+      S: { st: 14, act: 5, rec: 24, dmg: 16, hs: 24, bs: 18, kb: 22, kd: true, casse: true, box: [150, 900, -640, -120], lvl: 'mid', mots: ['HI-YAAA !', 'CEINTURE NOIRE !', 'KARATÉ !'], son: 's', nom: 'Le grand coup de patte', ia: [0, 700, 1.2] },
+      SF: { st: 8, act: 12, rec: 24, dmg: 12, hs: 20, bs: 14, kb: 14, kd: true, box: [200, 950, -620, -100], rush: 26, stopHit: true, lvl: 'mid', mots: ['PAS DE GÉANT !', 'ZOU !', '5 MÈTRES D’UN COUP !'], son: 's', nom: 'Le pas de géant', ia: [450, 1300, 1] },
+      SD: { st: 30, act: 8, rec: 22, dmg: 11, hs: 0, bs: 14, kb: 6, kd: true, lance: 18, aa: true, aplat: true, box: [100, 800, -1000, -150], lvl: 'mid', mots: ['SURPRISE !', 'COUCOU !'], son: 's', nom: 'Le tas de terre', ia: [0, 500, .8] },
+      SUPER: { st: 14, act: 48, rec: 24, dmg: 5, hits: 6, hs: 18, bs: 8, kb: 3, kd: true, box: [150, 950, -700, -80], rush: 8, lvl: 'mid', mots: ['HI !', 'YA !', 'HI-YAAA !', 'KARATÉ-POULE !'], son: 'h', nom: 'Karaté-poule !' },
+    },
+  },
 };
 // phrases de victoire (drôles, tirées du livre) : le gagnant parle sur l'écran de fin
 const PHRASES = {
@@ -278,6 +354,10 @@ const PHRASES = {
   buffle: ['Meuh ? Non : BUFFLE !', 'Mordu, mais pas vaincu !', 'Tête baissée, et ça fonce !'],
   morse: ['Un canapé à moustaches, hein ?', 'Un canapé, oui. Mais avec des épées !', '700 moustaches, zéro défaite !'],
   trex: ['Préhistorique, mais toujours en forme !', 'Petits bras, GRANDES dents !', 'C’est qui le plus fort ? MOI !'],
+  leopard: ['Je t’ai vu venir… d’en haut !', 'Chut… je chasse la nuit.', 'Qui veut monter dans mon arbre ?'],
+  porcepic: ['Qui s’y frotte s’y pique !', 'Pique, pique, hourra !', 'Tu voulais un câlin ?'],
+  guepard: ['Trop rapide pour toi !', 'Cui-cui ! Oui, c’est moi. Et alors ?', 'Même pas essoufflé… enfin, un peu.'],
+  autruche: ['Poule de karaté : ceinture noire !', 'Ma tête dans le sable ? Jamais de la vie !', 'Un pas de géant pour une autruche !'],
 };
 const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
 
@@ -285,10 +365,12 @@ const ARENES = [
   { k: 'savane', nom: 'SAVANE', img: 'arene.webp' }, { k: 'jungle', nom: 'JUNGLE', img: 'arene_jungle.webp' },
   { k: 'banquise', nom: 'BANQUISE', img: 'arene_banquise.webp' }, { k: 'desert', nom: 'DÉSERT', img: 'arene_desert.webp' },
   { k: 'colisee', nom: 'COLISÉE', img: 'arene_colisee.webp' }, { k: 'riviere', nom: 'RIVIÈRE', img: 'arene_riviere.webp' },
+  { k: 'nuit', nom: 'SAVANE DE NUIT', img: 'arene_nuit.webp' }, { k: 'plage', nom: 'PLAGE D’ALASKA', img: 'arene_plage.webp' },
+  { k: 'foret', nom: 'FORÊT RUSSE', img: 'arene_foret.webp' }, { k: 'volcan', nom: 'VOLCAN', img: 'arene_volcan.webp' },
 ];
 // couleur de la poussière soulevée, selon le sol de l'arène
 const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE' };
-const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
+const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
 const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V17, mot pour mot (// p. N) ou à peine adaptées (// ≈ p. N : sujet ajouté).
   // Aucune carte ne donne le résultat d'un duel. Une carte ne se gagne que contre un animal déjà débloqué (sinon elle donnerait les réponses du quiz).
   tigre: [
@@ -382,6 +464,34 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V17, 
     'Les jeunes dragons de Komodo vivent perchés dans les arbres. Pourquoi ? Les dragons adultes mangent les petits !', // ≈ p. 24
     '« Le dragon tue avec les microbes de sa bouche. » Pas vraiment : son venin… et la mare sale !', // p. 24
   ],
+  leopard: [
+    'Le léopard grimpe à 15 m dans un arbre avec, dans la gueule, une proie plus lourde que lui.', // p. 11
+    'En Inde, des léopards vivent dans un parc au milieu de Mumbai, l’une des villes les plus peuplées du monde !', // p. 26
+    'Les taches du jaguar sont des anneaux noirs, souvent avec un point au milieu. Celles du léopard sont vides. Pratique pour ne pas les confondre !', // p. 26
+    'La panthère noire n’existe pas ! C’est un jaguar, ou un léopard, au pelage tout noir ! Et sous le soleil, on voit encore ses taches.', // p. 35
+    'Le coup spécial du léopard : un bond de 6 m !', // ≈ p. 11
+  ],
+  porcepic: [
+    'Le porc-épic lance ses piquants ? C’est faux ! Pour prévenir, il les dresse et secoue sa queue, qui fait un bruit de hochet.', // p. 11
+    'Les piquants du porc-épic sont des poils géants, faits comme tes cheveux. Un piquant perdu ? Un nouveau repousse.', // ≈ p. 12
+    '40 lions blessés par des porcs-épics, et 10 tués, en 360 ans de récits et de vidéos. Même le roi !', // p. 12
+    'Le porc-épic : jusqu’à 30 kg, et des piquants de 30 cm !', // ≈ p. 11
+    'Le coup spécial du porc-épic : la charge en marche arrière !', // ≈ p. 11
+  ],
+  guepard: [
+    'En moins de trois secondes, le guépard passe de l’arrêt à 70 km/h. Il démarre plus vite que la voiture de tes parents !', // p. 37
+    'Le guépard ne sait pas rugir. À la place, il ronronne, il miaule… et il pousse de petits cris aigus, comme un oiseau !', // p. 47
+    'Le guépard est le coureur le plus rapide du monde !', // ≈ p. 37
+    'Le coup spécial du guépard : il fait trébucher sa proie.', // ≈ p. 37
+    'Le point faible du guépard : de toutes petites dents.', // ≈ p. 37
+  ],
+  autruche: [
+    'L’autruche est le seul oiseau à deux doigts par pied. Et elle court à 50 km/h pendant très longtemps !', // p. 37
+    'L’autruche fait 5 mètres en un seul pas, en pleine course ! Et toi, il te faut combien de pas ?', // ≈ p. 38
+    'Autruche : un œil de 5 cm. Son œil est plus gros qu’une balle de ping-pong ! C’est le plus gros œil de tous les animaux de la terre ferme.', // p. 38
+    'L’autruche cache sa tête dans le sable ? Faux ! Pour se cacher, elle se couche, le cou à plat sur le sol. De loin, on dirait un tas de terre !', // ≈ p. 38
+    'Le coup spécial de l’autruche : un coup de pied à tuer un lion !', // ≈ p. 37
+  ],
 };
 
 // ---------------------------------------------------------------------
@@ -452,6 +562,40 @@ const QUIZ = {
     ['Combien mesure le dragon de Komodo ?', ['trois mètres de long', 'trente centimètres de long', 'un mètre de long'], 23],
   ] },
 };
+// ---------------------------------------------------------------------
+//  LIVRE EN MAIN (24/09, idée de Vincent) : ces animaux se débloquent SEULEMENT avec le livre sous les yeux.
+//  Pas de choix multiple : un mot à écrire, trouvé à un endroit précis du livre (page + encart). Impossible à deviner.
+//  Règles : pages de fiches (recto) ou pages bonus, jamais une page de réponse ; jamais un mot que le jeu affiche ailleurs ;
+//  majuscules, accents et une petite faute acceptés ; en cas d'erreur, on ne montre jamais la réponse.
+//  Pas de code à offrir pour ces animaux, et le GOD MODE ne les ouvre pas : c'est le livre qui les débloque.
+//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V17_74P.md
+// ---------------------------------------------------------------------
+const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r : le mot à écrire · x : le passage du livre qui le contient (le jeu ne doit jamais l'afficher)
+  leopard: [
+    { p: 26, ou: 'le léopard, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'ville', x: 'UN LÉOPARD EN VILLE' },
+    { p: 26, ou: 'l’encart « UN LÉOPARD EN VILLE »', q: 'Dans quelle ville vivent ces léopards ?', r: 'Mumbai', x: 'au milieu de Mumbai' },
+    { p: 26, ou: 'l’encart « DES TACHES À POINTS »', q: 'Les taches du léopard sont… (un seul mot)', r: 'vides', x: 'Celles du léopard sont vides' },
+    { p: 35, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le 2ᵉ mot du titre, écrit en gros ?', r: 'panthère', x: 'LA PANTHÈRE NOIRE N’EXISTE PAS' },
+  ],
+  porcepic: [
+    { p: 11, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'rien', x: 'IL NE LANCE RIEN' },
+    { p: 11, ou: 'l’encart « LE TRUC FOU »', q: 'Quand le porc-épic secoue sa queue, ça fait un bruit de… ?', r: 'hochet', x: 'un bruit de hochet' },
+  ],
+  guepard: [
+    { p: 37, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le 2ᵉ mot du titre, écrit en gros ?', r: 'fusée', x: 'UNE FUSÉE À POILS' },
+    { p: 37, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'poils', x: 'UNE FUSÉE À POILS' },
+    { p: 37, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Le guépard démarre plus vite que la voiture de tes… ?', r: 'parents', x: 'la voiture de tes parents' },
+    { p: 47, ou: 'le guépard, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'gazouille', x: 'UN FÉLIN QUI GAZOUILLE' },
+  ],
+  autruche: [
+    { p: 37, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quel est le 2ᵉ mot du titre, écrit en gros ?', r: 'pied', x: 'UN PIED À DEUX DOIGTS' },
+    { p: 37, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'doigts', x: 'UN PIED À DEUX DOIGTS' },
+    { p: 37, ou: 'l’encart « CORPS DE CHAMPION »', q: 'L’autruche court à 50 km/h pendant très… ?', r: 'longtemps', x: 'pendant très longtemps' },
+  ],
+};
+
+const pageLivre = k => LIVRE_EN_MAIN[k] ? Math.min(...LIVRE_EN_MAIN[k].map(x => x.p)) : 0;
+
 
 // ---------------------------------------------------------------------
 //  Progrès (sur cet appareil) : animaux débloqués, étoiles, badges, cartes
@@ -467,7 +611,8 @@ const BADGES = [
   ['champion', 'CHAMPION DE L’ARÈNE', 'Bats tous les animaux à la suite.'],
   ['explo', 'EXPLORATEUR', 'Gagne avec 4 animaux différents.'],
   ['secret', 'AS DU LIVRE', 'Débloque un animal grâce au quiz du livre.'],
-  ['lecteur', 'LECTEUR EXPERT', 'Débloque les 4 animaux secrets.'],
+  ['lecteur', 'LECTEUR EXPERT', 'Débloque tous les animaux du quiz du livre.'],
+  ['livre', 'LIVRE EN MAIN', 'Débloque un animal avec le livre sous les yeux.'],
   ['duo', 'À DEUX, C’EST MIEUX', 'Termine un combat à 2 joueurs.'],
   ['cartes', 'COLLECTIONNEUR', 'Gagne 10 cartes « Le savais-tu ? ».'],
   ['toutes', 'GRAND SAVANT', 'Gagne toutes les cartes « Le savais-tu ? ».'],
@@ -481,7 +626,7 @@ function sauve() { try { localStorage.setItem('arene-duels', JSON.stringify(SAVE
 // demande au navigateur de ne pas effacer la sauvegarde (Android / ordinateur) ; sur iPhone, l'ajout à l'écran d'accueil la protège
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist().catch(() => { }) } catch (e) { }
 if (matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || navigator.standalone) addEventListener('DOMContentLoaded', () => { const e = $('garde-trophees'); if (e) e.hidden = true });
-const debloque = k => SAVE.debloques.includes(k) || (k !== 'trex' && G.god && G.mode === 1 && !(window.NET && NET.on)); // GOD MODE : tous les animaux (sans les garder), sauf le légendaire : il se gagne
+const debloque = k => SAVE.debloques.includes(k) || (k !== 'trex' && !LIVRE_EN_MAIN[k] && G.god && G.mode === 1 && !(window.NET && NET.on)); // GOD MODE : tous les animaux (sans les garder), sauf le légendaire : il se gagne
 function badge(id, liste) { if (!SAVE.badges[id]) { SAVE.badges[id] = Date.now(); liste.push(id) } }
 const nbCartes = () => Object.values(SAVE.cartes).reduce((n, a) => n + a.length, 0), totalCartes = () => Object.values(FAITS).reduce((n, a) => n + a.length, 0);
 
@@ -586,6 +731,10 @@ const BANQUE = {
   ratel: { f: ['ratel_grr'], v: .9, r: .9 }, ratel_grr: { f: ['ratel_grr'], v: .8, j: .08 },
   grizzly: { f: ['ours_huff'], v: 1, r: .95 }, grizzly_grr: { f: ['ours_grr', 'ours_huff'], v: .85, j: .06 },
   hyene: { f: ['rire_hyene'], v: .85, j: .05 }, hyene_grr: { f: ['ratel_grr', 'chat_hiss'], v: .7, r: 1.15, j: .06 },
+  leopard: { f: ['leopard'], v: .95 }, leopard_grr: { f: ['leopard_grr'], v: .8, j: .05 },
+  porcepic: { f: ['porcepic'], v: .8, j: .07 }, porcepic_grr: { f: ['porcepic_grr'], v: .75, j: .06 },
+  guepard: { f: ['guepard'], v: .85, j: .08 }, guepard_grr: { f: ['guepard_grr', 'guepard_ronron'], v: .8, j: .05 },
+  autruche: { f: ['autruche'], v: 1 }, autruche_grr: { f: ['autruche_grr'], v: .8, j: .05 }, ailes: { f: ['ailes'], v: .6, j: .08 },
 };
 const SONS = { buf: {}, pret: false, dernier: {} };
 function chargeSons() {
@@ -882,6 +1031,15 @@ function update(f, o, inp) {
           if (ph === 'st' && f.t > 10) { f.cache = true; f.ciel = true; f.inv = 3; f.h = 1500; f.vy = 0; f.vx = Math.sign(o.x - f.x) * Math.min(19, Math.abs(o.x - f.x) * .2) }
           if (f.t === m.st) { f.cache = false; f.ciel = false; f.face = o.x >= f.x ? 1 : -1; f.h = 1050; f.vy = 12; f.vx = 0; sfx(f.kind, 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 760, mot: hasard(['TOMBÉ DU CIEL !', 'SURPRISE D’EN HAUT !']), col: JA }) }
         }
+        // autruche : couchée, le cou à plat sur le sol… « un tas de terre ! », puis elle surgit
+        if (m.aplat && f.t === 2) { addFx({ k: 'mot', x: f.x, y: FLOOR - 380, mot: hasard(['UN TAS DE TERRE ?', 'CACHÉE !', 'CHUT…']), col: '#E8D5AE' }); addFx({ k: 'poussiere', x: f.x, y: FLOOR }) }
+        if (m.aplat && f.t === m.st) { sfx('ailes', .9); addFx({ k: 'poussiere', x: f.x + f.face * 120, y: FLOOR }) }
+        // porc-épic : le hochet (sa queue fait « tchik-tchik »)
+        if (m.hochet && ph === 'act' && !f.contre && f.t % 8 === 0) { sfx('porcepic', .45); if (f.t % 16 === 0) addFx({ k: 'mot', x: f.x - f.face * 140, y: FLOOR - 330, mot: 'TCHIK-TCHIK !', col: '#FFF5E0' }) }
+        // guépard : la traînée de vitesse
+        if (m.vitesse) { f.trace = f.trace || []; if (ph === 'act' && !f.hit) { f.trace.unshift([f.x, f.h]); if (f.trace.length > 10) f.trace.length = 10; if (f.t % 4 === 0) addFx({ k: 'poussiere', x: f.x - f.face * 160, y: FLOOR }) } else f.trace.length = 0 }
+        // léopard : l'ombre de la nuit (la nuit tombe sur l'arène)
+        if (m.ombre && f.t === 1) { sfx('vent', .8); addFx({ k: 'mot', x: f.x, y: FLOOR - 560, mot: 'LA NUIT TOMBE…', col: '#B9C4FF' }) }
         // hippopotame : le ventilateur à crottes
         // ★ : dos tourné, la queue-hélice mitraille (les crottes partent de la queue) · SUPER : le déluge
         if (m.jet && ph === 'act' && f.t % m.jet.every === 0) { const j = m.jet, K = f.d.K, rd = (a, b) => a + Math.random() * (b - a);
@@ -945,6 +1103,7 @@ function box(f, b) { const K = f.d.K, y0 = FLOOR - f.h; const x0 = f.x + f.face 
 function hurtBox(f) {
   const hb = f.d.hurt;
   if (f.h > 0) return box(f, hb.air);
+  if (hb.aplat && f.state === 'atk' && f.move && f.move.aplat && f.ph === 'st') return box(f, hb.aplat); // autruche couchée, le cou à plat : les coups passent au-dessus
   if (['crouch', 'cblock'].includes(f.state) || (f.state === 'atk' && f.mk === 'cL') || (f.state === 'bstun' && f.crouchB)) return box(f, hb.crouch);
   if (f.kind === 'gorille' && (f.state === 'block' || f.state === 'win' || (f.state === 'atk' && (f.mk === 'S' || f.mk === 'SUPER' || f.mk === 'H') && f.ph === 'st'))) return box(f, hb.up);
   return box(f, hb.stand);
@@ -970,7 +1129,7 @@ function strike(a, d) {
 // un coup (ou un projectile) arrive sur le défenseur : parade, armure, dégâts, chute
 function jauge(f, n) { const avant = f.meter; f.meter = Math.min(100, f.meter + n); if (avant < 100 && f.meter >= 100 && !f.cpu && !f.distant) sfx('pret') }
 const hasard = l => l[Math.floor(Math.random() * l.length)];
-const GRIFFUS = ['tigre', 'lion', 'ours', 'ratel', 'grizzly']; // ils laissent des marques de griffes
+const GRIFFUS = ['tigre', 'lion', 'ours', 'ratel', 'grizzly', 'leopard', 'guepard']; // ils laissent des marques de griffes
 const invincible = f => G.god && G.mode === 1 && !f.cpu && !NET.on; // GOD MODE : le joueur ne perd pas de vie
 function touche(a, d, m, hb, hu, o) {
   const face = o.dir;
@@ -1008,7 +1167,7 @@ function touche(a, d, m, hb, hu, o) {
   if (d.combo > 1) { FX = FX.filter(e => e.k !== 'combo'); addFx({ k: 'combo', n: d.combo, side: d.side ? 0 : 1 }); }
   const rage = f => f.hp / f.d.hp < .3 ? 1.6 : 1;
   jauge(a, 7 * rage(a)); jauge(d, 5 * rage(d));
-  // porc-épic : qui s'y frotte s'y pique ! Un coup au corps à corps plante un piquant dans l'attaquant (il ne lance RIEN : les piquants restent plantés)
+  // porc-épic : qui s'y frotte s'y pique ! Un coup au corps à corps plante un piquant dans l'attaquant (les piquants ne sont jamais lancés : ils restent plantés)
   if (d.d.piquants && !o.proj && !o.prise && !m.blob && dmg > 0 && a.hp > 1) pique(a, d.d.piquants, d);
   if (m.pique && dmg > 0 && d.hp > 0) pique(d, m.pique, a);
   // hyène : elle fatigue ses proies (la jauge SUPER de l'adversaire se vide)
@@ -1412,11 +1571,33 @@ function annonce(c) {
 // ---------------------------------------------------------------------
 //  Rendu
 // ---------------------------------------------------------------------
+// ambiance animée des nouvelles arènes : étoiles et lucioles (savane de nuit), mouettes (plage d'Alaska), neige (forêt russe), braises et lave (volcan)
+const AMB = {};
+const hasardN = (n, f) => Array.from({ length: n }, f);
+function ambianceFond(c, t) {
+  if (G.arene === 'nuit') { const E = AMB.etoiles || (AMB.etoiles = hasardN(48, () => [Math.random() * W, Math.random() * H * .36, 1.2 + Math.random() * 2.4, Math.random() * TAU]));
+    c.fillStyle = '#FFF7D6'; for (const [x, y, r, p] of E) { c.globalAlpha = .3 + .7 * Math.abs(Math.sin(t * 1.3 + p)); c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill() } c.globalAlpha = 1 }
+  if (G.arene === 'volcan') { const g = c.createLinearGradient(0, H * .6, 0, H + 20); g.addColorStop(0, 'rgba(255,90,20,0)'); g.addColorStop(1, `rgba(255,110,30,${.18 + .1 * Math.sin(t * 2.2)})`); c.fillStyle = g; c.fillRect(-60, H * .6, W + 120, H * .42) }
+}
+function ambiance(c, t) {
+  if (G.arene === 'foret') { const F = AMB.flocons || (AMB.flocons = hasardN(70, () => [Math.random() * W, Math.random() * H, 2 + Math.random() * 4, .6 + Math.random() * 1.5, Math.random() * TAU]));
+    c.fillStyle = 'rgba(255,255,255,.85)'; for (const f of F) { f[1] += f[3]; f[0] += Math.sin(t * 1.5 + f[4]) * .6; if (f[1] > H + 10) { f[1] = -10; f[0] = Math.random() * W } c.beginPath(); c.arc(f[0], f[1], f[2], 0, TAU); c.fill() } }
+  if (G.arene === 'volcan') { const B = AMB.braises || (AMB.braises = hasardN(38, () => [Math.random() * W, H * (.45 + Math.random() * .55), 2 + Math.random() * 3.5, .8 + Math.random() * 1.8, Math.random() * TAU]));
+    for (const b of B) { b[1] -= b[3]; b[0] += Math.sin(t * 2 + b[4]) * .8; if (b[1] < H * .08) { b[1] = H * (.85 + Math.random() * .2); b[0] = Math.random() * W }
+      c.fillStyle = `rgba(255,${140 + (Math.sin(t * 9 + b[4]) * 60 | 0)},40,${.55 + .4 * Math.sin(t * 7 + b[4])})`; c.beginPath(); c.arc(b[0], b[1], b[2], 0, TAU); c.fill() } }
+  if (G.arene === 'nuit') { const L = AMB.lucioles || (AMB.lucioles = hasardN(16, () => [Math.random() * W, H * (.42 + Math.random() * .4), Math.random() * TAU]));
+    for (const l of L) { const x = l[0] + Math.sin(t * .7 + l[2]) * 70, y = l[1] + Math.cos(t * .9 + l[2]) * 34, a = .25 + .75 * Math.abs(Math.sin(t * 2.4 + l[2]));
+      c.fillStyle = `rgba(226,255,120,${a * .22})`; c.beginPath(); c.arc(x, y, 13, 0, TAU); c.fill(); c.fillStyle = `rgba(236,255,150,${a})`; c.beginPath(); c.arc(x, y, 4, 0, TAU); c.fill() } }
+  if (G.arene === 'plage') for (let i = 0; i < 3; i++) { // des mouettes passent dans le ciel
+    const s = 1 - i * .18, x = ((t * (70 - i * 12) + i * 760) % (W + 700)) - 350, y = H * (.1 + .07 * i) + Math.sin(t * 1.8 + i) * 14, ail = Math.sin(t * 7 + i * 2) * 12 * s;
+    c.strokeStyle = 'rgba(255,255,255,.92)'; c.lineWidth = 5 * s; c.lineCap = 'round'; c.beginPath(); c.moveTo(x - 30 * s, y - ail); c.quadraticCurveTo(x - 13 * s, y - 12 * s, x, y); c.quadraticCurveTo(x + 13 * s, y - 12 * s, x + 30 * s, y - ail); c.stroke() }
+}
 function render() {
   const t = G.time;
   // décor
   bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = '#1a1030'; bg.fillRect(0, 0, W, H);
   worldT(bg); if (G.bgImg) bg.drawImage(G.bgImg, -40, -20, W + 80, H + 40);
+  ambianceFond(bg, t);
   if (G.phase === 'menu' || !G.f.length) { Skin.clear(); fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, W, H); return }
   // flaque « portable » du crocodile (hors de la rivière) et ronds dans l'eau
   dessineFlaques(bg);
@@ -1431,6 +1612,9 @@ function render() {
     worldT(bg); bg.save(); bg.globalAlpha = .45 * u; bg.translate(f.x, FLOOR - 220); bg.rotate(t * 2);
     for (let i = 0; i < 16; i++) { bg.rotate(TAU / 16); bg.fillStyle = i % 2 ? JA : f.d.col; bg.beginPath(); bg.moveTo(0, 0); bg.lineTo(1400, -60); bg.lineTo(1400, 60); bg.closePath(); bg.fill() } bg.restore();
   }
+  // léopard : l'ombre de la nuit (le décor s'assombrit pendant son SUPER)
+  const ombre = G.f.find(f => f.state === 'atk' && f.move && f.move.ombre && f.ph !== 'rec');
+  if (ombre) { const k = ombre.ph === 'st' ? P(ombre.t, 0, ombre.move.st) : 1; bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = `rgba(3,6,28,${.72 * k})`; bg.fillRect(0, 0, W, H); worldT(bg) }
   // personnages : celui qui attaque passe devant
   Skin.clear();
   const [a, b] = G.f, order = (b.state === 'atk' && a.state !== 'atk') ? [a, b] : [b, a];
@@ -1439,8 +1623,9 @@ function render() {
     if (!f.pose) poseOf(f);
     const view = Skin.viewMatrix(f.R, f.x, FLOOR - f.h, f.d.K, f.flipV ? -f.face : f.face, cam, W, H);
     if (f.ghost && f.ghost.k > 0) Skin.draw(f.R, f.ghost.M, view, { only: f.ghost.only || undefined, show: { roar: f.ghost.roar }, alpha: .45 * f.ghost.k / 4, tint: f.tint || [0, 0, 0, 0] });
+    if (f.trace && f.trace.length && f.state === 'atk') for (let i = f.trace.length - 1; i >= 2; i -= 3) { const [x, h] = f.trace[i]; Skin.draw(f.R, f.M, Skin.viewMatrix(f.R, x, FLOOR - h, f.d.K, f.face, cam, W, H), { only: f.spr || undefined, alpha: .42 - i * .035, tint: f.tint || [0, 0, 0, 0] }) }
     const teinte = f.poison ? [.45, 1, .35, .28 + .14 * Math.sin(G.time * 8)] : f.sale > 0 ? [.8, .52, .25, .42 * Math.min(1, f.sale / 40)] : f.tint || [0, 0, 0, 0];
-    Skin.draw(f.R, f.M, view, { only: f.spr || undefined, show: { roar: f.roar }, flash: f.flash > 0 ? .12 * f.flash / 4 : 0, tint: teinte });
+    Skin.draw(f.R, f.M, view, { only: f.spr || undefined, show: { roar: f.roar }, flash: f.flash > 0 ? .12 * f.flash / 4 : 0, tint: teinte, alpha: f === ombre && ombre.ph === 'act' ? .5 + .15 * Math.sin(t * 25) : 1 });
   }
   // effets et interface
   fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, W, H);
@@ -1448,12 +1633,13 @@ function render() {
   for (const f of G.f) if (f.state === 'ko' || (f.state === 'down' && f.t < 50)) dizzy(fx, f, t);
   dessineDetails(fx, t);
   if (G.arene === 'riviere') eau(fx, t);
+  ambiance(fx, t);
   dessineZones(fx); drawFx(fx); dessineProj(fx);
   if (G.debug) for (const f of G.f) { fx.strokeStyle = '#0f0'; fx.lineWidth = 3; const h = hurtBox(f); fx.strokeRect(h[0], h[2], h[1] - h[0], h[3] - h[2]); const x = hitBox(f); if (x) { fx.strokeStyle = '#f00'; fx.strokeRect(x[0], x[2], x[1] - x[0], x[3] - x[2]) } }
   dessineFoule(fx); hud(fx); annonce(fx);
 }
 // position de la tête (px image depuis le point au sol, pose de base)
-const TETE = { trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
+const TETE = { leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
 function tete(f) { const p = f.d.tete || TETE[f.kind] || [450, -550], K = f.d.K; return [f.x + f.face * p[0] * K, FLOOR - f.h + p[1] * K] }
 function oiseau(c, x, y, s, t) { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3;
   c.beginPath(); c.ellipse(0, 0, 16, 11, 0, 0, TAU); c.fill(); c.stroke(); c.beginPath(); c.arc(12, -8, 8, 0, TAU); c.fill(); c.stroke();
@@ -1477,6 +1663,7 @@ function poisson(c, x, y, r, s) { c.save(); c.translate(x, y); c.rotate(r); c.sc
   c.fillStyle = '#fff'; c.beginPath(); c.arc(38, -6, 8, 0, TAU); c.fill(); c.stroke(); c.fillStyle = NV; c.beginPath(); c.arc(40, -6, 3.5, 0, TAU); c.fill(); c.restore() }
 // détails dessinés en direct autour des animaux (état par état)
 function dessineDetails(c, t) {
+  for (const f of G.f) if (f.state === 'atk' && f.move && f.move.ombre && f.ph !== 'rec' && !f.cache) { const [hx, hy] = tete(f), k = f.ph === 'st' ? P(f.t, 0, f.move.st) : 1; c.save(); c.globalAlpha = k; c.fillStyle = '#FFE14D'; c.shadowColor = '#FFE14D'; c.shadowBlur = 24; for (const dx of [-16, 16]) { c.beginPath(); c.ellipse(hx + dx, hy - 12, 12, 6 + 2 * Math.sin(t * 9), 0, 0, TAU); c.fill() } c.restore() }
   for (const f of G.f) {
     const K = f.d.K, [hx, hy] = tete(f), m = f.state === 'atk' ? f.move : null;
     // étourdi : étoiles et oiseaux qui tournent autour de la tête
@@ -1587,7 +1774,8 @@ function step() {
   const ia = a.cpu ? brain(a, b) : lire(0), ib = b.tuto ? tutoBrain(b, a) : b.cpu ? brain(b, a) : NET.on ? netEntreeDistante() : lire(1);
   update(a, b, ia); update(b, a, ib);
   // ils ne se traversent pas au sol
-  if ((a.h <= 0 && b.h <= 0 || Math.min(a.h, b.h) < 60) && !a.cache && !b.cache) {
+  const tombe = f => f.state === 'atk' && f.move && f.move.ciel && f.h > 150; // le léopard qui tombe du ciel n'est pas repoussé : il tombe SUR l'adversaire
+  if ((a.h <= 0 && b.h <= 0 || Math.min(a.h, b.h) < 60) && !a.cache && !b.cache && !tombe(a) && !tombe(b)) {
     const L = a.x < b.x ? a : b, Rr = L === a ? b : a, min = L.d.push[1] + Rr.d.push[1], dx = Rr.x - L.x;
     if (dx < min) { const p = (min - dx) / 2; L.x -= p; Rr.x += p; if (L.x < STAGE_L) { Rr.x += STAGE_L - L.x; L.x = STAGE_L } if (Rr.x > STAGE_R) { L.x -= Rr.x - STAGE_R; Rr.x = STAGE_R } }
   }
@@ -1672,7 +1860,7 @@ function startMatch() {
   G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
   G.chrono = 0;
   G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
-  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45] }[p2]; // variante de couleur
+  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4] }[p2]; // variante de couleur
   if (G.livre && G.livre.noms) G.f.forEach((f, i) => f.nomAff = G.livre.noms[i]);
   G.round = 1; newRound(); show(null);
   document.body.classList.toggle('deux', G.mode === 2 && !NET.on);
@@ -1698,13 +1886,13 @@ function show(id) {
   document.body.dataset.ecran = id || 'combat';
 }
 let selCursor = 0, selStage = 0;
-const PLACES = 12; // 12 animaux du livre (les derniers arrivent au fur et à mesure)
+const PLACES = 16; // 16 animaux du livre (les suivants arrivent au fur et à mesure : la mer, la terre, les petites bêtes)
 // le légendaire (dernier de ORDRE) n'a sa carte qu'une fois débloqué : 13 cartes → grille de 5 colonnes
 const nbCartesChoix = () => ORDRE.filter(k => k !== 'trex' || debloque(k)).length;
 function menuKey(code) {
   if (G.phase === 'menu' && G.screen === 'titre' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('jouer').click(); return }
   if (G.phase === 'menu' && G.screen === 'choix') {
-    const n = nbCartesChoix(), col = n > 12 ? 7 : 6;
+    const n = nbCartesChoix(), pl = Math.max(PLACES, n), col = pl > 14 ? 6 : pl > 12 ? 7 : 6;
     if (['KeyA', 'ArrowLeft'].includes(code)) { selCursor = (selCursor + n - 1) % n; majChoix(); sfx('clic') }
     if (['KeyD', 'ArrowRight'].includes(code)) { selCursor = (selCursor + 1) % n; majChoix(); sfx('clic') }
     if (['KeyW', 'ArrowUp', 'KeyS', 'ArrowDown'].includes(code)) { selCursor = (selCursor + col) % Math.max(col, n); if (selCursor >= n) selCursor = n - 1; majChoix(); sfx('clic') }
@@ -1732,7 +1920,7 @@ function construitCartes() {
     const d = CHARS[k], ok = debloque(k);
     b.className = 'carte ' + k + (ok ? '' : ' verrou') + (k === 'trex' ? ' legende' : '') + (selStage === 1 && G.pick[0] === k && !NET.on ? ' pris1' : ''); b.id = 'c-' + k;
     if (selStage === 1 && G.pick[0] === k && !NET.on) b.dataset.tag = G.mode === 2 ? 'J1' : 'TOI';
-    b.innerHTML = `<span class="img"><img src="${k}_corps.webp" alt=""></span><span class="nom">${d.nom}</span><span class="ets${ok ? '' : ' quiz'}">${ok ? etoiles(SAVE.etoiles[k] || 0) : '🔒 QUIZ DU LIVRE'}</span>`;
+    b.innerHTML = `<span class="img"><img src="${k}_corps.webp" alt=""></span><span class="nom">${d.nom}</span><span class="ets${ok ? '' : ' quiz'}">${ok ? etoiles(SAVE.etoiles[k] || 0) : LIVRE_EN_MAIN[k] ? '📖 LIVRE EN MAIN' : '🔒 QUIZ DU LIVRE'}</span>`;
     b.onclick = () => { selCursor = i; majChoix(); clicCarte(k) };
     b.onmouseenter = () => { selCursor = i; majChoix() };
     box.appendChild(b);
@@ -1744,11 +1932,11 @@ function majChoix() {
   if (!NET.on) $('choix-titre').textContent = selStage === 0 ? (G.mode === 2 ? 'JOUEUR 1 : CHOISIS TON ANIMAL' : 'CHOISIS TON ANIMAL') : G.mode === 2 ? 'JOUEUR 2 : À TOI DE CHOISIR' : 'CHOISIS TON ADVERSAIRE';
   const k = ORDRE[selCursor], d = k && CHARS[k], s1 = selStage === 1 && !NET.on;
   $('retour-choix').hidden = !!NET.on; $('hasard-btn').hidden = !s1; $('tournoi-btn').hidden = !(s1 && G.mode === 1); $('trophees-btn').hidden = s1;
-  $('detail').innerHTML = !d ? '' : !debloque(k) ? 'Animal secret : réponds au <b>quiz du livre</b> pour le débloquer !'
+  $('detail').innerHTML = !d ? '' : !debloque(k) ? (LIVRE_EN_MAIN[k] ? `Il t’attend dans le livre, <b>page ${pageLivre(k)}</b> : ouvre-le pour le débloquer !` : 'Animal secret : réponds au <b>quiz du livre</b> pour le débloquer !')
     : `<b>${d.nom}</b> · ★ Spécial : <b>${d.moves.S.nom}</b> · Super : <b>${d.moves.SUPER.nom}</b>`;
 }
 function clicCarte(k) {
-  if (!debloque(k)) { if (NET.on) return; ouvreQuiz(k); return }
+  if (!debloque(k)) { if (NET.on) return; if (LIVRE_EN_MAIN[k]) ouvreLivreEnMain(k); else ouvreQuiz(k); return }
   choisir(k);
 }
 function choisir(k) {
@@ -1859,10 +2047,44 @@ function repond(b, juste) {
     $('quiz-suite').hidden = false;
   }
 }
+// --- LIVRE EN MAIN : un mot à écrire, trouvé dans le livre
+const normMot = v => String(v).toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+function presque(a, b) { // le bon mot, au pluriel près ou à une petite faute près (mots de 5 lettres et plus)
+  if (a === b || a.replace(/[sx]$/, '') === b.replace(/[sx]$/, '')) return true;
+  if (b.length < 5 || Math.abs(a.length - b.length) > 1) return false;
+  let i = 0, j = 0, d = 0;
+  while (i < a.length && j < b.length) { if (a[i] === b[j]) { i++; j++; continue } if (++d > 1) return false; if (a.length > b.length) i++; else if (a.length < b.length) j++; else { i++; j++ } }
+  return d + (a.length - i) + (b.length - j) <= 1;
+}
+function ouvreLivreEnMain(k, suivante) {
+  const L = LIVRE_EN_MAIN[k]; if (!L) return;
+  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz');
+  if (!suivante || Q.k !== k || !Q.lem) Object.assign(Q, { k, lem: melange(L), i: 0 }); Q.essais = 0; Q.bloque = false;
+  const z = Q.lem[Q.i % Q.lem.length];
+  $('quiz-titre').textContent = '📖 LIVRE EN MAIN !';
+  $('quiz-intro').innerHTML = `${CHARS[k].art} se débloque <b>seulement avec le livre</b> « C’est qui le plus fort ? ». Ouvre-le et trouve le mot !`;
+  $('quiz-img').style.backgroundImage = `url(${k}_corps.webp)`; $('quiz-img').classList.add('ombre');
+  $('quiz-pas').innerHTML = '';
+  $('quiz-q').innerHTML = `<span class="lem-ou"><b>📖 PAGE ${z.p}</b> · ${fin(z.ou)}</span>${fin(z.q)}`;
+  $('quiz-msg').textContent = '';
+  $('quiz-rep').innerHTML = '<form id="lem-f" class="lem" autocomplete="off"><input id="lem-in" type="text" maxlength="24" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="ÉCRIS LE MOT ICI" aria-label="Le mot du livre"><button class="btn go" type="submit">VALIDER</button></form>';
+  $('lem-f').onsubmit = e => { e.preventDefault(); verifieMot() };
+  const tactile = matchMedia('(pointer: coarse)').matches, inp = $('lem-in'); // sur téléphone, le clavier ne doit pas cacher la question
+  if (tactile) { inp.onfocus = () => document.body.classList.add('clavier'); inp.onblur = () => setTimeout(() => document.body.classList.remove('clavier'), 60) }
+  const s = $('quiz-suite'); s.hidden = true; s.textContent = 'UNE AUTRE QUESTION'; s.onclick = () => { sfx('clic'); Q.i++; ouvreLivreEnMain(k, true) };
+  if (!tactile) setTimeout(() => { const e = $('lem-in'); if (e && G.screen === 'quiz') e.focus() }, 120); // au clavier d'ordinateur, on peut taper tout de suite ; sur téléphone, l'enfant lit d'abord
+}
+function verifieMot() {
+  if (Q.bloque) return; const z = Q.lem[Q.i % Q.lem.length], e = $('lem-in'), v = normMot(e.value); if (!v) return;
+  if (presque(v, normMot(z.r))) { Q.bloque = true; e.blur(); sfx('valide'); $('quiz-msg').textContent = 'BRAVO, TU AS LE LIVRE !'; setTimeout(quizGagne, 900); return }
+  Q.essais++; sfx('erreur'); e.select();
+  $('quiz-msg').textContent = fin(Q.essais === 1 ? `Pas tout à fait… Vérifie bien, page ${z.p} du livre !` : `Toujours pas… Regarde bien l’endroit indiqué, page ${z.p}. Tu peux aussi changer de question.`);
+  if (Q.essais >= 2 && Q.lem.length > 1) $('quiz-suite').hidden = false;
+}
 function quizGagne() {
   const k = Q.k, nv = [];
   if (!SAVE.debloques.includes(k)) SAVE.debloques.push(k); SAVE.quiz[k] = Date.now();
-  badge('secret', nv); if (Object.keys(QUIZ).every(x => SAVE.debloques.includes(x))) badge('lecteur', nv); sauve();
+  badge(LIVRE_EN_MAIN[k] ? 'livre' : 'secret', nv); if (Object.keys(QUIZ).every(x => SAVE.debloques.includes(x))) badge('lecteur', nv); sauve();
   $('quiz-pas').innerHTML = '<i class="ok"></i><i class="ok"></i><i class="ok"></i>';
   $('quiz-img').classList.remove('ombre'); $('quiz-q').textContent = `BRAVO ! ${CHARS[k].art} REJOINT L’ARÈNE !`;
   $('quiz-rep').innerHTML = ''; $('quiz-msg').innerHTML = (nv.length ? 'NOUVEAU BADGE : ' + nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ') : '') + (window.codeAOffrir ? codeAOffrir(k) : '');

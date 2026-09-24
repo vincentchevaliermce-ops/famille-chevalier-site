@@ -57,6 +57,18 @@ dino.mp3 → « T-rex Calls » — CaveboyTup — OpenGameArt.org — https://op
 buffle.mp3 → « Bison (bellow) », enregistré le 14/09/2005 — NPS / Shan Burson, National Park Service (Yellowstone Sound Library) — https://www.nps.gov/yell/learn/photosmultimedia/sounds-bison.htm — domaine public (« The files available here […] are in the public domain » : https://www.nps.gov/yell/learn/photosmultimedia/soundlibrary.htm) (un seul mugissement de bison)
 vapeur.mp3 → « Breath of a horse #2 » — DenisChardonnet — BigSoundBank.com — https://bigsoundbank.com/breath-of-a-horse-2-s0286.html — licence CC0 1.0 (ébrouement de cheval par les naseaux)
 
+Nouveaux animaux (24/09/2026 : léopard, porc-épic, guépard, autruche) — BigSoundBank.com, licence CC0 1.0 (numéro du son sur le site) :
+porcepic.mp3 → « Rattle (toy) » (son 0371) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (le hochet de la queue du porc-épic)
+porcepic_grr.mp3 → « Rapid rattle » (son 0316) — DavidGreck — BigSoundBank.com — licence CC0 1.0
+guepard.mp3 → « Robin #4 » (son 1670) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (le guépard pousse de petits cris aigus, comme un oiseau)
+guepard_ronron.mp3 → « Cat Purr » (son 0436) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0
+guepard_grr.mp3 → « Growling cat #3 » (son 1887) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (accéléré)
+leopard.mp3 → « Cat roar #1 » (son 1881) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (ralenti, plus grave)
+leopard_grr.mp3 → « Growling cat #3 » (son 1887) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (ralenti)
+autruche.mp3 → « Tawny Owl #2 » (son 1764) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (très ralenti : le « boum » grave de l'autruche)
+autruche_grr.mp3 → « Barn Owl #1 » (son 1400) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (ralenti : le sifflement)
+ailes.mp3 → « Flight of a Pigeon » (son 0840) — Joseph SARDIN — BigSoundBank.com — licence CC0 1.0 (battements d'ailes)
+
 Mentions demandées ou appréciées par les sources :
   · « Additional sounds: Joseph SARDIN - BigSoundBank.com »
   · Enregistrements de Yellowstone : merci de citer le « National Park Service ».

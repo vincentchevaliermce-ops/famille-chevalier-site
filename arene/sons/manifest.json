@@ -382,5 +382,45 @@
  "vapeur": [
   "vapeur.mp3",
   0.39
+ ],
+ "porcepic": [
+  "porcepic.mp3",
+  1.33
+ ],
+ "porcepic_grr": [
+  "porcepic_grr.mp3",
+  0.68
+ ],
+ "guepard": [
+  "guepard.mp3",
+  0.89
+ ],
+ "guepard_grr": [
+  "guepard_grr.mp3",
+  0.81
+ ],
+ "guepard_ronron": [
+  "guepard_ronron.mp3",
+  1.04
+ ],
+ "leopard": [
+  "leopard.mp3",
+  1.46
+ ],
+ "leopard_grr": [
+  "leopard_grr.mp3",
+  1.8
+ ],
+ "autruche": [
+  "autruche.mp3",
+  1.52
+ ],
+ "autruche_grr": [
+  "autruche_grr.mp3",
+  1.12
+ ],
+ "ailes": [
+  "ailes.mp3",
+  0.97
  ]
 }

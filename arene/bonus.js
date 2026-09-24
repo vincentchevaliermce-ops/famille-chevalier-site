@@ -4,14 +4,14 @@
 //  Rien ne sort de l'appareil : pas de compte, pas de nom réel, pas de serveur (les défis passent par le lien).
 // =====================================================================
 const PUBLIC = 'https://editions-chevalier.fr/arene/'; // adresse publique du jeu (liens partagés, QR)
-const EMOJI = { tigre: '🐯', gorille: '🦍', lion: '🦁', ours: '🐻‍❄️', croco: '🐊', hippo: '🦛', ratel: '🦡', komodo: '🦎', grizzly: '🐻', hyene: '🐾', buffle: '🐃', morse: '🦭', trex: '🦖' };
+const EMOJI = { tigre: '🐯', gorille: '🦍', lion: '🦁', ours: '🐻‍❄️', croco: '🐊', hippo: '🦛', ratel: '🦡', komodo: '🦎', grizzly: '🐻', hyene: '🐾', buffle: '🐃', morse: '🦭', trex: '🦖', leopard: '🐆', porcepic: '🦔', guepard: '⚡', autruche: '🪶' };
 const NIVEAUX = ['FACILE', 'NORMAL', 'COSTAUD'];
 SAVE.codes = SAVE.codes || {}; SAVE.godBattus = SAVE.godBattus || {};
 // ---------------------------------------------------------------------
 //  Codes secrets : des mots du livre (les enfants se les échangent)
 // ---------------------------------------------------------------------
 // 24/09 : mots du livre qu'on ne devine pas sans l'avoir lu, et que le jeu n'affiche jamais avant le déblocage (contrôle : verif/sync_livre.py)
-const CODES_ANIMAUX = { LOLONG: 'croco', PEPERE: 'hippo', VIPERE: 'ratel', MICROBES: 'komodo', MAMIE: 'grizzly', GNOUS: 'hyene', INDONESIE: 'buffle', BOUSCULADE: 'morse' };
+const CODES_ANIMAUX = { LOLONG: 'croco', PEPERE: 'hippo', VIPERE: 'ratel', MICROBES: 'komodo', MAMIE: 'grizzly', GNOUS: 'hyene', INDONESIE: 'buffle', BOUSCULADE: 'morse' }; // pas de code pour les animaux « livre en main » (léopard, porc-épic, guépard, autruche) : seul le livre les débloque
 const CODE_GOD = 'GIGI';
 const codeDe = k => Object.keys(CODES_ANIMAUX).find(c => CODES_ANIMAUX[c] === k);
 // quiz réussi : l'enfant reçoit le code de l'animal, à offrir à un copain (qui le débloque sans le quiz)
@@ -54,7 +54,7 @@ function revelerCodeGod() {
 //  La quête du légendaire : en GOD MODE, battre les 12 animaux réveille le T. REX
 // ---------------------------------------------------------------------
 const LEGENDAIRE = 'trex';
-const aBattre = () => ORDRE.filter(k => k !== LEGENDAIRE);
+const aBattre = () => ORDRE.filter(k => k !== LEGENDAIRE && (!LIVRE_EN_MAIN[k] || debloqueVrai(k))); // les animaux « livre en main » comptent une fois débloqués
 function questeTxt() { const l = aBattre(), n = l.filter(k => SAVE.godBattus[k]).length; return { n, tot: l.length } }
 function apresMatch(v, n, nv) {
   G.dernier = null; G.dernierJour = !!G.jour; G.finExtra = ''; // G.finExtra : messages ajoutés sous le résultat (écran de fin ou verdict du livre)
