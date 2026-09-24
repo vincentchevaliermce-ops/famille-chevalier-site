@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="L’Arène des Duels : le jeu gratuit du livre « C’est qui le plus fort ? ». Sans inscription, sans publicité."><meta property="og:title" content="L’Arène des Duels"><meta property="og:description" content="Le jeu gratuit du livre « C’est qui le plus fort ? » : choisis ton animal et défie tes copains !"><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><title>L'Arène des Duels</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="L’Arène des Duels : choisis ton animal et défie tes copains, avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans publicité."><meta property="og:title" content="L’Arène des Duels"><meta property="og:description" content="Choisis ton animal et défie tes copains ! Avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><title>L'Arène des Duels</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -205,9 +205,10 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 
 /* écran titre : dans le style de la couverture du livre */
 #titre{background:#F7C41F url(titre_fond.webp) center/cover no-repeat;padding:0;justify-content:flex-start}
-#titre .logo{position:absolute;left:50%;top:1.4cqw;width:51cqw;transform:translateX(-50%);animation:logo .6s cubic-bezier(.2,1.5,.4,1) both;pointer-events:none}
+#titre .logo{position:absolute;left:50%;top:1.6cqw;width:52cqw;transform:translateX(-50%);animation:logo .6s cubic-bezier(.2,1.5,.4,1) both;pointer-events:none}
 @keyframes logo{from{transform:translateX(-50%) scale(.6) rotate(-6deg);opacity:0}}
-#titre .badge-jeu{position:absolute;top:1.5cqw;right:1.8cqw;background:var(--marine);color:var(--creme);border:.25cqw solid var(--creme);border-radius:1cqw;padding:.35cqw 1.1cqw;font-size:1.35cqw;letter-spacing:.06em;box-shadow:0 .35cqw 0 rgba(0,0,0,.3)}
+#titre .sous-titre{position:absolute;left:50%;top:24.2cqw;transform:translateX(-50%) rotate(-1.5deg);margin:0;white-space:nowrap;background:var(--marine);color:var(--creme);border:.25cqw solid var(--creme);border-radius:1cqw;padding:.3cqw 1.3cqw .4cqw;font:800 1.45cqw Nunito,system-ui,sans-serif;box-shadow:0 .35cqw 0 rgba(0,0,0,.3);animation:logo .6s .15s cubic-bezier(.2,1.5,.4,1) both;pointer-events:none}
+#titre .sous-titre b{color:var(--jaune);font-weight:900}
 #titre .actions{position:absolute;left:50%;bottom:2.4cqw;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.9cqw}
 #titre #jouer{font-size:4.2cqw;padding:.55cqw 4.2cqw .75cqw;background:#EC5A2C;color:#FAF0D2;border:.5cqw solid var(--marine);border-radius:1.6cqw;
   box-shadow:.55cqw .7cqw 0 var(--marine);text-shadow:.22cqw .22cqw 0 var(--marine),-.22cqw -.22cqw 0 var(--marine),.22cqw -.22cqw 0 var(--marine),-.22cqw .22cqw 0 var(--marine);
@@ -245,6 +246,7 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .quiz-rep .btn{font-family:Nunito,system-ui,sans-serif;font-weight:900;font-size:1.75cqw;line-height:1.2;padding:1cqw 1cqw;background:#123a7a;min-height:7.4cqw}
 .quiz-rep .btn.bon{background:#2FA85B;border-color:#DFF7E6}.quiz-rep .btn.faux{background:#C8372D;border-color:#FFD9D3}
 .quiz-rep .btn[disabled]{cursor:default}
+.quiz-q .quiz-page{display:inline-block;vertical-align:middle;margin-left:.6cqw;font:900 1.25cqw Nunito,system-ui,sans-serif;color:var(--marine);background:var(--jaune);border-radius:.8cqw;padding:.15cqw .8cqw;text-shadow:none;white-space:nowrap}
 .carte .ets.quiz{font:900 1.1cqw Rubik,"Arial Black",sans-serif;color:var(--jaune);letter-spacing:.06em}
 
 /* ===== interface revue (23/09) : plus gros, plus simple ===== */
@@ -375,7 +377,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 .coin-titre{position:absolute;top:1.3cqw;left:1.5cqw;display:flex;gap:.7cqw;z-index:2}
 .btn.rond{display:flex;flex-direction:column;align-items:center;gap:.1cqw;font-size:2.3cqw;padding:.35cqw .8cqw .45cqw;border-radius:1.2cqw;background:rgba(11,42,91,.9);line-height:1}
 .btn.rond small{font:900 .95cqw Rubik,"Arial Black",sans-serif;letter-spacing:.05em}
-.jour-sticker{position:absolute;top:4.6cqw;right:1.6cqw;z-index:2;display:flex;flex-direction:column;align-items:center;gap:.1cqw;cursor:pointer;background:#7BD35A;color:var(--marine);border:.3cqw solid var(--marine);border-radius:1.2cqw;padding:.4cqw 1.1cqw;font-size:1.3cqw;box-shadow:.3cqw .4cqw 0 rgba(11,42,91,.6);transform:rotate(4deg);animation:battre 1.4s ease-in-out infinite alternate}
+.jour-sticker{position:absolute;top:1.6cqw;right:1.6cqw;z-index:2;display:flex;flex-direction:column;align-items:center;gap:.1cqw;cursor:pointer;background:#7BD35A;color:var(--marine);border:.3cqw solid var(--marine);border-radius:1.2cqw;padding:.4cqw 1.1cqw;font-size:1.3cqw;box-shadow:.3cqw .4cqw 0 rgba(11,42,91,.6);transform:rotate(4deg);animation:battre 1.4s ease-in-out infinite alternate}
 .jour-sticker small{font-size:1.1cqw}.jour-sticker span{font-size:2cqw}
 .jour-sticker.appel{box-shadow:0 0 0 .5cqw var(--jaune),.3cqw .4cqw 0 rgba(11,42,91,.6)}
 .btn.god-btn{background:#7A4FC8}.btn.god-btn.on{background:var(--jaune);color:var(--marine)}
@@ -434,10 +436,10 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   </div>
 
   <section class="ecran" id="titre" hidden>
-    <span class="badge-jeu R">LE JEU DU LIVRE</span>
     <div class="coin-titre"><button class="btn rond" id="codes-titre" type="button">🔑<small>CODES</small></button><button class="btn rond" id="invite-titre" type="button">📣<small>INVITER</small></button><button class="btn rond" id="parents-titre" type="button">👪<small>PARENTS</small></button></div>
     <button class="jour-sticker R" id="jour-titre" type="button">⚡ DÉFI DU JOUR</button>
-    <img class="logo" src="titre_logo.webp" alt="C’est qui le plus fort ?">
+    <img class="logo" src="titre_logo.webp" alt="L’Arène des Duels">
+    <p class="sous-titre">avec les animaux du livre <b>« C’est qui le plus fort ? »</b></p>
     <div class="actions">
       <button class="btn go R" id="jouer" type="button">JOUER</button>
       <div class="ligne-titre"><button class="btn R" id="livre-titre" type="button">📖 DUELS DU LIVRE</button><button class="btn R" id="adeux-titre" type="button">👥 À DEUX</button><button class="btn R" id="trophees-titre" type="button">🏆 TROPHÉES</button></div>
@@ -484,7 +486,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
     <p class="quiz-q" id="quiz-q"></p>
     <div class="quiz-rep" id="quiz-rep"></div>
     <p class="code-msg" id="quiz-msg" role="status"></p>
-    <div class="ligne"><button class="btn" id="quiz-retour" type="button">◀ RETOUR</button><button class="btn go" id="quiz-suite" type="button" hidden>RECOMMENCER</button></div>
+    <div class="ligne"><button class="btn" id="quiz-retour" type="button">◀ RETOUR</button><button class="btn go" id="quiz-suite" type="button" hidden>RÉESSAYER</button></div>
   </section>
 
   <section class="ecran" id="adeux" hidden>
@@ -580,7 +582,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
     <h2 class="titre R">ESPACE PARENTS</h2>
     <div id="parents-porte" class="porte"><p id="porte-q"></p><div class="ligne"><input id="porte-in" class="code-in" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Réponse"><button class="btn go" id="porte-ok" type="button">OK</button></div></div>
     <div id="parents-contenu" class="parents-txt" hidden>
-      <p>L’Arène des Duels est le jeu bonus gratuit du livre <b>« C’est qui le plus fort ? »</b> (Vincent Chevalier, 2026) : 30 duels d’animaux, des paris, et à chaque fois la vraie réponse, vérifiée.</p>
+      <p>L’Arène des Duels accompagne le livre <b>« C’est qui le plus fort ? »</b> (Vincent Chevalier, 2026) : 30 duels d’animaux, des paris, et à chaque fois la vraie réponse, vérifiée. Ce bonus est gratuit.</p>
       <p><b>Pas de compte, pas de publicité, pas de discussion entre joueurs, pas de vrai prénom</b> : les défis utilisent un « nom de champion » inventé. La progression est enregistrée uniquement sur cet appareil.</p>
       <p>Seul le mode « chacun son téléphone » passe par un service de mise en relation (PeerJS) pour relier les deux appareils le temps d’une partie : seuls les gestes du jeu circulent, rien n’est conservé.</p>
       <p><a href="https://editions-chevalier.fr/" target="_blank" rel="noopener">Découvrir le livre sur editions-chevalier.fr ↗</a></p>
@@ -650,14 +652,14 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
     <div class="tb" data-k="S" id="tb-s2">★<small>SPÉCIAL</small></div>
   </div>
 </div>
-<div id="tourne"><img src="titre_logo.webp" alt="C’est qui le plus fort ?" class="tourne-logo">
+<div id="tourne"><img src="titre_logo.webp" alt="L’Arène des Duels" class="tourne-logo">
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790188234"></script>
-<script src="anim.js?v=1790188234"></script>
-<script src="game.js?v=1790188234"></script>
-<script src="net.js?v=1790188234"></script>
-<script src="livre.js?v=1790188234"></script>
-<script src="bonus.js?v=1790188234"></script>
+<script src="skin.js?v=1790230084"></script>
+<script src="anim.js?v=1790230084"></script>
+<script src="game.js?v=1790230084"></script>
+<script src="net.js?v=1790230084"></script>
+<script src="livre.js?v=1790230084"></script>
+<script src="bonus.js?v=1790230084"></script>
 </body></html>

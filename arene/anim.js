@@ -331,7 +331,7 @@ const SPECIAUX = {
     if (k === 'SUPER') { if (ph === 'st') return SP('fort', { sy: 1 + .02 * Math.sin(t * 30) }, true);
       if (ph === 'act') return Math.floor(f.t / 5) % 2 ? SP('coup', { x: 60, sx: 1.05 }, true) : SP('saut', { y: 40, r: .08 }, true); return repos(); }
   },
-  // crocodile : ★ la roulade de la mort · → ★ et SUPER : il plonge (flaque) et jaillit · ↓ ★ la mâchoire vers le ciel
+  // crocodile : ★ la roulade de la mort · → ★ et SUPER : il plonge (flaque) et bondit de l’eau · ↓ ★ la mâchoire vers le ciel
   croco(f, t, u, ph, k, repos) {
     if (k === 'S') {
       if (ph === 'st') return SP('accroupi', { x: -12 * u, sy: .97 });

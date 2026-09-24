@@ -10,7 +10,8 @@ SAVE.codes = SAVE.codes || {}; SAVE.godBattus = SAVE.godBattus || {};
 // ---------------------------------------------------------------------
 //  Codes secrets : des mots du livre (les enfants se les échangent)
 // ---------------------------------------------------------------------
-const CODES_ANIMAUX = { BRUTUS: 'croco', VENTILO: 'hippo', MIEL: 'ratel', DRAGON: 'komodo', SAUMON: 'grizzly', RIRE: 'hyene', MOZZA: 'buffle', MOUSTACHE: 'morse' };
+// 24/09 : mots du livre qu'on ne devine pas sans l'avoir lu, et que le jeu n'affiche jamais avant le déblocage (contrôle : verif/sync_livre.py)
+const CODES_ANIMAUX = { LOLONG: 'croco', PEPERE: 'hippo', VIPERE: 'ratel', MICROBES: 'komodo', MAMIE: 'grizzly', GNOUS: 'hyene', INDONESIE: 'buffle', BOUSCULADE: 'morse' };
 const CODE_GOD = 'GIGI';
 const codeDe = k => Object.keys(CODES_ANIMAUX).find(c => CODES_ANIMAUX[c] === k);
 // quiz réussi : l'enfant reçoit le code de l'animal, à offrir à un copain (qui le débloque sans le quiz)
@@ -122,14 +123,14 @@ function montreBulle(t, long) { const b = $('bulle-info'); b.textContent = t; b.
 function partageDefi() {
   const r = G.dernier; if (!r) return;
   demandeNom(() => {
-    const txt = `⚔️ DÉFI ! ${SAVE.nom} a ${r.gagne ? 'battu' : 'affronté'} ${leNom(r.adv)} avec ${leNom(r.moi)}${r.gagne ? ` en ${r.temps} s ${'★'.repeat(r.etoiles)}` : ''}. Fais mieux dans L’Arène des Duels (le jeu gratuit du livre « C’est qui le plus fort ? ») :`;
+    const txt = `⚔️ DÉFI ! ${SAVE.nom} a ${r.gagne ? 'battu' : 'affronté'} ${leNom(r.adv)} avec ${leNom(r.moi)}${r.gagne ? ` en ${r.temps} s ${'★'.repeat(r.etoiles)}` : ''}. Fais mieux dans L’Arène des Duels, avec les animaux du livre « C’est qui le plus fort ? » :`;
     partage('Défi : L’Arène des Duels', txt, lienDefi(r));
   });
 }
 function invite() {
   sfx('clic'); G.retourInvite = G.screen || 'titre'; show('invite');
 }
-function envoieJeu() { partage('L’Arène des Duels', '🐯🦍 Viens jouer à L’Arène des Duels, le jeu gratuit du livre « C’est qui le plus fort ? ». Sans inscription, sans pub :', PUBLIC) }
+function envoieJeu() { partage('L’Arène des Duels', '🐯🦍 Viens jouer à L’Arène des Duels, avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans pub :', PUBLIC) }
 // photo de victoire (1080 × 1080) : le gagnant, les étoiles, le QR du jeu
 const charge1 = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src });
 async function photoVictoire() {
@@ -150,7 +151,7 @@ async function photoVictoire() {
   x.font = '900 24px Rubik, sans-serif'; x.fillStyle = '#0B2A5B'; x.textAlign = 'right'; x.fillText('editions-chevalier.fr/arene', 870, 1050);
   const blob = await new Promise(ok => c.toBlob(ok, 'image/png'));
   const fichier = new File([blob], 'victoire-arene-des-duels.png', { type: 'image/png' });
-  const res = await partage('Ma victoire dans L’Arène des Duels', `${r.gagne ? '🏆 ' + CHARS[r.moi].nom + ' GAGNE !' : 'Revanche demain !'} Le jeu gratuit du livre « C’est qui le plus fort ? » :`, PUBLIC, fichier);
+  const res = await partage('Ma victoire dans L’Arène des Duels', `${r.gagne ? '🏆 ' + CHARS[r.moi].nom + ' GAGNE !' : 'Revanche demain !'} L’Arène des Duels, avec les animaux du livre « C’est qui le plus fort ? » :`, PUBLIC, fichier);
   if (res === 'montre' || res === 'copie') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fichier.name; document.body.appendChild(a); a.click(); a.remove(); montreBulle('La photo est enregistrée !') }
 }
 // ---------------------------------------------------------------------

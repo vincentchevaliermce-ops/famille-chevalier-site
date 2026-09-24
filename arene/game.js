@@ -120,7 +120,7 @@ const CHARS = {
       H: { st: 15, act: 6, rec: 23, dmg: 14, hs: 22, bs: 16, kb: 12, box: [250, 900, -700, -40], lvl: 'mid', armor: true, chain: ['S', 'SUPER'], mots: ['PLANTÉ !', 'BOUM LES DÉFENSES !', 'CRAC !'], son: 'h' },
       cH: { st: 10, act: 12, rec: 22, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [200, 820, -300, 0], lunge: 10, lvl: 'low', chain: ['S'], mots: ['GLISSADE !', 'SUR LE VENTRE !'], son: 'h' },
       A: { st: 6, act: 99, rec: 10, dmg: 11, hs: 18, bs: 12, kb: 9, box: [-200, 720, -400, 150], lvl: 'high', air: true, land: true, dive: 8, quakeLand: true, chain: ['L', 'cL', 'H'], mots: ['PLOF !', 'BADABOUM !'], son: 'h' },
-      T: { st: 5, act: 3, rec: 22, dmg: 13, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['CÂLIN DE 1 500 KG !', 'ÉCRASÉ !'], son: 'h' },
+      T: { st: 5, act: 3, rec: 22, dmg: 13, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['CÂLIN DE 1 500 KG !', 'APLATI !'], son: 'h' },
       S: { st: 4, act: 24, rec: 20, dmg: 0, hs: 0, bs: 0, kb: 0, lvl: 'mid', mur: true, contre: { dmg: 14, hs: 24, bs: 0, kb: 16, kd: true, lvl: 'mid', mots: ['PAS TOUCHE AU TROUPEAU !', 'LE MUR !'], son: 'h' }, mots: ['LE MUR !'], son: 's', nom: 'Le mur de défenses', ia: [0, 750, .8] },
       SF: { st: 10, act: 99, rec: 20, dmg: 11, hs: 20, bs: 14, kb: 10, kd: true, box: [150, 820, -520, 60], saute: [15, 13], land: true, lvl: 'mid', mots: ['IL MARCHE AVEC SES DENTS !', 'HISSE !', 'CROCHET !'], son: 's', nom: 'Il marche avec ses dents', ia: [450, 1050, 1] },
       SD: { st: 12, act: 30, rec: 22, dmg: 9, hs: 20, bs: 12, kb: 4, box: [230, 720, -520, 0], tire: { portee: 1300, v: 9 }, aspire: true, lvl: 'mid', mots: ['SLUUURP !', 'ASPIRÉ !', 'GLOUPS !'], son: 's', nom: 'L’aspirateur à moustaches', ia: [500, 1300, 1] },
@@ -201,13 +201,13 @@ const CHARS = {
       S: { st: 14, act: 30, rec: 22, dmg: 4, hits: 4, hs: 22, bs: 14, kb: 3, kd: true, box: [380, 980, -420, 0], rush: 9, agrippe: true, lvl: 'mid', mots: ['ROULADE !', 'TOURNE !', 'ÇA TOURNE !'], son: 's', nom: 'La roulade de la mort', ia: [300, 720, 1] },
       SF: { st: 34, act: 99, rec: 18, land: true, dmg: 12, hs: 22, bs: 14, kb: 8, kd: true, box: [-300, 800, -900, 0], plonge: true, lvl: 'mid', mots: ['SURPRISE !', 'SPLASH !', 'COUCOU C’EST MOI !'], son: 'h', nom: 'Il attaque caché sous l’eau', ia: [520, 1400, .9] },
       SD: { st: 5, act: 8, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 10, kd: true, lance: 16, aa: true, inv: 6, box: [-300, 760, -820, 0], lvl: 'mid', mots: ['COUP DE QUEUE !', 'FLAC !'], son: 's', nom: 'Le coup de queue', ia: [0, 0, 0] },
-      SUPER: { st: 40, act: 99, rec: 18, land: true, dmg: 20, hs: 24, bs: 16, kb: 10, kd: true, box: [-320, 820, -1000, 0], plonge: true, lvl: 'mid', mots: ['SPLASH !', 'CROC !', 'SURPRIIISE !'], son: 'h', nom: 'Il jaillit de l’eau' },
+      SUPER: { st: 40, act: 99, rec: 18, land: true, dmg: 20, hs: 24, bs: 16, kb: 10, kd: true, box: [-320, 820, -1000, 0], plonge: true, lvl: 'mid', mots: ['SPLASH !', 'CROC !', 'SURPRIIISE !'], son: 'h', nom: 'Il bondit de l’eau' },
     },
   },
   // --- HIPPOPOTAME : le tank blindé. ★ il se retourne et sa queue-hélice mitraille des crottes !
   hippo: {
     nom: 'HIPPOPOTAME', art: 'L’HIPPOPOTAME', force: 1.333, spr: true, col: '#8E6FA8', clair: '#DCC2F2', fond: '#B48CD6', K: .5, hp: 112, walk: 4.4, back: 3.6, dash: 12, jumpV: 18.5, jumpX: 6, grav: 1.3, etour: 58,
-    aie: ['OUMPF !', 'GROMPF !', 'MES DENTS !', 'MA PEAU FENDILLÉE !'], ia: { saut: .5 },
+    aie: ['OUMPF !', 'GROMPF !', 'MES DENTS !', 'AÏE MON NEZ !'], ia: { saut: .5 },
     hurt: { stand: [-620, 780, -760, 0], crouch: [-620, 780, -600, 0], air: [-560, 720, -700, 0] },
     push: [260, 300], reach: 700, speMin: 480, speMax: 1100,
     moves: {
@@ -227,7 +227,7 @@ const CHARS = {
   // --- RATEL : le teigneux minuscule (nuage puant, il fonce, il mord et ne lâche pas)
   ratel: {
     nom: 'RATEL', art: 'LE RATEL', force: 0.951, spr: true, col: '#3A3A48', clair: '#E3E3EE', fond: '#6B6B80', K: .38, hp: 108, walk: 7.8, peau: .85, back: 6, dash: 19, jumpV: 25, jumpX: 9, grav: 1.15, etour: 46,
-    aie: ['MÊME PAS MAL !', 'PEAU ÉPAISSE !', 'GRRR !'], ia: { saut: 1.1 },
+    aie: ['MÊME PAS MAL !', 'MÊME PAS PEUR !', 'GRRR !'], ia: { saut: 1.1 },
     hurt: { stand: [-560, 660, -780, 0], crouch: [-560, 660, -520, 0], air: [-500, 600, -680, 0] },
     push: [170, 210], reach: 580, speMin: 300, speMax: 560,
     moves: {
@@ -240,13 +240,13 @@ const CHARS = {
       S: { st: 14, act: 10, rec: 22, dmg: 1, nuage: { x0: 560, r: 230, life: 170, tick: 25, stun: 42 }, lvl: 'mid', mots: ['PSCHIIT !', 'PFIOU, ÇA PUE !', 'PROUT !'], son: 's', nom: 'La bombe puante', ia: [250, 720, 1] },
       SF: { st: 5, act: 16, rec: 24, dmg: 9, hs: 20, bs: 14, kb: 10, kd: true, box: [200, 900, -380, 0], rush: 24, stopHit: true, bas: true, bonk: true, lvl: 'mid', mots: ['FONCE !', 'TÊTE BAISSÉE !', 'SANS RÉFLÉCHIR !'], son: 's', nom: 'Il fonce sans réfléchir', ia: [300, 900, 1.2] },
       SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 18, aa: true, inv: 8, saute: [4, 20], land: true, box: [150, 800, -800, -150], lvl: 'mid', mots: ['CROC !', 'JE LÂCHE PAS !'], son: 's', nom: 'La morsure qui ne lâche pas', ia: [0, 0, 0] },
-      SUPER: { st: 12, act: 48, rec: 22, dmg: 4, hits: 8, hs: 16, bs: 8, kb: 3, kd: true, box: [200, 1100, -640, 0], rush: 15, armor: true, lvl: 'mid', mots: ['GRRR !', 'SCRITCH !', 'FURIE !', 'TREIZE KILOS DE RAGE !'], son: 'l', nom: 'La furie du ratel' },
+      SUPER: { st: 12, act: 48, rec: 22, dmg: 4, hits: 8, hs: 16, bs: 8, kb: 3, kd: true, box: [200, 1100, -640, 0], rush: 15, armor: true, lvl: 'mid', mots: ['GRRR !', 'SCRITCH !', 'FURIE !', '13 KILOS DE RAGE !'], son: 'l', nom: 'La furie du ratel' },
     },
   },
   // --- DRAGON DE KOMODO : le venimeux (morsure à venin, coup de queue, morsure en l'air)
   komodo: {
     nom: 'KOMODO', art: 'LE DRAGON DE KOMODO', force: 0.955, spr: true, col: '#8A7A45', clair: '#E2D49A', fond: '#B09C5A', K: .44, hp: 116, walk: 6, back: 4.4, dash: 15, jumpV: 21, jumpX: 7.5, grav: 1.2, etour: 52,
-    aie: ['SSSS !', 'AÏE LA LANGUE !', 'HEIN ? J’ENTENDS RIEN !'], ia: {},
+    aie: ['SSSS !', 'SSSS… AÏE !', 'HEIN ? J’ENTENDS RIEN !'], ia: {},
     hurt: { stand: [-560, 680, -700, 0], crouch: [-560, 680, -440, 0], air: [-500, 620, -620, 0] },
     push: [220, 280], reach: 680, speMin: 380, speMax: 640,
     moves: {
@@ -269,14 +269,14 @@ const PHRASES = {
   gorille: ['Mains en coupe, s’il vous plaît !', 'Tam-tam ! Et maintenant, je chante en mangeant.', 'On m’entend taper à 1 km !'],
   lion: ['20 heures de sieste par jour… et je t’ai quand même battu !', 'On m’entend rugir à 8 km !', 'Le roi, c’est moi. Enfin… aujourd’hui.'],
   ours: ['Mes poils sont des pailles : je flotte et je gagne !', 'Blanc ? Non : transparent. Et champion !', '687 km à la nage : ça muscle !'],
-  croco: ['Clac-clac ! Même Brutus serait fier.', 'Tu m’as vu venir ? Non ? Normal.', 'Une flaque, et hop : surprise !'],
-  hippo: ['Trois tonnes de mauvaise humeur !', 'Le ventilateur à crottes marche à tous les coups !', 'Plus grande bouche = plus fort. Logique !'],
-  ratel: ['Je ne gagne pas : je dégoûte !', 'Treize kilos de rage !', 'Ma peau est trop grande : même pas mal !'],
-  komodo: ['Je t’ai senti à 4 km !', 'Hein ? Tu as dit quoi ? J’entends très mal…', 'Un DRAGON. Je rappelle.'],
-  grizzly: ['Attrapé au vol, comme un saumon !', '40 000 papillons au dîner. Croustillant !', 'J’arrive… et la plage se vide !'],
-  hyene: ['Hi hi hi… c’est nerveux !', 'Chez les hyènes, ce sont les filles qui commandent !', 'Mangeuse de restes ? Même pas vrai !'],
-  buffle: ['Meuh ? Non : BUFFLE !', 'Mordu, mais pas vaincu !', 'Et en plus, je fais de la mozzarella !'],
-  morse: ['Un canapé à moustaches, hein ?', 'Pas touche au troupeau !', '700 moustaches, zéro défaite !'],
+  croco: ['Clac-clac ! Une mâchoire d’acier !', 'Tu m’as vu venir ? Non ? Normal.', 'Une flaque, et hop : surprise !'],
+  hippo: ['Trois tonnes de mauvaise humeur !', 'Le ventilateur à crottes, ça ne rate jamais !', 'Plus grande bouche = plus fort. Logique !'],
+  ratel: ['Je ne gagne pas : je dégoûte !', '13 kilos de rage !', 'Pschiit ! Ça pue, hein ?'],
+  komodo: ['Sssss… Même pas mal !', 'Hein ? Tu as dit quoi ? J’entends très mal…', 'Un DRAGON. Je rappelle.'],
+  grizzly: ['Attrapé au vol, comme un saumon !', '40 000 papillons au dîner. Croustillant !', 'Grrr… Tout le monde dehors !'],
+  hyene: ['Hi hi hi… c’est nerveux !', 'Chez les hyènes, ce sont les filles qui commandent !', 'Rira bien qui rira le dernier !'],
+  buffle: ['Meuh ? Non : BUFFLE !', 'Mordu, mais pas vaincu !', 'Tête baissée, et ça fonce !'],
+  morse: ['Un canapé à moustaches, hein ?', 'Un canapé, oui. Mais avec des épées !', '700 moustaches, zéro défaite !'],
   trex: ['Préhistorique, mais toujours en forme !', 'Petits bras, GRANDES dents !', 'C’est qui le plus fort ? MOI !'],
 };
 const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
@@ -287,82 +287,83 @@ const ARENES = [
   { k: 'colisee', nom: 'COLISÉE', img: 'arene_colisee.webp' }, { k: 'riviere', nom: 'RIVIÈRE', img: 'arene_riviere.webp' },
 ];
 const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
-const FAITS = { // cartes « LE SAVAIS-TU ? » : uniquement des infos du livre imprimé (TEXTE_IMPRIME_V12, page en fin de ligne)
+const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V16, mot pour mot (// p. N) ou à peine adaptées (// ≈ p. N : sujet ajouté).
+  // Aucune carte ne donne le résultat d'un duel. Une carte ne se gagne que contre un animal déjà débloqué (sinon elle donnerait les réponses du quiz).
   tigre: [
     'Si on rasait un tigre, il resterait rayé : ses rayures sont aussi dessinées sur sa peau !', // p. 9
-    'La nuit, le tigre voit six fois mieux que toi.', // p. 67
-    'Le tigre traverse à la nage des rivières larges de 8 km !', // p. 67
-    'Un tigre peut tuer un gaur, un bœuf sauvage d’une tonne : presque cinq fois son poids !', // p. 10
-    'Le tigre vit en Asie, le gorille en Afrique : dans la nature, ils ne se croisent jamais. Leur duel est imaginé !', // p. 67
+    'La nuit, le tigre voit six fois mieux que toi. Et il traverse à la nage des rivières larges de 8 km !', // p. 67
+    'Le tigre approche sans un bruit, puis il bondit : jusqu’à 10 mètres d’un coup ! Plus que deux voitures garées l’une derrière l’autre.', // p. 55
+    '1 tonne : le poids des plus gros gaurs, des bœufs sauvages. Un tigre peut en tuer un : presque cinq fois son poids !', // p. 10
+    'Chaque tigre a son propre motif de rayures. Les chercheurs comparent les photos pour reconnaître chaque animal. Pas besoin de collier avec son prénom !', // p. 70
   ],
   gorille: [
-    'Le gorille se frappe la poitrine les mains en coupe, pas avec les poings. Au cinéma, on se trompe souvent !', // p. 68
-    'On entend un gorille se frapper la poitrine à 1 km : un vrai tambour !', // p. 68
-    'Devant ses plantes préférées, le gorille fredonne et chantonne. Sans doute pour dire : « Je mange, ne me dérange pas ! »', // p. 67
-    'Un dos argenté, c’est un grand gorille mâle. Il ne recule pas : il charge en hurlant !', // p. 67-68
-    'Le gorille ne chasse jamais : il gagne ses disputes en impressionnant.', // p. 68
+    'Le gorille se frappe la poitrine les mains en coupe, pas avec les poings. Au cinéma, on se trompe souvent !', // ≈ p. 68
+    '1 km : c’est la distance à laquelle on entend un gorille se frapper la poitrine. Un vrai tambour !', // p. 68
+    'Devant ses plantes préférées, le gorille chantonne ! Sans doute une façon de dire : « Je mange, ne me dérange pas. »', // p. 67
+    'Un dos argenté (un grand mâle gorille) ne recule pas.', // p. 68
+    'Le gorille charge en hurlant. Il est bien plus fort qu’un humain. De combien ? Personne n’a pu le mesurer !', // p. 68
   ],
   lion: [
-    'La nuit, le rugissement du lion s’entend à 8 km : de l’autre bout de la ville !', // p. 9
+    'La nuit, le rugissement du lion s’entend à 8 km : de l’autre bout de la ville ! Il veut dire : « Ici, c’est chez moi. »', // p. 9
     'Le lion passe environ 20 heures par jour à ne rien faire. Un vrai chat… de 190 kg !', // p. 19
-    'La langue du lion est couverte de pointes : elle racle la viande sur les os et nettoie son pelage.', // p. 10
-    'Le point faible du lion ? Sa crinière lui donne chaud !', // p. 9
-    'Le lion a des crocs de 7 cm. Son coup spécial : il plaque sa proie au sol.', // p. 9 et 19
+    'La langue à pointes du lion racle la viande sur les os et nettoie son pelage. Une toilette pareille, ça frotte !', // ≈ p. 10
+    'Certains lions cachent une petite pointe dure dans le pompon de leur queue. À quoi sert-elle ? Personne ne le sait !', // p. 41
+    'Comme une équipe de foot : chaque lionne a son poste ! Les plus légères poussent la proie vers les plus lourdes, cachées au centre !', // p. 51
   ],
   ours: [
     'Les poils de l’ours polaire sont creux, comme des pailles : ils gardent la chaleur… et l’aident à flotter !', // p. 15
-    'L’ours polaire n’est pas vraiment blanc : ses poils sont transparents et sa peau est noire !', // p. 32
-    'Une ourse polaire a nagé 687 km en 9 jours sans s’arrêter : autant que de Paris à Marseille… à la nage !', // p. 16
-    'L’ours polaire sent un phoque à plus d’un kilomètre, même caché sous la neige !', // p. 31
-    'Grizzly + ours polaire = « pizzly » ! On en a trouvé 8 dans la nature.', // p. 15
+    'L’ours polaire est blanc ? Faux ! Ses poils sont transparents et sa peau est noire. Il paraît blanc… comme la neige, faite de glace transparente !', // p. 32
+    '687 km nagés par une ourse polaire, 9 jours sans s’arrêter. Autant que de Paris à Marseille… à la nage !', // p. 16
+    'Sous ses pattes, l’ours polaire porte de minuscules bosses. Elles accrochent la glace et l’aident à ne pas glisser. Des semelles antidérapantes intégrées !', // p. 26
+    'Pour les scientifiques, l’ours polaire est un mammifère marin, comme le phoque et la baleine ! Il vit surtout sur la glace de mer.', // p. 31
   ],
   croco: [
-    'Brutus, le crocodile géant de la photo, mesure 5,50 m… et il lui manque une patte avant !', // p. 60
-    'La morsure du crocodile marin est la plus forte jamais mesurée : presque comme un T. rex !', // p. 59
-    'Un crocodile marin a parcouru 590 km en 25 jours en « surfant » sur les courants de la mer !', // p. 60
-    'Chez le crocodile, c’est la température du nid qui décide : vers 31,6 °C, des mâles. Plus chaud ou plus froid : des femelles.', // p. 60
-    'Des crocodiles font un demi-cercle dans la rivière : un filet vivant pour pêcher !', // p. 13
+    'Une famille en bateau aperçoit Brutus, un crocodile géant de 5,50 m. Il lui manque une patte avant, arrachée par un requin… ou par un autre croco.', // p. 60
+    'La morsure du crocodile marin est la plus forte jamais mesurée. Un croco de 6 m mordrait presque comme un T. rex !', // p. 59
+    '590 km parcourus en 25 jours par un crocodile marin qui « surfe » sur les courants de la mer !', // p. 60
+    'Crocodile : fille ou garçon ? C’est la température du nid qui décide ! Vers 31,6 °C : des mâles. Plus chaud ou plus froid : des femelles.', // p. 60
+    'Des crocos font un demi-cercle dans la rivière : un filet vivant ! Au menu : poissons, zèbres… et jeunes hippos !', // p. 13
   ],
   hippo: [
-    'Les plus grandes dents d’hippopotame mesurent 50 cm : plus que ton avant-bras !', // p. 14
-    'L’hippopotame ne nage pas : il marche au fond de l’eau. Il y dort même, et remonte respirer sans se réveiller !', // p. 13
-    'Un hippopotame peut peser jusqu’à 3 200 kg.', // p. 13
-    'Le mâle agite sa queue pour éparpiller ses crottes et marquer son territoire. Mieux vaut ne pas être derrière !', // p. 14
-    'L’hippopotame renverse même des bateaux : c’est l’un des animaux les plus dangereux d’Afrique.', // p. 14
+    '50 cm : la longueur des plus grandes dents d’hippo. Plus que ton avant-bras !', // p. 14
+    'L’hippo ne nage pas : il marche au fond de l’eau. Il y dort même, et remonte respirer sans se réveiller !', // p. 13
+    'Un hippopotame peut peser jusqu’à 3 200 kg.', // ≈ p. 13
+    'L’hippopotame mâle agite sa queue pour éparpiller ses crottes et marquer son territoire. Mieux vaut ne pas être derrière !', // p. 14
+    'L’hippopotame ? Un gros pépère qui broute. Faux ! Il renverse même des bateaux ! C’est l’un des animaux les plus dangereux d’Afrique.', // p. 14
   ],
   ratel: [
-    'Le ratel pèse au maximum 13 kg… et des vidéos le montrent tenir tête à des lions !', // p. 19
-    'La peau du ratel est épaisse et trop grande pour lui : si on l’attrape, il se retourne dedans… et mord !', // p. 19
-    'Mordu au visage par une vipère, un ratel chassait de nouveau des serpents 5 heures plus tard !', // p. 20
-    'Dans une ruche, le ratel mange le miel… et les larves, les bébés des abeilles !', // p. 20
-    'Quand le ratel sent la trace fraîche d’un lion, il file se cacher dans un trou !', // p. 20
+    'Sur Internet, des vidéos montrent le ratel, une sorte de blaireau d’Afrique, tenir tête à des lions. 13 kilos de rage contre 190 !', // p. 19
+    'La peau du ratel, épaisse et trop grande pour lui, résiste aux morsures de chien. Si on l’attrape, il se retourne dans sa peau… et mord !', // p. 19
+    '5 heures après une morsure de vipère au visage, un ratel chassait de nouveau des serpents !', // p. 20
+    'Dans une ruche, le ratel mange le miel… et les larves, les bébés des abeilles ! Les piqûres ? Sa peau épaisse s’en moque.', // p. 20
+    'Le coup spécial du ratel : la bombe puante !', // ≈ p. 19
   ],
   grizzly: [
     'Le grizzly, un ours brun d’Amérique, peut avaler 40 000 papillons de nuit en un jour. Croustillant !', // p. 56
     'L’ours brun peut passer l’hiver sans manger, sans boire, sans pipi ni caca. Plusieurs mois !', // p. 16
-    'Sur une plage d’Alaska, un grizzly tout seul a fait filer une quinzaine d’ours polaires… sans même grogner !', // p. 16
-    'Le grizzly a des griffes de 6 cm. Son coup spécial : il attrape les saumons au vol !', // p. 15
-    'Les oursons naissent en plein hiver, dans la tanière : ils pèsent moins qu’une brique de lait !', // p. 55
+    'Le coup spécial du grizzly : il attrape les saumons au vol !', // ≈ p. 15
+    'Grizzly + ours polaire = « pizzly » ! On en a trouvé 8 dans la nature : une seule ourse polaire était leur maman… ou leur mamie !', // p. 15
+    'Les oursons naissent dans la tanière, pendant que leur mère hiberne. Ils pèsent moins qu’une brique de lait !', // p. 55
   ],
   hyene: [
     'Mangeuse de restes, la hyène ? Faux : elle chasse elle-même la plupart de ses repas. Des gnous, des zèbres… parfois trois fois plus lourds qu’elle !', // p. 41
-    'Avec ses dents, une hyène peut casser des os de girafe épais de 7 cm. Plus épais que ton poignet !', // p. 42
-    'Le fameux « rire » de la hyène n’a rien d’une blague : c’est du stress !', // p. 42
-    'Chez les hyènes, ce sont les femelles qui commandent !', // p. 42
-    'La hyène n’est pas un chien sauvage : elle est plus proche des chats !', // p. 42
-    'Dans un ancien volcan vivent jusqu’à 550 hyènes et 40 lions. Et ce sont les lions qui volent le plus !', // p. 42
+    '7 cm : l’épaisseur des os de girafe qu’une hyène peut casser avec ses dents. Plus épais que ton poignet !', // p. 42
+    'Chez les hyènes, les femelles commandent ! Et leur « rire » ? Pas une blague : du stress.', // p. 42
+    '« La hyène est un chien sauvage. » Faux : c’est une cousine des chats ! Elle a sa propre famille : les hyènes.', // p. 42
+    'Le coup spécial de la hyène : elle fatigue ses proies.', // ≈ p. 41
+    'Le point faible de la hyène : son vacarme attire les voleurs.', // ≈ p. 41
   ],
   buffle: [
-    'Le buffle d’eau peut peser 550 kg : sept fois plus lourd qu’un dragon de Komodo !', // p. 23
+    'Le buffle d’eau peut peser jusqu’à 550 kg : sept fois plus lourd qu’un dragon de Komodo !', // ≈ p. 23
     'Tu as déjà mangé de la mozzarella de bufflonne ? Elle est faite avec le lait de la femelle du buffle d’eau !', // p. 23
-    'Mordu à la patte par un dragon de Komodo, le buffle se secoue, se dégage et repart. C’est ce qui arrive le plus souvent !', // p. 24
-    'Le point faible du buffle : ses blessures guérissent mal. Blessé, il va se réfugier dans une mare…', // p. 23-24
+    'Le coup spécial du buffle : il charge tête baissée !', // ≈ p. 23
+    'Le point faible du buffle : ses blessures guérissent mal.', // ≈ p. 23
   ],
   morse: [
-    'Un gros morse mâle peut peser 1 500 kg, avec des défenses de 90 cm !', // p. 31
-    'Le nom savant du morse veut dire « celui qui marche avec les dents » : ses défenses l’aident à se hisser sur la glace !', // p. 31
-    'Jusqu’à 700 moustaches fouillent la vase. Puis sa langue fait le vide et aspire la chair hors du coquillage !', // p. 32
-    'Sur 25 attaques d’ours polaires contre des morses, 23 ont raté : l’ours repart presque toujours le ventre vide !', // p. 32
+    'Un morse peut peser jusqu’à 1 500 kg, avec des défenses de 90 cm !', // ≈ p. 31
+    'Le nom savant du morse veut dire « celui qui marche avec les dents » : ses défenses l’aident à monter sur la glace !', // p. 31
+    'Jusqu’à 700 moustaches fouillent la boue. Puis sa langue aspire la chair hors du coquillage !', // p. 32
+    'Le coup spécial du morse : il frappe avec ses défenses !', // ≈ p. 31
     'Sous sa gorge, le morse a une poche qu’il gonfle d’air, comme une bouée. Il peut dormir debout… dans l’eau !', // p. 48
   ],
   trex: [ // le légendaire n'est pas un duel du livre : infos du Natural History Museum de Londres (nhm.ac.uk, fiche Tyrannosaurus), sauf la dernière (p. 59)
@@ -370,85 +371,83 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : uniquement des infos du livre i
     'Il mesurait environ 12 mètres de long : la longueur d’un autobus !', // NHM
     'Sa morsure était 3 à 5 fois plus puissante que celle d’un lion : la plus forte de tous les animaux terrestres connus !', // NHM
     'Il avait une soixantaine de dents en dents de scie, longues jusqu’à 20 cm !', // NHM
-    'Un crocodile marin de 6 m mordrait presque aussi fort qu’un T. rex !', // p. 59
+    'La morsure du crocodile marin est la plus forte jamais mesurée. Un croco de 6 m mordrait presque comme un T. rex !', // p. 59
   ],
   komodo: [
-    'Le dragon de Komodo est le plus gros lézard du monde : trois mètres de long !', // p. 23
-    'Sa langue fourchue « goûte » l’air : il repère un animal mort à plus de 4 km !', // p. 23
-    'Un dragon de Komodo peut avaler 80 % de son poids en un repas. Pour toi, ce serait 24 kg de pâtes !', // p. 24
-    'Les bébés dragons vivent dans les arbres : les adultes mangent les petits !', // p. 24
-    'Le dragon de Komodo a 60 dents coupantes… et une morsure à venin.', // p. 23
+    'Voici le plus gros lézard du monde : trois mètres de long.', // p. 23
+    'Le dragon « goûte » l’air avec sa langue fourchue : il repère un animal mort à plus de 4 km !', // p. 23
+    '24 kg de pâtes en un repas : ce que tu avalerais si tu mangeais comme un dragon de Komodo !', // p. 24
+    'Dragon : les bébés vivent dans les arbres. Pourquoi ? Les dragons adultes mangent les petits ! Alors les jeunes vivent perchés.', // p. 24
+    '« Le dragon tue avec les microbes de sa bouche. » Pas vraiment : son venin… et la mare sale !', // p. 24
   ],
 };
 
 // ---------------------------------------------------------------------
-//  Quiz du livre : 3 bonnes réponses sur 3 pour débloquer un animal (24 réponses vérifiées sur le texte imprimé V12, page indiquée)
+//  Quiz du livre : 3 bonnes réponses de suite pour débloquer un animal.
+//  Règles (24/09, texte imprimé V16) :
+//  - réponses prises MOT POUR MOT sur une page de fiches (avant la réponse du duel) : aucune question ne dévoile un résultat ;
+//  - jamais une réponse que le jeu affiche déjà pour cet animal (nom de coup, cri, carte) : il faut ouvrir le livre ;
+//  - une erreur ne montre jamais la bonne réponse : « Relis la page N du livre », puis nouvel essai avec d'autres questions.
+//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V16_74P.md
 // ---------------------------------------------------------------------
 const QUIZ = {
-  croco: { pages: '13-14 et 59-60', q: [
-    ['Comment s’appelle le vieux crocodile géant photographié avec un requin dans la gueule ?', ['Brutus', 'Rex', 'Goliath'], 60],
-    ['Qu’est-ce qui décide si un bébé crocodile sera une fille ou un garçon ?', ['La température du nid', 'La couleur de l’œuf', 'La taille du papa'], 60],
+  croco: { pages: 'pages 13 et 59', q: [
+    ['Des crocodiles font un demi-cercle dans la rivière pour pêcher. Ça fait…', ['un filet vivant', 'une échelle', 'un barrage'], 13],
+    ['Quel est le point faible du crocodile du Nil ?', ['un élastique lui ferme la gueule', 'une lumière vive l’aveugle', 'il ne sait pas nager'], 13],
+    ['Combien pèse un crocodile du Nil, au maximum ?', ['750 kg', '75 kg', '7 500 kg'], 13],
+    ['Comment s’appelle le crocodile géant du duel 26 ?', ['Brutus', 'Titan', 'Goliath'], 59],
+    ['Quel est le point faible du crocodile marin ?', ['il lui manque une patte', 'il est aveugle', 'il a peur des bateaux'], 59],
     ['La morsure du crocodile marin est…', ['la plus forte jamais mesurée', 'plus faible que celle du requin', 'la plus venimeuse du monde'], 59],
-    ['Au duel 5, qui gagne entre l’hippopotame et le crocodile du Nil ?', ['L’hippopotame', 'Le crocodile', 'Match nul'], 14],
-    ['Combien de kilomètres un crocodile marin a-t-il parcourus en « surfant » sur les courants ?', ['590 km', '5 km', '59 000 km'], 60],
-    ['Quel est le coup spécial du crocodile marin dans sa fiche ?', ['Il jaillit de l’eau', 'Il charge gueule ouverte', 'Il attaque en bande'], 59],
+    ['Un crocodile marin de 6 m mordrait presque comme…', ['un T. rex', 'un lion', 'un requin blanc'], 59],
+    ['Quelle est l’arme du crocodile marin, dans sa fiche ?', ['une armure de plaques d’os', 'des griffes de 10 cm', 'un dard venimeux'], 59],
   ] },
-  hippo: { pages: '13-14', q: [
-    ['Quelle longueur font les plus grandes dents d’hippopotame ?', ['50 cm', '5 cm', '5 mètres'], 14],
-    ['Où l’hippopotame dort-il parfois ?', ['Sous l’eau', 'Dans un arbre', 'Dans un terrier'], 13],
-    ['À quoi sert le « ventilateur à crottes » de l’hippopotame mâle ?', ['À marquer son territoire', 'À se rafraîchir', 'À attirer les poissons'], 14],
-    ['Un crocodile s’approche d’un bébé hippo. Que fait le troupeau ?', ['Il se serre autour du petit', 'Il s’enfuit', 'Il continue de dormir'], 14],
-    ['Combien peut peser un hippopotame ?', ['Jusqu’à 3 200 kg', 'Jusqu’à 320 kg', 'Jusqu’à 32 tonnes'], 13],
-    ['« L’hippopotame ? Un gros pépère qui broute. » Vrai ou faux ?', ['Faux : il est très dangereux', 'Vrai : il ne se bat jamais', 'Vrai : il a peur des crocodiles'], 14],
+  hippo: { pages: 'page 13', q: [
+    ['Combien peut peser un hippopotame ?', ['jusqu’à 3 200 kg', 'jusqu’à 320 kg', 'jusqu’à 32 000 kg'], 13],
+    ['L’hippopotame sait-il nager ?', ['non : il marche au fond de l’eau', 'non : il flotte comme un bouchon', 'oui : aussi vite qu’un dauphin'], 13],
+    ['Quel est le point faible de l’hippopotame ?', ['sa peau craque au soleil', 'ses dents tombent l’hiver', 'il a peur de l’eau'], 13],
+    ['Que broute l’hippo ?', ['l’herbe', 'les algues', 'des feuilles d’arbre'], 13],
+    ['Quelle est l’arme de l’hippopotame, dans sa fiche ?', ['des crocs géants', 'des griffes de 10 cm', 'une queue qui pique'], 13],
   ] },
-  ratel: { pages: '19-20', q: [
-    ['Au duel 8, qui gagne entre le lion et le ratel ?', ['Le lion', 'Le ratel', 'Match nul'], 20],
-    ['Combien pèse un ratel, au maximum ?', ['13 kg', '130 kg', '1 kg'], 19],
-    ['Quel est le coup spécial du ratel ?', ['La bombe puante', 'Il plaque sa proie au sol', 'Il jaillit de l’eau'], 19],
-    ['Que fait le ratel si on l’attrape par la peau ?', ['Il se retourne dans sa peau et mord', 'Il fait le mort', 'Il s’envole'], 19],
-    ['Mordu au visage par une vipère, que fait le ratel 5 heures plus tard ?', ['Il chasse de nouveau des serpents', 'Il dort encore', 'Il reste caché une semaine'], 20],
-    ['Dans une ruche, le ratel mange le miel… et quoi d’autre ?', ['Les larves, les bébés des abeilles', 'La cire, seulement', 'Rien d’autre'], 20],
+  ratel: { pages: 'page 19', q: [
+    ['Si on attrape le ratel, que fait-il ?', ['il se retourne dans sa peau… et mord', 'il gonfle sa peau… comme un ballon', 'il laisse sa peau… et s’enfuit'], 19],
+    ['Comment est la peau du ratel ?', ['épaisse et trop grande pour lui', 'fine comme du papier', 'couverte de piquants'], 19],
+    ['La peau du ratel résiste aux morsures…', ['de chien', 'de requin', 'de dragon'], 19],
+    ['Le ratel, c’est une sorte de…', ['blaireau d’Afrique', 'chat sauvage', 'petit ours'], 19],
+    ['Quelle est l’arme du ratel, dans sa fiche ?', ['de longues griffes', 'des crocs de 7 cm', 'un dard venimeux'], 19],
   ] },
-  grizzly: { pages: '15-16 et 56', q: [
-    ['Au duel 6, qui gagne entre l’ours polaire et le grizzly ?', ['Le grizzly', 'L’ours polaire', 'Match nul'], 16],
-    ['Quel est le coup spécial du grizzly ?', ['Il attrape les saumons au vol', 'La bombe puante', 'Il charge gueule ouverte'], 15],
-    ['Combien de papillons de nuit un grizzly peut-il avaler en un jour ?', ['40 000', '40', '4 millions'], 56],
-    ['Grizzly + ours polaire, ça donne…', ['Un pizzly', 'Un grizzlaire', 'Un ours panda'], 15],
-    ['Pendant l’hiver, l’ours brun peut rester plusieurs mois…', ['Sans manger ni faire pipi', 'Sans dormir', 'Sous l’eau'], 16],
+  grizzly: { pages: 'pages 15 et 55', q: [
+    ['Grizzly + ours polaire, ça donne…', ['un « pizzly »', 'un « grizzlaire »', 'un ours panda'], 15],
+    ['Grizzly + ours polaire : combien en a-t-on trouvé dans la nature ?', ['8', '800', 'aucun'], 15],
     ['Quelle longueur font les griffes du grizzly ?', ['6 cm', '6 mm', '60 cm'], 15],
+    ['Quel est le point faible du grizzly face à l’ours polaire ?', ['deux à trois fois plus léger', 'trois fois plus lent', 'il a peur de la neige'], 15],
+    ['Les oursons bruns naissent pendant que leur mère…', ['hiberne', 'nage', 'chasse'], 55],
+    ['À la naissance, un ourson brun pèse…', ['moins qu’une brique de lait', 'autant qu’un chien', 'plus que ton cartable'], 55],
   ] },
-  hyene: { pages: '41-42', q: [
-    ['Au duel 18, qui gagne entre la hyène et le lion ?', ['Le lion', 'La hyène', 'Match nul'], 42],
-    ['Quel est le coup spécial de la hyène ?', ['Elle épuise ses proies', 'Elle crache du venin', 'Elle plaque sa proie au sol'], 41],
-    ['La hyène est plus proche…', ['Des chats', 'Des chiens', 'Des ours'], 42],
-    ['Pourquoi la hyène « rit »-elle ?', ['Parce qu’elle est stressée', 'Parce qu’elle trouve ça drôle', 'Pour appeler ses bébés'], 42],
-    ['Chez les hyènes, qui commande ?', ['Les femelles', 'Les mâles', 'Les bébés'], 42],
-    ['Quelle épaisseur d’os de girafe une hyène peut-elle casser ?', ['7 cm', '7 mm', '70 cm'], 42],
-    ['Quel est le point faible de la hyène ?', ['Son vacarme attire les voleurs', 'Elle a peur de l’eau', 'Elle ne sait pas courir'], 41],
+  hyene: { pages: 'page 41', q: [
+    ['Quel est le coup spécial de la hyène ?', ['elle fatigue ses proies', 'elle crache du venin', 'elle plaque sa proie au sol'], 41],
+    ['Quel est le point faible de la hyène ?', ['son vacarme attire les voleurs', 'sa queue la gêne pour courir', 'elle a peur de l’eau'], 41],
+    ['« La hyène mange les restes des autres. » Vrai ou faux ?', ['faux : elle chasse elle-même la plupart de ses repas', 'faux : elle ne mange que des fruits', 'vrai : elle ne chasse jamais'], 41],
+    ['Combien pèse une hyène tachetée, environ ?', ['60 kg', '6 kg', '600 kg'], 41],
+    ['Au duel 18, que veulent la hyène et le lion ?', ['la même carcasse', 'le même point d’eau', 'la même tanière'], 41],
   ] },
-  buffle: { pages: '23-24', q: [
-    ['Au duel 10, qui gagne entre le dragon de Komodo et le buffle ?', ['Le buffle', 'Le dragon', 'Match nul'], 24],
-    ['Quel fromage est fait avec le lait de la bufflonne ?', ['La mozzarella', 'Le camembert', 'Le gruyère'], 23],
-    ['Quel est le coup spécial du buffle ?', ['Il charge tête baissée', 'Il crache du venin', 'Il grimpe aux arbres'], 23],
-    ['Combien peut peser un buffle d’eau ?', ['550 kg', '55 kg', '5 tonnes'], 23],
-    ['Mordu à la patte par le dragon, que fait le buffle ?', ['Il se secoue et se dégage', 'Il s’endort', 'Il fait le mort'], 24],
-    ['Quel est le point faible du buffle ?', ['Ses blessures guérissent mal', 'Il a peur de l’eau', 'Il ne voit rien'], 23],
+  buffle: { pages: 'page 23', q: [
+    ['Quel fromage est fait avec le lait de la bufflonne ?', ['la mozzarella', 'la raclette', 'le camembert'], 23],
+    ['La bufflonne, c’est…', ['la femelle du buffle d’eau', 'le mâle du buffle d’eau', 'un bébé buffle'], 23],
+    ['Quel est le point faible du buffle ?', ['ses blessures guérissent mal', 'ses cornes sont fragiles', 'il a peur de l’eau'], 23],
+    ['Combien de fois le buffle est-il plus lourd que le dragon de Komodo ?', ['sept fois', 'deux fois', 'cent fois'], 23],
   ] },
-  morse: { pages: '31-32', q: [
-    ['Au duel 13, qui gagne entre l’ours polaire et le morse ?', ['Le morse', 'L’ours polaire', 'Match nul'], 32],
-    ['Que veut dire le nom savant du morse ?', ['Celui qui marche avec les dents', 'Celui qui nage le plus vite', 'Le roi de la glace'], 31],
-    ['Combien de moustaches peut avoir un morse ?', ['Jusqu’à 700', 'Juste 2', '7 millions'], 32],
-    ['Combien peut peser un gros morse mâle ?', ['1 500 kg', '150 kg', '15 kg'], 31],
-    ['Quelle longueur peuvent atteindre les défenses du morse ?', ['90 cm', '9 cm', '9 m'], 31],
-    ['Sur 25 attaques d’ours polaires contre des morses, combien ont raté ?', ['23', '2', 'Aucune'], 32],
+  morse: { pages: 'pages 31 et 48', q: [
+    ['Les défenses du morse l’aident à…', ['monter sur la glace', 'casser la coque des bateaux', 'creuser un terrier'], 31],
+    ['Quelle longueur peuvent atteindre les défenses du morse ?', ['90 cm', '9 cm', '3 m'], 31],
+    ['Quel est le point faible du morse ?', ['affolé, le troupeau écrase ses petits', 'affolé, le troupeau abandonne les vieux', 'affolé, le troupeau fait trop de bruit'], 31],
+    ['Pour dormir debout dans l’eau, le morse a sous sa gorge…', ['une poche qu’il gonfle d’air, comme une bouée', 'une ventouse qui colle aux rochers', 'une réserve de graisse, comme un radeau'], 48],
   ] },
-  komodo: { pages: '23-24', q: [
-    ['Au duel 10, qui gagne entre le dragon de Komodo et le buffle ?', ['Le buffle', 'Le dragon', 'Match nul'], 24],
-    ['Pourquoi les bébés dragons vivent-ils dans les arbres ?', ['Les adultes mangent les petits', 'Ils ont peur de l’eau', 'Ils mangent des feuilles'], 24],
-    ['Avec quoi le dragon de Komodo « goûte »-t-il l’air ?', ['Sa langue fourchue', 'Sa queue', 'Ses griffes'], 23],
+  komodo: { pages: 'page 23', q: [
     ['Combien de dents coupantes a le dragon de Komodo ?', ['60', '6', '600'], 23],
-    ['Quelle part de son poids le dragon peut-il avaler en un seul repas ?', ['80 %', '8 %', '800 %'], 24],
-    ['Le dragon de Komodo est le plus gros…', ['lézard du monde', 'serpent du monde', 'oiseau du monde'], 23],
+    ['Avec quoi le dragon de Komodo « goûte »-t-il l’air ?', ['sa langue fourchue', 'sa queue', 'ses griffes'], 23],
+    ['Le dragon de Komodo repère un animal mort à plus de…', ['4 km', '40 km', '400 km'], 23],
+    ['Le dragon de Komodo est le plus gros…', ['lézard du monde', 'serpent du monde', 'crocodile du monde'], 23],
+    ['Combien mesure le dragon de Komodo ?', ['trois mètres de long', 'trente centimètres de long', 'dix mètres de long'], 23],
   ] },
 };
 
@@ -1001,7 +1000,7 @@ function touche(a, d, m, hb, hu, o) {
   if (d.combo > 1) { FX = FX.filter(e => e.k !== 'combo'); addFx({ k: 'combo', n: d.combo, side: d.side ? 0 : 1 }); }
   const rage = f => f.hp / f.d.hp < .3 ? 1.6 : 1;
   jauge(a, 7 * rage(a)); jauge(d, 5 * rage(d));
-  // hyène : elle épuise ses proies (la jauge SUPER de l'adversaire se vide)
+  // hyène : elle fatigue ses proies (la jauge SUPER de l'adversaire se vide)
   if (m.vide) { d.meter = Math.max(0, d.meter - m.vide); jauge(a, m.vide * .4) }
   // étourdissement : trop de coups en peu de temps → il voit des étoiles (une fois par manche)
   if (dmg > 0 && !o.prise) { d.etourdi = (d.etourdi || 0) + dmg * (m.kd ? 1.3 : 1); d.dernierCoup = G.frame; if (d.etourdi >= (d.d.etour || 46) && !d.dizzyFait && d.hp > 0) d.dizzyPending = true }
@@ -1619,9 +1618,10 @@ function endMatch() {
   if (G.mode === 2) badge('duo', nv);
   // carte « Le savais-tu ? » : on découvre l'animal qu'on vient de battre
   let fait = null, neuf = false;
-  if (v && !v.cpu && !v.distant) { const k = l.kind, vu = SAVE.cartes[k] || (SAVE.cartes[k] = []), reste = FAITS[k].map((_, i) => i).filter(i => !vu.includes(i));
+  const connu = k => SAVE.debloques.includes(k); // débloqué pour de vrai (le GOD MODE ou le défi du jour ne comptent pas)
+  if (v && !v.cpu && !v.distant && connu(l.kind)) { const k = l.kind, vu = SAVE.cartes[k] || (SAVE.cartes[k] = []), reste = FAITS[k].map((_, i) => i).filter(i => !vu.includes(i));
     if (reste.length) { const i = reste[Math.floor(Math.random() * reste.length)]; vu.push(i); fait = FAITS[k][i]; neuf = true } }
-  if (!fait) { const k = (l || a).kind; fait = FAITS[k][Math.floor(Math.random() * FAITS[k].length)] }
+  if (!fait) { const k = [l && l.kind, v && v.kind, a.kind, b.kind].find(x => x && connu(x)); if (k) fait = FAITS[k][Math.floor(Math.random() * FAITS[k].length)] }
   if (nbCartes() >= 10) badge('cartes', nv); if (nbCartes() >= totalCartes()) badge('toutes', nv);
   // tournoi
   let suite = false;
@@ -1634,8 +1634,8 @@ function endMatch() {
   { const ph = v && PHRASES[v.kind]; $('fin-phrase').hidden = !ph; if (ph) $('fin-phrase').textContent = '« ' + hasard(ph) + ' »' }
   $('fin-etoiles').innerHTML = G.mode === 1 && humain && !G.god ? etoiles(n) : '';
   $('fin-badges').innerHTML = nv.map(id => `<span>NOUVEAU BADGE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
-  $('fait-titre').textContent = neuf ? `NOUVELLE CARTE ! ${nbCartes()}/${totalCartes()} · LE SAVAIS-TU ?` : 'LE SAVAIS-TU ?';
-  $('fait-txt').textContent = fait;
+  $('fait-titre').textContent = neuf ? `NOUVELLE CARTE ! ${nbCartes()}/${totalCartes()} · LE SAVAIS-TU ?` : fait ? 'LE SAVAIS-TU ?' : 'ANIMAUX SECRETS';
+  $('fait-txt').textContent = fait || 'Réponds au quiz du livre pour débloquer ces animaux… et gagner leurs cartes « Le savais-tu ? » !';
   $('fin-img').src = (v || a).kind + '_fin.webp';
   $('revanche').textContent = suite ? 'ADVERSAIRE SUIVANT ▶' : G.mode === 1 && G.tournoi && humain ? 'NOUVEAU TOURNOI' : NET.on ? 'REJOUER' : 'REVANCHE !';
   show('fin');
@@ -1799,33 +1799,36 @@ function valideCode() {
 }
 // --- quiz du livre
 const Q = {};
+// typographie française : espace fine insécable avant ? ! : ; » et après « (pas de « ? » tout seul en début de ligne)
+function fin(t) { return String(t).replace(/ ([?!:;»])/g, '\u202F$1').replace(/« /g, '«\u202F') }
 function melange(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] } return a }
 function ouvreQuiz(k) {
   const z = QUIZ[k]; if (!z) return;
   sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz');
   Object.assign(Q, { k, qs: melange(z.q).slice(0, 3), i: 0, bloque: false });
   $('quiz-titre').textContent = `DÉBLOQUE ${CHARS[k].art} !`;
-  $('quiz-intro').innerHTML = `Réponds juste à <b>3 questions</b> sur le livre. Indice : relis les <b>pages ${z.pages}</b>.`;
+  $('quiz-intro').innerHTML = `Réponds juste à <b>3 questions</b>. Les réponses sont dans le livre, <b>${z.pages}</b> : ouvre-le !`;
   $('quiz-img').style.backgroundImage = `url(${k}_corps.webp)`; $('quiz-img').classList.add('ombre');
-  const s = $('quiz-suite'); s.hidden = true; s.textContent = 'RECOMMENCER'; s.onclick = () => { sfx('clic'); ouvreQuiz(Q.k) }; poseQuestion();
+  const s = $('quiz-suite'); s.hidden = true; s.textContent = 'RÉESSAYER'; s.onclick = () => { sfx('clic'); ouvreQuiz(Q.k) }; poseQuestion(); // nouvel essai : 3 questions tirées au hasard, choix re-mélangés
 }
 function poseQuestion() {
-  const [txt, reps] = Q.qs[Q.i];
+  const [txt, reps, page] = Q.qs[Q.i];
   $('quiz-pas').innerHTML = Q.qs.map((_, i) => `<i class="${i < Q.i ? 'ok' : i === Q.i ? 'en' : ''}"></i>`).join('');
-  $('quiz-q').textContent = `${Q.i + 1}. ${txt}`; $('quiz-msg').textContent = ''; Q.bloque = false;
+  $('quiz-q').textContent = fin(`${Q.i + 1}. ${txt} `); const pg = document.createElement('small'); pg.className = 'quiz-page'; pg.textContent = `📖 page ${page}`; $('quiz-q').appendChild(pg);
+  $('quiz-msg').textContent = ''; Q.bloque = false;
   const box = $('quiz-rep'); box.innerHTML = '';
-  for (const r of melange(reps)) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = r; b.onclick = () => repond(b, r === reps[0]); box.appendChild(b) }
+  for (const r of melange(reps)) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = fin(r); b.onclick = () => repond(b, r === reps[0]); box.appendChild(b) }
 }
 function repond(b, juste) {
   if (Q.bloque) return; Q.bloque = true;
-  const [, reps, page] = Q.qs[Q.i];
-  document.querySelectorAll('#quiz-rep .btn').forEach(x => { x.disabled = true; if (x.textContent === reps[0]) x.classList.add('bon') });
+  const [, , page] = Q.qs[Q.i];
+  document.querySelectorAll('#quiz-rep .btn').forEach(x => { x.disabled = true }); // en cas d'erreur, on ne montre JAMAIS la bonne réponse : il faut ouvrir le livre
   if (juste) {
-    sfx('valide'); $('quiz-msg').textContent = ['BRAVO !', 'EXACT !', 'TOUT JUSTE !'][Q.i] || 'BRAVO !';
+    b.classList.add('bon'); sfx('valide'); $('quiz-msg').textContent = ['BRAVO !', 'EXACT !', 'TOUT JUSTE !'][Q.i] || 'BRAVO !';
     setTimeout(() => { Q.i++; if (Q.i >= Q.qs.length) quizGagne(); else poseQuestion() }, 1000);
   } else {
     b.classList.add('faux'); sfx('erreur');
-    $('quiz-msg').textContent = `Raté ! La réponse est à la page ${page}. Relis-la et réessaie !`;
+    $('quiz-msg').textContent = fin(`Raté ! Relis la page ${page} du livre.`);
     $('quiz-suite').hidden = false;
   }
 }
