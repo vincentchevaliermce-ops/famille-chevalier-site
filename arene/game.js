@@ -1918,7 +1918,7 @@ function annonce(c) {
   }
   if (G.freeze > 0 && G.superBy) {
     const f = G.superBy, u = P(34 - G.freeze, 0, 8);
-    txt(c, f.move.nom.toUpperCase() + ' !', 960, 900, 86, JA, { out: 20, sh: 10, sc: back(u) });
+    txt(c, f.move.nom.toUpperCase().replace(/\s*!?\s*$/, '') + ' !', 960, 900, 86, JA, { out: 20, sh: 10, sc: back(u) }); // un seul « ! », même si le nom en a déjà un
   }
 }
 
