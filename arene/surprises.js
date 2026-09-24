@@ -106,6 +106,7 @@ const PIEGES = {
   volcan: { k: 'chute', obj: 'lave', mot: 'PIERRE DE LAVE !', dmg: 9 },
   nuit: { k: 'chute', obj: 'fruit', mot: 'UN FRUIT TOMBE !', dmg: 6 },
   pantanal: { k: 'chute', obj: 'coco', mot: 'UNE NOIX DE PALME !', dmg: 6 },
+  marais: { k: 'trou', obj: 'grenouille', mot: 'CÔA ! UNE GRENOUILLE !', dmg: 3 },
   colisee: { k: 'chute', obj: 'coussin', mot: 'LE PUBLIC LANCE UN COUSSIN !', dmg: 0 },
   savane: { k: 'vent', mot: 'TOURBILLON DE POUSSIÈRE !', col: '#E8C27A' },
   desert: { k: 'vent', mot: 'TEMPÊTE DE SABLE !', col: '#E9C98B' },
@@ -144,7 +145,7 @@ function majPieges() {
     if (p.t > 60 && p.t < 160) for (const f of G.f) { if (f.state === 'ko' || f.cache) continue; const k = f.blocking ? .35 : 1; f.x = Math.max(STAGE_L, Math.min(STAGE_R, f.x + p.dir * 3.2 * k)) }
     if (p.t > 180) G.piege = null;
   } else if (p.k === 'trou') { // le sol bouillonne (70 images), puis ça jaillit
-    if (p.t === 70) { p.fait = true; sfx(P.obj === 'phoque' ? 'morse' : P.obj === 'poisson' ? 'flac' : 'plouf', .9);
+    if (p.t === 70) { p.fait = true; sfx(P.obj === 'phoque' ? 'morse' : P.obj === 'poisson' ? 'flac' : P.obj === 'grenouille' ? 'boing' : 'plouf', .9);
       for (const f of G.f) if (Math.abs(f.x - p.x) < 170 && f.h < 200) { if (blesse(f, P.dmg, { chute: true, haut: 17, mot: P.mot, dir: Math.sign(f.x - p.x) || 1, vx: 3 })) piegeTouche(f) } }
     if (p.t > 140) G.piege = null;
   } else if (p.k === 'repas') { // un poisson tombe du haut du bassin : le premier qui le touche reprend des forces
@@ -188,6 +189,19 @@ function dessineObjet(c, obj, x, y, s = 1) {
   else if (obj === 'coussin') { c.fillStyle = '#E8466B'; rr(c, -62, -46, 124, 92, 30); c.fill(); c.stroke(); c.fillStyle = '#FFD23F'; for (const [a, b] of [[-62, -46], [62, -46], [-62, 46], [62, 46]]) { c.beginPath(); c.arc(a, b, 12, 0, TAU); c.fill(); c.stroke() } }
   c.restore();
 }
+function grenouille(c, x, y, saute, s, dir = 1) { // une petite grenouille verte qui saute hors de l'eau (arène du marais)
+  c.save(); c.translate(x, y); c.scale(s * dir, s); c.lineWidth = 6; c.strokeStyle = NV; c.lineJoin = 'round';
+  c.fillStyle = '#4FA83A';
+  if (saute) { for (const k of [-1, 1]) { c.beginPath(); c.moveTo(-30, 10 * k + 10); c.lineTo(-95, 30 * k + 25); c.lineTo(-120, 18 * k + 30); c.stroke() } } // pattes arrière tendues
+  else { c.beginPath(); c.ellipse(-34, 22, 30, 18, -.3, 0, TAU); c.fill(); c.stroke() }
+  c.beginPath(); c.ellipse(0, 0, 56, 40, -.12, 0, TAU); c.fill(); c.stroke(); // le corps
+  c.fillStyle = '#CFE8A0'; c.beginPath(); c.ellipse(8, 16, 34, 18, -.1, 0, TAU); c.fill(); // le ventre clair
+  c.fillStyle = '#3B8A2C'; for (const [a, b] of [[-20, -14], [2, -24], [-34, 4]]) { c.beginPath(); c.arc(a, b, 7, 0, TAU); c.fill() } // les taches
+  c.fillStyle = '#4FA83A'; c.beginPath(); c.moveTo(40, 26); c.lineTo(62, 50); c.stroke(); // patte avant
+  for (const [a, b] of [[14, -38], [44, -32]]) { c.fillStyle = '#4FA83A'; c.beginPath(); c.arc(a, b, 18, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#FFF'; c.beginPath(); c.arc(a + 3, b - 2, 11, 0, TAU); c.fill(); c.fillStyle = NV; c.beginPath(); c.arc(a + 5, b - 2, 6, 0, TAU); c.fill() } // les gros yeux
+  c.lineWidth = 5; c.beginPath(); c.arc(40, -2, 16, .2, 1.3); c.stroke(); // le sourire
+  c.restore();
+}
 function dessinePhoque(c, x, y, u) { c.save(); c.translate(x, y - u * 220); c.lineWidth = 7; c.strokeStyle = NV; c.fillStyle = '#9AA6B2';
   c.beginPath(); c.ellipse(0, 40, 80, 110, 0, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#fff'; c.beginPath(); c.arc(-26, -10, 16, 0, TAU); c.arc(26, -10, 16, 0, TAU); c.fill(); c.stroke();
   c.fillStyle = NV; c.beginPath(); c.arc(-24, -8, 7, 0, TAU); c.arc(28, -8, 7, 0, TAU); c.fill(); c.beginPath(); c.ellipse(0, 22, 16, 11, 0, 0, TAU); c.fill();
@@ -215,6 +229,7 @@ function dessineSurprisesDevant(c) { // (devant les animaux)
       c.save(); c.globalAlpha = v;
       if (P.obj === 'phoque') dessinePhoque(c, p.x, FLOOR, u);
       else if (P.obj === 'poisson') poisson(c, p.x, FLOOR - 120 - Math.sin(Math.min(1, (p.t - 70) / 50) * Math.PI) * 420, -1.2 + (p.t - 70) * .06, 1.6);
+      else if (P.obj === 'grenouille') { const w = Math.min(1, (p.t - 70) / 40); grenouille(c, p.x + p.dir * w * 300, FLOOR - 40 - Math.sin(w * Math.PI) * 380, w < 1 ? 1 : 0, 1.3, p.dir) }
       else { for (let i = 0; i < 16; i++) { const k = ((p.t - 70) * 9 + i * 37) % 420; c.fillStyle = P.obj === 'chaud' ? 'rgba(255,190,120,.75)' : 'rgba(220,245,255,.85)'; c.beginPath(); c.arc(p.x + Math.sin(i * 2.3 + p.t * .2) * 60, FLOOR - k * u, 10 + (i % 4) * 7, 0, TAU); c.fill() } }
       c.restore() }
     if (p.k === 'repas' && p.poisson) { if (P.obj === 'tresor') dessineObjet(c, 'piece', p.poisson.x, p.poisson.y, 1); else poisson(c, p.poisson.x, p.poisson.y, Math.sin(t * 8) * .3, 1.4) }
@@ -294,6 +309,10 @@ const NOUVEAUX_TROPHEES = [
   ['nul', 'MATCH NUL', 'Termine un combat sans gagnant.', 'secrets', 'Ni gagnant, ni perdant…'],
   ['temps', 'TIC-TAC', 'Gagne une manche au temps.', 'secrets', 'Regarde bien le chrono…'],
   ['gigi', 'COMME GIGI…', 'Fais le même pari que Gigi dans un Duel du livre.', 'secrets', 'Écoute Gigi…'],
+  ['sieste', 'JE NE DORMAIS PAS !', 'Fais semblant de dormir… puis contre une attaque.', 'secrets', 'Une sieste au soleil…'],
+  ['derriere', 'COUCOU, DERRIÈRE !', 'Touche ton adversaire par-derrière, en passant dans l’herbe.', 'secrets', 'Des taches dans les hautes herbes…'],
+  ['serre', 'GROS CÂLIN', 'Serre ton adversaire 3 fois dans un combat.', 'secrets', 'Un serpent très, très long…'],
+  ['clan', 'TOUS ENSEMBLE !', 'Appelle toute ta famille avec ton SUPER.', 'secrets', 'On est plus forts à plusieurs…'],
 ];
 for (const t of NOUVEAUX_TROPHEES) { if (!BADGES.find(b => b[0] === t[0])) BADGES.push([t[0], t[1], t[2]]); FAMILLE_DE[t[0]] = t[3] }
 const INDICE = Object.fromEntries(NOUVEAUX_TROPHEES.filter(t => t[4]).map(t => [t[0], t[4]]));
@@ -328,6 +347,7 @@ function statCombat(f, k, n = 1) { if (!aCompter(f)) return; f.st[k] = (f.st[k] 
   if (k === 'piquants' && f.st.piquants >= 10) trophee('pelote', f);
   if (k === 'pschiit' && f.st.pschiit >= 3) trophee('pschiit', f);
   if (k === 'air' && f.st.air >= 3) trophee('air', f);
+  if (k === 'serre' && f.st.serre >= 3) trophee('serre', f);
   if (k === 'proj') { SAVE.compte = SAVE.compte || {}; SAVE.compte.proj = (SAVE.compte.proj || 0) + n; if (SAVE.compte.proj >= 10) trophee('voltige', f) }
   if (k === 'aa') { SAVE.compte = SAVE.compte || {}; SAVE.compte.aa = (SAVE.compte.aa || 0) + n; if (SAVE.compte.aa >= 5) trophee('antiair', f) }
   if (k === 'spe') { SAVE.compte = SAVE.compte || {}; SAVE.compte.spe = (SAVE.compte.spe || 0) + n; if (SAVE.compte.spe >= 100) trophee('speciaux', f) }
