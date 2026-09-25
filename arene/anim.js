@@ -405,6 +405,9 @@ const SPECIAUX = {
   // requin-bouledogue (MER) : ★ il cogne, puis il mord · → ★ le requin de rivière · ↓ ★ la morsure record · SUPER le bagarreur
   bouledogue(f, t, u, ph, k, repos) {
     if (k === 'S') { if (ph === 'st') return SP('garde', { x: -14 * u }, true); if (ph === 'act') return f.hit >= 1 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('cogne', { x: 30 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -12 * u, sy: .97 }, true); if (ph === 'act') return f.hit ? SP('fort', { x: 30 }, true) : SP('cogne', { y: -6 * Math.abs(Math.sin(t * 18)) }, true); return u < .5 ? SP('cogne', {}) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP('special', { r: f.vy < 0 ? -.05 : .2, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('cogne', { x: 30 }, true) : SP('fort', { x: 40, sx: 1.05 }, true); return repos(); }
   },
   // baleine bleue (MER) : ★ le chant (onde) · → ★ elle file à 32 km/h · ↓ ★ le souffle de 9 m · SUPER la grande gorgée
   baleine(f, t, u, ph, k, repos) {
