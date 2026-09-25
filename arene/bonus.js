@@ -188,6 +188,7 @@ function partageJour() {
 //  • tout ce qui a servi pendant la visite est gardé ; l'espace parents peut tout télécharger d'un coup.
 // ---------------------------------------------------------------------
 const HL = { liste: null, enCours: false, MEDIA: 'arene-media' };
+try { performance.setResourceTimingBufferSize(3000) } catch (e) { } // (pour retrouver tout ce qui a servi pendant la 1re visite)
 const hlPossible = () => 'serviceWorker' in navigator && 'caches' in window && (location.protocol === 'https:' || (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && location.port !== '8765')); // (8765 : la page de test du développement, sans mémoire)
 const hlVersion = () => { const m = document.querySelector('meta[name="version-jeu"]'); return m ? m.content : '' };
 const hlAdresse = p => new URL(p, location.href).href.split('?')[0];
