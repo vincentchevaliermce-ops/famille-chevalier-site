@@ -5,6 +5,12 @@
 //  Contrôle : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md
 // =====================================================================
 const DUELS = [
+  { n: 1, lieu: 'JAPON', q: 'FRELON GÉANT OU ABEILLES JAPONAISES ?', a: 'frelon', b: 'abeille', noms: ['FRELON GÉANT', 'ABEILLES JAPONAISES'], arene: 'ruche', p: 5, pv: 6,
+    intro: 'Un frelon géant entre dans une ruche. Il est seul. Les abeilles sont des centaines, mais minuscules. Qui s’en sort ?',
+    fiches: [['près de 4 cm', 'un dard de 6 mm', 'il coupe la tête des abeilles', 'il supporte mal la chaleur'], ['environ 1 cm', 'un petit dard', 'elles foncent toutes ensemble', 'un corps fragile']],
+    gigi: { pari: 'abeille', dit: 'Les abeilles.', pourquoi: 'Je parie toujours sur les plus nombreux.', apres: 'J’AVAIS BON ! Premier point pour Gigi. Trop facile !' },
+    rep: { g: 'abeille', titre: 'LA VRAIE RÉPONSE', cri: 'LES ABEILLES !', punch: 'Le frelon est cuit !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
+      film: 'Sans piquer, plus de 500 abeilles enferment le frelon dans une boule vivante. Là-dedans, toutes les abeilles grelottent en même temps. La boule chauffe comme un four ! Une demi-heure plus tard, le frelon ne bouge plus.' } },
   { n: 2, lieu: 'OCÉAN', q: 'ORQUE OU GRAND REQUIN BLANC ?', a: 'orque', b: 'requin', noms: ['ORQUE', 'GRAND REQUIN BLANC'], arene: 'ocean', p: 7, pv: 8,
     intro: 'Deux tueurs des mers. Aucun ennemi connu… sauf peut-être l’autre. Près de l’Afrique du Sud, ils se croisent pour de vrai. Qui fait fuir l’autre ?',
     fiches: [['jusqu’à 10 tonnes', 'des dents de 8 cm', 'un coup de queue qui assomme', 'elle doit remonter respirer'], ['jusqu’à 2 tonnes', '300 dents sur 7 rangées', 'il attaque par en dessous', 'sur le dos, il ne bouge plus']],
