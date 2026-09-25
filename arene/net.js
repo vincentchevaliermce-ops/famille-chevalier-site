@@ -151,7 +151,7 @@ const TOUCHES = ['left', 'right', 'up', 'down', 'L', 'H', 'S', 'G'];
 function netEntreeDistante() { const r = {}; for (const k of TOUCHES) r[k] = !!(NET.entree && NET.entree[k]); return r }
 function capture() {
   const [a, b] = G.f;
-  const F = f => [Math.round(f.x), Math.round(f.h * 10) / 10, f.face, f.state, f.t, Math.round(f.u * 100) / 100, f.ph, f.mk, f.hp, Math.round(f.meter), f.wins, Math.round(f.dist), Math.round(f.vy * 10) / 10, Math.round(f.hurtK * 100) / 100, f.flash, f.landed ? 1 : 0, f.crouchB ? 1 : 0, f.cache ? 1 : 0, f.poison ? 1 : 0, f.sale || 0, f.boost ? [f.boost.k, f.boost.t] : 0];
+  const F = f => [Math.round(f.x), Math.round(f.h * 10) / 10, f.face, f.state, f.t, Math.round(f.u * 100) / 100, f.ph, f.mk, f.hp, Math.round(f.meter), f.wins, Math.round(f.dist), Math.round(f.vy * 10) / 10, Math.round(f.hurtK * 100) / 100, f.flash, f.landed ? 1 : 0, f.crouchB ? 1 : 0, f.cache ? 1 : 0, f.poison ? 1 : 0, f.sale || 0, f.boost ? [f.boost.k, f.boost.t] : 0, Math.round(f.alt || 0), f.knock ? 1 : 0]; // (2D : altitude, chute)
   return { t: 's', a: F(a), b: F(b), g: [G.phase, G.pt, G.timer, G.round, G.freeze, G.superBy ? G.superBy.side : -1, G.stop, Math.round(G.shake), G.timeUp ? 1 : 0, G.roundWinner ? G.roundWinner.side : -1, G.perfect ? 1 : 0],
     p: G.proj.map(p => [Math.round(p.x), p.t, p.life, p.dir, p.y0, p.y1, p.w, p.a.side, p.blob ? Math.round(p.yy) : null]), z: (G.zones || []).map(z => [Math.round(z.x), z.r, z.t, z.life, z.genre || 0]), fx: NET.fx.splice(0), so: NET.sons.splice(0),
     // surprises (surprises.js) : caisse, piège de l'arène, éclair, banane, bandeau du bonus
@@ -161,7 +161,7 @@ function capture() {
     ba: G.bonusAff ? [G.bonusAff.ico, G.bonusAff.nom, G.bonusAff.col, Math.round(G.bonusAff.x), Math.round((G.time - G.bonusAff.t0) * 60)] : 0 };
 }
 function appliqueSnap(s) {
-  const put = (f, v) => { [f.x, f.h, f.face, f.state, f.t, f.u, f.ph, f.mk, f.hp, f.meter, f.wins, f.dist, f.vy, f.hurtK, f.flash] = v; f.landed = !!v[15]; f.crouchB = !!v[16]; f.cache = !!v[17]; f.poison = v[18] ? (f.poison || { t: 1, n: 0, tick: 999, dmg: 0 }) : null; f.sale = v[19] || 0; const bo = v[20] || null; if ((bo && bo[0]) !== (f.boost && f.boost.k)) { f.boost = bo ? { k: bo[0], t: bo[1], T: bo[1] } : null; if (window.appliqueBoost) appliqueBoost(f) } else if (bo && f.boost) f.boost.t = bo[1]; if (f.mk) f.move = f.d.moves[f.mk] };
+  const put = (f, v) => { [f.x, f.h, f.face, f.state, f.t, f.u, f.ph, f.mk, f.hp, f.meter, f.wins, f.dist, f.vy, f.hurtK, f.flash] = v; f.alt = v[21] || 0; f.knock = !!v[22]; f.landed = !!v[15]; f.crouchB = !!v[16]; f.cache = !!v[17]; f.poison = v[18] ? (f.poison || { t: 1, n: 0, tick: 999, dmg: 0 }) : null; f.sale = v[19] || 0; const bo = v[20] || null; if ((bo && bo[0]) !== (f.boost && f.boost.k)) { f.boost = bo ? { k: bo[0], t: bo[1], T: bo[1] } : null; if (window.appliqueBoost) appliqueBoost(f) } else if (bo && f.boost) f.boost.t = bo[1]; if (f.mk) f.move = f.d.moves[f.mk] };
   const [a, b] = G.f; put(a, s.a); put(b, s.b);
   const g = s.g; G.phase = g[0] === 'fin' ? G.phase : g[0]; G.pt = g[1]; G.timer = g[2]; G.round = g[3]; G.freeze = g[4]; G.superBy = g[5] >= 0 ? G.f[g[5]] : null;
   G.stop = g[6]; G.shake = g[7]; G.timeUp = !!g[8]; G.roundWinner = g[9] >= 0 ? G.f[g[9]] : null; G.perfect = !!g[10];

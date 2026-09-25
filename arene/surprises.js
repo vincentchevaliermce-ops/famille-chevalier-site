@@ -41,7 +41,7 @@ function blesse(d, dmg, o = {}) {
   if (o.sol && d.h > 60) return false;
   if (invincible(d)) dmg = 0;
   d.hp = Math.max(1, d.hp - dmg); d.flash = 4; // un piège ne met jamais K.-O.
-  if (o.chute || d.h > 0) { setS(d, 'hurt'); d.stun = 99; d.knock = true; d.vy = -(o.haut || 11); d.h = Math.max(d.h, .1); d.vx = (o.dir || (Math.random() < .5 ? -1 : 1)) * (o.vx || 4) }
+  if (o.chute || d.h > solDe(d) + 1) { setS(d, 'hurt'); d.stun = 99; d.knock = true; d.vy = -(o.haut || 11); d.h = Math.max(d.h, .1); d.vx = (o.dir || (Math.random() < .5 ? -1 : 1)) * (o.vx || 4) }
   else { setS(d, 'hurt'); d.stun = o.stun || 26; d.hurtK = 1; d.vx = (o.dir || 0) * (o.vx || 0) }
   if (o.mot) addFx({ k: 'mot', x: d.x, y: FLOOR - 640 * d.d.K / .44, mot: o.mot, col: o.col || JA });
   addFx({ k: 'impact', x: d.x, y: FLOOR - 300 * d.d.K / .44, size: .7, col: o.col || JA });

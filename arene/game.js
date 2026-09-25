@@ -343,7 +343,7 @@ const CHARS = {
   // --- ORQUE (« livre en main », duel 2) : la géante noire et blanche. Coup de queue qui assomme (livre), sonar, plongeon de 10 tonnes, la bande d'orques.
   //     Point faible (livre) : « elle doit remonter respirer » → toutes les 20 s : « DE L'AIR ! » ; si elle saute, « PFFOUH ! » et sa jauge SUPER grimpe.
   orque: {
-    nom: 'ORQUE', art: 'L’ORQUE', fem: true, monde: 'mer', nage: true, respire: true, force: 1.05, spr: true, hPose: ['garde', 'coup'], poseLance: 'coup', col: '#1B2433', clair: '#F4F7FB', fond: '#2E6FB5', K: .46, hp: 112, walk: 5.6, back: 4.4, dash: 15, jumpV: 17, jumpX: 7, grav: .6, etour: 60,
+    nom: 'ORQUE', art: 'L’ORQUE', fem: true, monde: 'mer', nage: true, respire: true, force: 1.3, spr: true, hPose: ['garde', 'coup'], poseLance: 'coup', col: '#1B2433', clair: '#F4F7FB', fond: '#2E6FB5', K: .46, hp: 112, walk: 5.6, back: 4.4, dash: 15, jumpV: 17, jumpX: 7, grav: .6, etour: 60,
     aie: ['IIIH ?!', 'MA NAGEOIRE !', 'OUILLE, MON AILERON !'], ia: { saut: .5 },
     hurt: { stand: [-680, 640, -760, -140], crouch: [-700, 660, -300, 0], air: [-620, 600, -700, -100] },
     push: [260, 300], reach: 700, speMin: 330, speMax: 1300,
@@ -363,7 +363,7 @@ const CHARS = {
   // --- GRAND REQUIN BLANC (« livre en main », duel 2) : 300 dents, il attaque par en dessous (livre), la torpille (→★), il sent ses proies (radar, ↓★ : il contre).
   //     Point faible (livre) : « sur le dos, il ne bouge plus » → quand il tombe, il reste figé un moment de plus.
   requin: {
-    nom: 'REQUIN BLANC', art: 'LE GRAND REQUIN BLANC', monde: 'mer', nage: true, dosFige: 32, force: .9, spr: true, hPose: ['garde', 'coup'], col: '#4B5A68', clair: '#E9EEF2', fond: '#3F7FB8', K: .42, hp: 104, walk: 7, back: 5.2, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 50,
+    nom: 'REQUIN BLANC', art: 'LE GRAND REQUIN BLANC', monde: 'mer', nage: true, dosFige: 32, force: 0.87, spr: true, hPose: ['garde', 'coup'], col: '#4B5A68', clair: '#E9EEF2', fond: '#3F7FB8', K: .42, hp: 104, walk: 7, back: 5.2, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 50,
     aie: ['GLOUPS ?!', 'MES DENTS !', 'AÏE, MON AILERON !'], ia: {},
     hurt: { stand: [-650, 640, -720, -170], crouch: [-680, 660, -300, 0], air: [-600, 600, -680, -120] },
     push: [240, 280], reach: 720, speMin: 320, speMax: 1400,
@@ -383,7 +383,7 @@ const CHARS = {
   // --- PIEUVRE GÉANTE (« livre en main », duel 9) : huit bras à ventouses, le bec caché (livre), le nuage d'encre, le camouflage, la danse des 8 bras.
   //     Point faible (livre) : « vite fatiguée en nageant » → trois sauts ou élans rapprochés : « PFF… FATIGUÉE ! » (plus lente un moment).
   pieuvre: {
-    nom: 'PIEUVRE', art: 'LA PIEUVRE GÉANTE', fem: true, monde: 'mer', nage: true, fatigue: true, force: .95, spr: true, hPose: ['garde', 'fort'], poseLance: 'special', col: '#C4412B', clair: '#FFD9CC', fond: '#E0674E', K: .42, hp: 110, walk: 5.2, back: 4.4, dash: 15, jumpV: 17, jumpX: 7, grav: .6, etour: 50,
+    nom: 'PIEUVRE', art: 'LA PIEUVRE GÉANTE', fem: true, monde: 'mer', nage: true, fatigue: true, force: 0.87, spr: true, hPose: ['garde', 'fort'], poseLance: 'special', col: '#C4412B', clair: '#FFD9CC', fond: '#E0674E', K: .42, hp: 110, walk: 5.2, back: 4.4, dash: 15, jumpV: 17, jumpX: 7, grav: .6, etour: 50,
     aie: ['GLOUPS ?!', 'MES BRAS !', 'AÏE, MES VENTOUSES !'], ia: { saut: .4 },
     hurt: { stand: [-520, 520, -760, 0], crouch: [-600, 580, -520, 0], air: [-560, 400, -760, 0] }, // (le manteau et le haut des bras : les bouts de bras ne comptent pas)
     push: [220, 250], reach: 880, speMin: 300, speMax: 1200,
@@ -403,7 +403,7 @@ const CHARS = {
   // --- AIGUILLAT (« livre en main », duel 9) : le petit requin à épines. Il se plie et pique (livre, venin), la flèche grise, l'épine du dos, la bande (il chasse par milliers).
   //     Point faible (livre) : « petit, pour un requin » → il vole plus loin quand il est touché (léger).
   aiguillat: {
-    nom: 'AIGUILLAT', art: 'L’AIGUILLAT', monde: 'mer', nage: true, leger: 1.15, force: 1, spr: true, hPose: ['garde', 'coup'], col: '#5B6776', clair: '#EEF2F6', fond: '#6F8FB0', K: .36, hp: 104, walk: 7.6, back: 5.8, dash: 21, jumpV: 19, jumpX: 9, grav: .62, etour: 44,
+    nom: 'AIGUILLAT', art: 'L’AIGUILLAT', monde: 'mer', nage: true, leger: 1.15, force: 0.77, spr: true, hPose: ['garde', 'coup'], col: '#5B6776', clair: '#EEF2F6', fond: '#6F8FB0', K: .36, hp: 104, walk: 7.6, back: 5.8, dash: 21, jumpV: 19, jumpX: 9, grav: .62, etour: 44,
     aie: ['AÏE ?!', 'MES ÉPINES !', 'OUILLE, MON AILERON !'], ia: { saut: .6 },
     hurt: { stand: [-680, 600, -560, -120], crouch: [-700, 620, -330, 0], air: [-640, 560, -560, -100] },
     push: [190, 215], reach: 640, speMin: 280, speMax: 1300,
@@ -423,7 +423,7 @@ const CHARS = {
   // --- ESPADON (« livre en main », duel 17) : l'épée ! La plus longue portée de la mer. Il tranche d'un coup de tête (livre), la charge (épée coincée dans le mur !), l'épée vers le ciel, la tempête d'épée.
   //     Point faible (livre) : « ni dents ni écailles » → il prend un peu plus cher (peau 1.1).
   espadon: {
-    nom: 'ESPADON', art: 'L’ESPADON', monde: 'mer', nage: true, peau: 1.15, force: .9, spr: true, hPose: ['garde', 'coup'], col: '#4B3A5E', clair: '#F2E6C9', fond: '#7A5FA0', K: .42, hp: 100, walk: 6.6, back: 5, dash: 20, jumpV: 18, jumpX: 8.5, grav: .62, etour: 48,
+    nom: 'ESPADON', art: 'L’ESPADON', monde: 'mer', nage: true, peau: 1.15, force: 0.76, spr: true, hPose: ['garde', 'coup'], col: '#4B3A5E', clair: '#F2E6C9', fond: '#7A5FA0', K: .42, hp: 100, walk: 6.6, back: 5, dash: 20, jumpV: 18, jumpX: 8.5, grav: .62, etour: 48,
     aie: ['OUILLE ?!', 'MON ÉPÉE !', 'AÏE, MON NEZ !'], ia: { saut: .5 },
     hurt: { stand: [-560, 500, -620, -140], crouch: [-600, 500, -300, 0], air: [-520, 480, -600, -120] }, // (le corps et le début de l'épée)
     push: [220, 250], reach: 950, speMin: 350, speMax: 1400,
@@ -443,7 +443,7 @@ const CHARS = {
   // --- REQUIN BLEU (« livre en main », duel 17) : il tourne autour de sa proie (livre : il passe derrière et mord), les dents en scie, le museau en l'air, la tornade bleue.
   //     Point faible (livre) : « il se balade à 1 km/h » → la marche la plus lente de la mer (mais ses élans sont rapides).
   requinbleu: {
-    nom: 'REQUIN BLEU', art: 'LE REQUIN BLEU', monde: 'mer', nage: true, force: .93, spr: true, hPose: ['garde', 'coup'], col: '#1F4FA8', clair: '#EAF3FF', fond: '#2D73D6', K: .42, hp: 108, walk: 4.4, back: 3.8, dash: 22, jumpV: 18, jumpX: 8, grav: .62, etour: 50,
+    nom: 'REQUIN BLEU', art: 'LE REQUIN BLEU', monde: 'mer', nage: true, force: 0.8, spr: true, hPose: ['garde', 'coup'], col: '#1F4FA8', clair: '#EAF3FF', fond: '#2D73D6', K: .42, hp: 108, walk: 4.4, back: 3.8, dash: 22, jumpV: 18, jumpX: 8, grav: .62, etour: 50,
     aie: ['GLOUPS ?!', 'MES NAGEOIRES !', 'AÏE, MON MUSEAU !'], ia: {},
     hurt: { stand: [-700, 640, -540, -130], crouch: [-720, 660, -300, 0], air: [-660, 600, -540, -110] },
     push: [230, 260], reach: 720, speMin: 320, speMax: 1300,
@@ -463,7 +463,7 @@ const CHARS = {
   // --- MÉGALODON (légendaire de la MER, hors livre : NHM, Smithsonian, Florida Museum) : le plus gros requin de tous les temps. La mâchoire géante, la vague géante,
   //     surgi des profondeurs, les dents de 18 cm. Il se gagne en battant tous les animaux de la mer en GOD MODE.
   megalo: {
-    nom: 'MÉGALODON', art: 'LE MÉGALODON', monde: 'mer', nage: true, force: .9, spr: true, hPose: ['garde', 'coup'], col: '#3A4A5C', clair: '#F2F5F8', fond: '#1F3F66', K: .54, hp: 115, walk: 5.6, back: 4.6, dash: 18, jumpV: 16, jumpX: 7, grav: .6, etour: 70,
+    nom: 'MÉGALODON', art: 'LE MÉGALODON', monde: 'mer', nage: true, force: 0.96, spr: true, hPose: ['garde', 'coup'], col: '#3A4A5C', clair: '#F2F5F8', fond: '#1F3F66', K: .54, hp: 115, walk: 5.6, back: 4.6, dash: 18, jumpV: 16, jumpX: 7, grav: .6, etour: 70,
     aie: ['GRRR ?!', 'MES DENTS !', 'AÏE, MA MÂCHOIRE !'], ia: {},
     hurt: { stand: [-700, 680, -760, -140], crouch: [-720, 700, -330, 0], air: [-660, 640, -720, -110] },
     push: [270, 310], reach: 800, speMin: 330, speMax: 1400,
@@ -762,7 +762,7 @@ const CHARS = {
   // --- REQUIN-BOULEDOGUE (« livre en main », duel 26, p. 59) : une morsure record pour sa taille, il cogne, puis il mord, le requin de rivière.
   //     Point faible (livre) : « une peau sans armure » → il prend plus cher (peau 1.25).
   bouledogue: {
-    nom: 'REQUIN-BOULEDOGUE', art: 'LE REQUIN-BOULEDOGUE', monde: 'mer', nage: true, peau: 1.25, force: .85, spr: true, hPose: ['garde', 'coup'], col: '#6B7480', clair: '#EEF1F4', fond: '#7D93A8', K: .46, hp: 104, walk: 6.6, back: 5, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 46,
+    nom: 'REQUIN-BOULEDOGUE', art: 'LE REQUIN-BOULEDOGUE', monde: 'mer', nage: true, peau: 1.25, force: 0.79, spr: true, hPose: ['garde', 'coup'], col: '#6B7480', clair: '#EEF1F4', fond: '#7D93A8', K: .46, hp: 104, walk: 6.6, back: 5, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 46,
     aie: ['GLOUPS ?!', 'MON MUSEAU !', 'AÏE, MON AILERON !'], ia: {},
     hurt: { stand: [-520, 460, -600, -130], crouch: [-540, 480, -300, 0], air: [-500, 440, -560, -110] }, // (mesuré sur l'image : un requin trapu)
     push: [220, 255], reach: 700, speMin: 300, speMax: 1300,
@@ -784,7 +784,7 @@ const CHARS = {
   // --- BALEINE BLEUE (« livre en main », duel 27, p. 61) : un corps de 30 m, elle file à 32 km/h, le souffle de 9 m, le chant, la grande gorgée.
   //     Point faible (livre) : « pas une seule dent » → ses coups poussent fort mais font peu de dégâts.
   baleine: {
-    nom: 'BALEINE BLEUE', art: 'LA BALEINE BLEUE', fem: true, monde: 'mer', nage: true, force: .68, spr: true, hPose: ['garde', 'coup'], col: '#3E6A96', clair: '#E3EEF7', fond: '#4F86BF', K: .68, hp: 108, walk: 4.6, back: 3.8, dash: 14, jumpV: 15, jumpX: 6, grav: .58, etour: 80,
+    nom: 'BALEINE BLEUE', art: 'LA BALEINE BLEUE', fem: true, monde: 'mer', nage: true, force: 0.68, spr: true, hPose: ['garde', 'coup'], col: '#3E6A96', clair: '#E3EEF7', fond: '#4F86BF', K: .68, hp: 156, walk: 4.6, back: 3.8, dash: 14, jumpV: 15, jumpX: 6, grav: .58, etour: 80,
     aie: ['OUUUH ?!', 'MES FANONS !', 'AÏE, MA QUEUE !'], ia: { spe: 1.3 },
     hurt: { stand: [-600, 600, -430, -110], crouch: [-620, 620, -270, 0], air: [-560, 580, -410, -100] }, // (mesuré sur l'image : longue et plate, la queue ne compte pas)
     push: [300, 340], reach: 840, speMin: 360, speMax: 1400,
@@ -807,7 +807,7 @@ const CHARS = {
   //     Point faible (livre) : « sa carapace peut casser » → les coups qui cassent la garde lui font beaucoup plus mal (CRAC !).
   //     Il ne nage pas : il marche au fond (comme le crocodile sous la mer).
   crabe: {
-    nom: 'CRABE', art: 'LE CRABE', monde: 'mer', carapace: 1.5, force: .88, spr: true, hPose: ['garde', 'coup'], col: '#B3452A', clair: '#FFD9C2', fond: '#D0603E', K: .36, hp: 104, walk: 6.2, back: 6.2, dash: 20, jumpV: 20, jumpX: 8, grav: 1.1, etour: 48,
+    nom: 'CRABE', art: 'LE CRABE', monde: 'mer', carapace: 1.5, force: 0.99, spr: true, hPose: ['garde', 'coup'], col: '#B3452A', clair: '#FFD9C2', fond: '#D0603E', K: .36, hp: 104, walk: 6.2, back: 6.2, dash: 20, jumpV: 20, jumpX: 8, grav: 1.1, etour: 48,
     aie: ['CLIC ?!', 'MA PINCE !', 'AÏE, MA CARAPACE !'], ia: {},
     hurt: { stand: [-480, 520, -500, 0], crouch: [-500, 540, -330, 0], air: [-460, 500, -480, 0] }, // (mesuré sur l'image, sans le bout des pattes)
     push: [200, 240], reach: 700, speMin: 280, speMax: 1100,
@@ -828,7 +828,7 @@ const CHARS = {
   // --- CREVETTE-MANTE (« livre en main », duel 21, p. 49-50) : deux massues à ressort, elle casse les coquilles, la frappe plus rapide qu'un clin d'œil.
   //     Point faible (livre) : « molle quand elle mue » → une peau fragile (elle prend plus cher).
   crevette: {
-    nom: 'CREVETTE-MANTE', art: 'LA CREVETTE-MANTE', fem: true, monde: 'mer', peau: 1.05, force: 1.02, spr: true, hPose: ['garde', 'coup'], col: '#2E8F5E', clair: '#FFE08A', fond: '#3DAE74', K: .38, hp: 102, walk: 7, back: 5.6, dash: 20, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 44,
+    nom: 'CREVETTE-MANTE', art: 'LA CREVETTE-MANTE', fem: true, monde: 'mer', peau: 1.05, force: 0.93, spr: true, hPose: ['garde', 'coup'], col: '#2E8F5E', clair: '#FFE08A', fond: '#3DAE74', K: .38, hp: 102, walk: 7, back: 5.6, dash: 20, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 44,
     aie: ['AÏE ?!', 'MES MASSUES !', 'OUILLE, MES YEUX !'], ia: {},
     hurt: { stand: [-560, 520, -480, 0], crouch: [-580, 540, -320, 0], air: [-520, 500, -460, 0] }, // (mesuré sur l'image, sans les antennes)
     push: [180, 220], reach: 660, speMin: 260, speMax: 1100,
@@ -850,7 +850,7 @@ const CHARS = {
   // --- FRELON GÉANT (« livre en main », duel 1, p. 5) : un dard de 6 mm, il coupe la tête des abeilles (mandibules-ciseaux), la bande à frelons.
   //     Point faible (livre) : « il supporte mal la chaleur » → les coups « chaleur » (abeilles) et les arènes chaudes lui font plus mal.
   frelon: {
-    nom: 'FRELON GÉANT', art: 'LE FRELON GÉANT', monde: 'betes', vole: true, chaud: 1.6, force: .86, spr: true, hPose: ['garde', 'coup'], col: '#E0782A', clair: '#FFE2A8', fond: '#E8963A', K: .4, hp: 102, walk: 6.8, back: 5.4, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
+    nom: 'FRELON GÉANT', art: 'LE FRELON GÉANT', monde: 'betes', vole: true, chaud: 1.6, force: 0.88, spr: true, hPose: ['garde', 'coup'], col: '#E0782A', clair: '#FFE2A8', fond: '#E8963A', K: .4, hp: 102, walk: 6.8, back: 5.4, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
     aie: ['BZZ ?!', 'MES AILES !', 'AÏE, MON DARD !'], ia: { saut: .9 },
     hurt: { stand: [-380, 560, -600, -120], crouch: [-400, 560, -330, 0], air: [-380, 540, -560, -100] }, // (mesuré sur l'image : le corps, pas le bout des ailes)
     push: [190, 230], reach: 700, speMin: 280, speMax: 1200,
@@ -872,7 +872,7 @@ const CHARS = {
   // --- ABEILLES JAPONAISES (« livre en main », duel 1, p. 5) : un petit dard, elles foncent toutes ensemble, ça vibre et ça chauffe, la boule de chaleur.
   //     Point faible (livre) : « un corps fragile » → peau fragile, un peu moins de vie.
   abeille: {
-    nom: 'ABEILLES', art: 'LES ABEILLES', fem: true, monde: 'betes', vole: true, peau: 1.05, force: 1.2, spr: true, hPose: ['garde', 'coup'], col: '#D8A21E', clair: '#FFF1B8', fond: '#E9B93A', K: .34, hp: 108, walk: 7.4, back: 5.8, dash: 20, jumpV: 20, jumpX: 9, grav: .7, etour: 44,
+    nom: 'ABEILLES', art: 'LES ABEILLES', fem: true, monde: 'betes', vole: true, peau: 1.05, force: 0.93, spr: true, hPose: ['garde', 'coup'], col: '#D8A21E', clair: '#FFF1B8', fond: '#E9B93A', K: .34, hp: 108, walk: 7.4, back: 5.8, dash: 20, jumpV: 20, jumpX: 9, grav: .7, etour: 44,
     aie: ['BZZ ?!', 'OUILLE, MON DARD !', 'AÏE !'], ia: { saut: 1 },
     hurt: { stand: [-400, 560, -700, -120], crouch: [-420, 560, -400, 0], air: [-400, 540, -660, -100] }, // (mesuré sur l'image : le corps, pas le haut des ailes)
     push: [170, 210], reach: 660, speMin: 260, speMax: 1100,
@@ -894,7 +894,7 @@ const CHARS = {
   // --- MYGALE (« livre en main », duel 12, p. 29) : des crochets à venin, elle jette ses poils piquants, la soupe de proie (p. 30).
   //     Point faible (livre) : « elle voit très mal » → elle met du temps à se retourner quand on passe derrière elle.
   mygale: {
-    nom: 'MYGALE', art: 'LA MYGALE', fem: true, monde: 'betes', myope: 22, force: .88, spr: true, hPose: ['garde', 'coup'], col: '#6B4A2E', clair: '#E8D8B8', fond: '#8A6A48', K: .38, hp: 102, walk: 6.2, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 50,
+    nom: 'MYGALE', art: 'LA MYGALE', fem: true, monde: 'betes', myope: 22, force: 0.98, spr: true, hPose: ['garde', 'coup'], col: '#6B4A2E', clair: '#E8D8B8', fond: '#8A6A48', K: .38, hp: 102, walk: 6.2, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 50,
     aie: ['SSS ?!', 'MES PATTES !', 'AÏE, MES POILS !'], ia: {},
     hurt: { stand: [-560, 600, -560, 0], crouch: [-580, 620, -330, 0], air: [-540, 580, -520, 0] }, // (mesuré sur l'image, sans le bout des pattes)
     push: [200, 240], reach: 700, speMin: 280, speMax: 1200,
@@ -915,7 +915,7 @@ const CHARS = {
   // --- GUÊPE GÉANTE (« livre en main », duel 12, p. 29) : un dard de 7 mm, elle pique et paralyse, la note de douleur 4 sur 4 (p. 30).
   //     Point faible (livre) : « elle doit piquer entre les pattes » → sa piqûre qui paralyse ne touche qu'en bas, et de tout près.
   guepe: {
-    nom: 'GUÊPE GÉANTE', art: 'LA GUÊPE GÉANTE', fem: true, monde: 'betes', vole: true, force: 1.1, spr: true, hPose: ['garde', 'coup'], col: '#1E2A44', clair: '#FFB347', fond: '#E8783A', K: .38, hp: 104, walk: 7, back: 5.6, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
+    nom: 'GUÊPE GÉANTE', art: 'LA GUÊPE GÉANTE', fem: true, monde: 'betes', vole: true, force: 1.02, spr: true, hPose: ['garde', 'coup'], col: '#1E2A44', clair: '#FFB347', fond: '#E8783A', K: .38, hp: 104, walk: 7, back: 5.6, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
     aie: ['BZZ ?!', 'MES AILES !', 'AÏE, MON DARD !'], ia: { saut: .9 },
     hurt: { stand: [-420, 560, -660, -120], crouch: [-440, 560, -380, 0], air: [-400, 540, -620, -100] }, // (mesuré sur l'image : le corps, pas le haut des ailes)
     push: [190, 230], reach: 700, speMin: 280, speMax: 1200,
@@ -938,7 +938,7 @@ const CHARS = {
   // --- SCOLOPENDRE GÉANTE (« livre en main », duel 25, p. 57) : un venin qui paralyse ; elle chasse la tête en bas (elle monte au plafond et se laisse pendre) ;
   //     point faible (livre) : « elle se dessèche vite » → dans le désert (arène « sable »), elle perd un peu de vie. Mots interdits : crapauds, transformées.
   scolopendre: {
-    nom: 'SCOLOPENDRE GÉANTE', art: 'LA SCOLOPENDRE', fem: true, monde: 'betes', soif: { mots: ['JE ME DESSÈCHE !', 'TROP SEC, ICI !', 'DE L’EAU !'], seul: ['sable'], pose: 'seche' }, force: 1.06, spr: true, hPose: ['garde', 'coup'], col: '#7A2E12', clair: '#F2C04A', fond: '#6B3A22', K: .4, hp: 108, walk: 6.4, back: 5, dash: 17, jumpV: 20, jumpX: 8, grav: 1.1, etour: 50,
+    nom: 'SCOLOPENDRE GÉANTE', art: 'LA SCOLOPENDRE', fem: true, monde: 'betes', soif: { mots: ['JE ME DESSÈCHE !', 'TROP SEC, ICI !', 'DE L’EAU !'], seul: ['sable'], pose: 'seche' }, force: 0.89, spr: true, hPose: ['garde', 'coup'], col: '#7A2E12', clair: '#F2C04A', fond: '#6B3A22', K: .4, hp: 108, walk: 6.4, back: 5, dash: 17, jumpV: 20, jumpX: 8, grav: 1.1, etour: 50,
     aie: ['KSSS ?!', 'MES PATTES !', 'AÏE, MES ANTENNES !'], ia: {},
     hurt: { stand: [-620, 600, -400, 0], crouch: [-640, 620, -250, 0], air: [-580, 560, -400, 0] }, // (mesuré sur l'image, sans le bout des pattes)
     push: [210, 250], reach: 720, speMin: 280, speMax: 1200,
@@ -961,7 +961,7 @@ const CHARS = {
   // --- CHAUVE-SOURIS (« livre en main », duel 25, p. 57) : de petites dents pointues ; elle chasse au sonar (l'onde repère l'adversaire : les coups suivants font plus mal) ;
   //     point faible (livre) : « des ailes en peau très fine » → touchée en l'air, elle a plus mal. Mots interdits : effort, poids.
   chauvesouris: {
-    nom: 'CHAUVE-SOURIS', art: 'LA CHAUVE-SOURIS', fem: true, monde: 'betes', vole: true, ailesFines: 1.25, force: 1.1, spr: true, hPose: ['garde', 'coup'], col: '#5A3A2A', clair: '#E8C8A8', fond: '#3E2A4A', K: .36, hp: 104, walk: 7, back: 6.2, dash: 19, jumpV: 21, jumpX: 9, grav: .7, etour: 46,
+    nom: 'CHAUVE-SOURIS', art: 'LA CHAUVE-SOURIS', fem: true, monde: 'betes', vole: true, ailesFines: 1.25, force: 1.17, spr: true, hPose: ['garde', 'coup'], col: '#5A3A2A', clair: '#E8C8A8', fond: '#3E2A4A', K: .36, hp: 104, walk: 7, back: 6.2, dash: 19, jumpV: 21, jumpX: 9, grav: .7, etour: 46,
     aie: ['IIIK ?!', 'MES AILES !', 'AÏE, MES OREILLES !'], ia: { saut: .9 },
     hurt: { stand: [-350, 390, -610, -130], crouch: [-360, 380, -380, 0], air: [-330, 370, -570, -110] }, // (mesuré sur l'image : le corps, pas le bout des ailes)
     push: [130, 150], reach: 700, speMin: 300, speMax: 1300, // (petit corps : on peut l'approcher de près)
@@ -983,7 +983,7 @@ const CHARS = {
   // --- MANTE RELIGIEUSE (« livre en main », duel 28, p. 63) : des pattes-pièges à piquants ; elle frappe en un éclair ; la brindille verte qui attend (p. 64) ;
   //     point faible (livre) : « souvent mangée par les oiseaux » → les attaques qui tombent du ciel lui font plus mal. Mots interdits : lunettes, relief.
   mante: {
-    nom: 'MANTE RELIGIEUSE', art: 'LA MANTE', fem: true, monde: 'betes', proieDuCiel: 1.12, force: .78, spr: true, hPose: ['garde', 'coup'], col: '#5E9E2E', clair: '#D8F0A0', fond: '#7DB84A', K: .4, hp: 94, walk: 5.8, back: 5, dash: 16, jumpV: 21, jumpX: 8.5, grav: 1, etour: 48,
+    nom: 'MANTE RELIGIEUSE', art: 'LA MANTE', fem: true, monde: 'betes', proieDuCiel: 1.12, force: 0.95, spr: true, hPose: ['garde', 'coup'], col: '#5E9E2E', clair: '#D8F0A0', fond: '#7DB84A', K: .4, hp: 94, walk: 5.8, back: 5, dash: 16, jumpV: 21, jumpX: 8.5, grav: 1, etour: 48,
     aie: ['CRIC ?!', 'MES PATTES !', 'AÏE, MES ANTENNES !'], ia: {},
     hurt: { stand: [-560, 460, -800, 0], crouch: [-600, 480, -420, 0], air: [-540, 440, -760, 0] }, // (mesuré sur l'image : le corps, sans le bout des pattes)
     push: [170, 190], reach: 760, speMin: 280, speMax: 1200,
@@ -1006,7 +1006,7 @@ const CHARS = {
   // --- COLIBRI (« livre en main », duel 28, p. 63) : un bec en aiguille ; il vole même en arrière ; il bat des ailes 53 fois par seconde (p. 63) ;
   //     point faible (livre) : « il doit boire sans arrêt » → il perd un peu de vie avec le temps (sauf au JARDIN, où il y a la mangeoire). Mots interdits : nectar, 1200.
   colibri: {
-    nom: 'COLIBRI', art: 'LE COLIBRI', monde: 'betes', vole: true, soif: { mots: ['J’AI SOIF !', 'VITE, À BOIRE !', 'DE L’EAU SUCRÉE, VITE !'], sauf: ['jardin'], t: 240 }, force: .87, spr: true, hPose: ['garde', 'coup'], col: '#2E8B57', clair: '#D8F5E0', fond: '#3FA36B', K: .34, hp: 96, walk: 8, back: 9, dash: 22, jumpV: 21, jumpX: 9.5, grav: .6, etour: 44,
+    nom: 'COLIBRI', art: 'LE COLIBRI', monde: 'betes', vole: true, soif: { mots: ['J’AI SOIF !', 'VITE, À BOIRE !', 'DE L’EAU SUCRÉE, VITE !'], sauf: ['jardin'], t: 240 }, force: 0.99, spr: true, hPose: ['garde', 'coup'], col: '#2E8B57', clair: '#D8F5E0', fond: '#3FA36B', K: .34, hp: 96, walk: 8, back: 9, dash: 22, jumpV: 21, jumpX: 9.5, grav: .6, etour: 44,
     aie: ['PIOU ?!', 'MES PLUMES !', 'AÏE, MON BEC !'], ia: { saut: 1 },
     hurt: { stand: [-300, 360, -800, -180], crouch: [-300, 360, -520, 0], air: [-280, 340, -760, -160] }, // (mesuré sur l'image : le corps, sans le bout des ailes ni le bec)
     push: [110, 130], reach: 760, // (tout petit : on peut l'approcher de près) speMin: 300, speMax: 1300,
@@ -1028,7 +1028,7 @@ const CHARS = {
   // --- JEUNE SERPENT BRUN (« livre en main », duel 29, p. 65) : des crochets à venin ; il fouille chaque cachette ;
   //     point faible (livre) : « tout jeune, il débute » → il commence petit… et GRANDIT à chaque coup qu'il donne (SUPER : il devient grand d'un coup). Mots interdits : cinq, 5, terrestres.
   serpentbrun: {
-    nom: 'JEUNE SERPENT BRUN', art: 'LE JEUNE SERPENT BRUN', monde: 'betes', grandit: { pas: .04, max: 1.3 }, force: .94, spr: true, hPose: ['garde', 'coup'], col: '#8A6A44', clair: '#EBD8B0', fond: '#A07A4E', K: .34, hp: 104, walk: 6.4, back: 5.2, dash: 18, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 48,
+    nom: 'JEUNE SERPENT BRUN', art: 'LE JEUNE SERPENT BRUN', monde: 'betes', grandit: { pas: .04, max: 1.3 }, force: 0.88, spr: true, hPose: ['garde', 'coup'], col: '#8A6A44', clair: '#EBD8B0', fond: '#A07A4E', K: .34, hp: 104, walk: 6.4, back: 5.2, dash: 18, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 48,
     aie: ['SSS ?!', 'MA QUEUE !', 'AÏE, MES ÉCAILLES !'], ia: {},
     hurt: { stand: [-700, 560, -460, 0], crouch: [-720, 580, -260, 0], air: [-660, 520, -420, 0] }, // (mesuré sur l'image, sans le bout de la queue)
     push: [170, 190], reach: 740, speMin: 280, speMax: 1200,
@@ -1048,7 +1048,7 @@ const CHARS = {
   // --- VEUVE NOIRE À DOS ROUGE (à gagner au DÉFI depuis le 25/09, duel 29, p. 65) : un venin très puissant ; elle ficelle sa proie ; le fil gluant, l'ascenseur (p. 66) ;
   //     point faible (livre) : « on l'écrase d'un doigt » → les attaques qui tombent d'en haut lui font très mal (pose « écrasée »).
   veuve: {
-    nom: 'VEUVE NOIRE', art: 'LA VEUVE NOIRE', fem: true, monde: 'betes', ecrase: 1.35, force: 1, spr: true, hPose: ['garde', 'coup'], col: '#1A1A22', clair: '#FF4A3A', fond: '#3A1A22', K: .32, hp: 96, walk: 6, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 46,
+    nom: 'VEUVE NOIRE', art: 'LA VEUVE NOIRE', fem: true, monde: 'betes', ecrase: 1.35, force: 1.02, spr: true, hPose: ['garde', 'coup'], col: '#1A1A22', clair: '#FF4A3A', fond: '#3A1A22', K: .32, hp: 96, walk: 6, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 46,
     aie: ['SSS ?!', 'MES PATTES !', 'AÏE, MON DOS ROUGE !'], ia: {},
     hurt: { stand: [-440, 420, -520, 0], crouch: [-460, 440, -300, 0], air: [-420, 400, -500, 0] }, // (mesuré sur l'image : l'abdomen et la tête, pas le bout des pattes)
     push: [120, 140], reach: 640, speMin: 280, speMax: 1300,
@@ -1068,7 +1068,7 @@ const CHARS = {
   // --- MÉGANEURA (LÉGENDAIRE des PETITES BÊTES, hors livre) : la libellule géante de la préhistoire (environ 70 cm d'ailes, il y a environ 300 millions d'années).
   //     Elle se réveille quand on a battu toutes les PETITES BÊTES en GOD MODE (bonus.js : ceremonieLegendaire). Sources : Wikipédia « Meganeura », The Conversation (25/09/2026).
   meganeura: {
-    nom: 'MÉGANEURA', art: 'LA MÉGANEURA', fem: true, monde: 'betes', vole: true, force: .68, spr: true, hPose: ['garde', 'coup'], col: '#1E7A7A', clair: '#BFF5E8', fond: '#2A6A7A', K: .46, hp: 96, walk: 7, back: 6.2, dash: 20, jumpV: 21, jumpX: 9.5, grav: .6, etour: 60,
+    nom: 'MÉGANEURA', art: 'LA MÉGANEURA', fem: true, monde: 'betes', vole: true, force: 0.94, spr: true, hPose: ['garde', 'coup'], col: '#1E7A7A', clair: '#BFF5E8', fond: '#2A6A7A', K: .46, hp: 96, walk: 7, back: 6.2, dash: 20, jumpV: 21, jumpX: 9.5, grav: .6, etour: 60,
     aie: ['BZZOUM ?!', 'MES AILES !', 'AÏE, MES GRANDS YEUX !'], ia: { saut: .9 },
     hurt: { stand: [-560, 520, -660, -160], crouch: [-560, 540, -420, -100], air: [-540, 500, -640, -150] }, // (mesuré : le corps et le bas des ailes ; sprite flottant, +120)
     push: [210, 250], reach: 780, speMin: 300, speMax: 1300,
@@ -1170,6 +1170,19 @@ const ARENES = [
   { k: 'lune', nom: 'LA LUNE', img: 'arene_lune.webp', secret: 'lune' }, { k: 'prehisto', nom: 'L’ÎLE PRÉHISTORIQUE', img: 'arene_prehisto.webp', secret: 'prehisto' },
 ];
 const estMer = () => (ARENES.find(a => a.k === G.arene) || {}).monde === 'mer';
+// ---- 2D (25/09, demande de Vincent : « les duels avec les animaux qui volent et qui nagent doivent pouvoir se faire en 2D ») ----
+// Les animaux qui VOLENT (vole) et ceux qui NAGENT (nage, dans une arène de mer) ont une altitude de croisière f.alt :
+// ↑ monte, ↓ descend (en bas tout en bas : ↓ = la garde, comme au sol). C'est leur « sol » : un saut, un coup, une chute les y ramènent,
+// sauf un coup qui fait tomber (f.knock) : là, on tombe jusqu'au vrai sol. Au sol restent : crabe, crevette, mygale, scolopendre, mante, veuve, serpent brun.
+const vol2d = f => !!f && !!f.d && !G.sans2D && !!(f.d.vole || (f.d.nage && estMer())); // (G.sans2D : pour les tests, comparer avec l'ancien jeu)
+const solDe = f => vol2d(f) && !f.knock ? (f.alt || 0) : 0;
+const ALT_HUD = 200; // le haut de l'écran (les jauges) : on n'y monte pas
+const ALT_VS_SOL = 300; // contre un animal qui marche, pas plus haut : il peut encore sauter et taper (pas de cachette imprenable)
+function altMax(f) { if (f._altMax != null) return f._altMax; const hb = f.d.hurt, haut = -Math.min(hb.stand[2], (hb.air || hb.stand)[2]) * f.d.K, o = G.f.find(x => x !== f), cap = o && !vol2d(o) ? ALT_VS_SOL : 420; return (f._altMax = Math.round(Math.max(90, Math.min(cap, FLOOR - ALT_HUD - haut)))) }
+const vitV = f => Math.max(4.5, f.d.walk * .95); // vitesse pour monter / descendre
+const duCiel = a => a.h > 30 && (!vol2d(a) || a.h - solDe(a) > 30 || (a.vz || 0) < -2); // une attaque « d'en haut » : en plein saut, ou en piqué (2D)
+const ailesTouchees = (d, m) => d.h - solDe(d) > 30 || (vol2d(d) && d.h > 30 && !!m.aa); // chauve-souris : touchée en plein saut, ou en vol par un coup anti-aérien
+const procheV = (f, o) => (!vol2d(f) && !vol2d(o)) || Math.abs(o.h - f.h) < 160; // une prise : à peu près à la même hauteur
 // couleur de la poussière soulevée, selon le sol de l'arène
 const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', nord: '#F2F7FF', floride: '#B89A78', asie: '#C9A26E', estuaire: '#9C8A5A', ruche: '#F2C45A', lune: '#C9CCD6', prehisto: '#9C8A6A' , sable: '#F2D39A' , grotte: '#8A8FA0' , jardin: '#B08A5A', tronc: '#C27A4E' };
 const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'frelon', 'abeille', 'mygale', 'guepe', 'scolopendre', 'chauvesouris', 'mante', 'colibri', 'serpentbrun', 'veuve', 'meganeura', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'baleine', 'crabe', 'crevette', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
@@ -2169,7 +2182,7 @@ function manip(f) { if (suite(f, [6, 2, 3])) return 'SD'; if (suite(f, [2, 3, 6]
 // projection : il faut être tout près, l'adversaire au sol et « attrapable »
 const PAS_ATTRAPABLE = ['hurt', 'bstun', 'down', 'getup', 'ko', 'tenu', 'lance'];
 function portee(f, o, plus) { return Math.abs(o.x - f.x) <= f.d.push[1] + o.d.push[1] + plus }
-function attrapable(o) { return o.h <= 0 && !o.cache && !PAS_ATTRAPABLE.includes(o.state) && !(o.pasPrise > 0) && o.inv <= 0 }
+function attrapable(o) { return o.h <= solDe(o) + 1 && !o.cache && !PAS_ATTRAPABLE.includes(o.state) && !(o.pasPrise > 0) && o.inv <= 0 }
 function numpad(inp, face) { const fx = (inp.right ? 1 : 0) - (inp.left ? 1 : 0), x = fx * face, y = inp.up ? 1 : inp.down ? -1 : 0; return 5 + x + y * 3 }
 
 // orque : « elle doit remonter respirer » (livre, p. 7). Toutes les 20 s, elle a besoin d'air : si elle saute (ou plonge depuis la surface), « PFFOUH ! » et +30 de jauge
@@ -2185,9 +2198,9 @@ function update(f, o, inp) {
   f.t++; if (f.inv > 0) f.inv--; if (f.pasPrise > 0) f.pasPrise--; if (f.fatiguee > 0) { f.fatiguee--; if (f.fatiguee % 24 === 0) addFx({ k: 'bulle', x: f.x + f.face * 120, y: FLOOR - 420 * f.d.K / .44 }) }
   if (G.phase === 'fight' && !f.terrainDit && G.pt > 30) { f.terrainDit = true; const k = terrain(f); if (k < 1) addFx({ k: 'mot', x: f.x, y: FLOOR - 640 * f.d.K / .44, mot: hasard(['BRRR… TROP FROID !', 'JE GÈLE…', 'IL FAIT FROID ICI !']), col: '#BFE9FF' }); else if (k > 1) addFx({ k: 'mot', x: f.x, y: FLOOR - 620 * f.d.K / .44, mot: hasard(['DANS L’EAU, JE SUIS CHEZ MOI !', 'VIVE L’EAU !']), col: '#7FD0F5' }) }
   if (f.d.soif && G.phase === 'fight' && f.hp > 1 && (!f.d.soif.seul || f.d.soif.seul.includes(G.arene)) && !(f.d.soif.sauf && f.d.soif.sauf.includes(G.arene)) && G.frame % (f.d.soif.t || 180) === 0) { f.hp -= 1; if (G.frame - (f.soifT || -9999) > 540) { f.soifT = G.frame; addFx({ k: 'mot', x: f.x, y: FLOOR - f.h - 640 * f.d.K / .44, mot: hasard(f.d.soif.mots), col: '#9FD8FF' }) } } // livre : « elle se dessèche vite » (scolopendre) · « il doit boire sans arrêt » (colibri)
-  if (f.d.respire && G.phase === 'fight') { f.air = (f.air || 0) + 1; if (f.air === AIR_T) { sfx('bulle', .8); addFx({ k: 'mot', x: f.x, y: FLOOR - 640 * f.d.K / .44, mot: 'DE L’AIR ! SAUTE !', col: '#BFE9FF' }) } if (f.air >= AIR_T && f.h > 150 && f.vy < 0) respire(f) }
+  if (f.d.respire && G.phase === 'fight') { f.air = (f.air || 0) + 1; if (f.air === AIR_T) { sfx('bulle', .8); addFx({ k: 'mot', x: f.x, y: FLOOR - 640 * f.d.K / .44, mot: vol2d(f) ? 'DE L’AIR ! REMONTE !' : 'DE L’AIR ! SAUTE !', col: '#BFE9FF' }) } if (f.air >= AIR_T && (vol2d(f) ? f.h > altMax(f) - 50 : f.h > 150 && f.vy < 0)) respire(f) }
   if (f.roule && !(o.state === 'atk' && o.move && o.move.agrippe && o.hit)) f.roule = 0;
-  const onG = f.h <= 0, press = k => inp[k] && !f.prev[k];
+  const v2 = vol2d(f), onG = f.h <= solDe(f) + .5, press = k => inp[k] && !f.prev[k];
   const dir = (inp.right ? 1 : 0) - (inp.left ? 1 : 0), fwd = dir * f.face;
   const np = numpad(inp, f.face); f.hist.push(np); if (f.hist.length > 30) f.hist.shift();
   // étourdissement : la jauge redescend quand on ne prend plus de coups
@@ -2200,7 +2213,8 @@ function update(f, o, inp) {
     if (f.d.myope && vise !== f.face) { f.retourne = (f.retourne || 0) + 1; if (f.retourne === 1 && Math.random() < .5) addFx({ k: 'mot', x: f.x, y: FLOOR - 560 * f.d.K / .44, mot: hasard(['OÙ ES-TU ?', 'JE NE VOIS RIEN !', 'HEIN ?']), col: '#E8D8B8' }); if (f.retourne >= f.d.myope) { f.face = vise; f.retourne = 0 } }
     else { f.face = vise; f.retourne = 0 } }
   const fight = G.phase === 'fight';
-  f.blocking = false; f.guardBtn = !!(inp.G || inp.down);
+  const enHaut = v2 && (f.alt || 0) > 0; // en vol / à la nage, au-dessus du fond : ↓ fait descendre (ce n'est plus la garde)
+  f.blocking = false; f.guardBtn = !!(inp.G || (inp.down && !enHaut));
   // annulation d'un coup en combo (sur touche)
   let wantAtk = press('S') ? 'S' : press('H') ? 'H' : press('L') ? 'L' : null;
   // tampon : un appui fait un peu trop tôt (pendant la fin d'un coup) est gardé 9 images (avec la direction tenue)
@@ -2224,17 +2238,19 @@ function update(f, o, inp) {
     case 'intro': case 'win': case 'lose': f.vx *= .8; break;
     case 'idle': case 'walk': case 'walkB': case 'crouch': case 'block': case 'cblock': {
       if (!fight) { f.vx = 0; if (f.state !== 'idle') setS(f, 'idle'); break }
+      // 2D : ↑ monte, ↓ descend (on garde la main sur les coups)
+      if (v2) { const vz = inp.up ? 1 : inp.down && enHaut ? -1 : 0; if (vz) f.alt = cl((f.alt || 0) + vz * vitV(f), 0, altMax(f)) }
       const sp = special(); if (sp) { startMove(f, sp.k, sp.fort); break }
       if (wantAtk) {
         // projection : tout près, en poussant vers l'adversaire + B (elle passe la garde)
-        if (wantAtk === 'H' && avant && !inp.down && onG && f.d.moves.T && portee(f, o, 70) && attrapable(o)) { startMove(f, 'T'); break }
-        let k = wantAtk; if (inp.down) k = k === 'L' ? 'cL' : k === 'H' && f.d.moves.cH ? 'cH' : k;
+        if (wantAtk === 'H' && avant && !inp.down && onG && f.d.moves.T && portee(f, o, 70) && attrapable(o) && procheV(f, o)) { startMove(f, 'T'); break }
+        let k = wantAtk; if (inp.down && !enHaut) k = k === 'L' ? 'cL' : k === 'H' && f.d.moves.cH ? 'cH' : k;
         startMove(f, k); break
       }
       // se protéger : vers le BAS = garde accroupie qui pare tout (idée de Vincent : pas besoin de bouton).
       // Reculer protège aussi (comme dans les jeux de combat classiques). Touche V au clavier : garde debout.
-      if (inp.down || inp.G) { f.vx = 0; const s = inp.down ? 'cblock' : 'block'; if (f.state !== s) setS(f, s); f.blocking = true; f.guardBtn = true; break }
-      if (inp.up && !(f.fatiguee > 0)) { setS(f, 'prejump'); f.jdir = dir; break }
+      if ((inp.down && !enHaut) || inp.G) { f.vx = 0; const s = inp.down ? 'cblock' : 'block'; if (f.state !== s) setS(f, s); f.blocking = true; f.guardBtn = true; break }
+      if (inp.up && !v2 && !(f.fatiguee > 0)) { setS(f, 'prejump'); f.jdir = dir; break }
       const backH = fwd < 0;
       // reculer face à une attaque qui arrive = se mettre en garde (on le voit à l'écran)
       const menace = o.state === 'atk' && o.ph !== 'rec' && Math.abs(o.x - f.x) < 900;
@@ -2257,7 +2273,7 @@ function update(f, o, inp) {
     case 'lance': {
       const d = f.cible, m = f.prise; f.vx = 0;
       if (!d || d.state !== 'tenu') { setS(f, 'idle'); break }
-      d.x = f.x + f.face * (f.d.push[1] + d.d.push[1] - 40); d.h = Math.min(m.ascenseur ? 380 : 60, f.t * 6); // (veuve noire : l'ascenseur monte la proie dans la toile)
+      d.x = f.x + f.face * (f.d.push[1] + d.d.push[1] - 40); d.h = (v2 ? f.h : 0) + Math.min(m.ascenseur ? 380 : 60, f.t * 6); // (veuve noire : l'ascenseur monte la proie dans la toile)
       if (m.serre && f.t === 1 && window.statCombat) statCombat(f, 'serre'); // trophée « GROS CÂLIN » : 3 fois dans un combat
       if (m.serre && f.t % 10 === 5) { sfx('vent', .5); G.shake = Math.max(G.shake, 4); addFx({ k: 'mot', x: d.x + (Math.random() - .5) * 140, y: FLOOR - 460 + (Math.random() - .5) * 80, mot: hasard(['SERRE !', 'CRRR…', 'ENCORE UN TOUR !']), col: '#F2EDA0' }) }
       if (m.avale) { d.cache = f.t > 10 && f.t < m.prise.t - 4; if (f.t === 10) { if (window.trophee) trophee('avale', f); sfx('gloups', 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 620, mot: 'GLOUPS !', col: JA }) } if (f.t % 12 === 6 && f.t > 10) addFx({ k: 'mot', x: f.x + (Math.random() - .5) * 200, y: FLOOR - 380, mot: hasard(['MIAM…', 'GLOUB…', 'BLOUP…']), col: '#F2EDA0' }); if (f.t === m.prise.t - 4) { sfx('prout', .7); addFx({ k: 'mot', x: f.x, y: FLOOR - 560, mot: 'PTOU ! TROP GROS !', col: '#FF7AB6' }) } }
@@ -2271,7 +2287,7 @@ function update(f, o, inp) {
     }
     case 'tenu': {
       f.vx = 0; const a = f.tenuPar;
-      if (!a || a.state !== 'lance') { setS(f, 'idle'); f.h = 0; f.cache = false; break }
+      if (!a || a.state !== 'lance') { setS(f, 'idle'); if (!vol2d(f)) f.h = 0; f.cache = false; break }
       // se dégager d'une projection normale : appuyer sur A ou B tout de suite
       if (f.t <= 8 && a.prise.prise.degage !== false && (press('L') || press('H'))) degage(a, f);
       // girafe : « le rodéo » (livre p. 52 : elle se secoue et se débarrasse des lionnes) — même accrochée sur le dos, ★ (30 de jauge) la libère
@@ -2282,6 +2298,7 @@ function update(f, o, inp) {
     case 'dizzy': f.vx *= .8; if (press('L') || press('H') || press('S') || (dir && !(f.prev.left || f.prev.right))) f.stun -= 6; if (--f.stun <= 0) { setS(f, 'idle'); f.etourdi = 0 } break;
     case 'atk': {
       const m = f.move, [ph, u] = phaseOf(f); f.ph = ph; f.u = u;
+      if (v2 && (ph === 'st' || ph === 'act') && !f.cache && !f.ciel && !m.saute && !m.ciel && !m.plonge && !m.contourne && !m.prise && o.h <= altMax(f) + 60) f.alt = cl((f.alt || 0) + cl(o.h - (f.alt || 0), -9, 9), 0, altMax(f)); // 2D : on vise sa hauteur
       // combos : annule la récupération d'un coup qui a touché (les coups spéciaux s'enchaînent là où ★ est permis)
       if (f.hit && m.chain && (ph === 'rec' || ph === 'act') && f.t - f.hitT < 16) {
         let nk = null, fortNk = false; const sp = special();
@@ -2293,7 +2310,7 @@ function update(f, o, inp) {
       }
       // projections et prises : on attrape si l'adversaire est à portée pendant le coup
       if (m.prise && ph === 'act' && !f.hit) {
-        if (portee(f, o, m.prise.portee || 70) && (attrapable(o) || (m.prise.air && o.h > 0 && o.h < 420 && attrapable(Object.assign({}, o, { h: 0 }))))) { // (mante : « les pattes-pièges se referment » : elle attrape aussi en plein vol)
+        if (portee(f, o, m.prise.portee || 70) && ((attrapable(o) && procheV(f, o)) || (m.prise.air && o.h > 0 && o.h < 320 && attrapable(Object.assign({}, o, { h: 0, knock: true }))))) { // (mante : « les pattes-pièges se referment » : elle attrape aussi en plein vol)
           if (o.state === 'atk' && o.mk === 'T' && o.ph !== 'rec' && f.mk === 'T') { degage(f, o); break } // deux projections en même temps
           attrape(f, o, m); break
         }
@@ -2323,15 +2340,15 @@ function update(f, o, inp) {
         if (m.contourne) {
           const herbe = m.contourne === 'herbe';
           if (ph === 'st') { f.cache = true; f.inv = 3; f.vx = 0; if (f.t === 1) { if (herbe) { sfx('vent', .5); addFx({ k: 'poussiere', x: f.x, y: FLOOR }); addFx({ k: 'mot', x: f.x, y: FLOOR - 480, mot: hasard(['IL RAMPE DANS L’HERBE…', 'CHUT…', 'OÙ EST-IL PASSÉ ?']), col: '#E8D5AE' }) } else { sfx('plouf', .6); addFx({ k: 'bulles', x: f.x, y: FLOOR - 200, n: 12, w: 260 }); addFx({ k: 'mot', x: f.x, y: FLOOR - 480, mot: hasard(['JE TOURNE…', 'JE TOURNE, JE TOURNE…', 'OÙ SUIS-JE ?']), col: '#BFE9FF' }) } } if (herbe && f.t % 6 === 0) addFx({ k: 'poussiere', x: o.x + Math.cos(f.t * .2) * 330, y: FLOOR }) }
-          if (f.t === m.st) { f.cache = false; const cote = -(o.face || 1), dx = o.d.push[1] + f.d.push[1] + 30; f.x = Math.max(STAGE_L, Math.min(STAGE_R, o.x + cote * dx)); if (Math.abs(f.x - o.x) < dx * .6) f.x = Math.max(STAGE_L, Math.min(STAGE_R, o.x - cote * dx)); f.face = o.x >= f.x ? 1 : -1; f.h = 0; f.vy = 0; sfx(f.kind, 1); G.shake = 8; if (herbe) addFx({ k: 'poussiere', x: f.x, y: FLOOR }); else { sfx('plouf', .8); addFx({ k: 'bulles', x: f.x, y: FLOOR - 200, n: 14, w: 260 }) }
+          if (f.t === m.st) { f.cache = false; const cote = -(o.face || 1), dx = o.d.push[1] + f.d.push[1] + 30; f.x = Math.max(STAGE_L, Math.min(STAGE_R, o.x + cote * dx)); if (Math.abs(f.x - o.x) < dx * .6) f.x = Math.max(STAGE_L, Math.min(STAGE_R, o.x - cote * dx)); f.face = o.x >= f.x ? 1 : -1; f.h = vol2d(f) ? (f.alt = cl(o.h, 0, altMax(f))) : 0; f.vy = 0; sfx(f.kind, 1); G.shake = 8; if (herbe) addFx({ k: 'poussiere', x: f.x, y: FLOOR }); else { sfx('plouf', .8); addFx({ k: 'bulles', x: f.x, y: FLOOR - 200, n: 14, w: 260 }) }
             // jaguar (livre) : « repéré, il rate son coup » — si l'autre se protège ou attaque déjà, l'attaque par-derrière rate
             if (m.repere && (o.blocking || o.guardBtn || (o.state === 'atk' && o.ph !== 'rec'))) { f.hit = 99; f.t = m.st + m.act; f.move = Object.assign({}, m, { rec: m.rec + 16 }); sfx('pouet', .7); addFx({ k: 'mot', x: f.x, y: FLOOR - 600, mot: hasard(['REPÉRÉ ! RATÉ…', 'OUPS, REPÉRÉ !', 'IL M’A VU !']), col: CY }) } }
         }
         // léopard : il bondit hors de l'écran (dans « son arbre »), suit l'adversaire, puis lui tombe dessus (son ombre le trahit)
         if (m.ciel) {
-          if (f.t === 1) { f.vy = -38; f.h = .1; f.vx = 0; sfx('vent', 1); if (m.plongeon) { sfx('plouf', .5); addFx({ k: 'bulles', x: f.x, y: FLOOR - 200, n: 14, w: 260 }) } addFx({ k: 'mot', x: f.x, y: FLOOR - 640, mot: hasard(m.motsMonte || ['HOP, DANS L’ARBRE !', 'À TOUT DE SUITE…', 'JE REVIENS !']), col: m.plongeon ? '#BFE9FF' : JA }) }
+          if (f.t === 1) { f.vy = -38; f.h = Math.max(f.h, .1); f.vx = 0; sfx('vent', 1); if (m.plongeon) { sfx('plouf', .5); addFx({ k: 'bulles', x: f.x, y: FLOOR - 200, n: 14, w: 260 }) } addFx({ k: 'mot', x: f.x, y: FLOOR - 640, mot: hasard(m.motsMonte || ['HOP, DANS L’ARBRE !', 'À TOUT DE SUITE…', 'JE REVIENS !']), col: m.plongeon ? '#BFE9FF' : JA }) }
           if (ph === 'st' && f.t > 10) { f.cache = true; f.ciel = true; f.inv = 3; f.h = m.plafond ? f.h + (440 - f.h) * .25 : 1500; f.vy = 0; f.vx = Math.sign(o.x - f.x) * Math.min(19, Math.abs(o.x - f.x) * .2); if (m.plafond && f.t % 16 === 0) sfx('vent', .25) } // scolopendre (livre) : « elle chasse la tête en bas » : pendue au plafond
-          if (f.t === m.st) { f.cache = false; f.ciel = false; f.face = o.x >= f.x ? 1 : -1; f.h = m.plafond ? f.h : 1050; f.vy = m.plafond ? 18 : 12; f.vx = 0; sfx(f.kind, 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 760, mot: hasard(m.motsTombe || ['TOMBÉ DU CIEL !', 'SURPRISE D’EN HAUT !']), col: JA }); if (f.d.respire) respire(f, true) }
+          if (f.t === m.st) { f.cache = false; f.ciel = false; f.face = o.x >= f.x ? 1 : -1; f.h = m.plafond ? f.h : 1050; f.vy = m.plafond ? 18 : 12; f.vx = 0; if (vol2d(f)) f.alt = cl(o.h, 0, altMax(f)); /* 2D : il retombe sur l'adversaire, à sa hauteur */ sfx(f.kind, 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 760, mot: hasard(m.motsTombe || ['TOMBÉ DU CIEL !', 'SURPRISE D’EN HAUT !']), col: JA }); if (f.d.respire) respire(f, true) }
         }
         // autruche : couchée, le cou à plat sur le sol… « un tas de terre ! », puis elle surgit
         if (m.aplat && f.t === 2) { addFx({ k: 'mot', x: f.x, y: FLOOR - 380, mot: hasard(m.aplat === 'branche' ? ['UNE BRANCHE ?', 'CHUT…', 'IMMOBILE…'] : ['UN TAS DE TERRE ?', 'CACHÉE !', 'CHUT…']), col: '#E8D5AE' }); addFx({ k: 'poussiere', x: f.x, y: FLOOR }) }
@@ -2377,7 +2394,7 @@ function update(f, o, inp) {
         if (m.geyser && f.t === m.st) { sfx('vapeur', 1); sfx('plouf', .8); for (let i = 0; i < 3; i++) addFx({ k: 'bulles', x: f.x + f.face * 120, y: FLOOR - 400 - i * 300, n: 16, w: 160 }); addFx({ k: 'geyser', x: f.x + f.face * 150 * f.d.K / .44, y: FLOOR - 420 * f.d.K / .44 }) }
         if (m.onde && ph === 'act' && f.t % 12 === 6) { sfx('sol', 1); G.shake = 14; addFx({ k: 'onde', x: f.x + f.face * 150, y: FLOOR, dir: f.face }) }
         if (m.proj && f.t === m.st) { lanceProj(f, m); sfx(f.kind, 1.2); G.shake = Math.max(G.shake, m.souffle ? 16 : 8); if (m.souffle) { addFx({ k: 'onde', x: f.x + f.face * 200, y: FLOOR, dir: f.face }); addFx({ k: 'poussiere', x: f.x + f.face * 260, y: FLOOR }); vibre(50) } }
-        if (m.saute && f.t === m.st) { f.vx = f.face * m.saute[0]; f.vy = -m.saute[1]; f.h = .1; sfx('vent') }
+        if (m.saute && f.t === m.st) { f.vx = f.face * m.saute[0]; f.vy = -m.saute[1]; f.h = Math.max(f.h, .1); sfx('vent') } // (2D : on bondit d'où on est, pas du fond)
         else if (f.d.spr && ['L', 'cL', 'H', 'cH'].includes(f.mk)) f.vx *= .6;
         // T. rex : le pas qui fait trembler (tout le monde au sol près de lui est secoué)
         if (m.seisme && f.t === m.st) { sfx('sol', 1); sfx('boum', .8); G.shake = 20; addFx({ k: 'onde', x: f.x, y: FLOOR, dir: f.face }); vibre(60); if (o.h <= 0 && !['down', 'getup', 'ko'].includes(o.state) && Math.abs(o.x - f.x) < m.seisme && !o.blocking) { setS(o, 'hurt'); o.stun = 38; o.hurtK = 1; o.vx = 0; addFx({ k: 'mot', x: o.x, y: FLOOR - 520, mot: m.motSeisme || 'ÇA TREMBLE !', col: JA }) } if (m.motSeisme) for (let i = 0; i < 6; i++) addFx({ k: 'eclabousse', x: f.x + (i - 2.5) * 140, y: FLOOR, s: .6 }) }
@@ -2385,7 +2402,7 @@ function update(f, o, inp) {
       if (['L', 'cL'].includes(f.mk) || (f.mk === 'H' && f.kind === 'gorille')) f.vx *= .6;
       if (m.quake && f.mk === 'H' && ph === 'act' && f.t === m.st) { sfx('sol', 1); G.shake = Math.max(G.shake, 9); addFx({ k: 'poussiere', x: f.x + f.face * 330, y: FLOOR }) }
       if (m.dive && f.t === m.st && f.h > 0) { f.vy = Math.max(f.vy, 0) + m.dive; sfx('vent', .8) }
-      if (m.land && !f.landed && f.t > m.st + 1 && f.h <= 0) { f.landed = true; f.landT = f.t; f.vx *= .25; sfx('sol', .6); addFx({ k: 'poussiere', x: f.x, y: FLOOR });
+      if (m.land && !f.landed && f.t > m.st + 1 && f.h <= solDe(f) + .5) { f.landed = true; f.landT = f.t; f.vx *= .25; sfx('sol', .6); addFx({ k: 'poussiere', x: f.x, y: FLOOR });
         if (m.plongeon) { sfx('plouf', 1); G.shake = Math.max(G.shake, 18); vibre(50); addFx({ k: 'onde', x: f.x, y: FLOOR, dir: f.face }); for (const dx of [-220, 0, 220]) addFx({ k: 'bulles', x: f.x + dx, y: FLOOR - 120, n: 10, w: 200 }) }
         if (m.quakeLand) { sfx('sol', 1); G.shake = Math.max(G.shake, 13); addFx({ k: 'onde', x: f.x + f.face * 120, y: FLOOR, dir: f.face }); vibre(40); if (f.kind === 'ours') { addFx({ k: 'glace', x: f.x + f.face * 150, y: FLOOR }); sfx('glace', 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 420, mot: 'CRAC LA GLACE !', col: '#9ADCFF' }) } } }
       if (m.bonk && ph === 'act' && !f.hit && (f.x <= STAGE_L + 2 || f.x >= STAGE_R - 2)) { // il fonce sans réfléchir… dans le mur
@@ -2403,12 +2420,17 @@ function update(f, o, inp) {
     case 'ko': break;
   }
   // physique
-  if (f.h > 0 || f.vy < 0) {
+  const sol = solDe(f);
+  if (v2 && !f.knock && f.vy >= 0 && f.h - sol < 40 && !f.cache && !f.ciel && !['down', 'getup', 'ko', 'tenu', 'lance'].includes(f.state)) {
+    f.h += (sol - f.h) * .3; if (Math.abs(sol - f.h) < .5) f.h = sol; if (f.h < 0) f.h = 0; f.vy = 0; // 2D : on glisse vers son altitude (pas de chute)
+    if (f.state === 'air') setS(f, 'idle');
+    if (!['walk', 'walkB', 'dash', 'atk'].includes(f.state)) f.vx *= f.glisse > 0 ? .93 : .78;
+  } else if (f.h > sol || f.vy < 0) {
     f.h -= f.vy; f.vy += f.d.grav * (G.arene === 'lune' ? .55 : 1) * (!f.d.nage && estMer() ? .55 : 1); // sur la Lune, on saute très haut ; sous l'eau, le crocodile aussi flotte un peu
-    if (f.h <= 0) {
-      f.h = 0; f.vy = 0;
+    if (f.h <= sol) {
+      f.h = sol; f.vy = 0;
       if (f.state === 'air') { setS(f, 'land'); sfx('sol', .35); plouf(f, 1) }
-      else if (f.state === 'hurt' && f.knock) { setS(f, f.hp <= 0 ? 'ko' : 'down'); f.knock = false; addFx({ k: 'poussiere', x: f.x, y: FLOOR }); sfx('chute', .9); G.shake = Math.max(G.shake, 8); plouf(f, 1.5); if (G.arene === 'riviere' && Math.random() < .4) addFx({ k: 'mot', x: f.x, y: FLOOR - 380, mot: hasard(['SPLASH !', 'PLOUF !', 'TOUT MOUILLÉ !']), col: '#7FD0F5' }) }
+      else if (f.state === 'hurt' && f.knock) { setS(f, f.hp <= 0 ? 'ko' : 'down'); f.knock = false; f.alt = 0; addFx({ k: 'poussiere', x: f.x, y: FLOOR }); sfx('chute', .9); G.shake = Math.max(G.shake, 8); plouf(f, 1.5); if (G.arene === 'riviere' && Math.random() < .4) addFx({ k: 'mot', x: f.x, y: FLOOR - 380, mot: hasard(['SPLASH !', 'PLOUF !', 'TOUT MOUILLÉ !']), col: '#7FD0F5' }) }
     }
   } else if (!['walk', 'walkB', 'dash', 'atk'].includes(f.state)) f.vx *= f.glisse > 0 ? .93 : .78;
   if (f.glisse > 0) { f.glisse--; if (f.glisse % 4 === 0 && Math.abs(f.vx) > 4) addFx({ k: 'poussiere', x: f.x - Math.sign(f.vx) * 60, y: FLOOR }) }
@@ -2416,6 +2438,7 @@ function update(f, o, inp) {
   if (f.d.nage && G.phase !== 'menu') { const bouge = Math.abs(f.vx) > 3; if (G.frame % (bouge ? 11 : 70) === f.side * 5) addFx({ k: 'bulles', x: f.x + f.face * (bouge ? -260 : 280) * f.d.K / .44, y: FLOOR - f.h - 260 * f.d.K / .44, n: bouge ? 4 : 3, w: 60 }) }
   f.x += f.vx;
   f.x = Math.max(STAGE_L, Math.min(STAGE_R, f.x));
+  f.vz = f.h - (f.hAvant ?? f.h); f.hAvant = f.h;
   f.prev = { ...inp };
 }
 
@@ -2423,7 +2446,7 @@ function update(f, o, inp) {
 function box(f, b) { const K = f.d.K, y0 = FLOOR - f.h; const x0 = f.x + f.face * b[0] * K, x1 = f.x + f.face * b[1] * K; return [Math.min(x0, x1), Math.max(x0, x1), y0 + b[2] * K, y0 + b[3] * K] }
 function hurtBox(f) {
   const hb = f.d.hurt;
-  if (f.h > 0) return box(f, hb.air);
+  if (f.h > solDe(f) + 1) return box(f, hb.air);
   if (hb.aplat && f.state === 'atk' && f.move && f.move.aplat && f.ph === 'st') return box(f, hb.aplat); // autruche couchée, le cou à plat : les coups passent au-dessus
   // serpents (et long cou) : quand la tête part en avant, elle peut être touchée
   if (f.d.expose && f.state === 'atk' && f.move && f.move.box && f.ph !== 'st' && !f.move.air) { const b = f.move.box, h0 = f.mk === 'cL' || f.mk === 'cH' ? hb.crouch : hb.stand; return box(f, [h0[0], Math.max(h0[1], b[1] - 60), Math.min(h0[2], b[2] - 40), h0[3]]) }
@@ -2465,7 +2488,7 @@ function touche(a, d, m, hb, hu, o) {
     touche(d, a, d.move.contre, hu, hb, { dir: d.face, last: true, spe: true }); return;
   }
   const crouchB = d.state === 'cblock' || (d.state === 'bstun' && d.crouchB), standB = d.state === 'walkB' || d.state === 'block' || (d.state === 'bstun' && !d.crouchB);
-  const canBlock = !o.prise && d.blocking && d.h <= 0 && (d.guardBtn || m.lvl === 'mid' || (m.lvl === 'low' && crouchB) || (m.lvl === 'high' && standB));
+  const canBlock = !o.prise && d.blocking && d.h <= solDe(d) + 1 && (d.guardBtn || m.lvl === 'mid' || (m.lvl === 'low' && crouchB) || (m.lvl === 'high' && standB));
   if (canBlock) {
     d.crouchB = crouchB; setS(d, 'bstun'); d.stun = m.bs; d.vx = face * m.kb * (m.souffle ? .75 : .8); if (m.souffle) { d.glisse = 22; addFx({ k: 'mot', x: d.x, y: FLOOR - 520, mot: 'SOUFFLÉ !', col: JA }); addFx({ k: 'poussiere', x: d.x, y: FLOOR }) } if (!o.proj) a.vx = -face * 3;
     // les coups spéciaux abîment un peu la garde (jamais jusqu'au K.-O.)
@@ -2475,20 +2498,20 @@ function touche(a, d, m, hb, hu, o) {
     G.stop = 5; addFx({ k: 'garde', x: cx, y: cy }); sfx('garde'); jauge(a, 3); jauge(d, 2);
     if (!d.cpu) { d.st.parades = (d.st.parades || 0) + 1; } return;
   }
-  const armor = !o.prise && ((d.state === 'atk' && d.move.armor && (d.ph === 'st' || (d.move.rush && d.ph === 'act'))) || (d.boost && d.boost.k === 'bouclier' && d.h <= 0));
+  const armor = !o.prise && ((d.state === 'atk' && d.move.armor && (d.ph === 'st' || (d.move.rush && d.ph === 'act'))) || (d.boost && d.boost.k === 'bouclier' && d.h <= solDe(d) + 1));
   const scale = o.prise ? 1 : Math.max(.45, 1 - d.combo * .1);
   const aideK = a.cpu && G.mode === 1 ? 1 - .12 * G.aide : 1;
   // dos tourné (hippo qui mitraille, ratel qui pschitte…) : les fesses à l'air prennent plus cher
   const fesses = d.state === 'atk' && d.move && d.move.dos && d.ph === 'act';
-  const bonus = (o.fin ? 1.15 : 1) * (a.fort && spe ? 1.2 : 1) * (m.aa && d.h > 0 ? 1.25 : 1) * (a.arme && m.charge ? 1 + .35 * a.arme : 1) * (fesses ? 1.3 : 1) * (a.d.force || 1) * (a.d.forceMer && estMer() ? a.d.forceMer : 1); // forceMer : le crocodile, invité de la MER, y tape moins fort
+  const bonus = (o.fin ? 1.15 : 1) * (a.fort && spe ? 1.2 : 1) * (m.aa && d.h > (vol2d(a) ? a.h + 40 : 0) ? 1.25 : 1) * (a.arme && m.charge ? 1 + .35 * a.arme : 1) * (fesses ? 1.3 : 1) * (a.d.force || 1) * (a.d.forceMer && estMer() ? a.d.forceMer : 1); // forceMer : le crocodile, invité de la MER, y tape moins fort
   if (fesses && Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 560, mot: hasard(['FESSES À L’AIR !', 'PAF, LES FESSES !']), col: '#FF7AB6' });
   // points faibles du livre : le puma fuit devant une meute (attaques en bande) · le cobra, « serré, il est en danger » · l'alligator « jeune, il se fait avaler » (rétréci) · la girafe : « si elle tombe, c'est fini »
-  const faible = (m.clan && d.d.meute ? d.d.meute : 1) * (o.prise ? (d.d.fragilePrise || 1) * (d.d.petitFragile && d.boost && d.boost.k === 'mini' ? d.d.petitFragile : 1) : 1) * (d.d.chute && m.kd && o.last ? d.d.chute : 1) * (d.d.carapace && m.casse && !o.proj ? d.d.carapace : 1) * (d.d.chaud && m.chaleur ? d.d.chaud : 1) * (d.d.ailesFines && d.h > 30 ? d.d.ailesFines : 1) * (d.repereT > G.frame && d.repereBy === a && !m.repere ? 1.25 : 1) * (d.d.proieDuCiel && (a.h > 30 || m.air) ? d.d.proieDuCiel : 1) * (d.d.ecrase && (m.air || (a.h > 30 && m.kd)) ? d.d.ecrase : 1) * (m.fouille && (d.state === 'crouch' || (d.state === 'atk' && d.move && (d.move.camoufle || d.move.aplat))) ? m.fouille : 1);
+  const faible = (m.clan && d.d.meute ? d.d.meute : 1) * (o.prise ? (d.d.fragilePrise || 1) * (d.d.petitFragile && d.boost && d.boost.k === 'mini' ? d.d.petitFragile : 1) : 1) * (d.d.chute && m.kd && o.last ? d.d.chute : 1) * (d.d.carapace && m.casse && !o.proj ? d.d.carapace : 1) * (d.d.chaud && m.chaleur ? d.d.chaud : 1) * (d.d.ailesFines && ailesTouchees(d, m) ? d.d.ailesFines : 1) * (d.repereT > G.frame && d.repereBy === a && !m.repere ? 1.25 : 1) * (d.d.proieDuCiel && (duCiel(a) || m.air) ? d.d.proieDuCiel : 1) * (d.d.ecrase && (m.air || (duCiel(a) && m.kd)) ? d.d.ecrase : 1) * (m.fouille && (d.state === 'crouch' || (d.state === 'atk' && d.move && (d.move.camoufle || d.move.aplat))) ? m.fouille : 1);
   if (m.clan && d.d.meute && !d.meuteDit) { d.meuteDit = true; addFx({ k: 'mot', x: d.x, y: FLOOR - 700 * d.d.K / .44, mot: hasard(['UNE MEUTE ?! AU SECOURS !', 'TROP NOMBREUX !', 'JE FILE !']), col: CY }) }
-  if (d.d.proieDuCiel && (a.h > 30 || m.air) && d.hp > 0 && G.frame - (d.cielT || -999) > 90 && (d.cielT = G.frame)) addFx({ k: 'mot', x: d.x, y: FLOOR - 700 * d.d.K / .44, mot: hasard(['ATTAQUE DU CIEL !', 'AU SECOURS, ÇA VIENT D’EN HAUT !', 'UN OISEAU ?!']), col: '#D8F0A0' }); // mante (livre) : « souvent mangée par les oiseaux »
-  if (d.d.ecrase && (m.air || (a.h > 30 && m.kd)) && d.hp > 0 && G.frame - (d.ecraseT || -999) > 90 && (d.ecraseT = G.frame)) { addFx({ k: 'mot', x: d.x, y: FLOOR - 520 * d.d.K / .44, mot: hasard(['ÉCRASÉE !', 'AÏE, UN DOIGT GÉANT ?!', 'TOUTE PLATE !']), col: '#FF8A7A' }); sfx('splotch', .7) } // veuve noire (livre) : « on l'écrase d'un doigt »
+  if (d.d.proieDuCiel && (duCiel(a) || m.air) && d.hp > 0 && G.frame - (d.cielT || -999) > 90 && (d.cielT = G.frame)) addFx({ k: 'mot', x: d.x, y: FLOOR - 700 * d.d.K / .44, mot: hasard(['ATTAQUE DU CIEL !', 'AU SECOURS, ÇA VIENT D’EN HAUT !', 'UN OISEAU ?!']), col: '#D8F0A0' }); // mante (livre) : « souvent mangée par les oiseaux »
+  if (d.d.ecrase && (m.air || (duCiel(a) && m.kd)) && d.hp > 0 && G.frame - (d.ecraseT || -999) > 90 && (d.ecraseT = G.frame)) { addFx({ k: 'mot', x: d.x, y: FLOOR - 520 * d.d.K / .44, mot: hasard(['ÉCRASÉE !', 'AÏE, UN DOIGT GÉANT ?!', 'TOUTE PLATE !']), col: '#FF8A7A' }); sfx('splotch', .7) } // veuve noire (livre) : « on l'écrase d'un doigt »
   if (m.fouille && (d.state === 'crouch' || (d.state === 'atk' && d.move && (d.move.camoufle || d.move.aplat))) && d.hp > 0) addFx({ k: 'mot', x: d.x, y: FLOOR - 560 * d.d.K / .44, mot: hasard(['TROUVÉ !', 'PAS DE CACHETTE !', 'JE T’AI DÉNICHÉ !']), col: '#EBD8B0' }); // serpent brun (livre) : « il fouille chaque cachette »
-  if (d.d.ailesFines && d.h > 30 && d.hp > 0 && G.frame - (d.ailesT || -999) > 90 && (d.ailesT = G.frame)) addFx({ k: 'mot', x: d.x, y: FLOOR - d.h - 520 * d.d.K / .44, mot: hasard(['MES AILES !', 'AÏE, MES AILES FINES !', 'OUILLE, LA PEAU DE MES AILES !']), col: '#E8C8A8' }); // chauve-souris (livre) : « des ailes en peau très fine »
+  if (d.d.ailesFines && ailesTouchees(d, m) && d.hp > 0 && G.frame - (d.ailesT || -999) > 90 && (d.ailesT = G.frame)) addFx({ k: 'mot', x: d.x, y: FLOOR - d.h - 520 * d.d.K / .44, mot: hasard(['MES AILES !', 'AÏE, MES AILES FINES !', 'OUILLE, LA PEAU DE MES AILES !']), col: '#E8C8A8' }); // chauve-souris (livre) : « des ailes en peau très fine »
   if (d.d.chaud && m.chaleur && d.hp > 0 && G.frame - (d.chaudT || -999) > 50 && (d.chaudT = G.frame)) addFx({ k: 'mot', x: d.x, y: FLOOR - 620 * d.d.K / .44, mot: hasard(['TROP CHAUD !', 'JE CUIS !', 'AU SECOURS, ÇA CHAUFFE !']), col: '#FF9A3C' });
   if (d.d.carapace && m.casse && !o.proj && d.hp > 0) { addFx({ k: 'mot', x: d.x, y: FLOOR - 560 * d.d.K / .44, mot: hasard(['CRAC ! MA CARAPACE !', 'LA CARAPACE CRAQUE !', 'OUILLE, MON ARMURE !']), col: '#FFD9C2' }); sfx('crac_os', .8) }
   if (d.d.chute && m.kd && o.last && d.hp > 0) addFx({ k: 'mot', x: d.x, y: FLOOR - 820 * d.d.K / .44, mot: hasard(['NE TOMBE PAS !', 'DUR DE SE RELEVER !', 'OUILLE, LES GRANDES PATTES !']), col: '#FBE6B5' });
@@ -2531,12 +2554,12 @@ function touche(a, d, m, hb, hu, o) {
   if (m.souffle) { d.glisse = 26; addFx({ k: 'poussiere', x: d.x, y: FLOOR }); G.shake = Math.max(G.shake, 18) }
   if (d.hp <= 0) { a.dernierSuper = m === a.d.moves.SUPER || !!m.super; ko(a, d); return }
   // grizzly : « Un grizzly arrive… et la plage se vide ! » (l'autre part en courant)
-  if (m.peur && !armor && d.h <= 0) { if (window.statCombat) statCombat(a, 'peur'); setS(d, 'fuite'); d.stun = 46; d.vx = face * 10; addFx({ k: 'mot', x: d.x, y: FLOOR - 620, mot: hasard(['AU SECOURS !', 'SAUVE QUI PEUT !', 'MAMAN !']), col: PA }); sfx('pouet', .5); return }
+  if (m.peur && !armor && d.h <= solDe(d) + 1) { if (window.statCombat) statCombat(a, 'peur'); setS(d, 'fuite'); d.stun = 46; d.vx = face * 10; addFx({ k: 'mot', x: d.x, y: FLOOR - 620, mot: hasard(['AU SECOURS !', 'SAUVE QUI PEUT !', 'MAMAN !']), col: PA }); sfx('pouet', .5); return }
   if (armor) { addFx({ k: 'mot', x: d.x, y: FLOOR - 460, mot: hasard(['TIENT BON !', 'MÊME PAS MAL !', 'BLINDÉ !']), col: CY }); return }
   setS(d, 'hurt'); d.stun = m.hs || 18; d.hurtK = 1; d.vx = face * m.kb * (d.d.leger || 1);
   if (o.fin) { addFx({ k: 'mot', x: (a.x + d.x) / 2, y: FLOOR - 560, mot: 'COMBO FINAL !', col: JA }); G.stop = 12; G.shake = Math.max(G.shake, 16); vibre(50); acclame(.6) }
   if (m === a.d.moves.SUPER && lastHit) acclame(.8); else if (d.combo === 4) acclame(.5);
-  if ((m.kd && lastHit) || d.h > 0 || o.fin) { d.vy = -12; d.h = Math.max(d.h, .1); d.knock = true; d.stun = 99; d.vx = face * Math.max(6, m.kb * .7) }
+  if ((m.kd && lastHit) || d.h > solDe(d) + 1 || o.fin) { d.vy = -12; d.h = Math.max(d.h, .1); d.knock = true; d.stun = 99; d.vx = face * Math.max(6, m.kb * .7) }
   // coup qui envoie en l'air (anti-aérien, « patte à saumons »…) : il vole haut, avec un sifflet de chute
   if (m.lance && lastHit) { d.vy = -m.lance; d.h = Math.max(d.h, .1); d.knock = true; d.stun = 99; d.vx = face * 3.5; sfx('sifflet_haut', .8); if (Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 820, mot: hasard(['DÉCOLLAGE !', 'EN L’AIR !', 'ENVOLÉ !']), col: JA }) }
   if (!o.proj && !o.prise && (d.x <= STAGE_L + 2 || d.x >= STAGE_R - 2)) a.vx = -face * m.kb * .6; // coin : l'attaquant recule
@@ -2550,7 +2573,7 @@ function attrape(a, d, m) {
   addFx({ k: 'mot', x: (a.x + d.x) / 2, y: FLOOR - 600, mot: m.prise.mot || hasard(['ATTRAPÉ !', 'VIENS PAR LÀ !', 'HOP !']), col: JA });
 }
 function degage(a, d) {
-  for (const [f, s] of [[a, -1], [d, 1]]) { setS(f, 'bstun'); f.stun = 12; f.crouchB = false; f.h = 0; f.vx = a.face * s * 10; f.pasPrise = 20 }
+  for (const [f, s] of [[a, -1], [d, 1]]) { setS(f, 'bstun'); f.stun = 12; f.crouchB = false; if (!vol2d(f)) f.h = 0; f.vx = a.face * s * 10; f.pasPrise = 20 }
   sfx('garde'); sfx('boing', .6); G.stop = 6;
   addFx({ k: 'mot', x: (a.x + d.x) / 2, y: FLOOR - 600, mot: hasard(['ÉCHAPPÉ !', 'RATÉ, GLISSANT !', 'NI VU NI CONNU !']), col: CY });
 }
@@ -2619,7 +2642,7 @@ function dessineZones(c) {
 }
 // projectiles (le rugissement du lion…) : une onde qui avance et touche une seule fois
 function lanceProj(f, m) {
-  const p = m.proj; G.proj.push({ a: f, m, x: f.x + f.face * p.x0 * f.d.K, vx: f.face * p.spd, w: p.w * f.d.K, y0: p.h[0] * f.d.K, y1: p.h[1] * f.d.K, t: 0, life: p.life, dir: f.face });
+  const p = m.proj, dh = vol2d(f) ? f.h : 0; G.proj.push({ a: f, m, x: f.x + f.face * p.x0 * f.d.K, vx: f.face * p.spd, w: p.w * f.d.K, y0: p.h[0] * f.d.K - dh, y1: p.h[1] * f.d.K - dh, t: 0, life: p.life, dir: f.face });
 }
 function majProj() {
   for (const p of G.proj) {
@@ -2702,7 +2725,7 @@ function dessineFoule(c) {
   FOULE.bits = FOULE.bits.filter(b => b.bulle ? b.y > -40 : b.y < H + 40);
 }
 function ko(a, d) {
-  setS(d, 'hurt'); d.vy = -15; d.h = .1; d.knock = true; d.vx = a.face * 11; d.stun = 999;
+  setS(d, 'hurt'); d.vy = -15; d.h = Math.max(d.h, .1); d.knock = true; d.vx = a.face * 11; d.stun = 999;
   for (const e of FX) e.mot = null; FX = FX.filter(e => e.k !== 'mot' && e.k !== 'combo');
   G.phase = 'ko'; G.pt = 0; G.slow = 80; acclame(1); G.roundWinner = a; sfx('ko'); sfx('foule'); G.shake = 22; G.stop = 14; vibre([80, 40, 120]);
   G.perfect = a.hp >= a.d.hp; if (G.perfect) a.parfait = true;
@@ -2723,6 +2746,14 @@ function choixSpe(f, dist) {
   for (const k of ['S', 'SF', 'SD']) { const m = f.d.moves[k]; if (!m) continue; const z = m.ia || (k === 'S' ? [f.d.speMin || 640, f.d.speMax || 900, 1] : null); if (z && dist >= z[0] && dist <= z[1] && z[2] > 0) { c.push([k, z[2]]); tot += z[2] } }
   if (!c.length) return null; let x = Math.random() * tot; for (const [k, w] of c) { x -= w; if (x <= 0) return k } return c[0][0];
 }
+// portée de l'ordi (25/09) : jusqu'où ses coups A et B touchent VRAIMENT cet adversaire (boîtes des coups, élan, devant de l'adversaire).
+// Avant, la « reach » réglée à la main était trop grande pour 28 animaux : leur ordi tapait dans le vide (pieuvre contre pieuvre : jamais un coup).
+function porteeIA(f, o) {
+  if ((f.d.monde || 'terre') === 'terre') return f.d.reach || 680; // (la TERRE garde ses réglages : son équilibre a été mesuré avec eux)
+  const tape = k => { const m = f.d.moves[k]; return m && m.box ? m.box[1] * f.d.K + (m.lunge ? m.lunge * m.act * .6 : 0) : 0 };
+  const l = tape('L'), h = tape('H'), coup = l && h ? Math.min(l, h) : Math.max(l, h);
+  return Math.round(Math.max(f.d.push[1] + o.d.push[1] + 40, Math.min(f.d.reach || 680, coup + o.d.hurt.stand[1] * o.d.K - 20)));
+}
 function brain(f, o) {
   const n0 = NIV[G.niv], ai = f.ai, ag = G.mode === 1 ? G.aide : 0;
   const n = ag ? Object.assign({}, n0, { react: n0.react + 5 * ag, garde: n0.garde * (1 - .3 * ag), agress: n0.agress * (1 - .15 * ag), spe: n0.spe * (1 - .25 * ag), combo: n0.combo * (1 - .3 * ag), aa: n0.aa * (1 - .35 * ag), chope: n0.chope * (1 - .4 * ag), punir: n0.punir * (1 - .35 * ag) }) : n0;
@@ -2737,29 +2768,32 @@ function brain(f, o) {
   if (f.state === 'air' && f.d.vole && !f.battu && f.vy > 0 && Math.random() < .07) appuie('up');
   // étourdi : il tapote partout pour se réveiller
   if (f.state === 'dizzy') { if (Math.random() < .22) appuie(Math.random() < .5 ? 'L' : 'H'); return r }
+  // 2D : en plein saut contre un animal qui vole, il frappe dès qu'il est à portée (sinon, sauter ne servait à rien)
+  if (f.state === 'air' && !f.airAtk && vol2d(o) && mv.A && Math.abs(o.x - f.x) < porteeIA(f, o) + 60 && o.h - f.h < 280 && o.h - f.h > -140 && Math.random() < .35) { appuie(Math.random() < .5 ? 'L' : 'H'); return r }
   // combo : si le coup a touché, on enchaîne
   if (f.state === 'atk' && f.hit && Math.random() < n.combo * .25) { const m = f.move; const nx = m.chain && m.chain[Math.floor(Math.random() * m.chain.length)]; if (nx === 'SUPER' && f.meter < 100) return r;
     if (nx) { const b = nx === 'cL' ? 'L' : nx === 'cH' ? 'H' : nx === 'SUPER' ? 'S' : nx; appuie(b); if (nx === 'cL' || nx === 'cH') r.down = true; if (nx === 'S' && Math.random() < .4) { const k = choixSpe(f, dist); if (k === 'SF') r[toward] = true; else if (k === 'SD') r.down = true } } return r }
   // anti-aérien : décidé une fois par saut, déclenché quand l'autre redescend à portée
-  const enLair = o.h > 40 && (o.state === 'air' || (o.state === 'atk' && o.h > 40));
+  const v2 = vol2d(f), dz = o.h - f.h;
+  const enLair = o.h - (v2 ? f.h : 0) > 40 && (o.state === 'air' || (o.state === 'atk' && o.h > 40));
   if (enLair && ai.aaFor !== o.sautN) { ai.aaFor = o.sautN; ai.aaGo = Math.random() < n.aa }
   if (enLair && ai.aaGo && neutral(f) && dist < (ia.aaDist || 600) && o.vy > -9) {
     ai.aaGo = false; ai.hold = {}; ai.t = 0;
     if (mv.SD && mv.SD.aa && f.meter < 100) { r.down = true; appuie('S') } else appuie('H');
     return r;
   }
-  if (f.d.respire && (f.air || 0) >= AIR_T && neutral(f) && f.h <= 0 && Math.random() < .04) { r.up = true; return r } // l'orque remonte respirer
   const danger = (o.state === 'atk' && o.ph !== 'rec' && !o.move.prise && dist < (SPECIALES.includes(o.mk) ? 1000 : 720)) || G.proj.some(p => p.a === o && Math.abs(p.x - f.x) < 700);
   // se protéger, comme l'enfant : vers le bas pare tout (parfois en reculant). Décidé une fois par menace, puis tenu tant qu'elle dure
   if (danger && ai.react <= 0 && !ai.def) { ai.def = true; ai.hold = {}; ai.t = 0; ai.react = n.react * .6;
-    ai.garde = Math.random() < n.garde ? (Math.random() < .7 || (o.move && o.move.lvl === 'low') ? 'down' : away) : null }
+    ai.garde = Math.random() < n.garde ? (v2 && (f.alt || 0) > 0 ? away : Math.random() < .7 || (o.move && o.move.lvl === 'low') ? 'down' : away) : null }
   if (!danger) { ai.def = false; ai.garde = null }
   if (ai.def && ai.garde) { r[ai.garde] = true; return r }
+  if (f.d.respire && (f.air || 0) >= AIR_T && neutral(f) && (v2 ? f.h < altMax(f) - 40 : f.h <= 0 && Math.random() < .04)) { r.up = true; return r } // l'orque remonte respirer (en 2D : jusqu'à la surface) — après la garde : menacée, elle se protège d'abord
   if (ai.react > 0) ai.react--;
   // punir un coup raté (décidé une fois par coup de l'adversaire)
   if (o.state === 'atk' && o.ph === 'rec' && !o.hit && ai.punFor !== o.mvN) { ai.punFor = o.mvN; ai.punGo = Math.random() < n.punir }
   if (ai.punGo && o.state === 'atk' && o.ph === 'rec' && neutral(f)) {
-    const reach = f.d.reach || 680;
+    const reach = porteeIA(f, o);
     if (dist < reach + 40) { ai.punGo = false; ai.hold = {}; ai.t = 0; if (f.meter >= 100) appuie('S'); else appuie('H'); return r }
     if (mv.SF && mv.SF.rush && dist < reach + 420) { ai.punGo = false; ai.hold = {}; ai.t = 0; r[toward] = true; appuie('S'); return r }
   }
@@ -2768,12 +2802,26 @@ function brain(f, o) {
     const garde = ['block', 'cblock', 'crouch'].includes(o.state);
     if (Math.random() < n.chope * (garde ? 5 : 1) * (ia.chope || 1)) { ai.hold = {}; ai.t = 0; r[toward] = true; appuie('H'); return r }
   }
-  if (ai.t > 0) { ai.t--; Object.assign(r, ai.hold); for (const k of ['L', 'H', 'S']) if (r[k] && f.prev[k]) r[k] = false; return r }
+  // 2D : un animal au sol contre un animal qui vole au-dessus de lui → saut ou anti-aérien ; tout là-haut, il l'attend (il ne tape pas dans le vide)
+  const reach = porteeIA(f, o);
+  if (!v2 && vol2d(o) && neutral(f) && o.h > 140 && dist < reach + 160) {
+    if (Math.random() < n.aa * .06) { ai.hold = {}; ai.t = 0; if (mv.SD && mv.SD.aa && f.meter < 100 && Math.random() < .6) { r.down = true; appuie('S') } else { r.up = true; if (dist > reach * .5) r[toward] = true } return r }
+    if (o.h > 230 && dist < reach && ai.t <= 0) { ai.hold = Math.random() < .3 ? { [away]: true } : {}; ai.t = 6 + Math.round(Math.random() * 8) }
+  }
+  const pasDeVise = () => r.L || r.H || r.S; // (2D : on ne monte ni ne descend en appuyant sur un coup : ↓ ★ serait pris pour l'anti-aérien)
+  if (ai.t > 0) { ai.t--; Object.assign(r, ai.hold); if (v2 && ai.vise && neutral(f) && !pasDeVise()) { r.up = ai.vise > 0; r.down = ai.vise < 0 } for (const k of ['L', 'H', 'S']) if (r[k] && f.prev[k]) r[k] = false; return r }
   ai.hold = {};
   if (!neutral(f)) { ai.t = 2; return r }
-  const reach = f.d.reach || (f.kind === 'tigre' ? 660 : 680), rnd = Math.random();
+  // 2D : l'ordi se place à la hauteur de l'adversaire. De loin, contre un animal qui marche, il survole (plus haut), puis il pique pour attaquer ;
+  // de près, il vise un peu au hasard, et parfois reste au-dessus pour plonger.
+  if (v2) { const loin = dist > reach + 160;
+    if (!ai.cibleT || G.frame > ai.cibleT || ai.loin !== loin) { ai.loin = loin; ai.cibleT = G.frame + 40 + Math.random() * 50;
+      ai.decal = loin ? (vol2d(o) ? (Math.random() - .5) * 260 : 110 + Math.random() * 150) : (Math.random() - .5) * 100 + (Math.random() < .2 ? 90 : 0) }
+    const but = cl(o.h + ai.decal, 0, altMax(f)), e = but - (f.alt || 0); ai.vise = Math.abs(e) > 35 ? Math.sign(e) : 0 } else ai.vise = 0
+  const rnd = Math.random();
   if (f.meter >= 100 && dist < 700 && Math.random() < .35) { ai.hold.S = true; ai.t = 2; }
-  else if (dist < reach) {
+  else if (v2 && dist < reach + 60 && Math.abs(dz) >= 150) { ai.t = 4; if (dist < reach * .6) ai.hold[away] = true } // 2D : trop haut ou trop bas : il se met d'abord à sa hauteur
+  else if (dist < reach && (!v2 || Math.abs(dz) < 150)) {
     if (rnd < n.agress) { const p = Math.random();
       if (p < .34) ai.hold.L = true; else if (p < .48) { ai.hold.L = true; ai.hold.down = true }
       else if (p < .58 && mv.cH) { ai.hold.H = true; ai.hold.down = true } else if (p < .82) ai.hold.H = true;
@@ -2788,7 +2836,7 @@ function brain(f, o) {
     else if (ia.loin && dist < ia.loin && Math.random() < .45) { ai.hold[away] = true; ai.t = n.react } // les animaux « à distance » gardent leurs distances
     else { ai.hold[toward] = true; ai.t = Math.round(n.react * .8 + Math.random() * 10) }
   }
-  Object.assign(r, ai.hold);
+  Object.assign(r, ai.hold); if (v2 && ai.vise && neutral(f) && !pasDeVise()) { r.up = ai.vise > 0; r.down = ai.vise < 0 }
   // l'IA relâche les boutons pour qu'un nouvel appui soit détecté
   for (const k of ['L', 'H', 'S']) if (r[k] && f.prev[k]) r[k] = false;
   return r;
@@ -2886,7 +2934,7 @@ function comic(c, word, x, y, u, size = 1, alpha = 1, col = PA) {
 const cam = { z: 1, cx: 960, cy: 540, ox: 0, oy: 0 };
 function updateCam() {
   const [a, b] = G.f; let mid = (a.x + b.x) / 2, d = Math.abs(a.x - b.x);
-  let z = cl(1900 / (d + 1050), 1, 1.16);
+  let z = cl(1900 / (d + 1050), 1, 1.16); if (G.f.some(f => f.h > 90 && !f.cache && !f.ciel)) z = 1; // 2D : en vol, on voit tout le ciel
   if (G.freeze > 0 && G.superBy) { z = 1.3; mid = G.superBy.x + G.superBy.face * 120 }
   cam.z += (z - cam.z) * .12;
   const half = 960 / cam.z; let cx = cl(mid, half, W - half);
@@ -3239,7 +3287,8 @@ function plouf(f, s) { if (G.arene !== 'riviere') return; addFx({ k: 'eclabousse
 function dizzy(c, f, t) { const x = f.x + f.face * (f.d.spr ? 560 * f.d.K : 250 * f.d.K / .44), y = f.d.spr ? FLOOR - 170 : FLOOR - 210; for (let i = 0; i < 3; i++) { const a = t * 5 + i * TAU / 3; star(c, x + Math.cos(a) * 70, y + Math.sin(a) * 22, 22, 9, 5, JA, NV, 4) } }
 function poseOf(f) {
   const st0 = f.state; if (st0 === 'bstun') f.state = f.crouchB ? 'cblock' : 'block';
-  let res = (f.d.spr ? spritePose : f.kind === 'tigre' ? tigerPose : gorillaPose)(f.R, f, G.time); f.state = st0; f.flipV = !!res.flip;
+  const h0 = f.h, sol0 = solDe(f); f.h = Math.max(0, f.h - sol0); // (2D : pour les poses, son altitude est son sol)
+  let res = (f.d.spr ? spritePose : f.kind === 'tigre' ? tigerPose : gorillaPose)(f.R, f, G.time); f.state = st0; f.h = h0; f.flipV = !!res.flip;
   if (f.poison && f.poison.genre === 'fil' && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && (f.aEmmele ?? (f.aEmmele = f.R.layers.some(l => l.n === 'emmele')))) res = SP('emmele', { x: 4 * Math.sin(G.time * 14) }); // le serpent brun emmêlé dans le fil de la veuve noire
   if (f.d.soif && f.soifT && G.frame - f.soifT < 50 && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && f.R.layers.some(l => l.n === (f.d.soif.pose || 'soif'))) res = SP(f.d.soif.pose || 'soif', { y: 3 * Math.sin(G.time * 12) }); // colibri « J'AI SOIF ! », scolopendre « JE ME DESSÈCHE ! »
   if (f.d.ecrase && f.ecraseT && G.frame - f.ecraseT < 40 && ['hurt', 'down'].includes(f.state) && f.R && f.R.layers && (f.aEcrasee ?? (f.aEcrasee = f.R.layers.some(l => l.n === 'ecrasee')))) res = SP('ecrasee', { x: 3 * Math.sin(G.time * 22) }); // la veuve noire « ÉCRASÉE ! » (livre : on l'écrase d'un doigt)
@@ -3249,7 +3298,8 @@ function poseOf(f) {
   const sp = res.spr || null;
   if (sp !== (f.spr || null)) { if (f.M) f.ghost = { M: f.M, only: f.spr || null, roar: f.roar, k: 4 }; f.spr = sp; f.pp = null; f.blendT = 0; f.lastState = f.state; }
   // animaux marins : ils flottent (petit mouvement de vague), sauf posés sur le sable ou tenus
-  if (sp && (f.d.nage || f.d.vole) && !['ko', 'down', 'getup', 'tenu', 'lance', 'crouch', 'cblock'].includes(f.state) && f.h <= 0) { const w = G.time * 2.1 + f.side * 1.3, o = res.pose.spr; o.y = (o.y || 0) - 10 * Math.sin(w); o.r = (o.r || 0) + .018 * Math.cos(w) }
+  if (sp && (f.d.nage || f.d.vole) && !['ko', 'down', 'getup', 'tenu', 'lance', 'crouch', 'cblock'].includes(f.state) && f.h <= sol0 + 1) { const w = G.time * 2.1 + f.side * 1.3, o = res.pose.spr; o.y = (o.y || 0) - 10 * Math.sin(w); o.r = (o.r || 0) + .018 * Math.cos(w)
+    if (vol2d(f) && ['idle', 'walk', 'walkB', 'block', 'dash'].includes(f.state)) { const vz = cl((f.vz || 0) * .035, -.26, .26); o.r = (o.r || 0) - vz } } // 2D : il penche vers où il monte ou descend
   if (sp) { f.pose = res.pose; f.roar = res.roar; f.M = Skin.matrices(f.R, f.pose); return; }
   // fondu entre deux poses (évite les sauts)
   if (f.pp && f.blendT > 0) {
@@ -3283,7 +3333,7 @@ function step() {
   update(a, b, ia); update(b, a, ib);
   // ils ne se traversent pas au sol
   const tombe = f => f.state === 'atk' && f.move && ((f.move.ciel && f.h > 150) || (f.move.surgit && f.ph === 'act' && f.h > 0 && !f.hit)); // le léopard qui tombe du ciel, le requin qui surgit par en dessous : pas repoussés
-  if ((a.h <= 0 && b.h <= 0 || Math.min(a.h, b.h) < 60) && !a.cache && !b.cache && !tombe(a) && !tombe(b)) {
+  if (((a.h <= 0 && b.h <= 0 || Math.min(a.h, b.h) < 60) || ((vol2d(a) || vol2d(b)) && Math.abs(a.h - b.h) < 150)) && !a.cache && !b.cache && !tombe(a) && !tombe(b)) {
     const L = a.x < b.x ? a : b, Rr = L === a ? b : a, min = L.d.push[1] + Rr.d.push[1], dx = Rr.x - L.x;
     if (dx < min) { const p = Math.min(36, (min - dx) / 2); L.x -= p; Rr.x += p; /* en douceur : pas de téléportation après un plongeon ou une chute du ciel */ if (L.x < STAGE_L) { Rr.x += STAGE_L - L.x; L.x = STAGE_L } if (Rr.x > STAGE_R) { L.x -= Rr.x - STAGE_R; Rr.x = STAGE_R } }
   }
@@ -3312,6 +3362,7 @@ function step() {
 function newRound() {
   const [a, b] = G.f;
   for (const [f, x, face] of [[a, 590, 1], [b, 1330, -1]]) Object.assign(f, { grand: 1, repereT: 0, paralyse: false, paraPending: false, poison: null, piques: null, sale: 0, cache: false, ciel: false, glisse: 0, x, face, h: 0, vx: 0, vy: 0, hp: f.d.hp, shown: f.d.hp, trail: f.d.hp, state: 'intro', t: 0, combo: 0, knock: false, stun: 0, inv: 0, hist: [], prev: {}, pose: null, pp: null, ai: { t: 0, hold: {}, react: 0 } });
+  for (const f of [a, b]) { f._altMax = null; f.alt = f.h = f.hAvant = vol2d(f) ? Math.min(f.d.vole ? 150 : 110, altMax(f)) : 0 } // 2D : en l'air ou entre deux eaux dès le début
   G.timer = 99 * 60; G.phase = 'intro'; G.pt = 0; G.timeUp = false; G.roundWinner = null; G.perfect = false; FX = []; G.proj = []; G.zones = [];
   if (window.razSurprises) razSurprises();
   cam.z = 1; cam.cx = 960;
@@ -3390,8 +3441,17 @@ function startMatch() {
   for (const f of G.f) if (!f.cpu && !f.distant && !G.tuto) SAVE.joue[f.kind] = (SAVE.joue[f.kind] || 0) + 1; // ⭐ TES PRÉFÉRÉS
   if (G.f.some(f => champion(f.kind))) setTimeout(() => sfx('super', .5), 200); // 📖 l'entrée d'un champion du livre
   G.round = 1; newRound(); show(null);
+  { const moi = G.f[NET.on ? NET.moi : 0], lui = G.f[NET.on ? 1 - NET.moi : 1]; if (moi && !moi.cpu && !G.tuto && (vol2d(moi) || vol2d(lui))) { SAVE.vuVol = SAVE.vuVol || {}; const k = vol2d(moi) ? (moi.d.vole ? 'air' : 'eau') : lui.d.vole ? 'contreAir' : 'contreEau'; if ((SAVE.vuVol[k] || 0) < 2) { SAVE.vuVol[k] = (SAVE.vuVol[k] || 0) + 1; sauve(); astuceVol(k) } } } // 2D : l'astuce, les 2 premières fois (on vole / on nage, ou l'autre vole / nage)
   document.body.classList.toggle('deux', G.mode === 2 && !NET.on);
   for (const T of [TOUCH, TOUCH2]) { T.x = T.y = 0; T.L = T.H = T.S = T.G = false }
+}
+// 2D : « TU VOLES ! / TU NAGES ! ▲ monte, ▼ descends » (6 s, dans la bulle du tutoriel)
+function astuceVol(k) {
+  const e = $('tuto-bulle'); if (!e) return; const tact = document.body.classList.contains('tactile');
+  const contre = k === 'contreAir' || k === 'contreEau';
+  e.innerHTML = contre ? `<small>ATTENTION !</small><b class="R">${k === 'contreAir' ? 'IL VOLE !' : 'IL NAGE AU-DESSUS !'}</b><span>${tact ? 'Saute (joystick ▲) et tape avec A ou B PENDANT le saut' : 'Saute (↑) et tape (J ou K) PENDANT le saut'} : tu l’attrapes en l’air !</span>`
+    : `<small>NOUVEAU !</small><b class="R">${k === 'air' ? 'TU VOLES !' : 'TU NAGES !'}</b><span>${tact ? 'Joystick ▲ pour monter, ▼ pour descendre' : 'Flèches ↑ pour monter, ↓ pour descendre'} : mets-toi à sa hauteur… et tape !</span>`; e.hidden = false;
+  clearTimeout(astuceVol.t); astuceVol.t = setTimeout(() => { if (!G.tuto) e.hidden = true }, 6500);
 }
 function pause() { if (NET.on) return; if (G.phase === 'pause') { G.phase = G.before; show(null) } else { G.before = G.phase; G.phase = 'pause'; KEYS.clear(); show('pause') } }
 
@@ -3845,8 +3905,8 @@ function initUI() {
 function etiquettes(f, o, i) {
   const e = { L: 'RAPIDE', H: 'FORT', S: 'SPÉCIAL', cL: 0, cH: 0 }, fwd = ((i.right ? 1 : 0) - (i.left ? 1 : 0)) * f.face;
   if (f.state === 'air' && !f.airAtk) { e.L = e.H = 'EN L’AIR !'; e.cL = e.cH = 1 }
-  else if (i.down && f.h <= 0) { e.L = 'EN BAS'; e.cL = 1; if (f.d.moves.cH) { e.H = 'BALAYETTE'; e.cH = 1 } }
-  else if (fwd > 0 && f.h <= 0 && o && f.d.moves.T && portee(f, o, 70) && attrapable(o)) { e.H = 'PROJETTE'; e.cH = 1 }
+  else if (i.down && f.h <= 0) { e.L = 'EN BAS'; e.cL = 1; if (f.d.moves.cH) { e.H = 'BALAYETTE'; e.cH = 1 } } // (2D : en vol, ↓ fait descendre ; tout en bas, c'est le coup en bas)
+  else if (fwd > 0 && !i.down && f.h <= solDe(f) + .5 && o && f.d.moves.T && portee(f, o, 70) && attrapable(o) && procheV(f, o)) { e.H = 'PROJETTE'; e.cH = 1 }
   e.S = f.meter >= 100 && f.d.moves.SUPER ? 'SUPER !' : i.down ? '↓ SPÉCIAL' : fwd > 0 ? '→ SPÉCIAL' : 'SPÉCIAL';
   return e;
 }
@@ -3860,6 +3920,7 @@ function majBoutons() {
     for (const b of pad.querySelectorAll('.tb')) { const t = b.dataset.k, s = b.querySelector('small'), v = e[t];
       if (s && ETQ.get(b) !== v) { ETQ.set(b, v); s.textContent = v }
       b.classList.toggle('ctx', !!(actif && e['c' + t])); if (t === 'S') b.classList.toggle('super', !!(actif && f.meter >= 100)) }
+    pad.classList.toggle('vol', actif && vol2d(f));
     for (const [cl, d] of [['haut', 'up'], ['bas', 'down']]) { const g = pad.querySelector('.jg.' + cl); if (g) g.classList.toggle('on', !!inp[d]) }
   }
 }
