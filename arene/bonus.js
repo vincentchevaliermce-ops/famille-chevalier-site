@@ -183,10 +183,62 @@ function partageJour() {
   partage('Défi du jour', txt, PUBLIC + '#jour');
 }
 // ---------------------------------------------------------------------
+//  JOUER SANS INTERNET (25/09, demandé par Vincent : « je n'arrive pas à jouer quand je ne suis pas en wifi »)
+//  • sw.js (fabriqué par deploy.sh à partir de sw_modele.js) garde le jeu sur l'appareil ;
+//  • tout ce qui a servi pendant la visite est gardé ; l'espace parents peut tout télécharger d'un coup.
+// ---------------------------------------------------------------------
+const HL = { liste: null, enCours: false, MEDIA: 'arene-media' };
+const hlPossible = () => 'serviceWorker' in navigator && 'caches' in window && (location.protocol === 'https:' || (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && location.port !== '8765')); // (8765 : la page de test du développement, sans mémoire)
+const hlVersion = () => { const m = document.querySelector('meta[name="version-jeu"]'); return m ? m.content : '' };
+const hlAdresse = p => new URL(p, location.href).href.split('?')[0];
+async function hlEnregistre() {
+  if (!hlPossible()) return;
+  try { await navigator.serviceWorker.register('sw.js') } catch (e) { return }
+  try { // ce qui a déjà servi pendant cette visite (l'accueil, le tigre, le gorille, la savane, les sons…)
+    await navigator.serviceWorker.ready; const c = await caches.open(HL.MEDIA), ici = new URL('./', location.href).href;
+    const urls = [...new Set(performance.getEntriesByType('resource').map(r => r.name.split('#')[0].split('?')[0]).filter(u => u.startsWith(ici) && !/\.(js|html)$/.test(u) && !/\/sons\/mus_/.test(u) && !/hors-ligne\.json$/.test(u)))];
+    for (const u of urls) if (!(await c.match(u))) { try { await c.add(u) } catch (e) { } }
+  } catch (e) { }
+}
+async function hlListe() { if (!HL.liste) { const r = await fetch('hors-ligne.json?v=' + hlVersion()); if (!r.ok) throw new Error('liste'); HL.liste = await r.json() } return HL.liste }
+async function hlEtat() {
+  const L = await hlListe(), c = await caches.open(HL.MEDIA); let o = 0, tot = 0, n = 0;
+  for (const [p, t] of L.fichiers) { tot += t; if (await c.match(hlAdresse(p))) { o += t; n++ } }
+  return { o, tot, n, N: L.fichiers.length };
+}
+const Mo = o => Math.max(1, Math.round(o / 1e6)) + ' Mo';
+async function hlAffiche() {
+  const e = $('hl-etat'), b = $('hl-go'); if (!e || !b) return;
+  if (!hlPossible()) { b.hidden = true; e.textContent = 'Ce navigateur ne permet pas de garder le jeu sans internet.'; return }
+  try { const s = await hlEtat(); b.textContent = `📥 TOUT TÉLÉCHARGER (${Mo(s.tot)})`;
+    if (s.n >= s.N) { b.hidden = true; e.textContent = '✓ Tout est prêt : le jeu marche sans internet sur cet appareil.' }
+    else { b.hidden = false; e.textContent = `Déjà sur cet appareil : ${Math.floor(100 * s.o / s.tot)} % (${Mo(s.o)} sur ${Mo(s.tot)}).` } }
+  catch (err) { e.textContent = navigator.onLine ? '' : 'Pas d’internet pour l’instant.' }
+}
+async function hlTelecharge() {
+  if (HL.enCours || !hlPossible()) return; HL.enCours = true; sfx('clic');
+  const e = $('hl-etat'), b = $('hl-go'); b.disabled = true;
+  try {
+    const L = await hlListe(), c = await caches.open(HL.MEDIA), tot = L.fichiers.reduce((s, f) => s + f[1], 0); let o = 0, rates = 0; const aFaire = [];
+    for (const f of L.fichiers) { if (await c.match(hlAdresse(f[0]))) o += f[1]; else aFaire.push(f) }
+    const maj = () => { e.textContent = `Téléchargement : ${Math.floor(100 * o / tot)} % (${Mo(o)} sur ${Mo(tot)})… Laisse cet écran ouvert.` }; maj();
+    let i = 0; const ouvrier = async () => { while (i < aFaire.length) { const f = aFaire[i++]; try { const r = await fetch(f[0], { cache: 'no-cache' }); if (r.ok) { await c.put(hlAdresse(f[0]), r); o += f[1] } else rates++ } catch (err) { rates++ } maj() } };
+    await Promise.all([ouvrier(), ouvrier(), ouvrier(), ouvrier()]);
+    if (rates) { e.textContent = `Presque fini : ${rates} fichier(s) n’ont pas pu venir (connexion coupée ?). Appuie encore sur le bouton pour finir.`; b.disabled = false; sfx('erreur') }
+    else { sfx('valide'); await hlAffiche() }
+  } catch (err) { e.textContent = 'Il faut internet (du wifi, de préférence) pour tout télécharger.'; b.disabled = false }
+  finally { HL.enCours = false; b.disabled = false }
+}
+// les animaux pas encore sur l'appareil, quand il n'y a pas internet : carte grisée (☁️)
+async function hlMarqueCartes() {
+  if (navigator.onLine || !('caches' in window)) return;
+  try { const c = await caches.open(HL.MEDIA); for (const b of document.querySelectorAll('#cartes .carte[id^="c-"]')) { const k = b.id.slice(2); if (!(await c.match(hlAdresse(k + '.meta.json')))) b.classList.add('absent') } } catch (e) { }
+}
+// ---------------------------------------------------------------------
 //  Espace parents (petite porte : une multiplication)
 // ---------------------------------------------------------------------
 function ouvreParents() { sfx('clic'); G.retourParents = G.screen || 'titre'; show('parents'); const a = 3 + Math.floor(Math.random() * 7), b = 3 + Math.floor(Math.random() * 7); G.porte = a * b; $('porte-q').textContent = `Pour les grands : combien font ${a} × ${b} ?`; $('porte-in').value = ''; $('parents-porte').hidden = false; $('parents-contenu').hidden = true }
-function valideParents() { if (+$('porte-in').value === G.porte) { sfx('valide'); $('parents-porte').hidden = true; $('parents-contenu').hidden = false } else { sfx('erreur'); $('porte-q').textContent = 'Ce n’est pas ça… (demande à un grand !)' } }
+function valideParents() { if (+$('porte-in').value === G.porte) { sfx('valide'); $('parents-porte').hidden = true; $('parents-contenu').hidden = false; hlAffiche() } else { sfx('erreur'); $('porte-q').textContent = 'Ce n’est pas ça… (demande à un grand !)' } }
 // ---------------------------------------------------------------------
 //  Tutoriel interactif (30 s) : la première fois qu'on appuie sur JOUER
 // ---------------------------------------------------------------------
@@ -246,7 +298,7 @@ function initBonus() {
   on('codes-titre', ouvreCodes); on('code-ok', valideCodeSecret); on('code-retour', () => { sfx('retour'); show('titre') });
   on('god-btn', basculeGod);
   on('invite-titre', invite); on('invite-envoie', envoieJeu); on('invite-retour', () => { sfx('retour'); show(G.retourInvite || 'titre') });
-  on('parents-titre', ouvreParents); on('porte-ok', valideParents); on('parents-retour', () => { sfx('retour'); show(G.retourParents || 'titre') });
+  on('parents-titre', ouvreParents); on('porte-ok', valideParents); on('hl-go', hlTelecharge); hlEnregistre(); on('parents-retour', () => { sfx('retour'); show(G.retourParents || 'titre') });
   on('jour-titre', lanceJour); on('fin-jour', partageJour);
   on('fin-photo', photoVictoire); on('fin-defi', partageDefi); on('v-defi', () => { partageDefi() });
   on('nom-autre', () => { sfx('clic'); proposeNoms() }); on('nom-retour', () => { sfx('retour'); show(G.retourNom || 'titre') });

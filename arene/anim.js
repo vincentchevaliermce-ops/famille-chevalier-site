@@ -455,6 +455,54 @@ const SPECIAUX = {
     if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'special', { r: f.vy < 0 ? 0 : .15, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
     if (k === 'SUPER') { if (ph === 'st') return SP('garde', { x: 4 * Math.sin(t * 50), sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 8 < 4 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 20 }, true); return repos(); }
   },
+  // scolopendre géante (PETITES BÊTES) : ★ un venin qui paralyse · → ★ la ruée des 42 pattes · ↓ ★ elle chasse la tête en bas (pendue au plafond) · SUPER le festin
+  scolopendre(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -12 * u, sy: .97 }, true); if (ph === 'act') return SP('coup', { x: 40, sx: 1.05 }, true); return u < .5 ? SP('coup', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('accroupi', { x: -10 * u, sy: .95 }); if (ph === 'act') return SP(f.t % 8 < 4 ? 'marche' : 'bas', { x: 20, y: -4 * Math.abs(Math.sin(t * 30)) }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return f.ciel ? SP('special', { r: .04 * Math.sin(t * 5), y: 8 * Math.sin(t * 6) }, true) : SP('saut', { r: -.2 }, true); if (f.h > 0) return SP('special', { y: 10 }, true); return u < .5 ? SP('fort', { x: 20 }, true) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); return f.t % 10 < 5 ? SP('coup', { x: 40, sx: 1.05 }, true) : SP('fort', { x: 20 }, true) }
+  },
+  // chauve-souris (PETITES BÊTES) : ★ elle chasse au sonar (la cible est repérée) · → ★ de petites dents pointues · ↓ ★ l’envol · SUPER toute la grotte s’envole
+  chauvesouris(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { sy: .97 }, true); if (ph === 'act' || u < .5) return SP('special', { x: 3 * Math.sin(t * 60) }, true); return repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -12 * u, y: -8 * u }, true); if (ph === 'act') return SP(f.t % 8 < 4 ? 'fort' : 'coup', { x: 30, sx: 1.04 }, true); return u < .5 ? SP('fort', {}) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'fort', { r: f.vy < 0 ? 0 : .12, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('special', { x: 3 * Math.sin(t * 60), sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 8 < 4 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 20 }, true); return repos(); }
+  },
+  // mante religieuse (PETITES BÊTES) : ★ les pattes-pièges (prise) · → ★ elle frappe en un éclair · ↓ ★ la brindille verte (elle attend, puis CLAC !) · SUPER elle ne lâche plus
+  mante(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -8 * u }, true); if (f.hit) return SP('special', { x: 20, y: 2 * Math.sin(t * 30) }, true); return SP('fort', { x: 30, sx: 1.04 }, true); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -14 * u, sy: .98 }, true); if (ph === 'act') return SP('coup', { x: 60, sx: 1.08 }, true); return u < .5 ? SP('coup', { x: 30 * (1 - u) }) : repos(); }
+    if (k === 'SD') { if (f.contre) return f.t - f.hitT < 8 ? SP('fort', { x: 30 }, true) : SP('coup', { x: 40, sx: 1.05 }, true); if (ph === 'rec' && u > .4) return repos(); return SP('brindille', { x: 2 * Math.sin(t * 3) }, true); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (f.hit) return SP('special', { x: 20, y: 3 * Math.sin(t * 40) }, true); return SP('fort', { x: 40, sx: 1.05 }, true) }
+  },
+  // colibri (PETITES BÊTES) : ★ le bec en aiguille · → ★ il vole même en arrière · ↓ ★ l’envol · SUPER le tourbillon d’ailes
+  colibri(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -16 * u }, true); if (ph === 'act') return SP('fort', { x: 50, sx: 1.08 }, true); return u < .5 ? SP('fort', { x: 25 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', {}, true); if (ph === 'act') return SP('special', { y: 6 * Math.sin(t * 40) }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'fort', { r: f.vy < 0 ? 0 : .12, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { x: 4 * Math.sin(t * 60), sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 6 < 3 ? SP('coup', { x: 40, sx: 1.05 }, true) : SP('fort', { x: 20 }, true); return repos(); }
+  },
+  // jeune serpent brun (PETITES BÊTES) : ★ les crochets à venin · → ★ il fouille chaque cachette · ↓ ★ la détente · SUPER quand je serai grand…
+  serpentbrun(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -14 * u }, true); if (ph === 'act') return SP('fort', { x: 40, sx: 1.06 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('special', { x: 4 * Math.sin(t * 20) }, true); if (ph === 'act') return SP('bas', { x: 40, sx: 1.05 }, true); return u < .5 ? SP('bas', {}) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .92 }); if (f.h > 0) return SP('saut', { r: f.vy < 0 ? -.08 : .12, y: 20 }, true); return SP('accroupi', { sy: .94 + .06 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('victoire', { sy: 1 + .04 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 20 }, true); return repos(); }
+  },
+  // veuve noire (PETITES BÊTES) : ★ le fil gluant · → ★ elle ficelle sa proie · ↓ ★ le décollage sans ailes · SUPER l’ascenseur
+  veuve(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { sy: .97 }, true); if (ph === 'act' || u < .4) return SP('special', { x: -6 }, true); return repos(); }
+    if (k === 'SF' || k === 'SUPER') { if (ph === 'st') return SP('garde', { x: -10 * u, sy: 1 + .03 * Math.sin(t * 40) }, true); if (f.hit) return SP('special', { x: 10, y: 3 * Math.sin(t * 30) }, true); return SP('fort', { x: 30, sx: 1.04 }, true); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .92 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'garde', { r: f.vy < 0 ? 0 : .08, y: 10 }, true); return SP('accroupi', { sy: .94 + .06 * u }); }
+  },
+  // méganeura (LÉGENDAIRE des PETITES BÊTES) : ★ le panier de pattes (prise) · → ★ le piqué de la préhistoire · ↓ ★ l’envol géant · SUPER la tempête de la préhistoire
+  meganeura(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { y: -10 * u }, true); if (f.hit) return SP('special', { x: 10, y: 4 * Math.sin(t * 30) }, true); return SP('fort', { x: 30, sx: 1.04 }, true); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -12 * u, y: -12 * u }, true); if (ph === 'act') return SP('fort', { x: 40, sx: 1.05 }, true); return u < .5 ? SP('fort', {}) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'fort', { r: f.vy < 0 ? 0 : .12, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('cri', { x: 3 * Math.sin(t * 60), sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 8 < 4 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 20 }, true); return repos(); }
+  },
   // léopard : ★ le bond de 6 m · → ★ le repas dans l’arbre (prise : il grimpe avec sa proie) · ↓ ★ tombé du ciel · SUPER l’ombre de la nuit
   leopard(f, t, u, ph, k, repos) {
     if (k === 'S') { if (ph === 'st') return SP('accroupi', { x: -12 * u, sy: .94 }); if (f.h > 0) return SP('special', { r: f.vy < 0 ? -.08 : .12, y: 30 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }

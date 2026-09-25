@@ -21,12 +21,13 @@ const BONUS = {
 const surprisesOn = () => G.phase === 'fight' && !G.tuto && !G.sansSurprise && G.mode !== 3 && (SAVE.opt || {}).surprises !== false;
 // le bonus change l'animal pour un moment : on lui donne une « fiche » qui hérite de la vraie (taille, vitesse, force…)
 function appliqueBoost(f) {
-  const base = CHARS[f.kind], b = f.boost; if (!base) return;
-  if (!b) { f.d = base; return }
+  const base = CHARS[f.kind], b = f.boost || {}; if (!base) return;
+  if (!f.boost && !(f.grand > 1)) { f.d = base; return }
   const d = Object.create(base);
-  if (b.k === 'geant') { d.K = base.K * 1.3; d.force = (base.force || 1) * 1.2; d.push = [base.push[0] * 1.3, base.push[1] * 1.3] }
-  if (b.k === 'mini') { d.K = base.K * .7; d.force = (base.force || 1) * .85; d.push = [base.push[0] * .7, base.push[1] * .7] }
-  if (b.k === 'piment') d.force = (base.force || 1) * 1.35;
+  if (f.grand > 1) { d.K = base.K * f.grand; d.force = (base.force || 1) * (1 + (f.grand - 1) * .8); d.push = [base.push[0] * f.grand, base.push[1] * f.grand] } // le jeune serpent brun a grandi (game.js : grandit)
+  if (b.k === 'geant') { d.K = d.K * 1.3; d.force = (d.force || 1) * 1.2; d.push = [d.push[0] * 1.3, d.push[1] * 1.3] }
+  if (b.k === 'mini') { d.K = d.K * .7; d.force = (d.force || 1) * .85; d.push = [d.push[0] * .7, d.push[1] * .7] }
+  if (b.k === 'piment') d.force = (d.force || 1) * 1.35;
   if (b.k === 'turbo') { d.walk = base.walk * 1.5; d.back = base.back * 1.5; d.dash = base.dash * 1.3; d.jumpX = base.jumpX * 1.25 }
   if (b.k === 'bouclier') d.peau = (base.peau || 1) * .5;
   if (b.k === 'miel') { d.walk = base.walk * .5; d.back = base.back * .5; d.dash = base.dash * .6; d.jumpV = base.jumpV * .85; d.jumpX = base.jumpX * .6 }
@@ -372,8 +373,15 @@ const NOUVEAUX_TROPHEES = [
   ['avale', 'TOUT ROND !', 'Avale ton adversaire tout rond.', 'secrets', 'Un serpent qui a très faim…'],
   ['gouter', 'LA PAUSE GOÛTER', 'Prends ton goûter en plein combat… et gagne quand même.', 'secrets', 'Plus gourmand que bagarreur…'],
   ['rodeo', 'YI-HA, LE RODÉO !', 'Attrapé(e) ? Secoue-toi et libère-toi avec le rodéo.', 'secrets', 'Un grand cou… et des lionnes sur le dos !'],
+  ['paralyse', 'PLUS UN GESTE !', 'Paralyse ton adversaire avec ton venin.', 'secrets', 'Un dard… ou des crochets à venin…'],
+  ['cueillette', 'LA CUEILLETTE', 'Tombe du plafond sur ton adversaire.', 'secrets', 'Beaucoup de pattes… et la tête en bas !', 'scolopendre'],
+  ['repere', 'BIP… REPÉRÉ !', 'Touche un adversaire repéré par ton sonar.', 'secrets', 'Des oreilles qui voient dans le noir…', 'chauvesouris'],
+  ['brindille', 'LA BRINDILLE', 'Fais semblant d’être une brindille… puis CLAC !', 'secrets', 'Immobile comme une petite branche verte…', 'mante'],
+  ['marchearriere', 'MARCHE ARRIÈRE', 'Échappe à une attaque en volant en arrière.', 'secrets', 'Un tout petit oiseau très rapide…', 'colibri'],
+  ['grandi', 'TOUT GRAND !', 'Grandis jusqu’à ta taille d’adulte en plein combat.', 'secrets', 'Tout jeune, il débute…', 'serpentbrun'],
+  ['ascenseur', 'L’ASCENSEUR', 'Monte ton adversaire tout en haut, emballé dans la soie.', 'secrets', 'Huit pattes et un fil de soie…', 'veuve'],
 ];
-for (const t of NOUVEAUX_TROPHEES) { if (!BADGES.find(b => b[0] === t[0])) BADGES.push([t[0], t[1], t[2]]); FAMILLE_DE[t[0]] = t[3] }
+for (const t of NOUVEAUX_TROPHEES) { if (t[5] && !(typeof CHARS !== 'undefined' && CHARS[t[5]])) continue; if (!BADGES.find(b => b[0] === t[0])) BADGES.push([t[0], t[1], t[2]]); FAMILLE_DE[t[0]] = t[3] } // (6e case : l'animal qu'il faut, pas encore là → pas de trophée impossible)
 const INDICE = Object.fromEntries(NOUVEAUX_TROPHEES.filter(t => t[4]).map(t => [t[0], t[4]]));
 // récompenses : tous les 10 trophées, une surprise se débloque
 const RECOMPENSES = [
