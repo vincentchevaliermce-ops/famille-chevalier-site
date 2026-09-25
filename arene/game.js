@@ -872,7 +872,7 @@ const CHARS = {
   // --- ABEILLES JAPONAISES (« livre en main », duel 1, p. 5) : un petit dard, elles foncent toutes ensemble, ça vibre et ça chauffe, la boule de chaleur.
   //     Point faible (livre) : « un corps fragile » → peau fragile, un peu moins de vie.
   abeille: {
-    nom: 'ABEILLES', art: 'LES ABEILLES', fem: true, monde: 'betes', vole: true, peau: 1.05, force: 1.1, spr: true, hPose: ['garde', 'coup'], col: '#D8A21E', clair: '#FFF1B8', fond: '#E9B93A', K: .34, hp: 104, walk: 7.4, back: 5.8, dash: 20, jumpV: 20, jumpX: 9, grav: .7, etour: 44,
+    nom: 'ABEILLES', art: 'LES ABEILLES', fem: true, monde: 'betes', vole: true, peau: 1.05, force: 1.2, spr: true, hPose: ['garde', 'coup'], col: '#D8A21E', clair: '#FFF1B8', fond: '#E9B93A', K: .34, hp: 108, walk: 7.4, back: 5.8, dash: 20, jumpV: 20, jumpX: 9, grav: .7, etour: 44,
     aie: ['BZZ ?!', 'OUILLE, MON DARD !', 'AÏE !'], ia: { saut: 1 },
     hurt: { stand: [-400, 560, -700, -120], crouch: [-420, 560, -400, 0], air: [-400, 540, -660, -100] }, // (mesuré sur l'image : le corps, pas le haut des ailes)
     push: [170, 210], reach: 660, speMin: 260, speMax: 1100,
@@ -889,6 +889,51 @@ const CHARS = {
       SUPER: { st: 16, act: 50, rec: 22, dmg: 4, hits: 7, hs: 16, bs: 8, kb: 3, kd: true, box: [150, 1000, -700, 0], rush: 10, chaleur: true, boule: true, lvl: 'mid', mots: ['LA BOULE DE CHALEUR !', '46 °C !', 'TROP CHAUD !'], son: 'h', nom: 'La boule de chaleur' },
     },
   },
+
+
+  // --- MYGALE (« livre en main », duel 12, p. 29) : des crochets à venin, elle jette ses poils piquants, la soupe de proie (p. 30).
+  //     Point faible (livre) : « elle voit très mal » → elle met du temps à se retourner quand on passe derrière elle.
+  mygale: {
+    nom: 'MYGALE', art: 'LA MYGALE', fem: true, monde: 'betes', myope: 22, force: .88, spr: true, hPose: ['garde', 'coup'], col: '#6B4A2E', clair: '#E8D8B8', fond: '#8A6A48', K: .38, hp: 102, walk: 6.2, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 50,
+    aie: ['SSS ?!', 'MES PATTES !', 'AÏE, MES POILS !'], ia: {},
+    hurt: { stand: [-560, 600, -560, 0], crouch: [-580, 620, -330, 0], air: [-540, 580, -520, 0] }, // (mesuré sur l'image, sans le bout des pattes)
+    push: [200, 240], reach: 700, speMin: 280, speMax: 1200,
+    moves: {
+      L: { st: 4, act: 3, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [440, 880, -420, -60], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['CROC !', 'TCHAC !', 'CLAC !'], son: 'l' },
+      cL: { st: 4, act: 3, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [440, 860, -220, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'CROC !'], son: 'l' },
+      H: { st: 11, act: 5, rec: 18, dmg: 13, hs: 20, bs: 15, kb: 11, box: [400, 940, -560, -60], lvl: 'mid', lunge: 6, chain: ['S', 'SUPER'], mots: ['LES CROCHETS !', 'CRAC !', 'CROC !'], son: 'h' },
+      cH: { st: 8, act: 4, rec: 21, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [400, 900, -200, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'HUIT PATTES !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 7, dmg: 8, hs: 18, bs: 11, kb: 7, box: [200, 840, -420, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['D’EN HAUT !', 'CROC !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 20 }, mots: ['VOLTIGE !', 'ATTRAPÉ !'], son: 'h' },
+      S: { st: 10, act: 4, rec: 22, dmg: 5, hs: 16, bs: 10, kb: 6, lvl: 'mid', proj: { x0: 420, spd: 11, w: 170, h: [-440, -40], life: 70, poils: true }, venin: { t: 150, tick: 30, dmg: 1, genre: 'gratte' }, mots: ['LES POILS PIQUANTS !', 'FFFT !', 'ÇA GRATTE !'], son: 's', nom: 'Elle jette ses poils piquants', ia: [450, 1300, 1] },
+      SF: { st: 8, act: 5, rec: 22, dmg: 11, hs: 20, bs: 14, kb: 10, box: [380, 920, -460, -40], lunge: 10, venin: { t: 180, tick: 30, dmg: 1 }, lvl: 'mid', mots: ['LES CROCHETS À VENIN !', 'CROC !', 'EMPOISONNÉ !'], son: 's', nom: 'Les crochets à venin', ia: [0, 850, 1.1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 17, aa: true, inv: 8, saute: [3, 20], land: true, box: [120, 760, -860, -150], lvl: 'mid', mots: ['LE BOND DE LA MYGALE !', 'HOP, CROC !'], son: 's', nom: 'Le bond de la mygale', ia: [0, 0, 0] },
+      SUPER: { st: 12, act: 16, rec: 24, dmg: 24, hs: 0, bs: 0, kb: 8, kd: true, rush: 14, lvl: 'mid', slurp: true, prise: { portee: 180, t: 56, degage: false, mot: 'LA SOUPE DE PROIE !', haut: 12, loin: 8, rec: 8 }, mots: ['LA SOUPE DE PROIE !', 'SLUUURP !'], son: 'h', nom: 'La soupe de proie' },
+    },
+  },
+
+  // --- GUÊPE GÉANTE (« livre en main », duel 12, p. 29) : un dard de 7 mm, elle pique et paralyse, la note de douleur 4 sur 4 (p. 30).
+  //     Point faible (livre) : « elle doit piquer entre les pattes » → sa piqûre qui paralyse ne touche qu'en bas, et de tout près.
+  guepe: {
+    nom: 'GUÊPE GÉANTE', art: 'LA GUÊPE GÉANTE', fem: true, monde: 'betes', vole: true, force: 1.1, spr: true, hPose: ['garde', 'coup'], col: '#1E2A44', clair: '#FFB347', fond: '#E8783A', K: .38, hp: 104, walk: 7, back: 5.6, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
+    aie: ['BZZ ?!', 'MES AILES !', 'AÏE, MON DARD !'], ia: { saut: .9 },
+    hurt: { stand: [-420, 560, -660, -120], crouch: [-440, 560, -380, 0], air: [-400, 540, -620, -100] }, // (mesuré sur l'image : le corps, pas le haut des ailes)
+    push: [190, 230], reach: 700, speMin: 280, speMax: 1200,
+    moves: {
+      L: { st: 4, act: 3, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [420, 860, -520, -160], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PIC !', 'BZZ !', 'CLAC !'], son: 'l' },
+      cL: { st: 4, act: 3, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [420, 840, -260, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'PIC !'], son: 'l' },
+      H: { st: 11, act: 5, rec: 18, dmg: 13, hs: 20, bs: 15, kb: 11, box: [400, 920, -560, -140], lvl: 'mid', lunge: 6, chain: ['S', 'SUPER'], mots: ['LE DARD !', 'PIQUÉ !', 'AÏE !'], son: 'h' },
+      cH: { st: 8, act: 4, rec: 21, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [400, 880, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'BZZ !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 8, hs: 18, bs: 11, kb: 7, box: [200, 820, -420, 160], lvl: 'high', air: true, land: true, dive: 6, chain: ['L', 'cL', 'H', 'S'], mots: ['EN PIQUÉ !', 'BZZ !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'ATTRAPÉE !'], son: 'h' },
+      S: { st: 9, act: 4, rec: 24, dmg: 10, hs: 24, bs: 16, kb: 6, assomme: 70, box: [300, 720, -260, 0], lunge: 10, lvl: 'low', paralyse: true, mots: ['PIQUÉ… PARALYSÉ !', 'PLUS UN GESTE !', 'ZZZIP !'], son: 's', nom: 'Elle pique et paralyse', ia: [0, 650, 1.2] },
+      SF: { st: 8, act: 14, rec: 22, dmg: 10, hs: 20, bs: 14, kb: 10, box: [250, 900, -560, -120], rush: 24, stopHit: true, lvl: 'mid', mots: ['LE DARD DE 7 MM !', 'PIQÛRE !', 'BZZZIING !'], son: 's', nom: 'Le dard de 7 mm', ia: [400, 1300, 1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 17, aa: true, inv: 8, saute: [3, 21], land: true, box: [120, 760, -900, -150], lvl: 'mid', mots: ['DÉCOLLAGE !', 'BZZ, EN L’AIR !'], son: 's', nom: 'Le décollage', ia: [0, 0, 0] },
+      SUPER: { st: 16, act: 44, rec: 22, dmg: 5, hits: 6, hs: 18, bs: 8, kb: 3, kd: true, box: [150, 950, -700, 0], rush: 10, lvl: 'mid', mots: ['DOULEUR : 4 SUR 4 !', 'AÏE-AÏE-AÏE !', 'PIC-PIC-PIC !'], son: 'h', nom: 'Douleur : 4 sur 4' },
+    },
+  },
+
+
 
 };
 // phrases de victoire (drôles, tirées du livre) : le gagnant parle sur l'écran de fin
@@ -936,6 +981,8 @@ const PHRASES = {
   crevette: ['Tu n’as rien vu ? Normal : trop rapide !', 'Petite crevette, gros marteau !', 'Deux coups pour le prix d’un !'],
   frelon: ['Clic-clac, mes ciseaux ne ratent jamais !', 'Petit, moi ? Je suis un géant !', 'Bzzz… Je suis le roi du ciel !'],
   abeille: ['Toutes ensemble, on est les plus fortes !', 'Petite, mais jamais seule !', 'Bzzz… Et maintenant, du miel !'],
+  mygale: ['Huit pattes, huit fois plus forte !', 'Je ne te voyais pas… mais je t’ai eu !', 'À table : soupe de champion !'],
+  guepe: ['Pic ! Et plus un geste !', 'Mes ailes orange sont les plus belles !', 'Bzzz… Je vise juste, entre les pattes !'],
 };
 const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
 
@@ -957,14 +1004,15 @@ const ARENES = [
   { k: 'ocean', nom: 'OCÉAN', img: 'arene_ocean.webp', monde: 'mer' }, { k: 'recif', nom: 'RÉCIF DE CORAIL', img: 'arene_recif.webp', monde: 'mer' },
   { k: 'aquarium', nom: 'AQUARIUM', img: 'arene_aquarium.webp', monde: 'mer' }, { k: 'abysses', nom: 'ABYSSES', img: 'arene_abysses.webp', monde: 'mer' }, { k: 'estuaire', nom: 'ESTUAIRE D’AUSTRALIE', img: 'arene_estuaire.webp', monde: 'mer' },
   { k: 'ruche', nom: 'LA RUCHE', img: 'arene_ruche.webp', monde: 'betes' },
+  { k: 'sable', nom: 'LE DÉSERT À LA LOUPE', img: 'arene_sable.webp', monde: 'betes' },
   // arènes secrètes : récompenses de la salle des trophées (surprises.js, RECOMPENSES)
   { k: 'epave', nom: 'L’ÉPAVE AU TRÉSOR', img: 'arene_epave.webp', monde: 'mer', secret: 'epave' },
   { k: 'lune', nom: 'LA LUNE', img: 'arene_lune.webp', secret: 'lune' }, { k: 'prehisto', nom: 'L’ÎLE PRÉHISTORIQUE', img: 'arene_prehisto.webp', secret: 'prehisto' },
 ];
 const estMer = () => (ARENES.find(a => a.k === G.arene) || {}).monde === 'mer';
 // couleur de la poussière soulevée, selon le sol de l'arène
-const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', nord: '#F2F7FF', floride: '#B89A78', asie: '#C9A26E', estuaire: '#9C8A5A', ruche: '#F2C45A', lune: '#C9CCD6', prehisto: '#9C8A6A' };
-const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'frelon', 'abeille', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'baleine', 'crabe', 'crevette', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
+const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', nord: '#F2F7FF', floride: '#B89A78', asie: '#C9A26E', estuaire: '#9C8A5A', ruche: '#F2C45A', lune: '#C9CCD6', prehisto: '#9C8A6A' , sable: '#F2D39A' };
+const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'frelon', 'abeille', 'mygale', 'guepe', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'baleine', 'crabe', 'crevette', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
 // MONDES (décision de Vincent, 24/09) : un animal n'affronte que les animaux de son monde (TERRE, MER ; PETITES BÊTES plus tard)
 const MONDES = { terre: { nom: 'TERRE', ico: '🌍', places: 16, legende: 'trex', titre: 'CHOISIS TON ANIMAL' }, mer: { nom: 'MER', ico: '🌊', places: 8, legende: 'megalo', titre: 'CHOISIS TON ANIMAL DE LA MER' }, betes: { nom: 'PETITES BÊTES', ico: '🐞', places: 10, legende: 'meganeura', titre: 'CHOISIS TA PETITE BÊTE' } };
 const mondeDe = k => (CHARS[k] && CHARS[k].monde) || 'terre';
@@ -1271,6 +1319,17 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Le point faible des abeilles : un corps fragile !', // ≈ p. 5
     'Toute leur vie, 12 abeilles font 1 petite cuillère de miel !', // p. 6
   ],
+  mygale: [
+    'La mygale : 12 cm avec les pattes, et des crochets à venin !', // ≈ p. 29
+    'Le coup spécial de la mygale : elle jette ses poils piquants !', // ≈ p. 29
+    'Le point faible de la mygale : elle voit très mal !', // ≈ p. 29
+    'La mygale ne mâche pas : elle fait fondre sa proie avec un liquide, puis l’aspire comme avec une paille.', // p. 30
+  ],
+  guepe: [
+    'La guêpe géante : jusqu’à 5 cm, et un dard de 7 mm !', // ≈ p. 29
+    'Le coup spécial de la guêpe géante : elle pique et paralyse !', // ≈ p. 29
+    'Le point faible de la guêpe géante : elle doit piquer entre les pattes !', // ≈ p. 29
+  ],
 };
 
 // ---------------------------------------------------------------------
@@ -1478,6 +1537,14 @@ const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r
     { p: 5, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quand elle grelotte exprès, l’abeille devient un… ? (un objet qui chauffe)', r: 'radiateur', x: 'un radiateur à ailes' },
     { p: 5, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Sans bouger les ailes, l’abeille sait faire vibrer ses… ?', r: 'muscles', x: 'vibrer ses muscles' },
   ],
+  mygale: [
+    { p: 29, ou: 'l’encart « CHIFFRE WAOUH »', q: 'La plus grosse mygale du monde mesure combien de centimètres ? (écris le nombre)', r: '28', x: 'fait 28 cm' },
+    { p: 29, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel bruit fait la plus grosse mygale du monde ? Elle…', r: 'siffle', x: 'Elle siffle' },
+  ],
+  guepe: [
+    { p: 29, ou: 'l’encart « LE TRUC FOU »', q: 'Le conseil de l’expert piqué : « Allonge-toi et… » ?', r: 'hurle', x: 'Allonge-toi et hurle' },
+    { p: 29, ou: 'l’encart « LE TRUC FOU »', q: 'Qui s’est fait piquer par cette guêpe ? (un seul mot)', r: 'scientifique', x: 'Le scientifique qui s’est fait piquer' },
+  ],
 };
 
 const pageLivre = k => LIVRE_EN_MAIN[k] ? Math.min(...LIVRE_EN_MAIN[k].map(x => x.p)) : 0;
@@ -1640,6 +1707,8 @@ const BANQUE = {
   python: { f: ['komodo_hiss'], v: .85, r: .8 }, python_grr: { f: ['komodo_hiss', 'chat_hiss'], v: .7, r: .75, j: .06 },
   alligator: { f: ['croco_roar'], v: 1, r: .9 }, alligator_grr: { f: ['croco_roar', 'croco_hiss'], v: .85, r: .85, j: .05 },
   bouledogue: { f: ['requin'], v: .9, r: .95, j: .05 }, bouledogue_grr: { f: ['requin', 'bulle'], v: .7, r: .95, j: .08 },
+  frelon: { f: ['ailes'], v: 1, r: .7 }, frelon_grr: { f: ['ailes'], v: .8, r: .6, j: .08 }, abeille: { f: ['ailes'], v: .9, r: 1.3 }, abeille_grr: { f: ['ailes'], v: .7, r: 1.4, j: .08 },
+  mygale: { f: ['chat_hiss'], v: .8, r: 1.2 }, mygale_grr: { f: ['chat_hiss'], v: .6, r: 1.3, j: .06 }, guepe: { f: ['ailes'], v: 1, r: .9 }, guepe_grr: { f: ['ailes'], v: .8, r: 1, j: .08 },
   baleine: { f: ['orque'], v: 1, r: .55 }, baleine_grr: { f: ['orque_grr'], v: .8, r: .5, j: .05 },
   pieuvre: { f: ['slurp', 'splotch1'], v: .8, j: .08 }, pieuvre_grr: { f: ['gloups', 'bulle'], v: .7, j: .08 },
   aiguillat: { f: ['requin'], v: .7, r: 1.35, j: .06 }, aiguillat_grr: { f: ['requin', 'bulle'], v: .6, r: 1.3, j: .08 },
@@ -1906,6 +1975,7 @@ function update(f, o, inp) {
       if (m.serre && f.t === 1 && window.statCombat) statCombat(f, 'serre'); // trophée « GROS CÂLIN » : 3 fois dans un combat
       if (m.serre && f.t % 10 === 5) { sfx('vent', .5); G.shake = Math.max(G.shake, 4); addFx({ k: 'mot', x: d.x + (Math.random() - .5) * 140, y: FLOOR - 460 + (Math.random() - .5) * 80, mot: hasard(['SERRE !', 'CRRR…', 'ENCORE UN TOUR !']), col: '#F2EDA0' }) }
       if (m.avale) { d.cache = f.t > 10 && f.t < m.prise.t - 4; if (f.t === 10) { if (window.trophee) trophee('avale', f); sfx('gloups', 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 620, mot: 'GLOUPS !', col: JA }) } if (f.t % 12 === 6 && f.t > 10) addFx({ k: 'mot', x: f.x + (Math.random() - .5) * 200, y: FLOOR - 380, mot: hasard(['MIAM…', 'GLOUB…', 'BLOUP…']), col: '#F2EDA0' }); if (f.t === m.prise.t - 4) { sfx('prout', .7); addFx({ k: 'mot', x: f.x, y: FLOOR - 560, mot: 'PTOU ! TROP GROS !', col: '#FF7AB6' }) } }
+      if (m.slurp && f.t % 12 === 6) { sfx('slurp', .8); addFx({ k: 'mot', x: d.x + (Math.random() - .5) * 160, y: FLOOR - 420 + (Math.random() - .5) * 80, mot: hasard(['SLUUURP !', 'SLURP !', 'COMME AVEC UNE PAILLE !']), col: '#E8D8B8' }) } // mygale : la soupe de proie (livre p. 30)
       if (m.os && f.t % 9 === 4) { sfx('crac_os', .9); G.shake = Math.max(G.shake, 5); addFx({ k: 'mot', x: d.x + (Math.random() - .5) * 160, y: FLOOR - 470 + (Math.random() - .5) * 80, mot: hasard(['CRAC !', 'CRONCH !', 'CROC !']), col: '#FFF1C9' }) } // croque-os : ça croque !
       if (f.t >= (m.prise.t || 22)) { lache(f, d, m); }
       break;
@@ -2141,7 +2211,7 @@ function touche(a, d, m, hb, hu, o) {
   if (m.vide) { const avant = d.meter; d.meter = Math.max(0, d.meter - m.vide); jauge(a, m.vide * .4); if (avant > 0 && d.meter <= 0 && window.trophee) trophee('rire', a) }
   // étourdissement : trop de coups en peu de temps → il voit des étoiles (une fois par manche)
   if (dmg > 0 && !o.prise) { d.etourdi = (d.etourdi || 0) + dmg * (m.kd ? 1.3 : 1); d.dernierCoup = G.frame; if (d.etourdi >= (d.d.etour || 46) && !d.dizzyFait && d.hp > 0) d.dizzyPending = true }
-  if (m.assomme && dmg > 0 && d.hp > 0 && !d.dizzyFait && !(d.state === 'atk' && d.move && d.move.armor)) { d.dizzyPending = true; d.stunDuree = m.assomme } // orque : le coup de queue qui assomme
+  if (m.assomme && dmg > 0 && d.hp > 0 && !d.dizzyFait && !(d.state === 'atk' && d.move && d.move.armor)) { d.dizzyPending = true; d.stunDuree = m.assomme; d.paraPending = !!m.paralyse } // orque : le coup de queue qui assomme
   const lastHit = o.last;
   if (estMer()) addFx({ k: 'bulles', x: cx, y: cy + 60, n: m.dmg >= 10 ? 12 : 7, w: 220 });
   addFx({ k: 'impact', x: cx, y: cy, size: m.kd && lastHit ? 1.15 : m.dmg >= 10 ? .95 : .7, mot: G.prout ? hasard(['PROUT !', 'PFFRT !', 'POUÊÊT !']) : m.compte && !o.proj ? (a.hit >= (m.hits || 1) ? a.hit + ' BRAS !' : a.hit + ' !') : m.cogne && !o.proj ? (a.hit <= 1 ? 'BONK !' : 'CHOMP !') : m.mots[Math.floor(Math.random() * m.mots.length)], col: a.d.col });
@@ -2197,6 +2267,8 @@ function lache(a, d, m) {
 function etourdit(f) {
   if (window.trophee) trophee('etourdi', G.f.find(g => g !== f));
   f.dizzyPending = false; f.dizzyFait = true; setS(f, 'dizzy'); f.stun = f.stunDuree || 110; f.stunDuree = 0; f.vx = 0;
+  f.paralyse = !!f.paraPending; f.paraPending = false;
+  if (f.paralyse) { sfx('boing', .8); addFx({ k: 'mot', x: f.x, y: FLOOR - 760 * f.d.K / .44, mot: hasard(['PARALYSÉ !', 'PLUS UN GESTE !', 'FIGÉ PAR LE VENIN !']), col: '#D9B3FF' }); return } // guêpe, scolopendre : le venin qui paralyse
   sfx('oiseaux', 1); sfx('boing', .6);
   addFx({ k: 'mot', x: f.x, y: FLOOR - 760 * f.d.K / .44, mot: hasard(['IL VOIT DES ÉTOILES !', 'TOUT TOURNE !', 'CUI-CUI !']), col: JA });
 }
@@ -2692,7 +2764,7 @@ function render() {
   dessineFoule(fx); hud(fx); annonce(fx);
 }
 // position de la tête (px image depuis le point au sol, pose de base)
-const TETE = { abeille: [470, -640], frelon: [470, -560], crevette: [420, -540], crabe: [100, -520], baleine: [540, -330], bouledogue: [420, -480], girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
+const TETE = { guepe: [400, -680], mygale: [380, -520], abeille: [470, -640], frelon: [470, -560], crevette: [420, -540], crabe: [100, -520], baleine: [540, -330], bouledogue: [420, -480], girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
 function tete(f) { const p = f.d.tete || TETE[f.kind] || [450, -550], K = f.d.K; return [f.x + f.face * p[0] * K, FLOOR - f.h + p[1] * K] }
 function oiseau(c, x, y, s, t) { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3;
   c.beginPath(); c.ellipse(0, 0, 16, 11, 0, 0, TAU); c.fill(); c.stroke(); c.beginPath(); c.arc(12, -8, 8, 0, TAU); c.fill(); c.stroke();
@@ -2751,7 +2823,9 @@ function dessineDetails(c, t) {
       for (let i = 0; i < 26; i++) { const a = i * 2.4 + t * (i % 2 ? 3 : -3), r = (150 + (i % 4) * 30) * o.d.K / .44; abeilleMini(c, ox + Math.cos(a) * r, oy + Math.sin(a) * r * .85, Math.cos(a) > 0 ? -1 : 1, t * 40 + i) }
       if (G.frame % 20 < 12) comic(c, '46 °C !', ox, oy - 300 * o.d.K / .44, .3, .5, 1, '#FF9A3C') } }
     // étourdi : étoiles et oiseaux qui tournent autour de la tête
-    if (f.state === 'dizzy') { for (let i = 0; i < 3; i++) { const a = t * 4 + i * TAU / 3; star(c, hx + Math.cos(a) * 110, hy - 90 + Math.sin(a) * 26, 24, 10, 5, JA, NV, 4) }
+    if (f.state === 'dizzy' && f.paralyse) { c.save(); c.lineCap = 'round'; c.lineJoin = 'round'; for (let i = 0; i < 5; i++) { const a = i * 1.26 + Math.floor(t * 12) * .7, R = 150 + 60 * Math.sin(i * 3 + t * 5), x = f.x + Math.cos(a) * R * K / .44, y = FLOOR - f.h - 300 * K / .44 + Math.sin(a) * R * .6 * K / .44; // paralysé : de petits éclairs violets
+        c.beginPath(); c.moveTo(x, y - 30); c.lineTo(x + 12, y - 6); c.lineTo(x - 8, y + 2); c.lineTo(x + 6, y + 30); c.strokeStyle = NV; c.lineWidth = 11; c.stroke(); c.strokeStyle = '#C79BFF'; c.lineWidth = 5; c.stroke() } c.restore() }
+    else if (f.state === 'dizzy') { for (let i = 0; i < 3; i++) { const a = t * 4 + i * TAU / 3; star(c, hx + Math.cos(a) * 110, hy - 90 + Math.sin(a) * 26, 24, 10, 5, JA, NV, 4) }
       for (let i = 0; i < 2; i++) { const a = -t * 3 + i * Math.PI; oiseau(c, hx + Math.cos(a) * 140, hy - 120 + Math.sin(a) * 30, .9, t + i) } }
     // piquants du porc-épic plantés dans le pelage (noir et blanc)
     if (f.piques && f.piques.n > 0 && !f.cache) { c.save(); c.lineCap = 'round';
@@ -2840,7 +2914,8 @@ function plouf(f, s) { if (G.arene !== 'riviere') return; addFx({ k: 'eclabousse
 function dizzy(c, f, t) { const x = f.x + f.face * (f.d.spr ? 560 * f.d.K : 250 * f.d.K / .44), y = f.d.spr ? FLOOR - 170 : FLOOR - 210; for (let i = 0; i < 3; i++) { const a = t * 5 + i * TAU / 3; star(c, x + Math.cos(a) * 70, y + Math.sin(a) * 22, 22, 9, 5, JA, NV, 4) } }
 function poseOf(f) {
   const st0 = f.state; if (st0 === 'bstun') f.state = f.crouchB ? 'cblock' : 'block';
-  const res = (f.d.spr ? spritePose : f.kind === 'tigre' ? tigerPose : gorillaPose)(f.R, f, G.time); f.state = st0; f.flipV = !!res.flip;
+  let res = (f.d.spr ? spritePose : f.kind === 'tigre' ? tigerPose : gorillaPose)(f.R, f, G.time); f.state = st0; f.flipV = !!res.flip;
+  if (f.d.myope && f.retourne > 0 && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && (f.aMyope ?? (f.aMyope = f.R.layers.some(l => l.n === 'myope')))) res = SP('myope', { x: 3 * Math.sin(G.time * 20) }); // la mygale cherche : « OÙ ES-TU ? »
   if (f.ghost && f.ghost.k > 0) f.ghost.k--;
   // pose dessinée (illustration entière) : fondu-traîne avec l'image précédente
   const sp = res.spr || null;
@@ -2969,7 +3044,7 @@ function startMatch() {
   G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
   G.chrono = 0;
   G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
-  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] , bouledogue: [.85, .95, 1.15, .45] , baleine: [1.1, .95, .8, .45] , crabe: [.8, .9, 1.25, .45] , crevette: [1.2, .8, .9, .45] , frelon: [.8, .85, 1.2, .45] , abeille: [.85, .85, 1.15, .45] }[p2]; // variante de couleur
+  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] , bouledogue: [.85, .95, 1.15, .45] , baleine: [1.1, .95, .8, .45] , crabe: [.8, .9, 1.25, .45] , crevette: [1.2, .8, .9, .45] , frelon: [.8, .85, 1.2, .45] , abeille: [.85, .85, 1.15, .45] , mygale: [1.2, .9, .7, .45] , guepe: [1.15, .8, 1.2, .45] }[p2]; // variante de couleur
   if (G.livre && G.livre.noms) G.f.forEach((f, i) => f.nomAff = G.livre.noms[i]);
   if (NET.on) G.f.forEach((f, i) => f.distant = i !== NET.moi); // en ligne : l'animal de l'ami (ses trophées, ses sons « SUPER prêt ») n'est pas le nôtre
   G.nvTroph = [];
@@ -3209,7 +3284,7 @@ function ouvreLivreEnMain(k, suivante) {
 }
 function verifieMot() {
   if (Q.bloque) return; const z = Q.lem[Q.i % Q.lem.length], e = $('lem-in'), v = normMot(e.value); if (!v) return;
-  if (presque(v, normMot(z.r))) { Q.bloque = true; e.blur(); sfx('valide'); $('quiz-msg').textContent = 'BRAVO, TU AS LE LIVRE !'; setTimeout(quizGagne, 900); return }
+  if (String(z.r).split('|').some(r => presque(v, normMot(r)))) { Q.bloque = true; e.blur(); sfx('valide'); $('quiz-msg').textContent = 'BRAVO, TU AS LE LIVRE !'; setTimeout(quizGagne, 900); return } // « cinq|5 » : plusieurs formes acceptées
   Q.essais++; sfx('erreur'); e.select();
   $('quiz-msg').textContent = fin(Q.essais === 1 ? `Pas tout à fait… Vérifie bien, page ${z.p} du livre !` : `Toujours pas… Regarde bien l’endroit indiqué, page ${z.p}. Tu peux aussi changer de question.`);
   if (Q.essais >= 2 && Q.lem.length > 1) $('quiz-suite').hidden = false;

@@ -441,6 +441,20 @@ const SPECIAUX = {
     if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'fort', { r: f.vy < 0 ? 0 : .12, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
     if (k === 'SUPER') { if (ph === 'st') return SP('vibre', { x: 4 * Math.sin(t * 60), sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 30, sx: 1.04 }, true) : SP('vibre', { x: 4 * Math.sin(t * 60) }, true); return repos(); }
   },
+  // mygale (PETITES BÊTES) : ★ elle jette ses poils piquants · → ★ les crochets à venin · ↓ ★ le bond de la mygale · SUPER la soupe de proie
+  mygale(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { sy: .97 }, true); if (ph === 'act' || u < .4) return SP('special', { x: -10 }, true); return repos(); }
+    if (k === 'SF') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -14 * e }, true) } if (ph === 'act') return SP('fort', { x: 40, sx: 1.04 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .92 }); if (f.h > 0) return SP('saut', { r: f.vy < 0 ? -.08 : .12, y: 20 }, true); return SP('accroupi', { sy: .94 + .06 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); return SP('coup', { x: 40, sx: 1.05 }, true) }
+  },
+  // guêpe géante (PETITES BÊTES) : ★ elle pique et paralyse (en bas) · → ★ le dard de 7 mm · ↓ ★ le décollage · SUPER douleur 4 sur 4
+  guepe(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -12 * u, y: 10 * u }, true); if (ph === 'act') return SP('bas', { x: 40, sx: 1.05 }, true); return u < .5 ? SP('bas', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -10 * u, y: -10 * u }, true); if (ph === 'act') return f.hit ? SP('fort', { x: 30 }, true) : SP('special', { y: 10 * Math.sin(t * 20) }, true); return u < .5 ? SP('fort', {}) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'special', { r: f.vy < 0 ? 0 : .15, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { x: 4 * Math.sin(t * 50), sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 8 < 4 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 20 }, true); return repos(); }
+  },
   // léopard : ★ le bond de 6 m · → ★ le repas dans l’arbre (prise : il grimpe avec sa proie) · ↓ ★ tombé du ciel · SUPER l’ombre de la nuit
   leopard(f, t, u, ph, k, repos) {
     if (k === 'S') { if (ph === 'st') return SP('accroupi', { x: -12 * u, sy: .94 }); if (f.h > 0) return SP('special', { r: f.vy < 0 ? -.08 : .12, y: 30 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
