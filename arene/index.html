@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="L’Arène des Duels : choisis ton animal et défie tes copains, avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans publicité."><meta property="og:title" content="L’Arène des Duels"><meta property="og:description" content="Choisis ton animal et défie tes copains ! Avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790332868"><title>L'Arène des Duels</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="L’Arène des Duels : choisis ton animal et défie tes copains, avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans publicité."><meta property="og:title" content="L’Arène des Duels"><meta property="og:description" content="Choisis ton animal et défie tes copains ! Avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790334549"><title>L'Arène des Duels</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -387,22 +387,43 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 .livre-haut h2{margin:0;font-size:3.4cqw;color:var(--orange);text-shadow:.25cqw .25cqw 0 var(--marine)}
 .livre-score{display:flex;align-items:center;gap:.8cqw;background:var(--marine);color:var(--creme);border-radius:1.2cqw;padding:.3cqw 1.2cqw;font-size:1.8cqw}
 .livre-score b{color:var(--jaune);font-size:2.2cqw}.livre-score img{height:3.4cqw}.livre-score .boss-et{color:var(--jaune)}
-.duels{display:grid;grid-template-columns:repeat(3,28.5cqw);gap:.9cqw}
-.duels.quatre{grid-template-columns:repeat(4,22.2cqw);gap:.8cqw}.duels.quatre .duel{grid-template-columns:3.6cqw 1fr;padding:.5cqw .7cqw}.duels.quatre .duel .num{font-size:2.3cqw}.duels.quatre .duel .q{font-size:1.2cqw}.duels.quatre .duel .etat{font-size:1.05cqw}.duels.quatre .duel .tetes img,.duels.quatre .duel .tetes i{width:3.3cqw;height:3.3cqw}
-.duel{display:grid;grid-template-columns:4.4cqw 1fr;grid-template-rows:auto auto auto;align-items:center;gap:.1cqw .8cqw;padding:.55cqw .8cqw;border-radius:1.2cqw;border:.3cqw solid var(--marine);background:var(--creme);color:var(--marine);cursor:pointer;text-align:left;box-shadow:0 .4cqw 0 rgba(11,42,91,.35);font:inherit;transition:transform .1s}
+/* la liste (26/09) : 3 onglets « MANCHE », comme dans le livre ; 10 cartes par onglet (5 × 2) : titre, cartes et RETOUR tiennent sur l'écran d'un téléphone */
+#livre{justify-content:flex-start;gap:.75cqw;padding:1.2cqw 2cqw 1cqw}
+#livre .livre-haut{gap:1.6cqw}#livre .livre-haut h2{font-size:3cqw}
+#livre .livre-score{font-size:1.6cqw;padding:.25cqw 1.1cqw}#livre .livre-score b{font-size:2cqw}#livre .livre-score img{height:3cqw}
+#livre .petit{margin:0;font-size:1.45cqw}
+.onglets-livre{display:flex;gap:.8cqw;justify-content:center;margin:0}
+.onglets-livre .btn{font-size:1.7cqw;padding:.4cqw 1.6cqw;display:flex;align-items:baseline;gap:.7cqw;box-shadow:0 .35cqw 0 rgba(11,42,91,.45)}
+.onglets-livre .btn small{font:900 1.25cqw Nunito,"Trebuchet MS",sans-serif;opacity:.95}
+.onglets-livre .btn[aria-pressed="true"]{transform:translateY(-.15cqw)}
+.duels{display:grid;grid-template-columns:repeat(5,17.4cqw);gap:1cqw 1.1cqw;margin:.2cqw 0}
+.duel{position:relative;display:flex;flex-direction:column;align-items:center;gap:.25cqw;height:16cqw;box-sizing:border-box;padding:.35cqw .6cqw .55cqw;border-radius:1.2cqw;border:.3cqw solid var(--marine);background:var(--creme);color:var(--marine);cursor:pointer;box-shadow:0 .4cqw 0 rgba(11,42,91,.35);font:inherit;transition:transform .1s}
 .duel:hover{transform:translateY(-.2cqw)}
-.duel .num{grid-row:span 3;font-size:2.6cqw;color:var(--orange);text-shadow:.15cqw .15cqw 0 var(--marine);text-align:center}
-.duel .tetes{display:flex;align-items:center;gap:.4cqw}.duel .tetes img,.duel .tetes i{width:3.6cqw;height:3.6cqw;border-radius:50%;background:#F7C41F;border:.2cqw solid var(--marine);object-fit:cover}
-.duel .tetes i{display:inline-flex;align-items:center;justify-content:center;font:900 2cqw Rubik,sans-serif;font-style:normal;color:var(--marine)}
-.duel .tetes img:last-child{transform:scaleX(-1)}.duel .tetes em{font-style:normal;font-size:1.3cqw;color:var(--orange)}
-.duel .q{font-size:1.35cqw;line-height:1.05}.duel .etat{font-size:1.15cqw;font-weight:900;color:#2FA85B}.duel .etat.rate{color:#D2462E}
+.duel .haut{align-self:stretch;display:flex;align-items:center;justify-content:space-between;height:2.3cqw}
+.duel .num{font-size:2.3cqw;line-height:1;color:var(--orange);text-shadow:.15cqw .15cqw 0 var(--marine)}
+.duel .boss-tag{font-size:1.05cqw;line-height:1;letter-spacing:.06em;background:var(--orange);color:#fff;border:.18cqw solid var(--marine);border-radius:.6cqw;padding:.25cqw .55cqw}
+.duel .tetes{display:flex;align-items:center;gap:.35cqw}.duel .tetes img,.duel .tetes i{width:5.6cqw;height:5.6cqw;border-radius:50%;background:#F7C41F;border:.22cqw solid var(--marine);object-fit:cover;box-sizing:border-box}
+.duel .tetes i{display:inline-flex;align-items:center;justify-content:center;font:900 2.6cqw Rubik,sans-serif;font-style:normal;color:var(--marine)}
+.duel .tetes img:last-child{transform:scaleX(-1)}.duel .tetes em{font-style:normal;font-size:1.35cqw;color:var(--orange)}
+.duel .q{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.6cqw;line-height:1.08;text-transform:uppercase;word-spacing:.2em;min-height:0}
+.duel .q b{font-weight:inherit;white-space:nowrap}.duel .q i{font-style:normal;color:var(--orange)}
+.duel .etat{font-size:1.25cqw;line-height:1.2;font-weight:900;color:#2FA85B;white-space:nowrap}.duel .etat.rate{color:#D2462E}
 .duel.boss{background:linear-gradient(135deg,#FFE9A8,#FFF8EC);border-color:#B8860B;box-shadow:0 0 0 .25cqw #FFC629,0 .4cqw 0 rgba(11,42,91,.35)}
 .duel.boss .etat{color:var(--orange)}
-.duel.ferme{opacity:.55;filter:grayscale(.5)}.duel.ferme .etat{color:#6f86b5}
-.duel.bientot .etat{color:#6f86b5}
+/* verrouillé : bien lisible (on voit qui arrive), mais gris et 🔒 */
+.duel.ferme{background:#EEE9DD;border-color:#8391AE;color:#4B5A79;box-shadow:0 .4cqw 0 rgba(11,42,91,.18)}
+.duel.ferme .tetes img{filter:grayscale(.55) contrast(.95)}.duel.ferme .tetes img,.duel.ferme .tetes i{border-color:#8391AE}
+.duel.ferme .num{color:#A3AEC6;text-shadow:.15cqw .15cqw 0 #5B6987}.duel.ferme .q i,.duel.ferme .tetes em{color:#8391AE}
+.duel.ferme .etat,.duel.bientot .etat{color:#6f86b5}
+.duel.boss.ferme{background:linear-gradient(135deg,#EFE2BC,#F1ECE0);border-color:#A89260;box-shadow:0 0 0 .25cqw #E2CB86,0 .4cqw 0 rgba(11,42,91,.18)}
+.duel.boss.ferme .boss-tag{background:#B9A277}
+/* le prochain duel à jouer : il brille */
+.duel.suivant{border-color:var(--orange);animation:suivant .9s ease-in-out infinite alternate}.duel.suivant .etat{color:var(--orange)}
+@keyframes suivant{from{box-shadow:0 0 0 .28cqw var(--jaune),0 .4cqw 0 rgba(11,42,91,.35)}to{box-shadow:0 0 0 .28cqw var(--jaune),0 0 1.5cqw .45cqw rgba(255,160,20,.85),0 .4cqw 0 rgba(11,42,91,.35);transform:translateY(-.25cqw)}}
+body[data-ecran="livre"] #outils{top:auto;bottom:1cqw} /* SON et PLEIN ÉCRAN en bas à droite : le titre et les cartes gardent le haut */
 .secoue{animation:secoue .35s}
 @keyframes secoue{25%{transform:translateX(-.6cqw)}75%{transform:translateX(.6cqw)}}
-#livre .code-msg{color:var(--orange);font-size:1.5cqw;min-height:1.9cqw}
+#livre .code-msg{color:var(--orange);font-size:1.5cqw;min-height:1.9cqw;margin:0}
 #livre .ligne .btn,#pari .ligne .btn{font-size:1.8cqw}
 /* pari */
 .pari-num{margin:0;font-size:1.5cqw;color:var(--orange);letter-spacing:.05em}
@@ -726,6 +747,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <section class="ecran" id="livre" hidden>
     <div class="livre-haut"><h2 class="R">📖 LES DUELS DU LIVRE</h2><div class="livre-score R" id="livre-score"></div></div>
     <p class="petit">Comme dans le livre : tu paries, tu te bats avec ton champion… et tu découvres la vraie réponse !</p>
+    <div class="onglets-livre" id="livre-onglets" role="group" aria-label="Les 3 manches du livre"></div>
     <div class="duels" id="duels-liste"></div>
     <p class="code-msg" id="livre-msg" role="status"></p>
     <div class="ligne"><button class="btn" id="livre-retour" type="button">◀ RETOUR</button></div>
@@ -850,11 +872,11 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790332868"></script>
-<script src="anim.js?v=1790332868"></script>
-<script src="game.js?v=1790332868"></script>
-<script src="net.js?v=1790332868"></script>
-<script src="livre.js?v=1790332868"></script>
-<script src="bonus.js?v=1790332868"></script>
-<script src="surprises.js?v=1790332868"></script>
+<script src="skin.js?v=1790334549"></script>
+<script src="anim.js?v=1790334549"></script>
+<script src="game.js?v=1790334549"></script>
+<script src="net.js?v=1790334549"></script>
+<script src="livre.js?v=1790334549"></script>
+<script src="bonus.js?v=1790334549"></script>
+<script src="surprises.js?v=1790334549"></script>
 </body></html>

@@ -187,6 +187,10 @@ const DUELS = [
       film: 'Round 1, l’embuscade : tigre. Round 2, la charge : gorille. Round 3, le chasseur : tigre. Le tigre tue pour vivre. Le gorille, lui, gagne ses disputes en faisant peur.' } },
 ];
 const LIVRE_TOTAL = 30; // duels dans le livre
+// le nom court de chaque duel, MOT POUR MOT comme dans le sommaire du livre (page 4) : écrit sur sa carte
+const SOMMAIRE = ['Frelon / Abeilles', 'Orque / Requin', 'Lion / Tigre', 'Léopard / Porc-épic', 'Hippo / Crocodile', 'Ours polaire / Grizzly', 'Jaguar / Anaconda', 'Lion / Ratel', 'Pieuvre / Requin', 'Dragon / Buffle',
+  'Puma / Loup', 'Mygale / Guêpe', 'Ours polaire / Morse', 'Mangouste / Cobra', 'Jaguar / Caïman', 'Guépard / Autruche', 'Espadon / Requin', 'Hyène / Lion', 'Ours noir / Glouton', 'Python / Alligator',
+  'Crabe / Crevette', 'Girafe / Lionnes', 'Cobra / Python', 'Ourse / Tigre', 'Scolopendre / Chauve-souris', 'Requin / Crocodile', 'Baleine / Orques', 'Mante / Colibri', 'Serpent / Veuve noire', 'Tigre / Gorille'];
 SAVE.livre = SAVE.livre || {};
 const pret = k => !!CHARS[k] && ORDRE.includes(k);
 const duelPret = D => pret(D.a) && pret(D.b);
@@ -205,23 +209,39 @@ function scoreLivre() {
   return { toi, gigi, etoiles };
 }
 const nomDuel = (D, k) => D.noms[k === D.a ? 0 : 1];
-// --- écran 1 : la liste des duels
+// --- écran 1 : la liste des duels, en 3 MANCHES comme dans le livre (10 duels par onglet : tout tient sur l'écran d'un téléphone)
+const manche = D => Math.ceil(D.n / 10);
+const prochainDuel = () => DUELS.find(x => !fait(x) && duelOuvert(x));
+const n2 = n => String(n).padStart(2, '0');
+let mancheLivre = 0; // l'onglet affiché
 function ouvreLivre() {
+  const dePari = G.screen === 'pari' && G.livre && G.livre.D; // retour d'un pari : on revient sur sa manche
   sonInit(); G.phase = 'menu'; G.livre = null; show('livre');
-  const s = scoreLivre(), box = $('duels-liste'); box.innerHTML = ''; box.classList.toggle('quatre', DUELS.length > 9); // plus de 9 duels : 4 colonnes, pour que tout tienne sur l'écran
+  const s = scoreLivre(), suivant = prochainDuel();
   $('livre-score').innerHTML = `<span>TOI <b>${s.toi}</b></span><img src="gigi/duel_03_recto.svg" alt=""><span>GIGI <b>${s.gigi}</b></span>` + (s.etoiles ? `<span class="boss-et">${'★'.repeat(s.etoiles)}</span>` : '');
-  for (const D of DUELS) {
-    const b = document.createElement('button'); b.type = 'button'; const ok = duelOuvert(D), r = SAVE.livre[D.n];
-    b.className = 'duel' + (D.boss ? ' boss' : '') + (ok ? '' : ' ferme') + (r ? ' fait' : '') + (!duelPret(D) ? ' bientot' : '');
+  $('livre-msg').textContent = suivant ? `Ton prochain duel : le ${n2(suivant.n)}${suivant.boss ? ', un duel de boss' : ''}. Dans le livre, il est page ${suivant.p} !` : DUELS.every(fait) ? `Les ${LIVRE_TOTAL} duels sont faits ! Tu peux tous les rejouer.` : '';
+  ongletLivre(dePari ? manche(dePari) : suivant ? manche(suivant) : mancheLivre || 1);
+}
+function ongletLivre(m) {
+  mancheLivre = m; const suivant = prochainDuel(), ong = $('livre-onglets');
+  ong.innerHTML = [1, 2, 3].map(k => {
+    const L = DUELS.filter(D => manche(D) === k), f = L.filter(fait).length, ouverte = f || L.some(duelOuvert);
+    return `<button class="btn R" type="button" data-manche="${k}" aria-pressed="${k === m}">MANCHE ${k}<small>${!ouverte ? '🔒' : f === L.length ? '✔' : f + '/' + L.length}</small></button>`;
+  }).join('');
+  ong.querySelectorAll('button').forEach(b => b.onclick = () => { const k = +b.dataset.manche; if (k !== mancheLivre) { sfx('clic'); ongletLivre(k) } });
+  const box = $('duels-liste'); box.innerHTML = '';
+  for (const D of DUELS.filter(D => manche(D) === m)) {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.n = D.n; const ok = duelOuvert(D), r = SAVE.livre[D.n];
+    b.className = 'duel' + (D.boss ? ' boss' : '') + (ok ? '' : ' ferme') + (r ? ' joue' : '') + (!duelPret(D) ? ' bientot' : '') + (D === suivant ? ' suivant' : '');
     const tete = k => pret(k) ? `<img src="${k}_tete.webp" alt="">` : '<i>?</i>';
-    b.innerHTML = `<span class="num R">${String(D.n).padStart(2, '0')}</span><span class="tetes">${tete(D.a)}<em class="R">VS</em>${tete(D.b)}</span>` +
-      `<span class="q R">${D.q.replace(' ?', '')}</span>` +
+    const [na, nb] = (SOMMAIRE[D.n - 1] || D.noms.join(' / ')).split(' / ');
+    b.innerHTML = `<span class="haut"><span class="num R">${n2(D.n)}</span>${D.boss ? '<span class="boss-tag R">BOSS</span>' : ''}</span>` +
+      `<span class="tetes">${tete(D.a)}<em class="R">VS</em>${tete(D.b)}</span>` +
+      `<span class="q R"><span><b>${na}</b>&nbsp;<i>/</i> <b>${nb}</b></span></span>` +
       `<span class="etat${r && !r.bon ? ' rate' : ''}">${!duelPret(D) ? 'BIENTÔT' : !ok ? (D.n === 30 ? '🔒 APRÈS LES AUTRES' : '🔒') : r ? (r.bon ? '✔ BON PARI' : '✘ RATÉ') + (r.etoiles ? ' · ' + '★'.repeat(r.etoiles) : '') : D.boss ? 'DUEL DE BOSS !' : 'À TOI DE PARIER !'}</span>`;
     b.onclick = () => { if (!ok) { sfx('erreur'); if (!duelPret(D)) montreMsg('livre-msg', 'Cet animal arrive bientôt dans l’arène !'); else montreMsg('livre-msg', D.n === 30 ? 'La grande finale ? Interdit d’y aller avant d’avoir fait les autres !' : 'Fais d’abord le duel d’avant !'); return } sfx('valide'); ouvrePari(D) };
     box.appendChild(b);
   }
-  const reste = LIVRE_TOTAL - DUELS.length;
-  $('livre-msg').textContent = `Dans le livre, il y a ${LIVRE_TOTAL} duels. Les ${reste} autres t’attendent entre ses pages !`;
 }
 function montreMsg(id, t) { const e = $(id); e.textContent = t; e.classList.remove('secoue'); void e.offsetWidth; e.classList.add('secoue') }
 // --- écran 2 : le pari (comme la page de gauche du livre)
@@ -289,7 +309,7 @@ function verdictLivre(v, etoilesCombat, nv) {
   $('v-page').textContent = `La suite de l’enquête est à la page ${D.pv} du livre !`;
   $('v-badges').innerHTML = (nv || []).map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
   // bouton suivant : prochain duel ouvert, sinon la liste
-  const suivant = DUELS.find(x => !fait(x) && duelOuvert(x));
+  const suivant = prochainDuel();
   $('v-suite').textContent = suivant ? 'DUEL SUIVANT ▶' : 'MES DUELS ▶';
   $('v-suite').onclick = () => { sfx('valide'); suivant ? ouvrePari(suivant) : ouvreLivre() };
   $('v-rejouer').onclick = () => { sfx('clic'); ouvrePari(D, true) };
