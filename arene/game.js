@@ -2094,7 +2094,11 @@ function musTick() {
 setInterval(musTick, 150);
 // annonceur (voix de Kenney, CC0) : « Round 1 », « Fight! », « You win! »…
 function annonceur(k, v = 1) { sfx('voix_' + k, v) } // passe par sfx : l'autre téléphone l'entend aussi en mode 2 TÉLÉPHONES
-function vibre(ms) { try { navigator.vibrate && navigator.vibrate(ms) } catch (e) { } }
+// (26/09, M7) vibrations (téléphones Android ; l'iPhone ne sait pas faire) : réglables dans l'espace parents, coupées en « effets réduits »
+function vibre(ms) { try { if ((SAVE.opt || {}).vibre === false || calme()) return; navigator.vibrate && navigator.vibrate(ms) } catch (e) { } }
+// « effets réduits » (espace parents ; par défaut, le réglage « réduire les animations » de l'appareil) : moins de secousses, de flashs et d'animations
+const MQ_CALME = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+function calme() { const o = (typeof SAVE !== 'undefined' && SAVE.opt) || {}; return o.calme != null ? !!o.calme : !!(MQ_CALME && MQ_CALME.matches) }
 
 
 // ---------------------------------------------------------------------
@@ -2551,7 +2555,8 @@ function touche(a, d, m, hb, hu, o) {
   if (a.kind === 'ours' && (a.mk === 'SF' || a.mk === 'S')) { addFx({ k: 'glace', x: cx, y: FLOOR }); sfx('glace', .8) }
   // l'animal touché réagit (en vrai et en rigolant)
   if ((m.dmg >= 10 || m.kd) && lastHit && d.hp > 0 && d.d.aie && Math.random() < .35) addFx({ k: 'mot', x: d.x - face * 60, y: FLOOR - 700 * d.d.K / .44, mot: hasard(d.d.aie), col: d.d.clair });
-  if (G.prout) { sfx('prout', .8); sfx('pop', .5) } else sfx(m.son); vibre(m.dmg >= 10 ? 40 : 18);
+  if (G.prout) { sfx('prout', .8); sfx('pop', .5) } else sfx(m.son);
+  { const fort = m.dmg >= 10 || m.kd, moiD = !d.cpu && !d.distant; if (moiD || (!a.cpu && !a.distant)) vibre(moiD ? (fort ? 35 : 18) : (fort ? 22 : 10)) } // (26/09) petit « tac » quand on touche, plus fort quand on est touché ; rien entre deux ordis
   if ((m.dmg >= 10 || m.kd) && lastHit && d.hp > 0 && Math.random() < .55) sfx(d.kind + '_grr', .5); // l'animal touché grogne
   if (m === a.d.moves.SUPER && lastHit) sfx('boum', 1);
   G.shake = Math.max(G.shake, m.kd ? 16 : m.dmg >= 10 ? 11 : 5); G.stop = a.mk === 'SUPER' ? (lastHit ? 24 : 6) : m.kd && lastHit ? 12 : ['H', 'cH'].includes(a.mk) || m.dmg >= 10 ? 10 : spe ? 8 : 6; // (25/09) arrêt sur image gradué : c'est ce qui fait « sentir » le coup
@@ -2956,7 +2961,7 @@ function updateCam() {
   cam.z += (z - cam.z) * .12;
   const half = 960 / cam.z; let cx = cl(mid, half, W - half);
   cam.cx += (cx - cam.cx) * .15; cam.cy = FLOOR - 410 / cam.z - (G.freeze > 0 ? 80 : 0) / cam.z;
-  const s = G.shake; cam.ox = (Math.random() - .5) * s * 1.4; cam.oy = (Math.random() - .5) * s;
+  const s = G.shake * (calme() ? .25 : 1); cam.ox = (Math.random() - .5) * s * 1.4; cam.oy = (Math.random() - .5) * s; // (effets réduits : l'écran tremble 4 fois moins)
 }
 function worldT(c) { c.setTransform(1, 0, 0, 1, 0, 0); c.translate(W / 2 + cam.ox, H / 2 + cam.oy); c.scale(cam.z, cam.z); c.translate(-cam.cx, -cam.cy) }
 
@@ -3126,7 +3131,7 @@ function render() {
     const teinte = f.poison ? (f.poison.genre === 'blesse' ? [1, .45, .4, .22 + .12 * Math.sin(G.time * 8)] : f.poison.genre === 'gratte' ? [1, .85, .45, .22 + .12 * Math.sin(G.time * 10)] : f.poison.genre === 'fil' ? [1, 1, 1, .3 + .1 * Math.sin(G.time * 6)] : [.45, 1, .35, .28 + .14 * Math.sin(G.time * 8)]) : f.sale > 0 ? [.8, .52, .25, .42 * Math.min(1, f.sale / 40)] : (window.teinteTenue && teinteTenue(f)) || f.tint || [0, 0, 0, 0];
     const camo = f.state === 'atk' && f.move && f.move.camoufle && f.ph !== 'rec' && !f.contre, herbe = camo && f.move.camoufle === 'herbe';
     const noir = f.state === 'atk' && f.move && f.move.noir && f.ph !== 'rec', esprit = f.state === 'atk' && f.move && f.move.esprit && f.ph !== 'rec';
-    Skin.draw(f.R, f.M, view, { only: f.spr || undefined, show: { roar: f.roar }, flash: esprit ? .42 + .06 * Math.sin(t * 9) : f.flash > 0 ? .12 * f.flash / 4 : 0, tint: herbe ? [.55, .9, .35, .8] : camo ? [.93, .82, .6, .85] : noir ? [.16, .14, .2, .9] : esprit ? [1.1, 1.1, 1.15, .75] : teinte, alpha: camo ? .3 + .08 * Math.sin(t * 6) : f === ombre && ombre.ph === 'act' ? .5 + .15 * Math.sin(t * 25) : 1 });
+    Skin.draw(f.R, f.M, view, { only: f.spr || undefined, show: { roar: f.roar }, flash: esprit ? .42 + .06 * Math.sin(t * 9) : f.flash > 0 ? .12 * f.flash / 4 * (calme() ? .4 : 1) : 0, tint: herbe ? [.55, .9, .35, .8] : camo ? [.93, .82, .6, .85] : noir ? [.16, .14, .2, .9] : esprit ? [1.1, 1.1, 1.15, .75] : teinte, alpha: camo ? .3 + .08 * Math.sin(t * 6) : f === ombre && ombre.ph === 'act' ? .5 + .15 * Math.sin(t * 25) : 1 });
   }
   // effets et interface
   fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, W, H);
@@ -3493,6 +3498,7 @@ function show(id) {
   document.body.classList.toggle('en-combat', !id || id === 'pause'); document.body.classList.toggle('en-pause', id === 'pause'); document.body.classList.toggle('en-menu-titre', id === 'titre'); document.body.classList.toggle('en-menu', !!id && id !== 'pause' && id !== 'titre');
   if (id) G.screen = id;
   document.body.dataset.ecran = id || 'combat';
+  if (window.appliqueMaj) setTimeout(appliqueMaj, 300); // (26/09) une nouvelle version attendait la fin du combat ? on l'installe au retour à un menu
   if (id === 'titre') { const j = $('livre-titre'); if (j) j.classList.toggle('nouveau-defis', !SAVE.vuAventure && Object.keys(SAVE.livre || {}).length > 0); if (window.majAccueil) majAccueil() } // autocollant « NOUVEAU » (anciens joueurs) jusqu'à la 1re visite de l'aventure
   if (id === 'livre' && !SAVE.vuAventure) { SAVE.vuAventure = 1; sauve() }
   if (id === 'choix' && !SAVE.vuDefis) { SAVE.vuDefis = 1; sauve() } // (l'autocollant « ⚔️ NOUVEAU : LES DÉFIS ! » disparaît après la première visite) // la mer est nouvelle : un autocollant sur JOUER jusqu'à la première visite

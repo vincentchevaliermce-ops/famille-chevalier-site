@@ -197,6 +197,27 @@ async function hlEnregistre() {
     for (const u of urls) if (!(await c.match(u))) { try { await c.add(u) } catch (e) { } }
   } catch (e) { }
 }
+// ---------------------------------------------------------------------
+//  MISE À JOUR AUTOMATIQUE (26/09) : Safari garde parfois un onglet ouvert des jours entiers, avec l'ancienne version du jeu
+//  (Vincent voyait encore celle du 24/09 après 5 mises à jour). Quand le jeu revient à l'écran, et toutes les 15 minutes,
+//  on regarde sur internet s'il existe une version plus récente : sur un écran de menu, le jeu se recharge tout seul ;
+//  en plein combat ou au milieu d'un duel du livre, il attend le retour à un menu. Jamais pendant un match en ligne.
+// ---------------------------------------------------------------------
+const MAJ = { attend: false, dernier: 0 };
+const MAJ_ECRANS = ['titre', 'livre', 'choix', 'arenes', 'trophees', 'adeux', 'parents', 'code', 'invite', 'appli', 'nom'];
+async function verifieMaj(force) {
+  const v = hlVersion(); if (!v || MAJ.attend || !navigator.onLine || (window.NET && NET.on)) return;
+  if (!force && Date.now() - MAJ.dernier < 60000) return; MAJ.dernier = Date.now();
+  try { const r = await fetch('./?maj=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
+    const m = (await r.text()).match(/name="version-jeu" content="(\d+)"/); if (m && +m[1] > +v) { MAJ.attend = true; appliqueMaj() } } catch (e) { }
+}
+function appliqueMaj() {
+  if (!MAJ.attend || MAJ.fait || G.phase !== 'menu' || !MAJ_ECRANS.includes(G.screen) || (window.NET && NET.on)) return;
+  MAJ.fait = true; if (window.bandeau) bandeau('✨ NOUVELLE VERSION DU JEU !', true); setTimeout(() => location.reload(), 1600);
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) verifieMaj() });
+addEventListener('pageshow', e => { if (e.persisted) verifieMaj(true) });
+setInterval(() => { if (!document.hidden) verifieMaj(true) }, 15 * 60 * 1000);
 async function hlListe() { if (!HL.liste) { const r = await fetch('hors-ligne.json?v=' + hlVersion()); if (!r.ok) throw new Error('liste'); HL.liste = await r.json() } return HL.liste }
 async function hlEtat() {
   const L = await hlListe(), c = await caches.open(HL.MEDIA); let o = 0, tot = 0, n = 0;

@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790374888"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790376719"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1066,6 +1066,16 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
 #cadre #verdict.temps1 .v-arene{display:none}
 #cadre #verdict.temps1 .v-carte{margin-top:3cqw} /* (25/09) la carte passe sous le bouton ◀, plus dessous */
 body.en-pause #tuto-bulle,body.en-pause #tuto-passer{visibility:hidden} /* (25/09) la bulle d'astuce ne cache plus le mot PAUSE ; elle revient à la reprise */
+/* (26/09, M7) ★★☆ : les étoiles gagnées (or) et celles qui manquent (pâles) — sous chaque duel gagné, dans le verdict */
+.et3{white-space:nowrap;letter-spacing:.06em}.et3 em{font-style:normal;font-weight:900}.et3 .e1{color:var(--jaune)}.et3 .e0{color:rgba(255,248,236,.38)}
+#cadre .duel .ets{position:absolute;bottom:-1.6cqw;left:50%;transform:translateX(-50%);background:var(--marine);border:.25cqw solid var(--creme);border-radius:1.4cqw;padding:.2cqw .9cqw .35cqw;font:900 var(--t-min)/1 Rubik,"Arial Black",sans-serif;box-shadow:0 .3cqw 0 rgba(11,42,91,.4);z-index:1}
+#cadre #verdict .nouveau span.et-astuce{background:var(--marine);color:var(--creme);border-color:var(--creme);font-weight:800}
+#cadre #verdict .nouveau span.et-astuce .et3{background:none;border:0;padding:0;animation:none;font-size:inherit}
+#cadre #v-toi{max-width:88cqw}#cadre #v-toi .vp-l{display:block;text-wrap:balance}#cadre #v-toi small{max-width:76cqw} /* (26/09) le pari sur une ligne, l'explication sur 1 ou 2 lignes */
+/* (26/09, M7) boutons de combat un peu transparents : on voit l'animal derrière ; pleins sous le doigt */
+.pad .tb{opacity:.84;transition:opacity .12s}.pad .tb.on{opacity:1}
+/* (26/09, M7) effets réduits (espace parents, ou « réduire les animations » de l'appareil) : plus d'animations dans les menus */
+body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 #cadre .v-carte{padding:.8cqw 1.8cqw 1cqw;gap:.5cqw}
 #cadre .v-carte img{height:10cqw}
 #cadre #v-cri{font-size:5cqw}
@@ -1271,6 +1281,8 @@ body.en-pause #tuto-bulle,body.en-pause #tuto-passer{visibility:hidden} /* (25/0
       <p>Seul le mode « chacun son téléphone » passe par un service de mise en relation (PeerJS) pour relier les deux appareils le temps d’une partie : seuls les gestes du jeu circulent, rien n’est conservé.</p>
       <p><b>📥 Jouer sans internet</b> (en voiture, en vacances…) : le jeu garde tout seul sur l’appareil ce qui a déjà servi. Pour avoir tous les animaux et toutes les arènes même sans connexion, téléchargez le jeu complet une fois, de préférence en wifi. <button class="btn" id="hl-go" type="button">📥 TOUT TÉLÉCHARGER</button> <span id="hl-etat"></span></p>
       <p><b>Caisses surprises et pièges d’arène</b> (bonus qui tombent pendant les combats, noix de coco, vagues…) : <button class="btn" id="opt-surprises" type="button">OUI</button></p>
+      <p><b>Effets réduits</b> (moins de secousses, de flashs et d’animations ; conseillé aux enfants sensibles à la lumière) : <button class="btn" id="opt-calme" type="button">NON</button></p>
+      <p id="opt-vibre-ligne"><b>Vibrations</b> (téléphones Android : un petit « tac » à chaque coup) : <button class="btn" id="opt-vibre" type="button">OUI</button></p>
       <p><a href="https://editions-chevalier.fr/" target="_blank" rel="noopener">Découvrir le livre sur editions-chevalier.fr ↗</a></p>
       <p class="credits">Sons : Kenney.nl et BigSoundBank.com (Joseph Sardin), licence CC0 · Wikimedia Commons (domaine public, CC0).</p>
     </div>
@@ -1347,11 +1359,11 @@ body.en-pause #tuto-bulle,body.en-pause #tuto-passer{visibility:hidden} /* (25/0
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790374888"></script>
-<script src="anim.js?v=1790374888"></script>
-<script src="game.js?v=1790374888"></script>
-<script src="net.js?v=1790374888"></script>
-<script src="livre.js?v=1790374888"></script>
-<script src="bonus.js?v=1790374888"></script>
-<script src="surprises.js?v=1790374888"></script>
+<script src="skin.js?v=1790376719"></script>
+<script src="anim.js?v=1790376719"></script>
+<script src="game.js?v=1790376719"></script>
+<script src="net.js?v=1790376719"></script>
+<script src="livre.js?v=1790376719"></script>
+<script src="bonus.js?v=1790376719"></script>
+<script src="surprises.js?v=1790376719"></script>
 </body></html>

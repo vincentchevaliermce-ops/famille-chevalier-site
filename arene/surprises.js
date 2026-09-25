@@ -342,6 +342,8 @@ const NOUVEAUX_TROPHEES = [
   ['pari5', 'PLUS MALIN QUE GIGI', 'Trouve la vraie réponse de 5 Duels du livre.', 'livre'],
   ['duels', 'TOUS LES DUELS', 'Joue tous les Duels du livre.', 'livre'],
   ['boss', 'CHASSEUR DE BOSS', 'Gagne les 3 Duels de boss du livre.', 'livre'],
+  ['etoiles30', 'TRENTE ÉTOILES', 'Gagne 30 étoiles dans L’AVENTURE.', 'livre'], // (26/09) des raisons de rejouer les duels
+  ['etoiles90', 'TOUTES LES ÉTOILES !', 'Gagne les 3 étoiles des 30 duels de L’AVENTURE.', 'livre'],
   ['cartes50', 'CINQUANTE CARTES', 'Gagne 50 cartes « Le savais-tu ? ».', 'livre'],
   ['jour', 'DÉFI DU JOUR', 'Réussis un défi du jour.', 'amis'],
   ['jour5', 'FIDÈLE AU POSTE', 'Réussis 5 défis du jour.', 'amis'],
@@ -482,6 +484,18 @@ function htmlTrophees() {
   const b = document.getElementById('opt-surprises'); if (!b) return;
   const maj = () => { const on = (SAVE.opt || {}).surprises !== false; b.textContent = on ? 'OUI ✔' : 'NON'; b.setAttribute('aria-pressed', on) };
   b.onclick = () => { SAVE.opt = SAVE.opt || {}; SAVE.opt.surprises = SAVE.opt.surprises === false; sauve(); sfx('clic'); maj() }; maj();
+})();
+// (26/09, M7) EFFETS RÉDUITS et VIBRATIONS (espace parents). Effets réduits : par défaut, le réglage « réduire les animations » de l'appareil.
+(function () {
+  const c = document.getElementById('opt-calme'), v = document.getElementById('opt-vibre'), lv = document.getElementById('opt-vibre-ligne');
+  const maj = () => { document.body.classList.toggle('calme', calme());
+    if (c) { c.textContent = calme() ? 'OUI ✔' : 'NON'; c.setAttribute('aria-pressed', calme()) }
+    if (v) { const on = (SAVE.opt || {}).vibre !== false; v.textContent = on ? 'OUI ✔' : 'NON'; v.setAttribute('aria-pressed', on) } };
+  if (c) c.onclick = () => { SAVE.opt = SAVE.opt || {}; SAVE.opt.calme = !calme(); sauve(); sfx('clic'); maj() };
+  if (v) v.onclick = () => { SAVE.opt = SAVE.opt || {}; SAVE.opt.vibre = SAVE.opt.vibre === false; sauve(); sfx('clic'); maj(); vibre(30) };
+  if (lv && !('vibrate' in navigator)) lv.hidden = true; // (iPhone : Safari ne sait pas faire vibrer)
+  if (MQ_CALME && MQ_CALME.addEventListener) MQ_CALME.addEventListener('change', maj);
+  maj();
 })();
 // ---------------------------------------------------------------------
 //  Tenues (récompenses de trophées) : dorée, arc-en-ciel — pour ses propres animaux

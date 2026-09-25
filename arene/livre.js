@@ -306,8 +306,9 @@ function ongletLivre(m) {
     const [na, nb] = (SOMMAIRE[D.n - 1] || D.noms.join(' / ')).split(' / ');
     const etat = !duelPret(D) ? 'BIENTÔT' : !ok ? (D.n === 30 ? '🔒 APRÈS LES AUTRES' : '🔒') : gagne ? '✔ GAGNÉ' + (r && r.etoiles ? ' · ' + '★'.repeat(r.etoiles) : '') : enCours ? (r.combat ? '❓ LA QUESTION !' : '⚔️ À GAGNER !') : D.boss ? 'DUEL DE BOSS !' : 'À TOI DE PARIER !';
     const ic = !duelPret(D) ? '…' : !ok ? '🔒' : gagne ? '✔' : enCours ? (r.combat ? '❓' : '⚔️') : '▶';
+    const ets = gagne ? `<span class="ets">${etoiles3(Math.min(3, (r && r.etoiles) || 0))}</span>` : ''; // (26/09) ★★☆ sous le duel gagné
     b.title = `Duel ${n2(D.n)} : ${na} ou ${nb} ? — ${etat}`;
-    b.innerHTML = `<span class="md"><span class="num R">${n2(D.n)}</span>${D.boss ? '<span class="boss-tag R">BOSS</span>' : ''}${tete(D.a)}${tete(D.b)}<span class="ic">${ic}</span></span>` +
+    b.innerHTML = `<span class="md"><span class="num R">${n2(D.n)}</span>${D.boss ? '<span class="boss-tag R">BOSS</span>' : ''}${tete(D.a)}${tete(D.b)}${gagne ? ets : `<span class="ic">${ic}</span>`}</span>` +
       `<span class="q R"><span><b>${na}</b>&nbsp;<i>/</i> <b>${nb}</b></span></span><span class="etat">${etat}</span>`;
     b.onclick = () => {
       if (!ok) { sfx('erreur'); if (!duelPret(D)) montreMsg('livre-msg', 'Cet animal arrive bientôt dans l’arène !'); else montreMsg('livre-msg', D.n === 30 ? 'La grande finale ? Interdit d’y aller avant d’avoir gagné les autres !' : 'Gagne d’abord le duel d’avant !'); return }
@@ -377,22 +378,28 @@ function lanceDuelLivre(k) {
   sfx(k, .8); vs();
 }
 // --- écran 3 : la vraie réponse (comme la page de droite du livre)
+// (26/09) ★★☆ : les étoiles gagnées ET celles qui manquent (elles donnent envie de rejouer) ; total de l'aventure
+const etoiles3 = n => `<span class="et3">${'<em class="e1">★</em>'.repeat(n)}${'<em class="e0">★</em>'.repeat(3 - n)}</span>`; // (em : ni i ni b, déjà stylés dans les médaillons)
+const etoilesAventure = () => DUELS.reduce((t, x) => t + ((SAVE.livre[x.n] || {}).etoiles || 0), 0);
 function verdictLivre(v, etoilesCombat, nv) {
   const L = G.livre, D = L.D, R = D.rep, deja = SAVE.livre[D.n];
   const gagneArene = v && !v.cpu;
   // le pari ne compte qu'une fois (le premier), comme dans le livre
-  let r = deja;
+  let r = deja; const avant = deja ? deja.etoiles || 0 : 0;
   if (!deja) { r = SAVE.livre[D.n] = { pari: L.pari, bon: L.pari === R.g, etoiles: gagneArene ? etoilesCombat : 0, date: Date.now(), ok: false } }
   if (gagneArene) r.combat = 1; // 2A : combat gagné… il reste la question
+  // (26/09) ★ le meilleur score d'étoiles est gardé à chaque victoire (avant, seul le 1er essai comptait : un duel perdu puis gagné restait à 0 étoile)
+  if (gagneArene) r.etoiles = Math.max(r.etoiles || 0, etoilesCombat);
+  const record = gagneArene && !!deja && r.etoiles > avant && avant > 0, totEt = etoilesAventure();
   if (window.trophee) { // trophées du livre
     if (!deja) { if (r.bon) { trophee('pari1', true); if (Object.values(SAVE.livre).filter(x => x.bon).length >= 5) trophee('pari5', true) } if (L.pari === D.gigi.pari) trophee('gigi', true) }
     if (DUELS.every(x => SAVE.livre[x.n])) trophee('duels', true);
-    if (gagneArene && D.boss) { SAVE.bossGagnes = SAVE.bossGagnes || {}; SAVE.bossGagnes[D.n] = 1; if ([10, 20, 30].every(n => SAVE.bossGagnes[n])) trophee('boss', true) } }
-  else if (gagneArene) r.etoiles = Math.max(r.etoiles || 0, etoilesCombat);
+    if (gagneArene && D.boss) { SAVE.bossGagnes = SAVE.bossGagnes || {}; SAVE.bossGagnes[D.n] = 1; if ([10, 20, 30].every(n => SAVE.bossGagnes[n])) trophee('boss', true) }
+    if (totEt >= 30) trophee('etoiles30', true); if (totEt >= 3 * DUELS.length) trophee('etoiles90', true) }
   sauve();
   G.phase = 'menu'; show('verdict');
   const moi = nomDuel(D, L.moi);
-  $('v-arene').innerHTML = gagneArene ? `${ton(moi)} A GAGNÉ ! <span class="et">${'★'.repeat(etoilesCombat)}</span>` : `${ton(moi)} A PERDU…`;
+  $('v-arene').innerHTML = gagneArene ? `${record ? 'NOUVEAU RECORD !' : ton(moi) + ' A GAGNÉ !'} ${etoiles3(etoilesCombat)}` : `${ton(moi)} A PERDU…`;
   $('v-question').hidden = false; $('v-suite1').hidden = true; $('verdict').classList.add('temps1');
   $('v-question').textContent = 'ET DANS LA VRAIE VIE ?';
   const carte = $('v-carte'); carte.classList.remove('tamponne'); carte.hidden = true;
@@ -400,12 +407,15 @@ function verdictLivre(v, etoilesCombat, nv) {
   $('v-titre').textContent = R.titre; $('v-cri').textContent = R.cri; $('v-punch').textContent = R.punch; $('v-film').textContent = R.film;
   $('v-img').src = R.img || R.g + '_fin.webp'; // (duel 20 : match nul → une image avec les deux animaux)
   const pariTxt = r.pari === 'nul' ? 'MATCH NUL' : nomDuel(D, r.pari);
-  $('v-toi').innerHTML = deja && L.rejoue ? `TON PARI : <b>${pariTxt}</b> ${r.bon ? '✔' : '✘'}<small>(déjà compté)</small>` : r.bon ? `TON PARI : <b>${pariTxt}</b> ✔<small>BON PARI ! +1 POINT${D.boss ? ' + 1 ÉTOILE DE BOSS ★' : ''}</small>` : `TON PARI : <b>${pariTxt}</b> ✘<small>Raté… Dans la nature, le plus fort ne gagne pas à tous les coups !</small>`;
+  // (26/09) « TON PARI : LION ✘ » sur une seule ligne (avant : 3 lignes, et le bouton du bas sortait de l'écran de l'iPhone)
+  const ligne = `<span class="vp-l">TON PARI : <b>${pariTxt}</b> ${r.bon ? '✔' : '✘'}</span>`;
+  $('v-toi').innerHTML = deja && L.rejoue ? `${ligne}<small>(déjà compté)</small>` : r.bon ? `${ligne}<small>BON PARI ! +1 POINT${D.boss ? ' + 1 ÉTOILE DE BOSS ★' : ''}</small>` : `${ligne}<small>Raté… Dans la nature, le plus fort ne gagne pas à tous les coups !</small>`;
   $('v-gigi-img').src = `gigi/duel_${String(D.n).padStart(2, '0')}_verso.svg`;
   $('v-gigi').innerHTML = `<b>GIGI : ${D.gigi.dit} ${D.gigi.pari === R.g ? '✔' : '✘'}</b><i>${D.gigi.apres}</i>`;
   const s = scoreLivre(); $('v-score').innerHTML = `TOI <b>${s.toi}</b> · GIGI <b>${s.gigi}</b>`;
   $('v-page').textContent = `📖 La suite : page ${D.pv} du livre`;
-  $('v-badges').innerHTML = (nv || []).map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
+  $('v-badges').innerHTML = (nv || []).map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '') +
+    (gagneArene && r.etoiles < 3 && !(nv && nv.length) && !G.finExtra ? `<span class="et-astuce">Pour ${etoiles3(3)} : aucune manche perdue, et une sans être touché !</span>` : ''); // (26/09) une raison de rejouer
   // la suite : duel déjà gagné → DUEL SUIVANT ; combat gagné → LA QUESTION ; combat perdu → REVANCHE (avec l'animal de son choix)
   const suivant = prochainDuel(), gagne = fini(D), noms = gagnesDuel(D).concat(championsDuel(D)).filter(k => !SAVE.debloques.includes(k)).map(k => CHARS[k].art);
   $('v-rejouer').hidden = !gagne;
@@ -479,3 +489,5 @@ function majAccueil() {
 function acclameMenu() { sfx('foule', .5) }
 // la grande finale jouée : le code secret du GOD MODE est révélé (voir bonus.js)
 function finaleFaite() { if (window.revelerCodeGod) revelerCodeGod() }
+// (26/09) un duel gagné vaut au moins ★ : avant le correctif des étoiles, un duel perdu puis gagné restait à 0 étoile
+try { let m = 0; for (const D of DUELS) { const r = SAVE.livre[D.n]; if (r && fini(D) && !(r.etoiles >= 1)) { r.etoiles = 1; m++ } } if (m) sauve() } catch (e) { }
