@@ -4,14 +4,14 @@
 //  Rien ne sort de l'appareil : pas de compte, pas de nom réel, pas de serveur (les défis passent par le lien).
 // =====================================================================
 const PUBLIC = 'https://editions-chevalier.fr/arene/'; // adresse publique du jeu (liens partagés, QR)
-const EMOJI = { tigre: '🐯', gorille: '🦍', lion: '🦁', ours: '🐻‍❄️', croco: '🐊', hippo: '🦛', ratel: '🦡', komodo: '🦎', grizzly: '🐻', hyene: '🐾', buffle: '🐃', morse: '🦭', trex: '🦖', leopard: '🐆', porcepic: '🦔', guepard: '⚡', autruche: '🪶', orque: '🐋', requin: '🦈', pieuvre: '🐙', aiguillat: '🦈', espadon: '🐟', requinbleu: '💙', megalo: '🦷' };
+const EMOJI = { tigre: '🐯', gorille: '🦍', lion: '🦁', ours: '🐻‍❄️', croco: '🐊', hippo: '🦛', ratel: '🦡', komodo: '🦎', grizzly: '🐻', hyene: '🐾', buffle: '🐃', morse: '🦭', trex: '🦖', leopard: '🐆', porcepic: '🦔', guepard: '⚡', autruche: '🪶', orque: '🐋', requin: '🦈', pieuvre: '🐙', aiguillat: '🦈', espadon: '🐟', requinbleu: '💙', megalo: '🦷', jaguar: '🐆', anaconda: '🐍', caiman: '🐊', puma: '🐈', loup: '🐺', mangouste: '🐾', cobra: '🐍', oursnoir: '🐻', glouton: '🦡', python: '🐍', alligator: '🐊', lionne: '🦁', girafe: '🦒', frelon: '🐝', abeille: '🍯', mygale: '🕷️', guepe: '🐝', scolopendre: '🐛', chauvesouris: '🦇', mante: '🦗', colibri: '🐦', serpentbrun: '🐍', veuve: '🕷️', meganeura: '🪰', bouledogue: '🦈', baleine: '🐳', crabe: '🦀', crevette: '🦐' }; // (sans émoji, le défi du jour affichait « contre » tout seul)
 const NIVEAUX = ['FACILE', 'NORMAL', 'COSTAUD'];
 SAVE.codes = SAVE.codes || {}; SAVE.godBattus = SAVE.godBattus || {};
 // ---------------------------------------------------------------------
 //  Codes secrets : des mots du livre (les enfants se les échangent)
 // ---------------------------------------------------------------------
 // 24/09 : mots du livre qu'on ne devine pas sans l'avoir lu, et que le jeu n'affiche jamais avant le déblocage (contrôle : verif/sync_livre.py)
-const CODES_ANIMAUX = { LOLONG: 'croco', PEPERE: 'hippo', VIPERE: 'ratel', MICROBES: 'komodo', MAMIE: 'grizzly', GNOUS: 'hyene', INDONESIE: 'buffle', BOUSCULADE: 'morse' }; // pas de code pour les animaux « livre en main » (léopard, porc-épic, guépard, autruche) : seul le livre les débloque
+const CODES_ANIMAUX = { LOLONG: 'croco', PEPERE: 'hippo', VIPERE: 'ratel', MICROBES: 'komodo', MAMIE: 'grizzly', GNOUS: 'hyene', INDONESIE: 'buffle', BOUSCULADE: 'morse' }; // pas de code pour les 10 champions du livre (LIVRE_EN_MAIN) : seul le livre les débloque
 const CODE_GOD = 'GIGI';
 const codeDe = k => Object.keys(CODES_ANIMAUX).find(c => CODES_ANIMAUX[c] === k);
 // quiz réussi : l'enfant reçoit le code de l'animal, à offrir à un copain (qui le débloque sans le quiz)
@@ -27,7 +27,7 @@ function valideCodeSecret() {
   }
   if (v === 'PROUT') { G.prout = !G.prout; sfx('prout', 1); msg(G.prout ? 'MODE PROUT activé pour ta partie. Tu es prévenu…' : 'Mode prout désactivé. Ouf.'); return }
   const k = CODES_ANIMAUX[v] || (typeof CODES !== 'undefined' && CODES[v]);
-  if (!k) { sfx('erreur'); msg('Ce code ne marche pas… Réussis un quiz du livre pour gagner un code, ou demande à un copain !'); return }
+  if (!k) { sfx('erreur'); msg('Ce code ne marche pas… Gagne un animal secret au défi pour recevoir son code, ou demande à un copain !'); return }
   if (!pret(k)) { msg(`Bien trouvé ! Cet animal arrive bientôt dans l’arène : garde ton code !`); return }
   if (debloqueVrai(k)) { msg(`Tu as déjà ${CHARS[k].art} !`); return }
   SAVE.debloques.push(k); const nv = []; badge('secret', nv); sauve(); sonInit(); sfx('super'); sfx(k, 1);
@@ -56,9 +56,9 @@ function revelerCodeGod() {
 const LEGENDAIRE = 'trex'; // (le légendaire de la TERRE ; celui de la MER est le mégalodon : MONDES.mer.legende)
 const LEGENDAIRES = () => Object.values(MONDES).map(m => m.legende).filter(Boolean);
 const estLegendaire = k => LEGENDAIRES().includes(k);
-// TERRE : les animaux « livre en main » comptent une fois débloqués. MER : ils sont tous « livre en main », il faut donc les avoir TOUS débloqués.
-const aBattre = (m = 'terre') => ORDRE.filter(k => !estLegendaire(k) && mondeDe(k) === m && (m !== 'terre' || !LIVRE_EN_MAIN[k] || debloqueVrai(k))); // le T. rex est le légendaire de la TERRE ; les animaux « livre en main » comptent une fois débloqués
-function questeTxt(m = 'terre') { const l = aBattre(m), n = l.filter(k => SAVE.godBattus[k] && (m === 'terre' || debloqueVrai(k))).length; return { n, tot: l.length } }
+// Dans chaque monde : tous les animaux (le GOD MODE ouvre ceux des défis) ; les champions du livre comptent une fois débloqués avec le livre.
+const aBattre = (m = 'terre') => ORDRE.filter(k => !estLegendaire(k) && mondeDe(k) === m && (!LIVRE_EN_MAIN[k] || debloqueVrai(k)));
+function questeTxt(m = 'terre') { const l = aBattre(m), n = l.filter(k => SAVE.godBattus[k]).length; return { n, tot: l.length } }
 function apresMatch(v, n, nv) {
   G.dernier = null; G.dernierJour = !!G.jour; G.finExtra = ''; // G.finExtra : messages ajoutés sous le résultat (écran de fin ou verdict du livre)
   if (!G.f.length) return;
@@ -67,7 +67,7 @@ function apresMatch(v, n, nv) {
   // quête du légendaire (GOD MODE, en solo)
   if (G.god && G.mode === 1 && !NET.on && gagne && !estLegendaire(adv.kind)) {
     const m = mondeDe(adv.kind), leg = MONDES[m].legende; SAVE.godBattus[adv.kind] = 1; const q = questeTxt(m); sauve();
-    if (leg) G.finExtra += `<span class="quete">⚡ QUÊTE DU LÉGENDAIRE ${MONDES[m].ico} : ${q.n} / ${q.tot}${m === 'mer' && q.n < q.tot ? ' (débloque-les tous avec le livre !)' : ''}</span>`;
+    if (leg) G.finExtra += `<span class="quete">⚡ QUÊTE DU LÉGENDAIRE ${MONDES[m].ico} : ${q.n} / ${q.tot}</span>`;
     if (leg && q.tot && q.n >= q.tot && !debloqueVrai(leg) && pret(leg)) { SAVE.debloques.push(leg); sauve(); setTimeout(() => ceremonieLegendaire(leg), 1800) }
   }
   // défi d'un copain : on compare
@@ -175,7 +175,7 @@ function defiDuJour() {
   return { date, a, b, arene, niv: 1 };
 }
 function lanceJour() {
-  const j = defiDuJour(); sonInit(); sfx('valide'); G.jour = j; G.livre = null; G.defi = null; G.mode = 1; G.tournoi = null; G.niv = j.niv; G.pick = [j.a, j.b]; G.arene = j.arene; G.areneHasard = false; vs();
+  const j = defiDuJour(); sonInit(); sfx('valide'); finEpreuve(); G.jour = j; G.livre = null; G.defi = null; G.mode = 1; G.tournoi = null; G.niv = j.niv; G.pick = [j.a, j.b]; G.arene = j.arene; G.areneHasard = false; vs();
 }
 function partageJour() {
   const j = SAVE.jour; if (!j) return; const d = j.date.split('-');
@@ -293,7 +293,7 @@ function ouvreDefiRecu(d) {
   $('defi-txt').innerHTML = `<b>${d.nom}</b> te lance un défi !<br>Il a ${d.etoiles ? 'battu' : 'affronté'} ${leNom(d.adv, true)} avec ${leNom(d.moi, true)}${d.etoiles ? ` en <b>${d.temps} s</b> ${'★'.repeat(d.etoiles)}` : ''} (niveau ${NIVEAUX[d.niv]}).<br>Prends le même animal et fais mieux !`;
   $('defi-g').src = d.moi + '_vs.webp'; $('defi-d').src = d.adv + '_vs.webp';
 }
-function releveDefi() { const d = G.defi; if (!d) return; sonInit(); sfx('valide'); d.enCours = true; G.livre = null; G.jour = null; G.mode = 1; G.tournoi = null; G.niv = d.niv; G.pick = [d.moi, d.adv]; G.arene = d.arene; G.areneHasard = false; vs() }
+function releveDefi() { const d = G.defi; if (!d) return; sonInit(); sfx('valide'); finEpreuve(); d.enCours = true; G.livre = null; G.jour = null; G.mode = 1; G.tournoi = null; G.niv = d.niv; G.pick = [d.moi, d.adv]; G.arene = d.arene; G.areneHasard = false; vs() }
 function initBonus() {
   const on = (id, f) => { const e = $(id); if (e) e.onclick = f };
   on('codes-titre', ouvreCodes); on('code-ok', valideCodeSecret); on('code-retour', () => { sfx('retour'); show('titre') });

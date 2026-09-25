@@ -1025,6 +1025,26 @@ const CHARS = {
   },
 
 
+  // --- JEUNE SERPENT BRUN (« livre en main », duel 29, p. 65) : des crochets à venin ; il fouille chaque cachette ;
+  //     point faible (livre) : « tout jeune, il débute » → il commence petit… et GRANDIT à chaque coup qu'il donne (SUPER : il devient grand d'un coup). Mots interdits : cinq, 5, terrestres.
+  serpentbrun: {
+    nom: 'JEUNE SERPENT BRUN', art: 'LE JEUNE SERPENT BRUN', monde: 'betes', grandit: { pas: .04, max: 1.3 }, force: .94, spr: true, hPose: ['garde', 'coup'], col: '#8A6A44', clair: '#EBD8B0', fond: '#A07A4E', K: .34, hp: 104, walk: 6.4, back: 5.2, dash: 18, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 48,
+    aie: ['SSS ?!', 'MA QUEUE !', 'AÏE, MES ÉCAILLES !'], ia: {},
+    hurt: { stand: [-700, 560, -460, 0], crouch: [-720, 580, -260, 0], air: [-660, 520, -420, 0] }, // (mesuré sur l'image, sans le bout de la queue)
+    push: [170, 190], reach: 740, speMin: 280, speMax: 1200,
+    moves: {
+      L: { st: 4, act: 3, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [380, 780, -460, -120], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['SSS !', 'CROC !', 'TCHAC !'], son: 'l' },
+      cL: { st: 4, act: 3, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [380, 760, -200, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'SSS !'], son: 'l' },
+      H: { st: 10, act: 5, rec: 18, dmg: 13, hs: 20, bs: 15, kb: 11, box: [360, 840, -480, -60], lvl: 'mid', lunge: 8, chain: ['S', 'SUPER'], mots: ['DÉTENTE !', 'CROC !', 'SSSCLAC !'], son: 'h' },
+      cH: { st: 8, act: 4, rec: 21, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [360, 820, -200, 0], lvl: 'low', chain: ['S'], mots: ['COUP DE QUEUE !', 'BALAYETTE !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 7, dmg: 8, hs: 18, bs: 11, kb: 7, box: [200, 860, -420, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['D’EN HAUT !', 'SSS !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 20 }, mots: ['VOLTIGE !', 'ATTRAPÉ !'], son: 'h' },
+      S: { st: 8, act: 4, rec: 22, dmg: 10, hs: 20, bs: 14, kb: 8, box: [380, 840, -440, -40], lunge: 12, venin: { t: 180, tick: 30, dmg: 1 }, lvl: 'mid', mots: ['LES CROCHETS À VENIN !', 'CROC !', 'EMPOISONNÉ !'], son: 's', nom: 'Des crochets à venin', ia: [0, 900, 1.1] },
+      SF: { st: 9, act: 6, rec: 22, dmg: 11, hs: 22, bs: 15, kb: 9, box: [340, 880, -300, 0], lunge: 14, fouille: 1.5, lvl: 'low', mots: ['JE FOUILLE PARTOUT !', 'TROUVÉ !', 'PAS DE CACHETTE !'], son: 's', nom: 'Il fouille chaque cachette', ia: [300, 1000, 1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 17, aa: true, inv: 8, saute: [3, 20], land: true, box: [120, 760, -860, -150], lvl: 'mid', mots: ['DÉTENTE !', 'SSS, EN L’AIR !'], son: 's', nom: 'La détente', ia: [0, 0, 0] },
+      SUPER: { st: 16, act: 30, rec: 22, dmg: 6, hits: 4, hs: 18, bs: 8, kb: 4, kd: true, box: [200, 1050, -560, 0], rush: 12, grandir: true, lvl: 'mid', mots: ['QUAND JE SERAI GRAND… C’EST MAINTENANT !', 'IL A GRANDI !', 'SSSSUPER !'], son: 'h', nom: 'Quand je serai grand…' },
+    },
+  },
 };
 // phrases de victoire (drôles, tirées du livre) : le gagnant parle sur l'écran de fin
 const PHRASES = {
@@ -1077,6 +1097,7 @@ const PHRASES = {
   chauvesouris: ['Bip… bip… Je t’ai trouvé !', 'Dans le noir, c’est moi la reine !', 'Et maintenant, dodo… la tête en bas !'],
   mante: ['Une brindille ? Non : une championne !', 'Clac ! Trop tard !', 'Je ne bouge pas… et je gagne !'],
   colibri: ['Trop rapide, même en marche arrière !', 'Petit comme un bonbon, fort comme un champion !', 'Victoire ! Vite, à boire !'],
+  serpentbrun: ['Je débute… mais je gagne déjà !', 'Aucune cachette ne m’échappe !', 'Quand je serai grand… attention !'],
 };
 const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
 
@@ -1108,10 +1129,27 @@ const ARENES = [
 const estMer = () => (ARENES.find(a => a.k === G.arene) || {}).monde === 'mer';
 // couleur de la poussière soulevée, selon le sol de l'arène
 const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', nord: '#F2F7FF', floride: '#B89A78', asie: '#C9A26E', estuaire: '#9C8A5A', ruche: '#F2C45A', lune: '#C9CCD6', prehisto: '#9C8A6A' , sable: '#F2D39A' , grotte: '#8A8FA0' , jardin: '#B08A5A' };
-const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'frelon', 'abeille', 'mygale', 'guepe', 'scolopendre', 'chauvesouris', 'mante', 'colibri', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'baleine', 'crabe', 'crevette', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
+const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'frelon', 'abeille', 'mygale', 'guepe', 'scolopendre', 'chauvesouris', 'mante', 'colibri', 'serpentbrun', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'baleine', 'crabe', 'crevette', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
 // MONDES (décision de Vincent, 24/09) : un animal n'affronte que les animaux de son monde (TERRE, MER ; PETITES BÊTES plus tard)
 const MONDES = { terre: { nom: 'TERRE', ico: '🌍', places: 16, legende: 'trex', titre: 'CHOISIS TON ANIMAL' }, mer: { nom: 'MER', ico: '🌊', places: 8, legende: 'megalo', titre: 'CHOISIS TON ANIMAL DE LA MER' }, betes: { nom: 'PETITES BÊTES', ico: '🐞', places: 10, legende: 'meganeura', titre: 'CHOISIS TA PETITE BÊTE' } };
 const mondeDe = k => (CHARS[k] && CHARS[k].monde) || 'terre';
+// ÉCRAN DE CHOIX (25/09, ergonomie demandée par Vincent : « avec 60 animaux ça va vite devenir confus ») : la TERRE est rangée en 3 régions
+// (noms de lieux du livre), chaque onglet tient sur un seul écran (12 cartes au plus). Les animaux de la TERRE se battent toujours entre eux.
+const REGIONS = {
+  savane: ['lion', 'croco', 'hippo', 'ratel', 'hyene', 'porcepic', 'autruche', 'lionne', 'girafe', 'guepard', 'leopard'],
+  jungle: ['gorille', 'komodo', 'buffle', 'caiman', 'python', 'alligator', 'cobra', 'mangouste', 'jaguar', 'anaconda'],
+  nord: ['tigre', 'ours', 'grizzly', 'puma', 'oursnoir', 'morse', 'loup', 'glouton', 'trex'], // (le tigre de Sibérie, duel 24 ; le T. rex vivait en Amérique du Nord)
+};
+const regionDe = k => mondeDe(k) !== 'terre' ? mondeDe(k) : Object.keys(REGIONS).find(r => REGIONS[r].includes(k)) || 'nord';
+const ONGLETS = [ // k : onglet · m : monde des combats
+  { k: 'fav', ico: '⭐', nom: 'PRÉFÉRÉS', titre: 'TES PRÉFÉRÉS' },
+  { k: 'savane', m: 'terre', ico: '🦁', nom: 'SAVANE', titre: 'LA SAVANE' },
+  { k: 'jungle', m: 'terre', ico: '🐊', nom: 'JUNGLES', titre: 'JUNGLES ET MARAIS' },
+  { k: 'nord', m: 'terre', ico: '🌲', nom: 'GRAND NORD', titre: 'FORÊTS ET GRAND NORD' },
+  { k: 'mer', m: 'mer', ico: '🌊', nom: 'MER', titre: 'LA MER' },
+  { k: 'betes', m: 'betes', ico: '🐞', nom: 'BÊTES', titre: 'LES PETITES BÊTES' },
+];
+const ongletDe = k => ONGLETS.find(o => o.k === k) || ONGLETS[1];
 const arenesDe = m => ARENES.filter(a => (a.monde || 'terre') === m && (!a.secret || (window.recompense && recompense(a.secret)))); // arènes secrètes : récompenses de trophées (surprises.js)
 // cartes de l'écran de choix : les animaux du monde affiché (le légendaire seulement une fois gagné)
 const amphibie = (k, m) => m === 'mer' && CHARS[k] && CHARS[k].amphibie; // le crocodile marin nage aussi en mer (livre, duel 26)
@@ -1450,78 +1488,232 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Le point faible du colibri : il doit boire sans arrêt !', // ≈ p. 63
     'Son nid tient dans le creux de ta main… et il est cousu avec des fils d’araignée !', // p. 64
   ],
+  serpentbrun: [
+    'Le jeune serpent brun : environ 27 cm, et des crochets à venin !', // ≈ p. 65
+    'Le coup spécial du serpent brun : il fouille chaque cachette !', // ≈ p. 65
+    'Le point faible du jeune serpent brun : tout jeune, il débute !', // ≈ p. 65
+  ],
 };
 
 // ---------------------------------------------------------------------
-//  Quiz du livre : 3 bonnes réponses de suite pour débloquer un animal.
-//  Règles (24/09, texte imprimé V17 ; resynchronisé sur la V19 le 25/09) :
-//  - réponses prises MOT POUR MOT sur une page de fiches (avant la réponse du duel) : aucune question ne dévoile un résultat ;
-//  - jamais une réponse que le jeu affiche déjà pour cet animal (nom de coup, cri, carte) : il faut ouvrir le livre ;
-//  - une erreur ne montre jamais la bonne réponse : « Relis la page N du livre », puis nouvel essai avec d'autres questions.
-//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md
+//  QUIZ DE L'ARÈNE (25/09, demande de Vincent : « 42 qu'on peut débloquer si on répond aux questions correctement,
+//  et 10 qu'on ne peut débloquer qu'avec le livre en main »).
+//  Ces animaux se gagnent SANS le livre : « LE PUMA TE DÉFIE ! » → l'enfant le bat → il gagne 3 de ses cartes
+//  « Le savais-tu ? » (des phrases du livre) → 3 questions dont la réponse est DANS ces cartes → l'animal est à lui.
+//  Format : [question, [bonne réponse, faux, faux], numéro de la carte FAITS qui contient la réponse]
+//  Règles : la bonne réponse se lit dans la carte, les deux autres non ; pas de piège ; jamais un passage « livre en main ».
+//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md (section 2).
 // ---------------------------------------------------------------------
 const QUIZ = {
-  croco: { pages: 'pages 13 et 59', q: [
-    ['Des crocodiles font un demi-cercle dans la rivière pour pêcher. Ça fait…', ['un filet vivant', 'une échelle', 'un barrage'], 13],
-    ['Quel est le point faible du crocodile du Nil ?', ['un élastique lui ferme la gueule', 'une lumière vive l’aveugle', 'il ne sait pas nager'], 13],
-    ['Combien pèse un crocodile du Nil, au maximum ?', ['750 kg', '150 kg', '75 kg'], 13],
-    ['Comment s’appelle le crocodile géant du duel 26 ?', ['Brutus', 'Titan', 'Goliath'], 59],
-    ['Quel est le point faible du crocodile marin ?', ['il lui manque une patte', 'il est aveugle', 'il a peur des bateaux'], 59],
-    ['La morsure du crocodile marin est…', ['la plus forte jamais mesurée', 'plus faible que celle du requin', 'la plus venimeuse du monde'], 59],
-    ['Un crocodile marin de 6 m mordrait presque comme…', ['un T. rex', 'un lion', 'un requin blanc'], 59],
-    ['Quelle est l’arme du crocodile marin, dans sa fiche ?', ['une armure de plaques d’os', 'des griffes de 10 cm', 'un dard venimeux'], 59],
-  ] },
-  hippo: { pages: 'page 13', q: [
-    ['Combien peut peser un hippopotame ?', ['jusqu’à 3 200 kg', 'jusqu’à 320 kg', 'jusqu’à 32 000 kg'], 13],
-    ['L’hippopotame sait-il nager ?', ['non : il marche au fond de l’eau', 'non : il flotte comme un bouchon', 'oui : aussi vite qu’un dauphin'], 13],
-    ['Quel est le point faible de l’hippopotame ?', ['sa peau craque au soleil', 'ses dents tombent l’hiver', 'il a peur de l’eau'], 13],
-    ['Que broute l’hippo ?', ['l’herbe', 'les algues', 'des feuilles d’arbre'], 13],
-    ['Quelle est l’arme de l’hippopotame, dans sa fiche ?', ['des crocs géants', 'des griffes de 10 cm', 'une queue qui pique'], 13],
-  ] },
-  ratel: { pages: 'page 19', q: [
-    ['Si on attrape le ratel, que fait-il ?', ['il se retourne dans sa peau… et mord', 'il gonfle sa peau… comme un ballon', 'il laisse sa peau… et s’enfuit'], 19],
-    ['Comment est la peau du ratel ?', ['épaisse et trop grande pour lui', 'fine comme du papier', 'couverte de piquants'], 19],
-    ['La peau du ratel résiste aux morsures…', ['de chien', 'de requin', 'de dragon'], 19],
-    ['Le ratel, c’est une sorte de…', ['blaireau d’Afrique', 'chat sauvage', 'petit ours'], 19],
-    ['Quelle est l’arme du ratel, dans sa fiche ?', ['de longues griffes', 'des crocs de 7 cm', 'un dard venimeux'], 19],
-  ] },
-  grizzly: { pages: 'pages 15 et 55', q: [
-    ['Grizzly + ours polaire, ça donne…', ['un « pizzly »', 'un « grizzlaire »', 'un ours panda'], 15],
-    ['Grizzly + ours polaire : combien en a-t-on trouvé dans la nature ?', ['8', '80', '800'], 15],
-    ['Quelle longueur font les griffes du grizzly ?', ['6 cm', '16 cm', '60 cm'], 15],
-    ['Quel est le point faible du grizzly face à l’ours polaire ?', ['deux à trois fois plus léger', 'trois fois plus lent', 'il a peur de la neige'], 15],
-    ['Les oursons bruns naissent pendant que leur mère…', ['hiberne', 'nage', 'chasse'], 55],
-    ['À la naissance, un ourson brun pèse…', ['moins qu’une brique de lait', 'autant qu’un chien', 'plus que ton cartable'], 55],
-  ] },
-  hyene: { pages: 'page 41', q: [
-    ['Quel est le coup spécial de la hyène ?', ['elle fatigue ses proies', 'elle crache du venin', 'elle plaque sa proie au sol'], 41],
-    ['Quel est le point faible de la hyène ?', ['son vacarme attire les voleurs', 'sa queue la gêne pour courir', 'elle a peur de l’eau'], 41],
-    ['« La hyène mange les restes des autres. » Vrai ou faux ?', ['faux : elle chasse elle-même la plupart de ses repas', 'faux : elle ne mange que des fruits', 'vrai : elle ne chasse jamais'], 41],
-    ['Combien pèse une hyène tachetée, environ ?', ['60 kg', '6 kg', '16 kg'], 41],
-    ['Au duel 18, que veulent la hyène et le lion ?', ['la même carcasse', 'le même point d’eau', 'la même tanière'], 41],
-  ] },
-  buffle: { pages: 'page 23', q: [
-    ['Quel fromage est fait avec le lait de la bufflonne ?', ['la mozzarella', 'la raclette', 'le camembert'], 23],
-    ['La bufflonne, c’est…', ['la femelle du buffle d’eau', 'le mâle du buffle d’eau', 'un bébé buffle'], 23],
-    ['Quel est le point faible du buffle ?', ['ses blessures guérissent mal', 'ses cornes sont fragiles', 'il a peur de l’eau'], 23],
-    ['Combien de fois le buffle est-il plus lourd que le dragon de Komodo ?', ['sept fois', 'deux fois', 'trois fois'], 23],
-  ] },
-  morse: { pages: 'pages 31 et 48', q: [
-    ['Les défenses du morse l’aident à…', ['monter sur la glace', 'casser la coque des bateaux', 'creuser un terrier'], 31],
-    ['Quelle longueur peuvent atteindre les défenses du morse ?', ['90 cm', '9 cm', '3 m'], 31],
-    ['Quel est le point faible du morse ?', ['affolé, le troupeau écrase ses petits', 'affolé, le troupeau abandonne les vieux', 'affolé, le troupeau fait trop de bruit'], 31],
-    ['Pour dormir debout dans l’eau, le morse a sous sa gorge…', ['une poche qu’il gonfle d’air, comme une bouée', 'une ventouse qui colle aux rochers', 'une réserve de graisse, comme un radeau'], 48],
-  ] },
-  komodo: { pages: 'page 23', q: [
-    ['Combien de dents coupantes a le dragon de Komodo ?', ['60', '600', '6 000'], 23],
-    ['Avec quoi le dragon de Komodo « goûte »-t-il l’air ?', ['sa langue fourchue', 'sa queue', 'ses griffes'], 23],
-    ['Le dragon de Komodo repère un animal mort jusqu’à…', ['4 km', '400 m', '40 km'], 23],
-    ['Le dragon de Komodo est le plus gros…', ['lézard du monde', 'serpent du monde', 'crocodile du monde'], 23],
-    ['Combien mesure le dragon de Komodo ?', ['trois mètres de long', 'trente centimètres de long', 'un mètre de long'], 23],
-  ] },
+  // 🦁 SAVANE
+  croco: [
+    ['Qu’est-ce qui a arraché une patte avant de Brutus, le vieux crocodile ?', ['un requin ou un autre croco', 'un hippopotame en colère', 'un piège de pêcheur'], 0],
+    ['Un crocodile marin de 6 m mordrait presque aussi fort que… ?', ['un T. rex', 'un lion', 'un gorille'], 1],
+    ['Comment le crocodile marin fait-il de très longs voyages en mer ?', ['il surfe sur les courants', 'il s’accroche aux baleines', 'il marche au fond de l’eau'], 2],
+    ['Chez le crocodile, qu’est-ce qui décide si le bébé sera une fille ou un garçon ?', ['la température du nid', 'la maman', 'la couleur de l’œuf'], 3],
+    ['Des crocos font un demi-cercle dans la rivière. Ça fait… ?', ['un filet vivant', 'une échelle', 'un barrage'], 4],
+  ],
+  hippo: [
+    ['Quelle longueur peuvent avoir les plus grandes dents d’hippo ?', ['50 cm', '5 cm', '2 m'], 0],
+    ['L’hippopotame sait-il nager ?', ['non : il marche au fond de l’eau', 'non : il flotte comme un bouchon', 'oui : aussi vite qu’un dauphin'], 1],
+    ['Combien peut peser un hippopotame ?', ['jusqu’à 3 200 kg', 'jusqu’à 320 kg', 'jusqu’à 32 000 kg'], 2],
+    ['Pourquoi l’hippopotame mâle agite-t-il sa queue ?', ['pour éparpiller ses crottes', 'pour chasser les mouches', 'pour dire bonjour'], 3],
+    ['L’hippopotame est-il un gros animal tout gentil ?', ['non : il renverse même des bateaux', 'oui : il ne se fâche jamais', 'non : il est juste timide'], 4],
+  ],
+  ratel: [
+    ['Combien pèse le ratel, face à des lions de 190 kilos ?', ['13 kilos', '130 kilos', '1 kilo'], 0],
+    ['Si on attrape le ratel, que fait-il ?', ['il se retourne dans sa peau… et mord', 'il gonfle sa peau… comme un ballon', 'il laisse sa peau… et s’enfuit'], 1],
+    ['Mordu au visage par un serpent, quand le ratel chassait-il de nouveau ?', ['5 heures après', '5 semaines après', '5 ans après'], 2],
+    ['Dans une ruche, que mange le ratel ?', ['le miel et les larves', 'la cire et les fleurs', 'rien : il a peur des piqûres'], 3],
+    ['Quel est le coup spécial du ratel ?', ['la bombe puante', 'la roulade géante', 'le coup de queue'], 4],
+  ],
+  hyene: [
+    ['La hyène mange-t-elle seulement les restes des autres ?', ['non : elle chasse la plupart de ses repas', 'oui : elle ne chasse jamais', 'non : elle mange surtout des fruits'], 0],
+    ['Quelle épaisseur d’os de girafe une hyène peut-elle casser avec ses dents ?', ['7 cm', '7 mm', '70 cm'], 1],
+    ['Chez les hyènes, qui commande ?', ['les femelles', 'les mâles', 'les bébés'], 2],
+    ['La hyène est une cousine… ?', ['des chats', 'des chiens', 'des ours'], 3],
+    ['Quel est le coup spécial de la hyène ?', ['elle fatigue ses proies', 'elle crache du venin', 'elle plaque sa proie au sol'], 4],
+    ['Quel est le point faible de la hyène ?', ['son vacarme attire les voleurs', 'sa queue la gêne pour courir', 'elle a peur de l’eau'], 5],
+  ],
+  porcepic: [
+    ['Le porc-épic lance-t-il ses piquants ?', ['non : il les dresse et secoue sa queue', 'oui : comme des flèches', 'non : il les cache sous son ventre'], 0],
+    ['Les piquants du porc-épic sont faits comme… ?', ['tes cheveux', 'tes ongles', 'tes dents'], 1],
+    ['Quel animal, « le roi », s’est déjà fait piquer par des porcs-épics ?', ['le lion', 'l’éléphant', 'le crocodile'], 2],
+    ['Quelle longueur font les piquants du porc-épic ?', ['30 cm', '3 cm', '2 m'], 3],
+    ['Quel est le coup spécial du porc-épic ?', ['la charge en marche arrière', 'la roulade en boule', 'le saut piquant'], 4],
+  ],
+  autruche: [
+    ['Combien de doigts l’autruche a-t-elle à chaque pied ?', ['deux', 'trois', 'cinq'], 0],
+    ['Quelle longueur fait un seul pas d’autruche, en pleine course ?', ['5 mètres', '50 centimètres', '20 mètres'], 1],
+    ['L’œil de l’autruche est plus gros… ?', ['qu’une balle de ping-pong', 'qu’un ballon de foot', 'qu’une pastèque'], 2],
+    ['Pour se cacher, que fait l’autruche ?', ['elle se couche le cou à plat', 'elle met la tête dans le sable', 'elle grimpe dans un arbre'], 3],
+    ['Quel est le coup spécial de l’autruche ?', ['un coup de pied à tuer un lion', 'un coup de bec en piqué', 'un battement d’ailes géant'], 4],
+  ],
+  lionne: [
+    ['À quoi servent les griffes des lionnes ?', ['à s’accrocher', 'à creuser', 'à nager'], 0],
+    ['Quel est le coup spécial des lionnes ?', ['elles sautent sur le dos', 'elles creusent un piège', 'elles grimpent aux arbres'], 1],
+    ['Le point faible des lionnes : elles sont 7 fois plus légères que… ?', ['la girafe', 'le lion', 'la hyène'], 2],
+    ['Chez les lionnes, qui pousse la proie vers les plus lourdes ?', ['les plus légères', 'les plus vieilles', 'les lionceaux'], 3],
+  ],
+  girafe: [
+    ['Quelle largeur fait le sabot d’une girafe ?', ['30 cm', '3 cm', '1 m'], 0],
+    ['Quel est le coup spécial de la girafe ?', ['le coup de pied qui assomme', 'le coup de langue', 'le cri qui fait peur'], 1],
+    ['Quel est le point faible de la girafe ?', ['si elle tombe, c’est fini', 'si elle court, elle s’essouffle', 'elle ne voit pas loin'], 2],
+    ['De quelle couleur est la langue de la girafe ?', ['presque noire', 'rose bonbon', 'vert pomme'], 3],
+  ],
+  // 🐊 JUNGLES & MARAIS
+  komodo: [
+    ['Combien mesure le dragon de Komodo, le plus gros lézard du monde ?', ['trois mètres de long', 'trente centimètres', '30 mètres de long'], 0],
+    ['Avec quoi le dragon de Komodo « goûte »-t-il l’air ?', ['sa langue fourchue', 'sa queue', 'ses griffes'], 1],
+    ['Si tu mangeais comme un dragon de Komodo, tu avalerais en un repas… ?', ['24 kg de pâtes', '24 grammes de pâtes', '24 tonnes de pâtes'], 2],
+    ['Où vivent les jeunes dragons de Komodo ?', ['perchés dans les arbres', 'dans des terriers', 'au fond de l’eau'], 3],
+    ['Qu’est-ce qui tue les proies du dragon de Komodo ?', ['son venin… et la mare sale', 'sa queue… et ses griffes', 'il les écrase'], 4],
+  ],
+  buffle: [
+    ['Combien de fois le buffle d’eau est-il plus lourd qu’un dragon de Komodo ?', ['sept fois', 'deux fois', 'trois fois'], 0],
+    ['Quel fromage est fait avec le lait de la bufflonne ?', ['la mozzarella', 'la raclette', 'le camembert'], 1],
+    ['Quel est le coup spécial du buffle ?', ['il charge tête baissée', 'il se roule dans la boue', 'il donne des coups de queue'], 2],
+    ['Quel est le point faible du buffle ?', ['ses blessures guérissent mal', 'ses cornes sont fragiles', 'il a peur de l’eau'], 3],
+  ],
+  caiman: [
+    ['Comment est la peau du caïman ?', ['à plaques d’os', 'toute douce', 'couverte de plumes'], 0],
+    ['Quel est le coup spécial du caïman ?', ['il plonge pour se cacher', 'il saute dans les arbres', 'il crache de l’eau'], 1],
+    ['Quel est le point faible du caïman ?', ['lent quand il est à terre', 'lent quand il nage', 'il n’a pas de dents'], 2],
+    ['Encore dans l’œuf, comment les bébés caïmans appellent-ils leur mère ?', ['en couinant', 'en tapant du pied', 'en chantant'], 3],
+    ['Combien de caïmans vivent dans le Pantanal, au Brésil ?', ['10 millions', '10 000', '100'], 4],
+    ['Le caïman noir vit en Amazonie. Il dépasse parfois… ?', ['5 m', '50 cm', '20 m'], 5],
+  ],
+  python: [
+    ['Quel est le coup spécial du python birman ?', ['l’attaque surprise', 'la morsure glacée', 'le coup de queue'], 1],
+    ['Quel est le point faible du python birman ?', ['il ne supporte pas le froid', 'il a peur des souris', 'il ne sait pas nager'], 2],
+    ['Le python le plus lourd capturé en Floride portait combien d’œufs ?', ['122', '12', '1 200'], 3],
+    ['Où a-t-on déjà vu des pythons réticulés ?', ['en pleine mer', 'sur la banquise', 'en haut des nuages'], 4],
+    ['Grâce aux creux de ses lèvres, que capte le python ?', ['la chaleur des animaux', 'le bruit des pas', 'l’odeur des fleurs'], 5],
+  ],
+  alligator: [
+    ['Combien de dents peut avoir l’alligator ?', ['jusqu’à 80', 'jusqu’à 8', 'jusqu’à 800'], 0],
+    ['Combien peut peser l’alligator ?', ['jusqu’à 450 kg', 'jusqu’à 45 kg', 'jusqu’à 4 500 kg'], 0],
+    ['Quel est le coup spécial de l’alligator ?', ['il mord, puis il roule', 'il saute, puis il plonge', 'il grimpe aux arbres'], 1],
+    ['Quel est le point faible de l’alligator ?', ['jeune, il se fait avaler', 'jeune, il ne sait pas nager', 'il a peur du noir'], 2],
+  ],
+  cobra: [
+    ['Quelle longueur peut atteindre le cobra ?', ['220 cm', '22 cm', '5 m'], 0],
+    ['Quel est le coup spécial du cobra ?', ['il ouvre son capuchon', 'il se roule en boule', 'il saute très haut'], 1],
+    ['Quel est le point faible du cobra ?', ['il frappe trop lentement', 'il n’a pas de venin', 'il a peur des souris'], 2],
+    ['Que mange presque uniquement le cobra royal ?', ['d’autres serpents', 'des fruits', 'du poisson'], 3],
+    ['Le cobra royal est le seul serpent qui… ?', ['construit un nid', 'vit sur la banquise', 'a des plumes'], 4],
+  ],
+  mangouste: [
+    ['Combien de dents pointues a la mangouste ?', ['40', '4', '400'], 0],
+    ['Quel est le coup spécial de la mangouste ?', ['elle esquive, puis mord la tête', 'elle saute, puis griffe la queue', 'elle creuse un piège'], 1],
+    ['Quel est le point faible de la mangouste ?', ['trop de venin peut la tuer', 'trop de soleil la fatigue', 'elle a peur de l’eau'], 2],
+    ['Le venin est une clé. Pourquoi rentre-t-il mal chez la mangouste ?', ['ses « serrures » ont une autre forme', 'ses « clés » sont trop petites', 'elle a une peau en fer'], 3],
+    ['Qu’y a-t-il au menu de la mangouste ?', ['souris, lézards, scarabées…', 'herbe, feuilles, fleurs…', 'algues, glace, cailloux…'], 4],
+  ],
+  // 🌲 FORÊTS & GRAND NORD
+  grizzly: [
+    ['Combien de papillons de nuit un grizzly peut-il avaler en une seule journée ?', ['40 000', '400', '4'], 0],
+    ['Pendant l’hiver, l’ours brun peut passer plusieurs mois… ?', ['sans manger, sans boire, sans pipi ni caca', 'sans dormir, à chercher du miel', 'à nager dans la mer'], 1],
+    ['Quel est le coup spécial du grizzly ?', ['il attrape les saumons au vol', 'il creuse un terrier géant', 'il se roule dans la neige'], 2],
+    ['Grizzly + ours polaire = … ?', ['« pizzly »', '« grizzlaire »', '« polarzly »'], 3],
+    ['Les oursons qui viennent de naître pèsent moins… ?', ['qu’une brique de lait', 'qu’un vélo', 'qu’un enfant'], 4],
+  ],
+  puma: [
+    ['Combien peut peser le puma ?', ['jusqu’à 100 kg', 'jusqu’à 10 kg', 'jusqu’à 1 000 kg'], 0],
+    ['Quel est le coup spécial du puma ?', ['il saute sur le dos et mord', 'il nage sous l’eau', 'il se roule dans la neige'], 1],
+    ['Quel est le point faible du puma ?', ['il fuit devant une meute', 'il ne sait pas sauter', 'il a peur des oiseaux'], 2],
+    ['Quelle distance un jeune puma a-t-il parcourue à pied ?', ['2 400 km', '24 km', '240 000 km'], 3],
+  ],
+  oursnoir: [
+    ['Combien peut peser l’ours noir ?', ['jusqu’à 270 kg', 'jusqu’à 27 kg', 'jusqu’à 2 700 kg'], 0],
+    ['Quel est le coup spécial de l’ours noir ?', ['il charge pour faire peur', 'il fait le mort', 'il se cache dans l’eau'], 1],
+    ['Quel est le point faible de l’ours noir ?', ['plus gourmand que bagarreur', 'plus lent qu’un escargot', 'il a peur de la neige'], 2],
+    ['Comment s’appellent les rares ours noirs au pelage blanc ?', ['les ours esprits', 'les ours fantômes', 'les ours neige'], 3],
+  ],
+  morse: [
+    ['Quelle longueur peuvent atteindre les défenses du morse ?', ['90 cm', '9 cm', '3 m'], 0],
+    ['Les défenses du morse l’aident à… ?', ['monter sur la glace', 'casser la coque des bateaux', 'creuser un terrier'], 1],
+    ['Combien de moustaches le morse a-t-il pour fouiller la boue ?', ['jusqu’à 700', 'jusqu’à 7', 'jusqu’à 70 000'], 2],
+    ['Quel est le coup spécial du morse ?', ['il frappe avec ses défenses', 'il crache de l’eau', 'il mord la queue'], 3],
+    ['Pour dormir debout dans l’eau, que gonfle le morse ?', ['une poche d’air sous sa gorge', 'ses joues, comme un ballon', 'sa queue, comme une bouée'], 4],
+  ],
+  // 🌊 MER
+  requinbleu: [
+    ['Comment sont les dents du requin bleu ?', ['en scie', 'toutes rondes', 'il n’en a pas'], 0],
+    ['Quel est le coup spécial du requin bleu ?', ['il tourne autour de sa proie', 'il crache de l’encre', 'il se cache dans le sable'], 1],
+    ['Quel est le point faible du requin bleu ?', ['il se balade à 1 km/h', 'il a peur des poissons', 'il ne voit que la nuit'], 2],
+    ['Combien de bébés requins bleus peuvent naître en même temps ?', ['plus de 100', '2', '10'], 3],
+  ],
+  aiguillat: [
+    ['Combien d’années un aiguillat peut-il vivre ?', ['presque 70 ans', '7 ans', '700 ans'], 0],
+    ['Qu’adore manger l’aiguillat ?', ['les pieuvres', 'les algues', 'les baleines'], 1],
+    ['Combien de temps la femelle aiguillat porte-t-elle ses petits ?', ['près de deux ans', 'près de deux jours', 'deux semaines'], 2],
+    ['Quelle arme a l’aiguillat ?', ['deux épines à venin', 'une corne sur la tête', 'des pinces'], 3],
+    ['Quel est le coup spécial de l’aiguillat ?', ['il se plie et pique', 'il tourne en rond', 'il fait des bulles'], 4],
+  ],
+  espadon: [
+    ['Qu’a l’espadon sur le nez ?', ['une épée', 'une corne', 'une ventouse'], 0],
+    ['Quel est le coup spécial de l’espadon ?', ['il tranche d’un coup de tête', 'il se cache dans le sable', 'il crache de l’encre'], 1],
+    ['Quel est le point faible de l’espadon ?', ['ni dents ni écailles', 'ni yeux ni oreilles', 'il nage très lentement'], 2],
+    ['Chez l’espadon, qu’est-ce qu’un organe spécial réchauffe ?', ['ses yeux et son cerveau', 'sa queue et ses nageoires', 'son ventre'], 3],
+    ['Quel requin mange vraiment de l’espadon ?', ['le mako', 'le requin-baleine', 'l’aiguillat'], 4],
+  ],
+  bouledogue: [
+    ['Comment est la morsure du jeune requin-bouledogue ?', ['record pour sa taille', 'toute petite', 'sans dents'], 0],
+    ['Quel est le coup spécial du requin-bouledogue ?', ['il cogne, puis il mord', 'il tourne, puis il fuit', 'il se cache dans le sable'], 1],
+    ['Quel est le point faible du requin-bouledogue ?', ['une peau sans armure', 'une queue trop courte', 'il a peur du noir'], 2],
+    ['Où peut aller le requin-bouledogue ?', ['il remonte les fleuves', 'il grimpe sur la plage', 'il nage sous la banquise'], 3],
+  ],
+  crabe: [
+    ['Combien mesure le crabe ?', ['environ 10 cm', 'environ 1 m', 'environ 1 mm'], 0],
+    ['Quel est le coup spécial du crabe ?', ['il pince et ne lâche plus', 'il crache de l’encre', 'il saute très haut'], 1],
+    ['Quel est le point faible du crabe ?', ['sa carapace peut casser', 'sa carapace est trop lourde', 'il marche trop vite'], 2],
+    ['Où le crabe a-t-il des dents ?', ['dans l’estomac', 'dans les pattes', 'sur le dos'], 3],
+  ],
+  crevette: [
+    ['Quelles armes a la crevette-mante ?', ['deux massues à ressort', 'deux épées', 'huit bras à ventouses'], 0],
+    ['Quel est le coup spécial de la crevette-mante ?', ['elle casse les coquilles', 'elle crache du venin', 'elle se cache dans le sable'], 1],
+    ['Quel est le point faible de la crevette-mante ?', ['molle quand elle mue', 'molle quand elle dort', 'elle a peur des crabes'], 2],
+    ['À quelle vitesse partent ses massues ?', ['80 km/h', '8 km/h', '800 km/h'], 3],
+    ['Elle a 12 sortes de détecteurs de couleurs, toi 3. Qui voit le mieux les couleurs ?', ['toi', 'la crevette-mante', 'aucun des deux'], 4],
+  ],
+  // 🐞 PETITES BÊTES
+  mygale: [
+    ['Combien mesure la mygale, avec les pattes ?', ['12 cm', '12 mm', '1,20 m'], 0],
+    ['Quel est le coup spécial de la mygale ?', ['elle jette ses poils piquants', 'elle tisse une toile géante', 'elle saute très haut'], 1],
+    ['Quel est le point faible de la mygale ?', ['elle voit très mal', 'elle a peur du noir', 'elle ne sait pas marcher'], 2],
+    ['Comment la mygale mange-t-elle sa proie ?', ['elle la fait fondre et l’aspire', 'elle la mâche longtemps', 'elle l’avale tout rond'], 3],
+  ],
+  guepe: [
+    ['Combien mesure la guêpe géante ?', ['jusqu’à 5 cm', 'jusqu’à 50 cm', 'jusqu’à 1 m'], 0],
+    ['Quelle longueur fait son dard ?', ['7 mm', '70 cm', '7 m'], 0],
+    ['Quel est le coup spécial de la guêpe géante ?', ['elle pique et paralyse', 'elle crache du miel', 'elle se roule en boule'], 1],
+    ['Son point faible : où doit-elle piquer ?', ['entre les pattes', 'sur le dos', 'dans les yeux'], 2],
+  ],
+  chauvesouris: [
+    ['Comment sont les dents de la chauve-souris ?', ['petites et pointues', 'grandes et plates', 'elle n’en a pas'], 0],
+    ['Comment la chauve-souris chasse-t-elle ?', ['au sonar', 'à l’odeur', 'au toucher'], 1],
+    ['Quel est le point faible de la chauve-souris ?', ['des ailes en peau très fine', 'des oreilles trop petites', 'elle a peur du noir'], 2],
+    ['Combien pèse la plus petite chauve-souris du monde ?', ['2 g', '2 kg', '200 g'], 3],
+  ],
+  colibri: [
+    ['Combien pèse le colibri ?', ['environ 3 g', 'environ 3 kg', 'environ 300 g'], 0],
+    ['Quel est le coup spécial du colibri ?', ['il vole même en arrière', 'il pique comme une guêpe', 'il chante très fort'], 1],
+    ['Quel est le point faible du colibri ?', ['il doit boire sans arrêt', 'il vole trop lentement', 'il a peur des fleurs'], 2],
+    ['Avec quoi le nid du colibri est-il cousu ?', ['des fils d’araignée', 'des poils de chat', 'des brins de laine'], 3],
+  ],
+  serpentbrun: [
+    ['Combien mesure le jeune serpent brun ?', ['environ 27 cm', 'environ 27 m', 'environ 2 mm'], 0],
+    ['Avec quoi le jeune serpent brun mord-il ?', ['des crochets à venin', 'des dents plates', 'un bec'], 0],
+    ['Quel est le coup spécial du serpent brun ?', ['il fouille chaque cachette', 'il crache du venin', 'il fait le mort'], 1],
+    ['Quel est le point faible du jeune serpent brun ?', ['tout jeune, il débute', 'tout petit, il a froid', 'il est trop lent'], 2],
+  ],
 };
 // ---------------------------------------------------------------------
 //  LIVRE EN MAIN (24/09, idée de Vincent) : ces animaux se débloquent SEULEMENT avec le livre sous les yeux.
+//  Depuis le 25/09 : ce sont les 10 « CHAMPIONS DU LIVRE » (2 par onglet, les plus spectaculaires ; cartes dorées).
+//  Les questions qu'un enfant trouve sans le livre (« le mâle ou la… », « vrai ou faux », culture générale) sont retirées.
+//  Les anciennes questions des 26 autres animaux : nouveaux/lem_archive_25-09.js (ces animaux se gagnent au défi + quiz).
 //  Pas de choix multiple : un mot à écrire, trouvé à un endroit précis du livre (page + encart). Impossible à deviner.
 //  Règles : pages de fiches (recto) ou pages bonus, jamais une page de réponse ; jamais un mot que le jeu affiche ailleurs ;
 //  majuscules, accents et une petite faute acceptés ; en cas d'erreur, on ne montre jamais la réponse.
@@ -1529,57 +1721,15 @@ const QUIZ = {
 //  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md
 // ---------------------------------------------------------------------
 const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r : le mot à écrire · x : le passage du livre qui le contient (le jeu ne doit jamais l'afficher)
-  leopard: [
-    { p: 26, ou: 'le léopard, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'ville', x: 'UN LÉOPARD EN VILLE' },
-    { p: 26, ou: 'le léopard, dans « À RACONTER À LA RÉCRÉ »', q: 'Ces léopards vivent dans un parc, au milieu de… ?', r: 'Mumbai', x: 'au milieu de Mumbai' }, // (24/09 soir) l'ancien repère « UN LÉOPARD EN VILLE » donnait la réponse de la question d'avant
-    { p: 26, ou: 'l’encart « DES TACHES À POINTS »', q: 'Les taches du léopard sont… (un seul mot)', r: 'vides', x: 'Celles du léopard sont vides' },
-    { p: 35, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le 2ᵉ mot du titre, écrit en gros ?', r: 'panthère', x: 'LA PANTHÈRE NOIRE N’EXISTE PAS' },
-  ],
-  porcepic: [
-    { p: 11, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'rien', x: 'IL NE LANCE RIEN' },
-    { p: 11, ou: 'l’encart « LE TRUC FOU »', q: 'Quand le porc-épic secoue sa queue, ça fait un bruit de… ?', r: 'hochet', x: 'un bruit de hochet' },
-  ],
   guepard: [
     { p: 37, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le 2ᵉ mot du titre, écrit en gros ?', r: 'fusée', x: 'UNE FUSÉE À POILS' },
     { p: 37, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'poils', x: 'UNE FUSÉE À POILS' },
-    { p: 37, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Le guépard démarre plus vite que la voiture de tes… ?', r: 'parents', x: 'la voiture de tes parents' },
     { p: 47, ou: 'le guépard, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'gazouille', x: 'UN FÉLIN QUI GAZOUILLE' },
   ],
-  autruche: [
-    { p: 37, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quel est le 2ᵉ mot du titre, écrit en gros ?', r: 'pied', x: 'UN PIED À DEUX DOIGTS' },
-    { p: 37, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'doigts', x: 'UN PIED À DEUX DOIGTS' },
-    { p: 37, ou: 'l’encart « CORPS DE CHAMPION »', q: 'L’autruche court à 50 km/h pendant très… ?', r: 'longtemps', x: 'pendant très longtemps' },
-  ],
-  // MER (24/09 au soir) : aucune question ne révèle la réponse d'une autre (elles peuvent s'enchaîner)
-  orque: [
-    { p: 7, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Dans quel pays l’orque fonce-t-elle jusque sur la plage ?', r: 'Argentine', x: 'En Argentine, l’orque fonce jusque sur la plage' },
-    { p: 7, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Quel animal l’orque vient-elle attraper sur la plage ?', r: 'otarie', x: 'pour attraper une otarie' },
-    { p: 61, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Les orques font tomber les phoques de leur… ?', r: 'glaçon', x: 'qui fait tomber les phoques de leur glaçon' },
-    { p: 61, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Où les orques nagent-elles côte à côte pour faire une vague ?', r: 'Antarctique', x: 'En Antarctique, des orques nagent côte à côte' },
-  ],
-  requin: [
-    { p: 7, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'électricité', x: 'IL SENT L’ÉLECTRICITÉ' },
-    { p: 7, ou: 'l’encart « CORPS DE CHAMPION »', q: 'La phrase commence par « Le … du requin ». Quel mot manque ?', r: 'museau', x: 'Le museau du requin sent' },
-    { p: 7, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Complète : « Même dans le …, impossible de se cacher ! »', r: 'noir', x: 'Même dans le noir, impossible de se cacher' },
-  ],
-  pieuvre: [
-    { p: 21, ou: 'la pieuvre, dans l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'partout', x: 'ELLE PASSE PARTOUT !' },
-    { p: 21, ou: 'la pieuvre, dans l’encart « LE TRUC FOU »', q: 'Elle peut se faufiler par un trou de la taille d’un… ?', r: 'citron', x: 'un trou de la taille d’un citron' },
-    { p: 21, ou: 'la pieuvre, dans l’encart « LE TRUC FOU »', q: 'Complète : « Pas d’os, trois cœurs, du sang… »', r: 'bleu', x: 'du sang bleu' },
-  ],
-  aiguillat: [
-    { p: 21, ou: 'l’aiguillat, dans « À RACONTER À LA RÉCRÉ »', q: 'Le titre, écrit en gros, commence par « LE ». Quel est le mot suivant ?', r: 'papi', x: 'LE PAPI DES MERS' },
-    { p: 21, ou: 'l’aiguillat, dans « À RACONTER À LA RÉCRÉ »', q: 'Un aiguillat peut vivre presque combien d’années ? (écris le nombre)', r: '70', x: 'peut vivre presque 70 ans' },
-    { p: 25, ou: 'l’encart « CHIFFRE WAOUH » de l’aiguillat', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'ventre', x: 'DEUX ANS DANS LE VENTRE' },
-  ],
-  espadon: [
-    { p: 39, ou: 'l’espadon, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'sous-marin', x: 'ÉPÉE CONTRE SOUS-MARIN' },
-    { p: 39, ou: 'l’espadon, dans « À RACONTER À LA RÉCRÉ »', q: 'Son épée est restée coincée dans la… ?', r: 'coque', x: 'coincée dans la coque' },
-    { p: 39, ou: 'l’espadon, dans « À RACONTER À LA RÉCRÉ »', q: 'À combien de mètres de fond ? (écris le nombre)', r: '600', x: 'à 600 m de fond' },
-  ],
-  requinbleu: [
-    { p: 39, ou: 'le requin bleu, dans l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'blindée', x: 'UNE PEAU BLINDÉE' },
-    { p: 39, ou: 'le requin bleu, dans l’encart « LE TRUC FOU »', q: 'La femelle a une peau trois fois plus… que celle du mâle ?', r: 'épaisse', x: 'trois fois plus épaisse que celle du mâle' },
+  leopard: [
+    { p: 26, ou: 'le léopard, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'ville', x: 'UN LÉOPARD EN VILLE' },
+    { p: 26, ou: 'le léopard, dans « À RACONTER À LA RÉCRÉ »', q: 'Ces léopards vivent dans un parc, au milieu de… ?', r: 'Mumbai', x: 'au milieu de Mumbai' }, // (24/09 soir) l'ancien repère « UN LÉOPARD EN VILLE » donnait la réponse de la question d'avant
+    { p: 35, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le 2ᵉ mot du titre, écrit en gros ?', r: 'panthère', x: 'LA PANTHÈRE NOIRE N’EXISTE PAS' },
   ],
   jaguar: [
     { p: 17, ou: 'le jaguar, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'bond', x: 'IL TUE D’UN SEUL BOND' },
@@ -1587,99 +1737,27 @@ const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r
   ],
   anaconda: [
     { p: 17, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'géante', x: 'MADAME EST UNE GÉANTE' },
-    { p: 17, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Chez l’anaconda vert, qui peut peser près de 100 kg : le mâle ou la… ?', r: 'femelle', x: 'La femelle, elle, peut peser près de 100 kg' },
-  ],
-  caiman: [
-    { p: 35, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'piranha', x: 'LE CAÏMAN-PIRANHA' },
-    { p: 35, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Ses dents du bas passent par des… de sa mâchoire du haut. (un seul mot)', r: 'trous', x: 'passent par des trous de sa mâchoire du haut' },
-  ],
-  puma: [
-    { p: 27, ou: 'le puma, dans « À RACONTER À LA RÉCRÉ »', q: 'Quel est le premier mot du titre, écrit en gros ?', r: 'médaille', x: 'MÉDAILLE D’OR' },
-    { p: 27, ou: 'le puma, dans « À RACONTER À LA RÉCRÉ »', q: 'En hauteur, le saut du puma, c’est presque deux… ?', r: 'étages', x: 'presque deux étages' },
   ],
   loup: [
     { p: 27, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le premier mot du titre, écrit en gros ?', r: 'allô', x: 'ALLÔ, LA MEUTE ?' },
-    { p: 27, ou: 'l’encart « LE TRUC FOU »', q: 'Le loup hurle à la lune ? Le livre répond… (un seul mot)', r: 'faux', x: 'Le loup hurle à la lune ? Faux !' },
-  ],
-  mangouste: [
-    { p: 33, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'dard', x: 'ELLE SE MOQUE DU DARD' },
-    { p: 33, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Face à quel animal piquant la mangouste n’esquive-t-elle même pas ?', r: 'scorpion', x: 'Face à un scorpion' },
-  ],
-  cobra: [
-    { p: 33, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'flûte', x: 'IL N’ENTEND PAS LA FLÛTE' },
-    { p: 33, ou: 'l’encart « LE TRUC FOU »', q: 'Le cobra n’a pas d’… pour entendre la musique. (un seul mot)', r: 'oreilles', x: 'n’a pas d’oreilles pour entendre la musique' },
-  ],
-  oursnoir: [
-    { p: 43, ou: 'l’encart « LE TRUC FOU »', q: 'Dans quel pays vivent ces rares ours noirs au pelage blanc ?', r: 'Canada', x: 'Au Canada vivent de rares ours noirs' },
-    { p: 43, ou: 'l’encart « LE TRUC FOU »', q: 'Il n’en existe que quelques… ? (un seul mot)', r: 'centaines', x: 'Il n’en existe que quelques centaines' },
   ],
   glouton: [
     { p: 43, ou: 'l’encart « BEURK ! »', q: 'Le glouton a un surnom en Amérique : l’ours-… ?', r: 'putois', x: 'L’OURS-PUTOIS' },
     { p: 43, ou: 'l’encart « BEURK ! »', q: 'Il arrose ses… d’un liquide qui pue. (un seul mot)', r: 'réserves', x: 'Il arrose ses réserves' },
   ],
-  python: [
-    { p: 45, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Quel animal de 35 kg un python birman a-t-il déjà avalé ?', r: 'cerf', x: 'avalé un cerf de 35 kg' },
-    { p: 45, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Depuis que les pythons sont là, presque tous les… laveurs ont disparu.', r: 'ratons', x: 'presque tous les ratons laveurs ont disparu' },
-  ],
-  alligator: [
-    { p: 45, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Une partie de son grondement est trop… pour tes oreilles. (un seul mot)', r: 'grave', x: 'trop grave pour tes oreilles' },
-    { p: 45, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quand il gronde, quelle partie de son corps vibre ?', r: 'dos', x: 'son dos vibre' },
-  ],
-  lionne: [
-    { p: 51, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Où se cachent les lionnes les plus lourdes ?', r: 'centre', x: 'cachées au centre' },
-    { p: 51, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Chaque lionne a son… ? (un seul mot)', r: 'poste', x: 'Chaque lionne a son poste' },
-  ],
-  girafe: [
-    { p: 51, ou: 'l’encart « CORPS DE CHAMPION »', q: 'La girafe a des pattes plus hautes qu’un… ?', r: 'adulte', x: 'des pattes plus hautes qu’un adulte' },
-    { p: 51, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Qu’est-ce qui pèse 11 kg chez la girafe ?', r: 'cœur', x: 'son cœur pèse 11 kg' },
-  ],
-  bouledogue: [
-    { p: 59, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Dans quel grand fleuve a-t-on trouvé un requin-bouledogue ?', r: 'Amazone', x: 'dans l’Amazone' },
-    { p: 59, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Dans quel pays ?', r: 'Pérou', x: 'au Pérou' },
-  ],
   baleine: [
-    { p: 61, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Comment s’appellent les minuscules crevettes que mange la baleine bleue ?', r: 'krill', x: '16 tonnes de krill' },
     { p: 61, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Son cœur pèse combien de kilos ? (écris le nombre)', r: '180', x: 'Son cœur pèse 180 kg' },
+    { p: 61, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'jour', x: '16 TONNES PAR JOUR' },
   ],
-  crabe: [
-    { p: 49, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'repousse', x: 'LA PINCE REPOUSSE' },
-    { p: 49, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Une pince blessée ? Le crabe peut la lâcher… ? (un seul mot)', r: 'exprès', x: 'Le crabe peut la lâcher exprès' },
-  ],
-  crevette: [
-    { p: 49, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'verre', x: 'PLUS FORTE QUE LE VERRE' },
-    { p: 49, ou: 'l’encart « LE TRUC FOU »', q: 'Dans quel pays une crevette-mante a-t-elle brisé la vitre de son aquarium ?', r: 'Angleterre', x: 'En Angleterre, une crevette-mante a brisé la vitre' },
-  ],
-  frelon: [
-    { p: 5, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Un frelon peut tuer une abeille toutes les combien de secondes ? (écris le nombre)', r: '14', x: 'une abeille toutes les 14 secondes' },
-    { p: 5, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Combien de frelons vident une ruche d’abeilles d’Europe ? (écris le nombre)', r: '30', x: '30 frelons vident une ruche' },
-  ],
-  abeille: [
-    { p: 5, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quand elle grelotte exprès, l’abeille devient un… ? (un objet qui chauffe)', r: 'radiateur', x: 'un radiateur à ailes' },
-    { p: 5, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Sans bouger les ailes, l’abeille sait faire vibrer ses… ?', r: 'muscles', x: 'vibrer ses muscles' },
-  ],
-  mygale: [
-    { p: 29, ou: 'l’encart « CHIFFRE WAOUH »', q: 'La plus grosse mygale du monde mesure combien de centimètres ? (écris le nombre)', r: '28', x: 'fait 28 cm' },
-    { p: 29, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel bruit fait la plus grosse mygale du monde ? Elle…', r: 'siffle', x: 'Elle siffle' },
-  ],
-  guepe: [
-    { p: 29, ou: 'l’encart « LE TRUC FOU »', q: 'Le conseil de l’expert piqué : « Allonge-toi et… » ?', r: 'hurle', x: 'Allonge-toi et hurle' },
-    { p: 29, ou: 'l’encart « LE TRUC FOU »', q: 'Qui s’est fait piquer par cette guêpe ? (un seul mot)', r: 'scientifique', x: 'Le scientifique qui s’est fait piquer' },
+  pieuvre: [
+    { p: 21, ou: 'la pieuvre, dans l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'partout', x: 'ELLE PASSE PARTOUT !' },
+    { p: 21, ou: 'la pieuvre, dans l’encart « LE TRUC FOU »', q: 'Elle peut se faufiler par un trou de la taille d’un… ?', r: 'citron', x: 'un trou de la taille d’un citron' },
   ],
   scolopendre: [
     { p: 57, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Ses « crocs » sont en fait deux pattes… ?', r: 'transformées', x: 'sont deux pattes transformées' },
-    { p: 57, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quel animal qui fait « croâ » la scolopendre croque-t-elle ?', r: 'crapauds', x: 'Elle croque lézards, crapauds' },
-  ],
-  chauvesouris: [
-    { p: 57, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ? ACCROCHÉE SANS…', r: 'effort', x: 'ACCROCHÉE SANS EFFORT' },
-    { p: 57, ou: 'l’encart « LE TRUC FOU »', q: 'Quand elle dort, qu’est-ce qui garde ses griffes fermées ? Le … de son corps.', r: 'poids', x: 'le poids de son corps garde ses griffes fermées' },
   ],
   mante: [
     { p: 63, ou: 'l’encart « LE TRUC FOU »', q: 'Qu’ont collé des chercheurs sur des mantes ? De toutes petites… ?', r: 'lunettes', x: 'de toutes petites lunettes 3D sur des mantes' },
-    { p: 63, ou: 'l’encart « LE TRUC FOU »', q: 'Résultat de l’expérience : la mante voit en… ?', r: 'relief', x: 'la mante voit en relief' },
-  ],
-  colibri: [
-    { p: 63, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Qu’est-ce que le colibri boit ? Du… ?', r: 'nectar', x: 'Le colibri boit du nectar' },
-    { p: 63, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Son cœur bat plus de combien de fois par minute ? (écris le nombre)', r: '1 200', x: 'son cœur bat plus de 1 200 fois par minute' },
   ],
 };
 
@@ -1699,17 +1777,22 @@ const BADGES = [
   ['costaud', 'GROS COSTAUD', 'Gagne au niveau COSTAUD.'],
   ['champion', 'CHAMPION DE L’ARÈNE', 'Bats tous les animaux à la suite.'],
   ['explo', 'EXPLORATEUR', 'Gagne avec 4 animaux différents.'],
-  ['secret', 'AS DU LIVRE', 'Débloque un animal grâce au quiz du livre.'],
-  ['lecteur', 'LECTEUR EXPERT', 'Débloque tous les animaux du quiz du livre.'],
-  ['livre', 'LIVRE EN MAIN', 'Débloque un animal avec le livre sous les yeux.'],
+  ['secret', 'AS DU DÉFI', 'Gagne un animal secret : bats-le, puis réussis son quiz.'],
+  ['lecteur', 'LECTEUR EXPERT', 'Gagne tous les animaux secrets des défis.'],
+  ['livre', 'LIVRE EN MAIN', 'Débloque un champion du livre avec le livre sous les yeux.'],
   ['duo', 'À DEUX, C’EST MIEUX', 'Termine un combat à 2 joueurs.'],
   ['cartes', 'COLLECTIONNEUR', 'Gagne 10 cartes « Le savais-tu ? ».'],
   ['toutes', 'GRAND SAVANT', 'Gagne toutes les cartes « Le savais-tu ? ».'],
 ];
-const DE_BASE = ['tigre', 'gorille', 'lion', 'ours']; // disponibles tout de suite ; les 4 autres se débloquent avec le quiz du livre
-let SAVE = { debloques: DE_BASE.slice(), etoiles: {}, badges: {}, cartes: {}, gagneAvec: {}, quiz: {} };
+// DÉBLOCAGE (25/09, demandé par Vincent) : 8 animaux tout de suite (les duels 1, 2, 3 et 30 du livre, au moins un par onglet),
+// 31 à gagner au DÉFI (on bat l'animal, on gagne 3 cartes, on réussit 3 questions : QUIZ), 10 CHAMPIONS DU LIVRE (LIVRE_EN_MAIN),
+// et les 3 légendaires (quête du GOD MODE, bonus.js).
+const DE_BASE = ['lion', 'tigre', 'gorille', 'ours', 'orque', 'requin', 'frelon', 'abeille'];
+const champion = k => !!LIVRE_EN_MAIN[k]; // carte dorée, vitrine, entrée et aura dorées
+let SAVE = { debloques: DE_BASE.slice(), etoiles: {}, badges: {}, cartes: {}, gagneAvec: {}, quiz: {}, joue: {}, defis: {} };
 try { const s = JSON.parse(localStorage.getItem('arene-duels') || 'null'); if (s && s.debloques) SAVE = Object.assign(SAVE, s) } catch (e) { }
 for (const k of DE_BASE) if (!SAVE.debloques.includes(k)) SAVE.debloques.push(k);
+SAVE.joue = SAVE.joue || {}; SAVE.defis = SAVE.defis || {}; // (anciennes sauvegardes)
 SAVE.quiz = SAVE.quiz || {};
 function sauve() { try { localStorage.setItem('arene-duels', JSON.stringify(SAVE)) } catch (e) { } }
 // demande au navigateur de ne pas effacer la sauvegarde (Android / ordinateur) ; sur iPhone, l'ajout à l'écran d'accueil la protège
@@ -2770,7 +2853,7 @@ function hud(c) {
     const px = s ? x0 + w + 70 : x0 - 70, py = y + 24;
     c.save(); c.beginPath(); c.arc(px, py, 62, 0, TAU); c.fillStyle = f.d.fond; c.fill(); c.clip();
     const img = G.heads[f.kind]; c.translate(px, py); c.scale(s ? -1 : 1, 1); c.drawImage(img, -70, -70, 140, 140); c.restore();
-    c.lineWidth = 7; c.strokeStyle = PA; c.beginPath(); c.arc(px, py, 62, 0, TAU); c.stroke();
+    c.lineWidth = 7; c.strokeStyle = champion(f.kind) ? '#FFC629' : PA; c.beginPath(); c.arc(px, py, 62, 0, TAU); c.stroke(); if (champion(f.kind)) { c.lineWidth = 3; c.strokeStyle = '#7A3E00'; c.beginPath(); c.arc(px, py, 67, 0, TAU); c.stroke() }
     // nom + étiquette + manches
     txt(c, f.nomAff || f.d.nom, s ? x0 + w - 4 : x0 + 4, y + h + 34, (f.nomAff || f.d.nom).length > 13 ? 32 : 40, PA, { al: s ? 'right' : 'left', out: 10 });
     const qui = NET.on ? (s === NET.moi ? 'TOI' : 'AMI') : G.mode === 1 ? (f.cpu ? 'ORDI' : G.god ? '⚡ GOD MODE' : 'TOI') : (s ? 'J2' : 'J1');
@@ -2882,6 +2965,9 @@ function render() {
   // GOD MODE : aura dorée
   for (const f of G.f) if (!f.cache && (f.kind === 'trex' || f.kind === 'megalo' || f.kind === 'meganeura' || (G.god && G.mode === 1 && !NET.on && !f.cpu))) { const R = 420 * f.d.K / .44, y = FLOOR - f.h - 260 * f.d.K / .44, g = bg.createRadialGradient(f.x, y, 20, f.x, y, R);
     g.addColorStop(0, `rgba(255,214,90,${.55 + .15 * Math.sin(t * 6)})`); g.addColorStop(1, 'rgba(255,214,90,0)'); bg.fillStyle = g; bg.beginPath(); bg.arc(f.x, y, R, 0, TAU); bg.fill() }
+  // CHAMPIONS DU LIVRE : un anneau doré au sol, qui respire
+  for (const f of G.f) if (!f.cache && champion(f.kind)) { const R0 = 330 * f.d.K / .44, yc = FLOOR - f.h - 230 * f.d.K / .44, gr = bg.createRadialGradient(f.x, yc, 10, f.x, yc, R0); gr.addColorStop(0, `rgba(255,214,90,${.26 + .08 * Math.sin(t * 3 + f.side)})`); gr.addColorStop(1, 'rgba(255,214,90,0)'); bg.fillStyle = gr; bg.beginPath(); bg.arc(f.x, yc, R0, 0, TAU); bg.fill() }
+  for (const f of G.f) if (!f.cache && champion(f.kind)) { const R = 205 * f.d.K / .44, k = cl(1 - f.h / 700, .3, 1); const al = (.5 + .2 * Math.sin(t * 4 + f.side * 2)) * k; bg.save(); bg.beginPath(); bg.ellipse(f.x, FLOOR + 4, R, 30, 0, 0, TAU); bg.globalAlpha = al * .35; bg.strokeStyle = '#FFB200'; bg.lineWidth = 26; bg.stroke(); bg.globalAlpha = al; bg.strokeStyle = '#FFE680'; bg.lineWidth = 8; bg.stroke(); bg.restore() } // (sans flou : plus léger pour les téléphones)
   // ombres
   for (const f of G.f) { if (f.cache) continue; const k = cl(1 - f.h / 600, .35, 1); bg.fillStyle = 'rgba(40,15,5,.35)'; bg.beginPath(); bg.ellipse(f.x, FLOOR + 6, 220 * f.d.K / .44 * k, 26 * k, 0, 0, TAU); bg.fill() }
   if (G.freeze > 0 && G.superBy) {
@@ -2917,10 +3003,12 @@ function render() {
   dessineZones(fx); drawFx(fx); dessineProj(fx);
   if (window.dessineSurprisesDevant) dessineSurprisesDevant(fx);
   if (G.debug) for (const f of G.f) { fx.strokeStyle = '#0f0'; fx.lineWidth = 3; const h = hurtBox(f); fx.strokeRect(h[0], h[2], h[1] - h[0], h[3] - h[2]); const x = hitBox(f); if (x) { fx.strokeStyle = '#f00'; fx.strokeRect(x[0], x[2], x[1] - x[0], x[3] - x[2]) } }
+  // (paillettes dorées qui montent autour des champions du livre)
+  for (const f of G.f) if (!f.cache && champion(f.kind)) { const K = f.d.K / .44; for (let i = 0; i < 7; i++) { const ph = (t * .42 + i / 7 + f.side * .1) % 1, x = f.x + Math.sin(i * 2.4 + t * 1.7) * 210 * K, y = FLOOR - f.h - 30 - ph * 600 * K; fx.save(); fx.globalAlpha = .9 * Math.sin(Math.PI * ph); star(fx, x, y, 17 + 7 * (i % 2), 6, 4, i % 2 ? '#FFF3B0' : '#FFC629', 'rgba(122,62,0,.7)', 2.5); fx.restore() } }
   dessineFoule(fx); hud(fx); annonce(fx);
 }
 // position de la tête (px image depuis le point au sol, pose de base)
-const TETE = { colibri: [280, -770], mante: [264, -765], chauvesouris: [220, -383], scolopendre: [540, -180], guepe: [400, -680], mygale: [380, -520], abeille: [470, -640], frelon: [470, -560], crevette: [420, -540], crabe: [100, -520], baleine: [540, -330], bouledogue: [420, -480], girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
+const TETE = { serpentbrun: [520, -520], colibri: [280, -770], mante: [264, -765], chauvesouris: [220, -383], scolopendre: [540, -180], guepe: [400, -680], mygale: [380, -520], abeille: [470, -640], frelon: [470, -560], crevette: [420, -540], crabe: [100, -520], baleine: [540, -330], bouledogue: [420, -480], girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
 function tete(f) { const p = f.d.tete || TETE[f.kind] || [450, -550], K = f.d.K; return [f.x + f.face * p[0] * K, FLOOR - f.h + p[1] * K] }
 function oiseau(c, x, y, s, t) { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3;
   c.beginPath(); c.ellipse(0, 0, 16, 11, 0, 0, TAU); c.fill(); c.stroke(); c.beginPath(); c.arc(12, -8, 8, 0, TAU); c.fill(); c.stroke();
@@ -3086,6 +3174,7 @@ function dizzy(c, f, t) { const x = f.x + f.face * (f.d.spr ? 560 * f.d.K : 250 
 function poseOf(f) {
   const st0 = f.state; if (st0 === 'bstun') f.state = f.crouchB ? 'cblock' : 'block';
   let res = (f.d.spr ? spritePose : f.kind === 'tigre' ? tigerPose : gorillaPose)(f.R, f, G.time); f.state = st0; f.flipV = !!res.flip;
+  if (f.poison && f.poison.genre === 'fil' && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && (f.aEmmele ?? (f.aEmmele = f.R.layers.some(l => l.n === 'emmele')))) res = SP('emmele', { x: 4 * Math.sin(G.time * 14) }); // le serpent brun emmêlé dans le fil de la veuve noire
   if (f.d.soif && f.soifT && G.frame - f.soifT < 50 && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && f.R.layers.some(l => l.n === (f.d.soif.pose || 'soif'))) res = SP(f.d.soif.pose || 'soif', { y: 3 * Math.sin(G.time * 12) }); // colibri « J'AI SOIF ! », scolopendre « JE ME DESSÈCHE ! »
   if (f.d.myope && f.retourne > 0 && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && (f.aMyope ?? (f.aMyope = f.R.layers.some(l => l.n === 'myope')))) res = SP('myope', { x: 3 * Math.sin(G.time * 20) }); // la mygale cherche : « OÙ ES-TU ? »
   if (f.ghost && f.ghost.k > 0) f.ghost.k--;
@@ -3196,6 +3285,9 @@ function endMatch() {
   // tournoi
   let suite = false;
   if (G.mode === 1 && G.tournoi) { if (humain) { G.tournoi.i++; if (G.tournoi.i >= G.tournoi.liste.length) { if (G.tournoi.liste.length >= 2 || ORDRE.filter(debloque).length <= 2) { badge('champion', nv); t = 'CHAMPION DE L’ARÈNE !' } G.tournoi.i = 0 } else suite = true } }
+  // le DÉFI d'un animal secret : gagné → ses 3 cartes et son quiz ; perdu → revanche
+  const ep = G.epreuve && G.mode === 1 && !NET.on && !G.livre && G.f[1] && G.f[1].kind === G.epreuve.k ? G.epreuve.k : null;
+  if (ep && humain) { SAVE.defis[ep] = 1; G.apresEpreuve = ep; t = `TU AS BATTU ${CHARS[ep].art} !` }
   sauve();
   { const gagne = v && (NET.on ? !v.distant : G.mode === 2 ? true : !v.cpu); if (!G.livre) setTimeout(() => sfx(gagne ? 'victoire' : 'defaite'), 250); setTimeout(() => annonceur(!v ? 'tie' : G.mode === 2 && !NET.on ? 'winner' : gagne ? 'you_win' : 'you_lose'), 1100); if (nv.length) setTimeout(() => sfx('badge'), 1500) }
   if (window.tropheesFin) tropheesFin(v, l, n, nv); // trophées (surprises.js)
@@ -3206,9 +3298,13 @@ function endMatch() {
   $('fin-etoiles').innerHTML = G.mode === 1 && humain && !G.god ? etoiles(n) : '';
   $('fin-badges').innerHTML = nv.map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
   $('fait-titre').textContent = neuf ? `NOUVELLE CARTE ! ${nbCartes()}/${totalCartes()} · LE SAVAIS-TU ?` : fait ? 'LE SAVAIS-TU ?' : 'ANIMAUX SECRETS';
-  $('fait-txt').textContent = fait || 'Réponds au quiz du livre pour débloquer ces animaux… et gagner leurs cartes « Le savais-tu ? » !';
+  $('fait-txt').textContent = fait || fin('Bats les animaux secrets ⚔️ et réussis leur quiz : ils rejoignent ton équipe… avec leurs cartes « Le savais-tu ? » !');
   $('fin-img').src = (v || a).kind + '_fin.webp';
   $('revanche').textContent = suite ? 'ADVERSAIRE SUIVANT ▶' : G.mode === 1 && G.tournoi && humain ? 'NOUVEAU TOURNOI' : NET.on ? 'REJOUER' : 'REVANCHE !';
+  if (ep) { const d = CHARS[ep];
+    $('fait-titre').textContent = humain ? '🃏 3 CARTES GAGNÉES !' : 'PRESQUE !';
+    $('fait-txt').textContent = fin(humain ? `Découvre 3 secrets ${du(ep).toLowerCase()} et réponds à son quiz : ${d.fem ? 'elle' : 'il'} sera à toi !` : `Retente ta chance contre ${leNom(ep)} ! Astuce : en FACILE, c’est plus simple.`);
+    $('revanche').textContent = humain ? '🃏 SES CARTES ▶' : '⚔️ REVANCHE !' }
   show('fin');
 }
 function startMatch() {
@@ -3216,10 +3312,11 @@ function startMatch() {
   G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
   G.chrono = 0;
   G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
-  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] , bouledogue: [.85, .95, 1.15, .45] , baleine: [1.1, .95, .8, .45] , crabe: [.8, .9, 1.25, .45] , crevette: [1.2, .8, .9, .45] , frelon: [.8, .85, 1.2, .45] , abeille: [.85, .85, 1.15, .45] , mygale: [1.2, .9, .7, .45] , guepe: [1.15, .8, 1.2, .45] , scolopendre: [1.1, .95, .7, .45] , chauvesouris: [.9, .8, 1.2, .45] , mante: [1.1, .9, 1.2, .45] , colibri: [.85, 1.15, .95, .45] }[p2]; // variante de couleur
+  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] , bouledogue: [.85, .95, 1.15, .45] , baleine: [1.1, .95, .8, .45] , crabe: [.8, .9, 1.25, .45] , crevette: [1.2, .8, .9, .45] , frelon: [.8, .85, 1.2, .45] , abeille: [.85, .85, 1.15, .45] , mygale: [1.2, .9, .7, .45] , guepe: [1.15, .8, 1.2, .45] , scolopendre: [1.1, .95, .7, .45] , chauvesouris: [.9, .8, 1.2, .45] , mante: [1.1, .9, 1.2, .45] , colibri: [.85, 1.15, .95, .45] , serpentbrun: [1.1, 1, .8, .45] }[p2]; // variante de couleur
   if (G.livre && G.livre.noms) G.f.forEach((f, i) => f.nomAff = G.livre.noms[i]);
   if (NET.on) G.f.forEach((f, i) => f.distant = i !== NET.moi); // en ligne : l'animal de l'ami (ses trophées, ses sons « SUPER prêt ») n'est pas le nôtre
   G.nvTroph = [];
+  for (const f of G.f) if (!f.cpu && !f.distant && !G.tuto) SAVE.joue[f.kind] = (SAVE.joue[f.kind] || 0) + 1; // ⭐ TES PRÉFÉRÉS
   G.round = 1; newRound(); show(null);
   document.body.classList.toggle('deux', G.mode === 2 && !NET.on);
   for (const T of [TOUCH, TOUCH2]) { T.x = T.y = 0; T.L = T.H = T.S = T.G = false }
@@ -3236,27 +3333,50 @@ function loop(now) {
 // ---------------------------------------------------------------------
 //  Écrans (menu, choix, VS, fin) et commandes tactiles
 // ---------------------------------------------------------------------
-const ECRANS = ['titre', 'choix', 'arenes', 'vs', 'pause', 'fin', 'code', 'trophees', 'enligne', 'appli', 'quiz', 'adeux', 'livre', 'pari', 'verdict', 'invite', 'parents', 'defi', 'legende', 'tuto', 'nom'];
+const ECRANS = ['titre', 'choix', 'arenes', 'vs', 'pause', 'fin', 'code', 'trophees', 'enligne', 'appli', 'quiz', 'epreuve', 'adeux', 'livre', 'pari', 'verdict', 'invite', 'parents', 'defi', 'legende', 'tuto', 'nom'];
 function show(id) {
   for (const e of ECRANS) { const el = $(e); if (el) el.hidden = e !== id }
   document.body.classList.toggle('en-combat', !id || id === 'pause'); document.body.classList.toggle('en-pause', id === 'pause'); document.body.classList.toggle('en-menu-titre', id === 'titre'); document.body.classList.toggle('en-menu', !!id && id !== 'pause' && id !== 'titre');
   if (id) G.screen = id;
   document.body.dataset.ecran = id || 'combat';
-  if (id === 'titre') { const j = $('jouer'); if (j) j.classList.toggle('nouveau-mer', !SAVE.vuMer && ORDRE.some(k => mondeDe(k) === 'mer')) } // la mer est nouvelle : un autocollant sur JOUER jusqu'à la première visite
+  if (id === 'titre') { const j = $('jouer'); if (j) { j.classList.toggle('nouveau-defis', !SAVE.vuDefis); j.classList.toggle('nouveau-mer', !!SAVE.vuDefis && !SAVE.vuMer && ORDRE.some(k => mondeDe(k) === 'mer')) } }
+  if (id === 'choix' && !SAVE.vuDefis) { SAVE.vuDefis = 1; sauve() } // (l'autocollant « ⚔️ NOUVEAU : LES DÉFIS ! » disparaît après la première visite) // la mer est nouvelle : un autocollant sur JOUER jusqu'à la première visite
 }
 let selCursor = 0, selStage = 0;
-const places = () => Math.max(MONDES[G.monde].places, LISTE().length); // cases de la grille du monde affiché (« BIENTÔT… » pour les animaux à venir)
-const nbCartesChoix = () => LISTE().length;
-// aller à la carte d'un animal (on passe dans son monde)
-function vaVers(k) { G.monde = mondeDe(k); selCursor = Math.max(0, LISTE().indexOf(k)) }
+G.onglet = 'fav';
+// cartes de l'onglet affiché : les jouables d'abord, puis les animaux à gagner au défi, puis les champions du livre (cartes dorées)
+function favoris() { // les 4 animaux les plus joués (complétés par ceux de base pour un nouveau joueur)
+  const l = Object.keys(SAVE.joue || {}).filter(k => CHARS[k] && debloque(k)).sort((a, b) => SAVE.joue[b] - SAVE.joue[a]).slice(0, 4);
+  for (const k of DE_BASE) if (l.length < 4 && !l.includes(k) && CHARS[k]) l.push(k);
+  return l;
+}
+const ongletVisible = o => o.k === 'fav' ? !NET.on && !G.epreuve && !(selStage === 1 && !NET.on) : mondeOuvert(o.m);
+const ongletPermis = o => { if (G.epreuve && !G.pick[1]) return o.m === mondeDe(G.epreuve.k); if (selStage === 1 && !NET.on) return o.m === G.monde; return true };
+function synchroOnglet() { // l'onglet affiché doit correspondre au monde des combats (changé à distance en ligne, ou par vaVers)
+  const o = ongletDe(G.onglet);
+  if (!ONGLETS.some(x => x.k === G.onglet) || !ongletVisible(o) || !ongletPermis(o) || (o.m && o.m !== G.monde)) {
+    const r = G.monde === 'terre' ? (G.pick[0] && selStage === 1 && mondeDe(G.pick[0]) === 'terre' ? regionDe(G.pick[0]) : G.epreuve ? regionDe(G.epreuve.k) : ONGLETS.find(x => x.m === 'terre' && x.k === SAVE.region) ? SAVE.region : 'savane') : G.monde;
+    G.onglet = r;
+  }
+}
+function CARTES() {
+  if (G.onglet === 'fav') return favoris().concat('hasard');
+  const o = ongletDe(G.onglet), L = LISTE(o.m).filter(k => o.m !== 'terre' || regionDe(k) === o.k);
+  const ok = L.filter(debloque), non = L.filter(k => !debloque(k));
+  return ok.concat(non.filter(k => !champion(k)), non.filter(champion));
+}
+const nbCartesChoix = () => CARTES().length;
+// aller à la carte d'un animal (on passe dans son onglet)
+function vaVers(k) { G.monde = mondeDe(k); G.onglet = regionDe(k); selCursor = Math.max(0, CARTES().indexOf(k)) }
 function menuKey(code) {
   if (G.phase === 'menu' && G.screen === 'titre' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('jouer').click(); return }
   if (G.phase === 'menu' && G.screen === 'choix') {
-    const n = nbCartesChoix(), pl = places(), col = pl <= 4 ? 4 : pl > 18 ? Math.ceil(pl / 3) : pl > 14 ? 6 : pl > 12 ? 7 : 6; // (plus de 18 cartes : 3 lignes qui défilent de côté)
+    const n = nbCartesChoix(), col = n <= 5 ? n : 6;
     if (['KeyA', 'ArrowLeft'].includes(code)) { selCursor = (selCursor + n - 1) % n; majChoix(); sfx('clic') }
     if (['KeyD', 'ArrowRight'].includes(code)) { selCursor = (selCursor + 1) % n; majChoix(); sfx('clic') }
     if (['KeyW', 'ArrowUp', 'KeyS', 'ArrowDown'].includes(code)) { selCursor = (selCursor + col) % Math.max(col, n); if (selCursor >= n) selCursor = n - 1; majChoix(); sfx('clic') }
-    if (['Enter', 'Space', 'KeyF', 'KeyJ', 'Numpad1', 'Comma'].includes(code)) clicCarte(LISTE()[selCursor]);
+    if (['KeyE', 'PageDown', 'KeyQ', 'PageUp'].includes(code)) { const L = ONGLETS.filter(o => ongletVisible(o) && ongletPermis(o)), i = L.findIndex(o => o.k === G.onglet), s = ['KeyQ', 'PageUp'].includes(code) ? -1 : 1; if (L.length > 1) changeOnglet(L[(i + s + L.length) % L.length].k) }
+    if (['Enter', 'Space', 'KeyF', 'KeyJ', 'Numpad1', 'Comma'].includes(code)) clicCarte(CARTES()[selCursor]);
   }
   if (G.phase === 'menu' && G.screen === 'arenes') {
     const n = (G.arenesListe || ARENES).length + 1;
@@ -3266,63 +3386,78 @@ function menuKey(code) {
     if (['Enter', 'Space', 'KeyF', 'KeyJ', 'Numpad1', 'Comma'].includes(code)) prendArene(selArene);
     if (code === 'Escape' || code === 'Backspace') $('arenes-retour').click();
   }
-  if (G.phase === 'menu' && G.screen === 'choix' && (code === 'Escape' || code === 'Backspace') && selStage === 1) $('retour-choix').click();
+  if (G.phase === 'menu' && G.screen === 'choix' && (code === 'Escape' || code === 'Backspace') && (selStage === 1 || G.epreuve)) $('retour-choix').click();
   if (G.phase === 'menu' && G.screen === 'code' && code === 'Enter') $('code-ok').click();
   if (G.phase === 'menu' && G.screen === 'enligne' && (code === 'Enter' || code === 'NumpadEnter') && !$('net-invite').hidden) $('net-ok').click();
-  if (G.phase === 'fin' && ['Enter', 'Space'].includes(code)) $('revanche').click();
 }
 function etoiles(n, max = 3) { let s = ''; for (let i = 0; i < max; i++) s += i < n ? '<b>★</b>' : '★'; return s }
 function construitCartes() {
   setTimeout(() => { if (window.hlMarqueCartes) hlMarqueCartes() }, 0); // sans internet : les animaux pas encore sur l'appareil sont grisés (☁️)
-  const box = $('cartes'); box.innerHTML = ''; const L = LISTE(), pl = places(); box.classList.toggle('treize', pl > 12 && pl <= 14); box.classList.toggle('trois', pl > 14); box.classList.toggle('defile', pl > 18); box.style.gridTemplateColumns = pl > 18 ? `repeat(${Math.ceil(pl / 3)}, 13.6cqw)` : ''; box.classList.toggle('quatre', pl <= 4); box.dataset.monde = G.monde; if (selCursor >= L.length) selCursor = 0;
-  majMondes();
-  for (let i = 0; i < pl; i++) {
-    const k = L[i], b = document.createElement('button'); b.type = 'button';
-    if (!k) { b.className = 'carte bientot'; b.disabled = true; b.innerHTML = '<span class="img"></span><span class="nom">BIENTÔT…</span><span class="ets">&nbsp;</span>'; box.appendChild(b); continue }
-    const d = CHARS[k], ok = debloque(k);
-    b.className = 'carte ' + k + (ok ? '' : ' verrou') + (k === 'trex' || k === 'megalo' || k === 'meganeura' ? ' legende' : '') + (selStage === 1 && G.pick[0] === k && !NET.on ? ' pris1' : ''); b.id = 'c-' + k;
+  synchroOnglet(); majOnglets();
+  const box = $('cartes'); box.innerHTML = ''; const L = CARTES(); if (selCursor >= L.length) selCursor = 0;
+  box.dataset.monde = G.onglet === 'fav' ? 'fav' : ongletDe(G.onglet).m; box.dataset.onglet = G.onglet; box.classList.toggle('peu', L.length <= 5);
+  box.classList.remove('treize', 'trois', 'defile', 'quatre'); box.style.gridTemplateColumns = '';
+  L.forEach((k, i) => {
+    const b = document.createElement('button'); b.type = 'button';
+    if (k === 'hasard') { b.className = 'carte hasard'; b.innerHTML = '<span class="img"><b>🎲</b></span><span class="nom">AU HASARD</span><span class="ets">&nbsp;</span>'; b.onclick = () => { selCursor = i; majChoix(); clicCarte('hasard') }; b.onmouseenter = () => { selCursor = i; majChoix() }; box.appendChild(b); return }
+    const d = CHARS[k], ok = debloque(k), leg = k === 'trex' || k === 'megalo' || k === 'meganeura', ch = champion(k), bloque = !ok && ((selStage === 1 && !NET.on && G.mode === 2) || NET.on || (G.epreuve && !G.pick[1]));
+    b.className = 'carte ' + k + (ok ? '' : ' verrou') + (leg ? ' legende' : '') + (ch ? ' champion' : '') + (bloque ? ' inactif' : '') + (d.nom.length > 12 ? ' long' : '') + (selStage === 1 && G.pick[0] === k && !NET.on ? ' pris1' : ''); b.id = 'c-' + k;
     if (selStage === 1 && G.pick[0] === k && !NET.on) b.dataset.tag = G.mode === 2 ? 'J1' : 'TOI';
-    b.innerHTML = `<span class="img"><img src="${k}_corps.webp" alt=""></span><span class="nom">${d.nom}</span><span class="ets${ok ? '' : ' quiz'}">${ok ? etoiles(SAVE.etoiles[k] || 0) : LIVRE_EN_MAIN[k] ? '📖 LIVRE EN MAIN' : '🔒 QUIZ DU LIVRE'}</span>`;
+    const ets = ok ? etoiles(SAVE.etoiles[k] || 0) : ch ? '📖 LIVRE' : SAVE.defis[k] ? '❓ QUIZ' : '⚔️ DÉFI';
+    b.innerHTML = `<span class="img"><img src="${k}_corps.webp" alt=""></span><span class="nom">${d.nom}</span><span class="ets${ok ? '' : ' quiz'}">${ets}</span>`;
     b.onclick = () => { selCursor = i; majChoix(); clicCarte(k) };
     b.onmouseenter = () => { selCursor = i; majChoix() };
     box.appendChild(b);
-  }
-  majChoix(); box.scrollLeft = Math.min(box.scrollLeft, box.scrollWidth); majFleches();
+  });
+  majChoix(); majFleches();
 }
-// grille qui défile (plus de 18 animaux) : flèches ◀ ▶, doigt (pan-x) et molette
-function majFleches() {
-  const box = $('cartes'), g = $('cartes-g'), d = $('cartes-d'); if (!box || !g || !d) return;
-  const def = box.classList.contains('defile') && box.scrollWidth > box.clientWidth + 4, max = box.scrollWidth - box.clientWidth;
-  g.hidden = !def || box.scrollLeft <= 4; d.hidden = !def || box.scrollLeft >= max - 4;
+// (ancienne grille qui défilait : plus utile, chaque onglet tient sur un écran ; les flèches restent cachées)
+function majFleches() { const g = $('cartes-g'), d = $('cartes-d'); if (g) g.hidden = true; if (d) d.hidden = true }
+// onglets ⭐ PRÉFÉRÉS · 🦁 SAVANE · 🐊 JUNGLES · 🌲 GRAND NORD · 🌊 MER · 🐞 BÊTES
+function majOnglets() {
+  const box = $('mondes'); if (!box) return;
+  if (!box.dataset.fait) { box.dataset.fait = 1; box.innerHTML = ONGLETS.map(o => `<button class="btn monde" data-onglet="${o.k}" type="button" aria-pressed="false"><i>${o.ico}</i><em>${o.nom}</em></button>`).join(''); box.querySelectorAll('.monde').forEach(b => b.onclick = () => changeOnglet(b.dataset.onglet)) }
+  box.querySelectorAll('.monde').forEach(b => { const o = ongletDe(b.dataset.onglet), on = o.k === G.onglet; b.hidden = !ongletVisible(o); b.setAttribute('aria-pressed', on); b.disabled = !on && !ongletPermis(o); b.classList.toggle('nouveau', ((o.k === 'mer' && !SAVE.vuMer) || (o.k === 'betes' && !SAVE.vuBetes)) && !on) });
 }
-// onglets TERRE / MER : on change de monde à l'écran de choix (pas pendant le choix de l'adversaire : il doit être du même monde)
-function majMondes() {
-  const fige = selStage === 1 && !NET.on;
-  document.querySelectorAll('#mondes .monde').forEach(b => { const m = b.dataset.monde, on = m === G.monde; b.hidden = !mondeOuvert(m); b.setAttribute('aria-pressed', on); b.disabled = fige && !on; b.classList.toggle('nouveau', ((m === 'mer' && !SAVE.vuMer) || (m === 'betes' && !SAVE.vuBetes)) && !on) });
+// changer d'onglet : dans la TERRE, on passe d'une région à l'autre ; un autre monde change aussi le monde des combats
+function changeOnglet(k) {
+  const o = ongletDe(k); if (k === G.onglet || !ongletVisible(o) || !ongletPermis(o)) return;
+  if (o.m && o.m !== G.monde) { changeMonde(o.m, false, k); return }
+  G.onglet = k; SAVE.onglet = k; if (o.m === 'terre') SAVE.region = k; sauve(); selCursor = 0; sfx('clic'); construitCartes();
 }
-function changeMonde(m, distant) {
-  if (!MONDES[m] || !mondeOuvert(m) || m === G.monde || (selStage === 1 && !NET.on)) return;
-  G.monde = m; SAVE.monde = m; if (m === 'mer') SAVE.vuMer = 1; if (m === 'betes') SAVE.vuBetes = 1; sauve();
+function changeMonde(m, distant, onglet) {
+  if (!MONDES[m] || !mondeOuvert(m) || (m === G.monde && !onglet) || (selStage === 1 && !NET.on)) return;
+  G.monde = m; SAVE.monde = m; if (m === 'mer') SAVE.vuMer = 1; if (m === 'betes') SAVE.vuBetes = 1;
+  G.onglet = onglet || (m === 'terre' ? SAVE.region || 'savane' : m); SAVE.onglet = G.onglet; sauve();
   selCursor = 0; sfx('clic'); if (m === 'mer') sfx('plouf', .5); if (m === 'betes') sfx('ailes', .7);
   if (NET.on) { NET.pret = {}; selStage = 0; if (!distant) envoie({ t: 'monde', m }); $('choix-titre').textContent = distant ? `TON AMI A CHOISI : ${MONDES[m].ico} ${MONDES[m].nom}` : NET.role === 'hote' ? 'CHOISIS TON ANIMAL (tu es J1, à gauche)' : 'CHOISIS TON ANIMAL (tu es J2, à droite)' }
   construitCartes();
 }
 function majChoix() {
-  document.querySelectorAll('#cartes .carte').forEach((c, i) => { c.classList.toggle('curseur', i === selCursor); if (i === selCursor && $('cartes').classList.contains('defile') && c.scrollIntoView) c.scrollIntoView({ block: 'nearest', inline: 'nearest' }) });
-  if (!NET.on) $('choix-titre').textContent = selStage === 0 ? (G.mode === 2 ? 'JOUEUR 1 : CHOISIS TON ANIMAL' : MONDES[G.monde].titre) : G.mode === 2 ? 'JOUEUR 2 : À TOI DE CHOISIR' : 'CHOISIS TON ADVERSAIRE';
-  const k = LISTE()[selCursor], d = k && CHARS[k], s1 = selStage === 1 && !NET.on;
-  $('retour-choix').hidden = !!NET.on; $('hasard-btn').hidden = !s1; $('tournoi-btn').hidden = !(s1 && G.mode === 1); $('trophees-btn').hidden = s1;
-  $('detail').innerHTML = !d ? '' : !debloque(k) ? (LIVRE_EN_MAIN[k] ? `${d.fem ? 'Elle' : 'Il'} t’attend dans le livre, <b>page ${pageLivre(k)}</b> : ouvre-le pour le débloquer !` : 'Animal secret : réponds au <b>quiz du livre</b> pour le débloquer !')
+  document.querySelectorAll('#cartes .carte').forEach((c, i) => c.classList.toggle('curseur', i === selCursor));
+  const o = ongletDe(G.onglet), lieu = G.onglet === 'fav' ? '⭐ TES PRÉFÉRÉS' : `${o.ico} ${o.titre}`;
+  if (!NET.on) $('choix-titre').textContent = G.epreuve && !G.pick[1] ? `QUI VA AFFRONTER ${CHARS[G.epreuve.k].art} ?` : selStage === 0 ? (G.mode === 2 ? `JOUEUR 1 : CHOISIS TON ANIMAL · ${lieu}` : `CHOISIS TON ANIMAL · ${lieu}`) : G.mode === 2 ? `JOUEUR 2 : À TOI · ${lieu}` : `CHOISIS TON ADVERSAIRE · ${lieu}`;
+  const k = CARTES()[selCursor], d = k && CHARS[k], s1 = selStage === 1 && !NET.on;
+  $('retour-choix').hidden = !!NET.on; $('hasard-btn').hidden = !!NET.on || !!G.epreuve; $('tournoi-btn').hidden = !(s1 && G.mode === 1 && !G.epreuve); $('trophees-btn').hidden = s1;
+  $('detail').innerHTML = k === 'hasard' ? '🎲 Un animal au hasard, parmi ceux que tu as !' : !d ? '' : !debloque(k) ? (champion(k) ? `📖 <b>CHAMPION DU LIVRE</b> : ${d.fem ? 'elle' : 'il'} t’attend <b>page ${pageLivre(k)}</b> du livre.`
+    : SAVE.defis[k] ? `Tu ${d.fem ? 'l’as battue' : 'l’as battu'} ! Réponds à <b>son quiz</b> pour ${d.fem ? 'la' : 'le'} gagner.` : `⚔️ <b>Animal secret</b> : bats-${d.fem ? 'la' : 'le'} en duel, puis réponds à son quiz pour ${d.fem ? 'la' : 'le'} gagner !`)
     : `<b>${d.nom}</b> · ★ Spécial : <b>${d.moves[d.speAff || 'S'].nom}</b> · Super : <b>${d.moves.SUPER.nom}</b>`;
 }
 function clicCarte(k) {
-  if (!debloque(k)) { if (NET.on) return; if (LIVRE_EN_MAIN[k]) ouvreLivreEnMain(k); else ouvreQuiz(k); return }
+  if (k === 'hasard') { animalAuHasard(); return }
+  if (!debloque(k)) {
+    if (NET.on) return;
+    if (G.epreuve && !G.pick[1]) { sfx('erreur'); $('detail').innerHTML = `Pour affronter ${leNom(G.epreuve.k, true)}, choisis un animal que tu as déjà !`; return }
+    if (selStage === 1 && G.mode === 2) { sfx('erreur'); $('detail').innerHTML = 'Les animaux verrouillés se gagnent en mode <b>1 JOUEUR</b>.'; return }
+    if (champion(k)) ouvreVitrine(k); else if (QUIZ[k]) ouvreEpreuve(k); else { sfx('erreur'); $('detail').innerHTML = 'Cet animal arrive bientôt dans l’arène !' } return
+  }
   choisir(k);
 }
 function choisir(k) {
   sonInit(); sfx('valide'); sfx(k, .6);
   if (NET.on) { netChoisit(k); return }
-  if (selStage === 0) { G.pick[0] = k; selStage = 1; G.tournoi = null; construitCartes(); return }
+  if (G.epreuve && !G.pick[1]) { G.monde = mondeDe(G.epreuve.k); G.pick = [k, G.epreuve.k]; G.tournoi = null; ouvreArenes(); return } // le défi : son animal contre l'animal secret
+  if (selStage === 0) { G.pick[0] = k; G.monde = memeMonde(k, G.monde) && ONGLETS.find(o => o.k === G.onglet && o.m) ? G.monde : mondeDe(k); selStage = 1; G.tournoi = null; construitCartes(); return }
   // 1 joueur : on choisit son adversaire (Vincent) ; 2 joueurs : le joueur 2 choisit son animal
   G.pick[1] = k; G.tournoi = null; ouvreArenes();
 }
@@ -3332,6 +3467,12 @@ function lanceTournoi() {
   G.tournoi = { liste: autres.length ? autres : [k], i: 0 }; G.pick[1] = G.tournoi.liste[0]; sfx('valide'); ouvreArenes();
 }
 function adversaireAuHasard() { const l = LISTE().filter(debloque); choisir(l[Math.floor(Math.random() * l.length)]) }
+// 🎲 AU HASARD : l'adversaire (2ᵉ étape), ou son propre animal parmi ceux de l'onglet (tous les mondes dans ⭐)
+function animalAuHasard() {
+  if (selStage === 1 && !NET.on) { adversaireAuHasard(); return }
+  const l = (G.onglet === 'fav' ? ORDRE.filter(k => debloque(k) && mondeOuvert(mondeDe(k))) : CARTES().filter(k => k !== 'hasard' && debloque(k)));
+  if (!l.length) return; const k = l[Math.floor(Math.random() * l.length)]; if (G.onglet === 'fav') G.monde = mondeDe(k); choisir(k);
+}
 // --- chargement d'un animal (images + squelette), une seule fois
 const CHARGE = {};
 function chargeAnimal(k) {
@@ -3375,6 +3516,7 @@ function vs() {
   $('vs-g').src = G.pick[0] + '_vs.webp'; $('vs-d').src = G.pick[1] + '_vs.webp';
   $('vs-nom-g').textContent = G.livre && G.livre.noms ? G.livre.noms[0] : CHARS[G.pick[0]].nom; $('vs-nom-d').textContent = G.livre && G.livre.noms ? G.livre.noms[1] : CHARS[G.pick[1]].nom;
   $('vs').classList.remove('anim'); void $('vs').offsetWidth; $('vs').classList.add('anim');
+  $('vs').classList.toggle('or-g', champion(G.pick[0])); $('vs').classList.toggle('or-d', champion(G.pick[1])); // 📖 CHAMPION DU LIVRE
   sfx('boum', .8); sfx('foule', .45);
   const pret = Promise.all([chargeAnimal(G.pick[0]), chargeAnimal(G.pick[1]), chargeArene(G.arene).then(i => { G.bgImg = i }).catch(() => { })]);
   const attente = new Promise(r => setTimeout(r, 2600));
@@ -3382,7 +3524,7 @@ function vs() {
     .catch(() => { if (G.phase !== 'vs') return; const hors = !navigator.onLine; $('charge').hidden = false; $('charge').textContent = hors ? 'Pas d’internet : cet animal n’est pas encore sur cet appareil. Choisis-en un autre !' : 'Oups, une image n’a pas pu se charger. Vérifie la connexion…';
       setTimeout(() => { $('charge').hidden = true; if (G.phase === 'vs') { G.phase = 'menu'; show('choix'); selStage = 0; construitCartes() } }, 3800) }); // (sans internet : retour au choix, jamais bloqué)
 }
-function toMenu() { if (NET.on) netFerme(); const livre = G.livre; G.livre = null; G.phase = 'menu'; G.f = []; selStage = 0; selCursor = 0; if (livre && window.ouvreLivre) ouvreLivre(); else show('titre') }
+function toMenu() { if (NET.on) netFerme(); finEpreuve(); const livre = G.livre; G.livre = null; G.phase = 'menu'; G.f = []; selStage = 0; selCursor = 0; if (livre && window.ouvreLivre) ouvreLivre(); else show('titre') }
 // --- code secret
 function ouvreCode() { G.phase = 'menu'; show('code'); $('code-msg').textContent = ''; $('code-in').value = ''; setTimeout(() => $('code-in').focus(), 50) }
 function valideCode() {
@@ -3394,40 +3536,91 @@ function valideCode() {
   $('code-msg').textContent = `BRAVO ! ${CHARS[k].art} rejoint l’arène !`; sonInit(); sfx('super'); sfx(k, 1);
   setTimeout(() => { show('choix'); vaVers(k); construitCartes() }, 1400);
 }
-// --- quiz du livre
-const Q = {};
 // typographie française : espace fine insécable avant ? ! : ; » et après « (pas de « ? » tout seul en début de ligne)
 function fin(t) { return String(t).replace(/ ([?!:;»])/g, '\u202F$1').replace(/« /g, '«\u202F') }
 function melange(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] } return a }
-function ouvreQuiz(k) {
+// ---------------------------------------------------------------------
+//  LE DÉFI (25/09) : les animaux à gagner SANS le livre. « LE PUMA TE DÉFIE ! » → on le bat → ses 3 cartes « Le savais-tu ? »
+//  → 3 questions sur ces cartes (QUIZ) → il rejoint l'arène. Une erreur ? La carte réapparaît, la question revient plus tard.
+// ---------------------------------------------------------------------
+const Q = {};
+const du = k => { const a = CHARS[k].art; return a.startsWith('LE ') ? 'DU ' + a.slice(3) : 'DE ' + a }; // « DU PUMA », « DE LA HYÈNE », « DE L’OURS »
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+function finEpreuve() { G.epreuve = null; G.apresEpreuve = null }
+function ouvreEpreuve(k) {
+  if (!QUIZ[k]) return;
+  sonInit(); sfx('clic'); setTimeout(() => sfx(k, .8), 250); G.phase = 'menu'; show('epreuve');
+  const d = CHARS[k], battu = !!SAVE.defis[k], la = d.fem ? 'la' : 'le';
+  $('epreuve').classList.remove('or'); $('epreuve').classList.toggle('battu', battu);
+  $('ep-img').src = k + '_vs.webp'; $('ep-sur').textContent = battu ? `TU ${d.fem ? 'L’AS BATTUE' : 'L’AS BATTU'} !` : 'UN ANIMAL SECRET…';
+  $('ep-titre').textContent = battu ? `${d.art} T’ATTEND AU QUIZ !` : `${d.art} TE DÉFIE !`;
+  $('ep-etapes').innerHTML = [['⚔️', `Bats-${la} en duel`], ['🃏', 'Gagne 3 de ses cartes « Le savais-tu ? »'], ['❓', 'Réponds à 3 questions sur ces cartes']]
+    .map(([i, t], n) => `<li class="${n === 0 && battu ? 'ok' : ''}"><i>${n === 0 && battu ? '✔' : i}</i>${fin(t)}</li>`).join('');
+  $('ep-txt').innerHTML = fin(`Et ${d.fem ? 'elle' : 'il'} rejoint ton équipe !`);
+  const go = $('ep-go'), qz = $('ep-quiz');
+  go.textContent = battu ? '❓ LE QUIZ !' : '⚔️ RELEVER LE DÉFI !'; go.onclick = () => battu ? (sfx('valide'), ouvreSecrets(k)) : lanceEpreuve(k);
+  qz.hidden = !battu; qz.textContent = '⚔️ LE REBATTRE'; qz.onclick = () => lanceEpreuve(k);
+}
+function lanceEpreuve(k) {
+  sonInit(); sfx('valide'); G.epreuve = { k }; G.apresEpreuve = null; G.livre = null; G.defi = null; G.jour = null; G.tournoi = null;
+  if (G.mode !== 1) { G.mode = 1; $('m1').setAttribute('aria-pressed', true); $('m2').setAttribute('aria-pressed', false); $('niveaux').hidden = false }
+  G.phase = 'menu';
+  if (selStage === 1 && G.pick[0] && CHARS[G.pick[0]] && memeMonde(G.pick[0], k)) { G.pick[1] = k; ouvreArenes(); return } // il avait déjà choisi son animal
+  selStage = 0; G.pick = [null, null]; G.monde = mondeDe(k); G.onglet = regionDe(k); selCursor = 0; show('choix'); construitCartes();
+}
+// 🃏 les 3 cartes gagnées (ce sont elles qui contiennent les réponses du quiz)
+function ouvreSecrets(k) {
   const z = QUIZ[k]; if (!z) return;
-  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz');
-  Object.assign(Q, { k, qs: melange(z.q).slice(0, 3), i: 0, bloque: false });
-  $('quiz-titre').textContent = `DÉBLOQUE ${CHARS[k].art} !`;
-  $('quiz-intro').innerHTML = `Réponds juste à <b>3 questions</b>. Les réponses sont dans le livre, <b>${z.pages}</b> : ouvre-le !`;
-  $('quiz-img').style.backgroundImage = `url(${k}_corps.webp)`; $('quiz-img').classList.add('ombre');
-  const s = $('quiz-suite'); s.hidden = true; s.textContent = 'RÉESSAYER'; s.onclick = () => { sfx('clic'); ouvreQuiz(Q.k) }; poseQuestion(); // nouvel essai : 3 questions tirées au hasard, choix re-mélangés
+  sonInit(); G.phase = 'menu'; show('quiz'); $('quiz').classList.add('defi'); $('quiz').classList.remove('or');
+  const qs = melange(z).slice(0, 3), cartes = [...new Set(qs.map(q => q[2]))];
+  const vu = SAVE.cartes[k] || (SAVE.cartes[k] = []); for (const c of cartes) if (!vu.includes(c)) vu.push(c); sauve();
+  Object.assign(Q, { k, lem: null, qs, cartes, i: 0, file: qs.slice(), reussi: [], bloque: false });
+  $('quiz-img').style.backgroundImage = `url(${k}_corps.webp)`; $('quiz-img').classList.remove('ombre');
+  sfx('badge'); montreCarte();
 }
-function poseQuestion() {
-  const [txt, reps, page] = Q.qs[Q.i];
-  $('quiz-pas').innerHTML = Q.qs.map((_, i) => `<i class="${i < Q.i ? 'ok' : i === Q.i ? 'en' : ''}"></i>`).join('');
-  $('quiz-q').textContent = fin(`${Q.i + 1}. ${txt} `); const pg = document.createElement('small'); pg.className = 'quiz-page'; pg.textContent = `📖 page ${page}`; $('quiz-q').appendChild(pg);
-  $('quiz-msg').textContent = ''; Q.bloque = false;
+function montreCarte() {
+  const k = Q.k, n = Q.cartes.length, dernier = Q.i >= n - 1;
+  $('quiz-titre').textContent = `🃏 LES SECRETS ${du(k)}`;
+  $('quiz-intro').innerHTML = fin(`Carte ${Q.i + 1} sur ${n} : lis bien, le quiz arrive !`);
+  $('quiz-pas').innerHTML = Q.cartes.map((_, i) => `<i class="${i < Q.i ? 'ok' : i === Q.i ? 'en' : ''}"></i>`).join('');
+  $('quiz-q').innerHTML = `<span class="carte-secret"><b>LE SAVAIS-TU ?</b>${esc(fin(FAITS[k][Q.cartes[Q.i]]))}</span>`;
+  $('quiz-rep').innerHTML = ''; $('quiz-msg').textContent = '';
+  const s = $('quiz-suite'); s.hidden = false; s.textContent = dernier ? '❓ AU QUIZ !' : 'CARTE SUIVANTE ▶';
+  s.onclick = () => { sfx('clic'); if (dernier) poseQuestionDefi(); else { Q.i++; montreCarte() } };
+}
+function poseQuestionDefi() {
+  const [txt, reps] = Q.file[0];
+  $('quiz-titre').textContent = `❓ LE QUIZ ${du(Q.k)}`;
+  $('quiz-intro').innerHTML = fin('Réponds juste aux <b>3 questions</b> : les réponses sont dans ses cartes !');
+  $('quiz-pas').innerHTML = Q.qs.map(q => `<i class="${Q.reussi.includes(q) ? 'ok' : q === Q.file[0] ? 'en' : ''}"></i>`).join('');
+  $('quiz-q').textContent = fin(txt); $('quiz-msg').textContent = ''; Q.bloque = false; $('quiz-suite').hidden = true;
   const box = $('quiz-rep'); box.innerHTML = '';
-  for (const r of melange(reps)) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = fin(r); b.onclick = () => repond(b, r === reps[0]); box.appendChild(b) }
+  for (const r of melange(reps)) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = fin(r); b.onclick = () => repondDefi(b, r === reps[0]); box.appendChild(b) }
 }
-function repond(b, juste) {
+function repondDefi(b, juste) {
   if (Q.bloque) return; Q.bloque = true;
-  const [, , page] = Q.qs[Q.i];
-  document.querySelectorAll('#quiz-rep .btn').forEach(x => { x.disabled = true }); // en cas d'erreur, on ne montre JAMAIS la bonne réponse : il faut ouvrir le livre
+  document.querySelectorAll('#quiz-rep .btn').forEach(x => { x.disabled = true });
+  const q = Q.file.shift();
   if (juste) {
-    b.classList.add('bon'); sfx('valide'); $('quiz-msg').textContent = ['BRAVO !', 'EXACT !', 'TOUT JUSTE !'][Q.i] || 'BRAVO !';
-    setTimeout(() => { Q.i++; if (Q.i >= Q.qs.length) quizGagne(); else poseQuestion() }, 1000);
+    b.classList.add('bon'); sfx('valide'); Q.reussi.push(q); $('quiz-msg').textContent = ['BRAVO !', 'EXACT !', 'TOUT JUSTE !'][Q.reussi.length - 1] || 'BRAVO !';
+    setTimeout(() => { if (G.screen !== 'quiz') return; if (!Q.file.length) quizGagne(); else poseQuestionDefi() }, 950);
   } else {
-    b.classList.add('faux'); sfx('erreur');
-    $('quiz-msg').textContent = fin(`Raté ! Relis la page ${page} du livre.`);
-    $('quiz-suite').hidden = false;
+    b.classList.add('faux'); sfx('erreur'); Q.file.push(q); // la question reviendra à la fin
+    $('quiz-msg').innerHTML = `Raté ! Relis sa carte : <span class="carte-rappel">${esc(fin(FAITS[Q.k][q[2]]))}</span>`;
+    const s = $('quiz-suite'); s.hidden = false; s.textContent = 'CONTINUER ▶'; s.onclick = () => { sfx('clic'); poseQuestionDefi() };
   }
+}
+// 📖 CHAMPIONS DU LIVRE : la vitrine dorée (on voit l'animal, ses coups… et la page du livre où il attend)
+function ouvreVitrine(k) {
+  sonInit(); sfx('clic'); setTimeout(() => sfx(k, .9), 250); G.phase = 'menu'; show('epreuve');
+  const d = CHARS[k], m = d.moves;
+  $('epreuve').classList.add('or'); $('epreuve').classList.remove('battu');
+  $('ep-img').src = k + '_vs.webp'; $('ep-sur').textContent = '📖 CHAMPION DU LIVRE';
+  $('ep-titre').textContent = d.art;
+  $('ep-etapes').innerHTML = ['S', 'SF', 'SD'].filter(x => m[x] && m[x].nom).map(x => `<li><i>★</i>${esc(m[x].nom)}</li>`).join('') + `<li class="super"><i>⚡</i>SUPER : ${esc(m.SUPER.nom)}</li>`;
+  $('ep-txt').innerHTML = fin(`${d.fem ? 'Elle' : 'Il'} t’attend <b>page ${pageLivre(k)}</b> du livre « C’est qui le plus fort ? ». Pour ${d.fem ? 'la' : 'le'} débloquer, trouve un mot dans le livre !`);
+  const go = $('ep-go'); go.textContent = '📖 J’AI LE LIVRE !'; go.onclick = () => { sfx('valide'); ouvreLivreEnMain(k) };
+  $('ep-quiz').hidden = true;
 }
 // --- LIVRE EN MAIN : un mot à écrire, trouvé dans le livre
 const normMot = v => String(v).toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
@@ -3440,12 +3633,12 @@ function presque(a, b) { // le bon mot, au pluriel près ou à une petite faute 
 }
 function ouvreLivreEnMain(k, suivante) {
   const L = LIVRE_EN_MAIN[k]; if (!L) return;
-  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz');
+  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz'); $('quiz').classList.remove('defi'); $('quiz').classList.add('or');
   if (!suivante || Q.k !== k || !Q.lem) Object.assign(Q, { k, lem: melange(L), i: 0 }); Q.essais = 0; Q.bloque = false;
   const z = Q.lem[Q.i % Q.lem.length];
-  $('quiz-titre').textContent = '📖 LIVRE EN MAIN !';
-  $('quiz-intro').innerHTML = `${CHARS[k].art} se débloque <b>seulement avec le livre</b> « C’est qui le plus fort ? ». Ouvre-le et trouve le mot !`;
-  $('quiz-img').style.backgroundImage = `url(${k}_corps.webp)`; $('quiz-img').classList.add('ombre');
+  $('quiz-titre').textContent = '📖 CHAMPION DU LIVRE !';
+  $('quiz-intro').innerHTML = fin(`${CHARS[k].art} se débloque <b>seulement avec le livre</b> « C’est qui le plus fort ? ». Ouvre-le et trouve le mot !`);
+  $('quiz-img').style.backgroundImage = `url(${k}_corps.webp)`; $('quiz-img').classList.remove('ombre'); // (un champion du livre se montre en couleur : c'est lui qui donne envie)
   $('quiz-pas').innerHTML = '';
   $('quiz-q').innerHTML = `<span class="lem-ou"><b>📖 PAGE ${z.p}</b> · ${fin(z.ou)}</span>${fin(z.q)}`;
   $('quiz-msg').textContent = '';
@@ -3464,15 +3657,17 @@ function verifieMot() {
   if (Q.essais >= 2 && Q.lem.length > 1) $('quiz-suite').hidden = false;
 }
 function quizGagne() {
-  const k = Q.k, nv = [];
-  if (!SAVE.debloques.includes(k)) SAVE.debloques.push(k); SAVE.quiz[k] = Date.now();
-  badge(LIVRE_EN_MAIN[k] ? 'livre' : 'secret', nv); if (Object.keys(QUIZ).every(x => SAVE.debloques.includes(x))) badge('lecteur', nv); sauve();
+  const k = Q.k, nv = [], ch = champion(k), d = CHARS[k];
+  if (!SAVE.debloques.includes(k)) SAVE.debloques.push(k); SAVE.quiz[k] = Date.now(); finEpreuve();
+  badge(ch ? 'livre' : 'secret', nv); if (Object.keys(QUIZ).every(x => SAVE.debloques.includes(x))) badge('lecteur', nv); sauve();
   $('quiz-pas').innerHTML = '<i class="ok"></i><i class="ok"></i><i class="ok"></i>';
-  $('quiz-img').classList.remove('ombre'); $('quiz-q').textContent = `BRAVO ! ${CHARS[k].art} REJOINT L’ARÈNE !`;
+  $('quiz-img').classList.remove('ombre'); $('quiz-titre').textContent = ch ? '📖 CHAMPION DU LIVRE DÉBLOQUÉ !' : '🎉 GAGNÉ !';
+  $('quiz-intro').innerHTML = fin(ch ? 'Bravo, lecteur ! Ta carte est dorée pour toujours.' : `Tu ${d.fem ? 'l’as battue' : 'l’as battu'}, tu connais ses secrets : ${d.fem ? 'elle est' : 'il est'} à toi !`);
+  $('quiz-q').textContent = `${d.art} REJOINT L’ARÈNE !`;
   $('quiz-rep').innerHTML = ''; $('quiz-msg').innerHTML = (nv.length ? 'NOUVEAU TROPHÉE : ' + nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ') : '') + (window.codeAOffrir ? codeAOffrir(k) : '');
-  sfx('badge'); setTimeout(() => sfx(k, 1), 700);
-  const s = $('quiz-suite'); s.hidden = false; s.textContent = 'JOUER AVEC LUI ▶';
-  s.onclick = () => { sfx('valide'); G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes() };
+  sfx('badge'); setTimeout(() => sfx('super'), 350); setTimeout(() => sfx(k, 1), 900);
+  const s = $('quiz-suite'); s.hidden = false; s.textContent = `JOUER AVEC ${d.fem ? 'ELLE' : 'LUI'} ▶`;
+  s.onclick = () => { sfx('valide'); G.phase = 'menu'; selStage = 0; G.livre = null; show('choix'); vaVers(k); construitCartes(); choisir(k) };
 }
 // --- trophées
 function ouvreTrophees(retour) {
@@ -3484,7 +3679,7 @@ function ouvreTrophees(retour) {
 }
 function ongletTroph(t) { $('troph-badges').hidden = t !== 'badges'; $('troph-cartes').hidden = t !== 'cartes'; $('tab-badges').setAttribute('aria-pressed', t === 'badges'); $('tab-cartes').setAttribute('aria-pressed', t === 'cartes') }
 function initUI() {
-  $('jouer').onclick = () => { sonInit(); sfx('valide'); G.livre = null; G.defi = null; G.jour = null; $('m1').onclick(); const choix = () => { G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
+  $('jouer').onclick = () => { sonInit(); sfx('valide'); G.livre = null; G.defi = null; G.jour = null; finEpreuve(); G.onglet = 'fav'; $('m1').onclick(); const choix = () => { G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
     if (!SAVE.tuto && window.lanceTuto) { chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(choix) }) } else choix() };
   $('livre-titre').onclick = () => { sonInit(); sfx('valide'); ouvreLivre() };
   $('livre-retour').onclick = () => { sfx('retour'); G.livre = null; show('titre') };
@@ -3493,29 +3688,28 @@ function initUI() {
   // À DEUX : sur le même écran, ou chacun son téléphone
   $('adeux-titre').onclick = () => { sonInit(); sfx('clic'); G.phase = 'menu'; show('adeux') };
   $('adeux-retour').onclick = () => { sfx('retour'); show('titre') };
-  $('deux-ecran').onclick = () => { sonInit(); sfx('valide'); $('m2').onclick(); G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
+  $('deux-ecran').onclick = () => { sonInit(); sfx('valide'); finEpreuve(); G.onglet = 'fav'; $('m2').onclick(); G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
   $('deux-tel').onclick = () => { sonInit(); $('m3').onclick() };
   for (const [id, m] of [['m1', 1], ['m2', 2]]) $(id).onclick = () => { G.mode = m; G.tournoi = null; $('m1').setAttribute('aria-pressed', m === 1); $('m2').setAttribute('aria-pressed', m === 2); $('niveaux').hidden = m === 2; selStage = 0; construitCartes(); sfx('clic') };
   document.querySelectorAll('#niveaux .btn').forEach(b => b.onclick = () => { G.niv = +b.dataset.niv; document.querySelectorAll('#niveaux .btn').forEach(x => x.setAttribute('aria-pressed', x === b)); sfx('clic') });
   $('code-ok').onclick = valideCode; $('code-retour').onclick = () => { show('choix'); construitCartes() };
   $('trophees-btn').onclick = () => { sfx('clic'); ouvreTrophees('choix') };
-  $('quiz-retour').onclick = () => { sfx('retour'); G.phase = 'menu'; show('choix'); construitCartes() };
-  $('quiz-suite').onclick = () => { sfx('clic'); ouvreQuiz(Q.k) };
-  $('retour-choix').onclick = () => { sfx('clic'); if (selStage === 0) { G.phase = 'menu'; show(G.mode === 2 ? 'adeux' : 'titre'); return } selStage = 0; G.tournoi = null; selCursor = Math.max(0, LISTE().indexOf(G.pick[0])); construitCartes() };
-  $('hasard-btn').onclick = () => { sfx('clic'); adversaireAuHasard() };
+  $('quiz-retour').onclick = () => { sfx('retour'); const k = Q.k; finEpreuve(); G.phase = 'menu'; show('choix'); if (k && CHARS[k] && selStage === 0) vaVers(k); construitCartes() };
+  $('ep-retour').onclick = () => { sfx('retour'); G.phase = 'menu'; show('choix'); construitCartes() };
+  $('retour-choix').onclick = () => { sfx('clic'); if (G.epreuve && !G.pick[1]) { const k = G.epreuve.k; finEpreuve(); vaVers(k); construitCartes(); return } if (selStage === 0) { G.phase = 'menu'; show(G.mode === 2 ? 'adeux' : 'titre'); return } selStage = 0; G.tournoi = null; const p0 = G.pick[0]; if (p0 && CHARS[p0]) { G.onglet = regionDe(p0); selCursor = Math.max(0, CARTES().indexOf(p0)) } construitCartes() };
+  $('hasard-btn').onclick = () => { sfx('clic'); animalAuHasard() };
   { const box = $('cartes'), pas = s => { sfx('clic'); box.scrollBy({ left: s * Math.max(200, box.clientWidth * .75), behavior: 'smooth' }) };
     $('cartes-g').onclick = () => pas(-1); $('cartes-d').onclick = () => pas(1);
     box.addEventListener('scroll', majFleches, { passive: true }); addEventListener('resize', majFleches);
     box.addEventListener('wheel', e => { if (!box.classList.contains('defile') || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return; box.scrollLeft += e.deltaY; e.preventDefault() }, { passive: false }); } // la molette fait défiler de côté
-  document.querySelectorAll('#mondes .monde').forEach(b => b.onclick = () => changeMonde(b.dataset.monde));
   $('tournoi-btn').onclick = () => lanceTournoi();
-  $('arenes-retour').onclick = () => { sfx('clic'); if (NET.on) { G.phase = 'menu'; show('choix'); $('choix-titre').textContent = 'EN ATTENTE…'; return } G.phase = 'menu'; show('choix'); selStage = 1; construitCartes() }; $('trophees-titre').onclick = () => { sonInit(); sfx('clic'); ouvreTrophees('titre') };
+  $('arenes-retour').onclick = () => { sfx('clic'); if (NET.on) { G.phase = 'menu'; show('choix'); $('choix-titre').textContent = 'EN ATTENTE…'; return } G.phase = 'menu'; show('choix'); if (G.epreuve) { finEpreuve(); G.pick[1] = null } selStage = G.pick[0] && CHARS[G.pick[0]] ? 1 : 0; construitCartes() }; $('trophees-titre').onclick = () => { sonInit(); sfx('clic'); ouvreTrophees('titre') };
   $('troph-retour').onclick = () => { if (G.retourTroph === 'choix') { show('choix'); construitCartes() } else show('titre') };
   $('m3').onclick = () => { sonInit(); sfx('clic'); G.phase = 'menu'; show('enligne'); netEcran('accueil'); netStatut('') };
   $('net-cree').onclick = () => { sfx('clic'); netCree() }; $('net-rejoint').onclick = () => { sfx('clic'); netEcran('invite'); netStatut(''); setTimeout(() => $('net-in').focus(), 50) };
   $('net-ok').onclick = () => { sfx('clic'); netRejoint() }; $('net-retour').onclick = () => { netFerme(); sfx('retour'); show('adeux') }; for (const id of ['net-retour2', 'net-retour3']) $(id).onclick = () => { netFerme(); sfx('retour'); netEcran('accueil'); netStatut('') };
   $('tab-badges').onclick = () => ongletTroph('badges'); $('tab-cartes').onclick = () => ongletTroph('cartes');
-  $('revanche').onclick = () => { sonInit(); G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const L = arenesDe(mondeDuel(G.pick[0], G.pick[1])), j = L.findIndex(x => x.k === G.arene); G.arene = L[(j + 1) % L.length].k } vs() };
+  $('revanche').onclick = () => { sonInit(); if (G.apresEpreuve) { const k = G.apresEpreuve; G.apresEpreuve = null; ouvreSecrets(k); return } G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const L = arenesDe(mondeDuel(G.pick[0], G.pick[1])), j = L.findIndex(x => x.k === G.arene); G.arene = L[(j + 1) % L.length].k } vs() };
   $('menu-btn').onclick = toMenu; $('quitter').onclick = toMenu; $('reprendre').onclick = pause; $('pause-btn').onclick = () => { if (['fight', 'intro'].includes(G.phase)) pause() };
   // bouton SON : musique + bruitages → bruitages seuls → muet (choix gardé sur l'appareil)
   const majSon = () => { const m = SAVE.son || 0; SON.on = m < 2; SON.musOff = m === 1; $('son-btn').textContent = ['♪ SON', '♪ SANS MUSIQUE', '♪ MUET'][m]; if (SON.master) SON.master.gain.value = SON.on ? .8 : 0 };
@@ -3559,7 +3753,7 @@ addEventListener('resize', majU); addEventListener('orientationchange', () => se
   const ok = Skin.init(glC);
   if (!ok) { $('charge').textContent = 'Ton appareil ne peut pas afficher ce jeu (WebGL indisponible).'; return }
   const load = src => new Promise((r, j) => { const i = new Image(); i.onload = () => r(i); i.onerror = j; i.src = src });
-  G.rigs = {}; G.heads = {}; if (MONDES[SAVE.monde] && mondeOuvert(SAVE.monde)) G.monde = SAVE.monde; // on revient dans le dernier monde choisi
+  G.rigs = {}; G.heads = {}; if (MONDES[SAVE.monde] && mondeOuvert(SAVE.monde)) G.monde = SAVE.monde; G.onglet = 'fav'; // on revient dans le dernier monde choisi ; l'écran de choix s'ouvre sur ⭐ TES PRÉFÉRÉS
   // on attend que tous les scripts (réseau, livre, bonus) soient chargés avant de lancer la boucle
   if (document.readyState === 'loading') await new Promise(r => addEventListener('DOMContentLoaded', r, { once: true }));
   // l'accueil s'affiche tout de suite ; le tigre, le gorille et la savane arrivent en tâche de fond (le combat les attend)
