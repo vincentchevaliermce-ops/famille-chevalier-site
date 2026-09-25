@@ -781,6 +781,28 @@ const CHARS = {
   },
 
 
+  // --- BALEINE BLEUE (« livre en main », duel 27, p. 61) : un corps de 30 m, elle file à 32 km/h, le souffle de 9 m, le chant, la grande gorgée (16 tonnes de krill).
+  //     Point faible (livre) : « pas une seule dent » → ses coups poussent fort mais font peu de dégâts.
+  baleine: {
+    nom: 'BALEINE BLEUE', art: 'LA BALEINE BLEUE', fem: true, monde: 'mer', nage: true, force: .68, spr: true, hPose: ['garde', 'coup'], col: '#3E6A96', clair: '#E3EEF7', fond: '#4F86BF', K: .68, hp: 108, walk: 4.6, back: 3.8, dash: 14, jumpV: 15, jumpX: 6, grav: .58, etour: 80,
+    aie: ['OUUUH ?!', 'MES FANONS !', 'AÏE, MA QUEUE !'], ia: { spe: 1.3 },
+    hurt: { stand: [-600, 600, -430, -110], crouch: [-620, 620, -270, 0], air: [-560, 580, -410, -100] }, // (mesuré sur l'image : longue et plate, la queue ne compte pas)
+    push: [300, 340], reach: 840, speMin: 360, speMax: 1400,
+    moves: {
+      L: { st: 6, act: 4, rec: 11, dmg: 5, hs: 15, bs: 11, kb: 10, box: [440, 860, -520, -160], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['BONG !', 'POUF !', 'BLOP !'], son: 'l' },
+      cL: { st: 6, act: 4, rec: 12, dmg: 5, hs: 15, bs: 11, kb: 9, box: [440, 860, -280, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['POUF !', 'FLAC !'], son: 'l' },
+      H: { st: 13, act: 6, rec: 21, dmg: 11, hs: 21, bs: 16, kb: 18, box: [400, 960, -600, -120], lvl: 'mid', lunge: 5, chain: ['S', 'SUPER'], mots: ['BOING !', '150 TONNES !', 'BOUM !'], son: 'h' },
+      cH: { st: 10, act: 5, rec: 23, dmg: 9, hs: 18, bs: 12, kb: 14, kd: true, box: [-800, 900, -240, 0], lvl: 'low', chain: ['S'], mots: ['COUP DE QUEUE !', 'SPLAF !'], son: 'h' },
+      A: { st: 5, act: 99, rec: 9, dmg: 9, hs: 18, bs: 12, kb: 10, box: [100, 860, -440, 160], lvl: 'high', air: true, land: true, dive: 4, chain: ['L', 'cL', 'H'], mots: ['SPLASH !', 'D’EN HAUT !'], son: 'l' },
+      T: { st: 5, act: 3, rec: 22, dmg: 11, hs: 0, bs: 0, kb: 14, kd: true, lvl: 'mid', prise: { portee: 90, t: 22 }, mots: ['HOP, PAR-DESSUS !', 'VOLTIGE !'], son: 'h' },
+      S: { st: 14, act: 4, rec: 22, dmg: 6, hs: 22, bs: 12, kb: 22, lvl: 'mid', souffle: true, proj: { x0: 520, spd: 12, w: 180, h: [-560, -60], life: 100, chant: true }, mots: ['OUUUUUH !', 'LE CHANT !', 'ENTENDU À 1 600 KM !'], son: 's', nom: 'Le chant de la baleine', ia: [500, 1600, 1] },
+      SF: { st: 10, act: 18, rec: 26, dmg: 11, hs: 20, bs: 14, kb: 20, kd: true, box: [250, 1000, -600, -120], rush: 22, stopHit: true, armor: true, lvl: 'mid', mots: ['32 KM/H !', 'PLACE, J’ARRIVE !', 'FIOUUU !'], son: 's', nom: 'Elle file à 32 km/h', ia: [450, 1500, 1] },
+      SD: { st: 6, act: 10, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 12, kd: true, aa: true, inv: 6, box: [100, 700, -1700, -500], geyser: true, lvl: 'high', mots: ['PFFFOUH !', 'LE SOUFFLE DE 9 M !', 'QUEL JET !'], son: 's', nom: 'Le souffle de 9 m', ia: [0, 0, 0] },
+      SUPER: { st: 14, act: 40, rec: 24, dmg: 5, hits: 5, hs: 16, bs: 8, kb: 3, kd: true, box: [200, 1100, -700, 0], tire: { portee: 1400, v: 10 }, aspire: true, gorgee: true, lvl: 'mid', mots: ['LA GRANDE GORGÉE !', 'TOUT AVALÉ !', 'GLOUB !'], son: 'h', nom: 'La grande gorgée' },
+    },
+  },
+
+
 };
 // phrases de victoire (drôles, tirées du livre) : le gagnant parle sur l'écran de fin
 const PHRASES = {
@@ -822,6 +844,7 @@ const PHRASES = {
   lionne: ['L’équipe a gagné !', 'Légère, mais redoutable !', 'On chasse ensemble, on gagne ensemble !'],
   girafe: ['Vu d’en haut, c’est encore plus beau !', 'Un coup de sabot, et au dodo !', 'Mes pattes sont plus grandes que toi !'],
   bouledogue: ['Je cogne, puis je mords !', 'Petit, mais bagarreur !', 'De la rivière à la mer, je gagne partout !'],
+  baleine: ['Pas une dent… et pourtant, gagné !', 'Ouuuuh ! Tu m’as entendue ?', '150 tonnes de bonheur !'],
 };
 const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
 
@@ -849,7 +872,7 @@ const ARENES = [
 const estMer = () => (ARENES.find(a => a.k === G.arene) || {}).monde === 'mer';
 // couleur de la poussière soulevée, selon le sol de l'arène
 const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', nord: '#F2F7FF', floride: '#B89A78', asie: '#C9A26E', estuaire: '#9C8A5A', lune: '#C9CCD6', prehisto: '#9C8A6A' };
-const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
+const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'baleine', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
 // MONDES (décision de Vincent, 24/09) : un animal n'affronte que les animaux de son monde (TERRE, MER ; PETITES BÊTES plus tard)
 const MONDES = { terre: { nom: 'TERRE', ico: '🌍', places: 16, legende: 'trex', titre: 'CHOISIS TON ANIMAL' }, mer: { nom: 'MER', ico: '🌊', places: 8, legende: 'megalo', titre: 'CHOISIS TON ANIMAL DE LA MER' } };
 const mondeDe = k => (CHARS[k] && CHARS[k].monde) || 'terre';
@@ -1124,6 +1147,13 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Le point faible du requin-bouledogue : une peau sans armure !', // ≈ p. 59
     'Le requin-bouledogue remonte les fleuves !', // p. 59
   ],
+  baleine: [
+    'La baleine bleue : jusqu’à 150 tonnes, et un corps de 30 m !', // ≈ p. 61
+    'Le coup spécial de la baleine bleue : elle file à 32 km/h !', // ≈ p. 61
+    'Le point faible de la baleine bleue : pas une seule dent !', // ≈ p. 61
+    'Le chant de la baleine bleue s’entend plus loin que de Paris à Madrid !', // p. 62
+    'Le souffle de la baleine bleue peut monter à 9 m !', // ≈ p. 62
+  ],
 };
 
 // ---------------------------------------------------------------------
@@ -1310,6 +1340,10 @@ const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r
   bouledogue: [
     { p: 59, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Dans quel grand fleuve a-t-on trouvé un requin-bouledogue ?', r: 'Amazone', x: 'dans l’Amazone' },
     { p: 59, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Dans quel pays ?', r: 'Pérou', x: 'au Pérou' },
+  ],
+  baleine: [
+    { p: 61, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Comment s’appellent les minuscules crevettes que mange la baleine bleue ?', r: 'krill', x: '16 tonnes de krill' },
+    { p: 61, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Son cœur pèse combien de kilos ? (écris le nombre)', r: '180', x: 'Son cœur pèse 180 kg' },
   ],
 };
 
@@ -2516,7 +2550,7 @@ function render() {
   dessineFoule(fx); hud(fx); annonce(fx);
 }
 // position de la tête (px image depuis le point au sol, pose de base)
-const TETE = { bouledogue: [420, -480], girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
+const TETE = { baleine: [540, -330], bouledogue: [420, -480], girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
 function tete(f) { const p = f.d.tete || TETE[f.kind] || [450, -550], K = f.d.K; return [f.x + f.face * p[0] * K, FLOOR - f.h + p[1] * K] }
 function oiseau(c, x, y, s, t) { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3;
   c.beginPath(); c.ellipse(0, 0, 16, 11, 0, 0, TAU); c.fill(); c.stroke(); c.beginPath(); c.arc(12, -8, 8, 0, TAU); c.fill(); c.stroke();
@@ -2780,7 +2814,7 @@ function startMatch() {
   G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
   G.chrono = 0;
   G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
-  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] , bouledogue: [.85, .95, 1.15, .45] }[p2]; // variante de couleur
+  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] , bouledogue: [.85, .95, 1.15, .45] , baleine: [1.1, .95, .8, .45] }[p2]; // variante de couleur
   if (G.livre && G.livre.noms) G.f.forEach((f, i) => f.nomAff = G.livre.noms[i]);
   if (NET.on) G.f.forEach((f, i) => f.distant = i !== NET.moi); // en ligne : l'animal de l'ami (ses trophées, ses sons « SUPER prêt ») n'est pas le nôtre
   G.nvTroph = [];
