@@ -84,10 +84,10 @@ function apresMatch(v, n, nv) {
   majBoutonsFin();
 }
 function ceremonieLegendaire(k = LEGENDAIRE) {
-  G.phase = 'menu'; show('legende'); G.legendeVu = k; sfx(k === 'trex' ? 'dino' : 'requin', 1); sfx('boum', 1); vibre([100, 60, 200]);
+  G.phase = 'menu'; show('legende'); G.legendeVu = k; sfx(k === 'trex' ? 'dino' : k === 'meganeura' ? 'ailes' : 'requin', 1); sfx('boum', 1); vibre([100, 60, 200]);
   $('legende-img').src = k + '_vs.webp';
-  if (window.trophee && (k === 'trex' || k === 'megalo')) trophee(k, true); // le trophée tout de suite (pas au combat suivant)
-  const t = $('legende-txt'); if (t) t.textContent = k === 'trex' ? 'Tu as battu tous les animaux de la TERRE en GOD MODE… et tu as réveillé le T. REX ! Il est à toi pour toujours.' : 'Tu as battu tous les animaux de la MER en GOD MODE… et le MÉGALODON est remonté des profondeurs ! Il est à toi pour toujours.';
+  if (window.trophee && (k === 'trex' || k === 'megalo' || k === 'meganeura')) trophee(k, true); // le trophée tout de suite (pas au combat suivant)
+  const t = $('legende-txt'); if (t) t.textContent = k === 'meganeura' ? 'Tu as battu toutes les PETITES BÊTES en GOD MODE… et la MÉGANEURA s’est réveillée : une libellule géante de la préhistoire, grande comme un corbeau ! Elle est à toi pour toujours.' : k === 'trex' ? 'Tu as battu tous les animaux de la TERRE en GOD MODE… et tu as réveillé le T. REX ! Il est à toi pour toujours.' : 'Tu as battu tous les animaux de la MER en GOD MODE… et le MÉGALODON est remonté des profondeurs ! Il est à toi pour toujours.';
 }
 // ---------------------------------------------------------------------
 //  Nom de champion (inventé : jamais le vrai prénom)
@@ -169,7 +169,7 @@ function defiDuJour() {
   const date = dateDuJour(); let s = 0; for (const ch of 'arene' + date) s = (s * 31 + ch.charCodeAt(0)) >>> 0;
   const r = () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296;
   // un jour sur cinq, le défi se passe dans la MER (s'il y a au moins deux animaux marins) ; même pour tous les enfants
-  const monde = ORDRE.filter(k => mondeDe(k) === 'mer').length >= 2 && r() < .2 ? 'mer' : 'terre';
+  const x = r(), monde = ORDRE.filter(k => mondeDe(k) === 'mer').length >= 2 && x < .2 ? 'mer' : mondeOuvert('betes') && x >= .2 && x < .35 ? 'betes' : 'terre'; // (et parfois chez les PETITES BÊTES)
   const l = ORDRE.filter(k => !estLegendaire(k) && mondeDe(k) === monde); const a = l[Math.floor(r() * l.length)]; let b = l[Math.floor(r() * l.length)]; if (b === a) b = l[(l.indexOf(a) + 1) % l.length];
   const A = arenesDe(monde), arene = A[Math.floor(r() * A.length)].k;
   return { date, a, b, arene, niv: 1 };

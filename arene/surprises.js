@@ -118,6 +118,12 @@ const PIEGES = {
   floride: { k: 'trou', obj: 'tortue', mot: 'UNE TORTUE SORT DE L’EAU !', dmg: 3 },
   asie: { k: 'chute', obj: 'durian', mot: 'UN DURIAN ! ÇA PUE !', dmg: 5 },
   estuaire: { k: 'trou', obj: 'poisson', mot: 'UN POISSON-SAUTEUR !', dmg: 4 },
+  // PETITES BÊTES (le monde « à la loupe »)
+  ruche: { k: 'chute', obj: 'miel', mot: 'UNE GOUTTE DE MIEL !', dmg: 4 },
+  sable: { k: 'vent', mot: 'TEMPÊTE DE SABLE !', col: '#E9C98B' },
+  grotte: { k: 'chute', obj: 'goutte', mot: 'PLOC ! UNE GOUTTE !', dmg: 5 },
+  jardin: { k: 'trou', obj: 'ver', mot: 'UN VER DE TERRE !', dmg: 3 },
+  tronc: { k: 'chute', obj: 'feuille', mot: 'UNE FEUILLE D’EUCALYPTUS !', dmg: 4 },
   colisee: { k: 'chute', obj: 'coussin', mot: 'LE PUBLIC LANCE UN COUSSIN !', dmg: 0 },
   savane: { k: 'vent', mot: 'TOURBILLON DE POUSSIÈRE !', col: '#E8C27A' },
   desert: { k: 'vent', mot: 'TEMPÊTE DE SABLE !', col: '#E9C98B' },
@@ -190,7 +196,11 @@ function dessineCaisse(c, x, y, t, mer) {
 }
 function dessineObjet(c, obj, x, y, s = 1) {
   c.save(); c.translate(x, y); c.scale(s, s); c.lineWidth = 6; c.strokeStyle = NV;
-  if (obj === 'coco') { c.fillStyle = '#7A4A22'; c.beginPath(); c.arc(0, 0, 58, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#3A220E'; for (const [a, b] of [[-16, -18], [14, -20], [0, 4]]) { c.beginPath(); c.arc(a, b, 8, 0, TAU); c.fill() } }
+  if (obj === 'miel') { const g = c.createRadialGradient(-12, -12, 4, 0, 0, 60); g.addColorStop(0, '#FFE9A0'); g.addColorStop(1, '#E39A12'); c.fillStyle = g; c.beginPath(); c.moveTo(0, -70); c.bezierCurveTo(30, -30, 52, 0, 52, 22); c.arc(0, 22, 52, 0, Math.PI); c.bezierCurveTo(-52, 0, -30, -30, 0, -70); c.fill(); c.stroke(); c.fillStyle = 'rgba(255,255,255,.75)'; c.beginPath(); c.ellipse(-18, 4, 9, 16, .3, 0, TAU); c.fill() }
+  else if (obj === 'goutte') { const g = c.createRadialGradient(-12, -8, 4, 0, 10, 60); g.addColorStop(0, '#F2FBFF'); g.addColorStop(1, '#6FB7E0'); c.fillStyle = g; c.beginPath(); c.moveTo(0, -70); c.bezierCurveTo(30, -30, 50, 0, 50, 22); c.arc(0, 22, 50, 0, Math.PI); c.bezierCurveTo(-50, 0, -30, -30, 0, -70); c.fill(); c.stroke(); c.fillStyle = 'rgba(255,255,255,.85)'; c.beginPath(); c.ellipse(-16, 6, 8, 14, .3, 0, TAU); c.fill() }
+  else if (obj === 'feuille') { c.rotate(.5); c.fillStyle = '#7FA66A'; c.beginPath(); c.moveTo(-80, 0); c.quadraticCurveTo(0, -46, 80, 0); c.quadraticCurveTo(0, 46, -80, 0); c.fill(); c.stroke(); c.strokeStyle = '#4E6E3E'; c.lineWidth = 4; c.beginPath(); c.moveTo(-80, 0); c.lineTo(80, 0); c.stroke() }
+  else if (obj === 'ver') { c.lineCap = 'round'; c.strokeStyle = NV; c.lineWidth = 34; c.beginPath(); c.moveTo(0, 60); c.quadraticCurveTo(-30, 10, 0, -30); c.quadraticCurveTo(24, -60, 8, -86); c.stroke(); c.strokeStyle = '#E58A8A'; c.lineWidth = 24; c.stroke(); c.fillStyle = NV; c.beginPath(); c.arc(4, -84, 4, 0, TAU); c.fill(); c.beginPath(); c.arc(16, -80, 4, 0, TAU); c.fill() }
+  else if (obj === 'coco') { c.fillStyle = '#7A4A22'; c.beginPath(); c.arc(0, 0, 58, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#3A220E'; for (const [a, b] of [[-16, -18], [14, -20], [0, 4]]) { c.beginPath(); c.arc(a, b, 8, 0, TAU); c.fill() } }
   else if (obj === 'pomme') { c.fillStyle = '#8A5A2B'; c.beginPath(); c.ellipse(0, 0, 40, 62, 0, 0, TAU); c.fill(); c.stroke(); c.strokeStyle = '#4B2E12'; c.lineWidth = 4; for (let i = -2; i <= 2; i++) { c.beginPath(); c.moveTo(-36, i * 22); c.lineTo(0, i * 22 + 14); c.lineTo(36, i * 22); c.stroke() } }
   else if (obj === 'lave') { c.fillStyle = '#3B3432'; c.beginPath(); c.moveTo(-60, 10); c.lineTo(-30, -50); c.lineTo(30, -56); c.lineTo(62, 0); c.lineTo(30, 48); c.lineTo(-40, 44); c.closePath(); c.fill(); c.stroke(); c.fillStyle = '#FF7A1A'; c.beginPath(); c.arc(-8, -6, 18, 0, TAU); c.arc(22, 18, 10, 0, TAU); c.fill() }
   else if (obj === 'fruit') { c.fillStyle = '#F2A33A'; c.beginPath(); c.ellipse(0, 0, 44, 56, .4, 0, TAU); c.fill(); c.stroke(); c.fillStyle = '#5DAA3A'; c.beginPath(); c.ellipse(18, -52, 22, 10, -.5, 0, TAU); c.fill(); c.stroke() }
@@ -265,6 +275,7 @@ function dessineSurprisesDevant(c) { // (devant les animaux)
       if (P.obj === 'phoque') dessinePhoque(c, p.x, FLOOR, u);
       else if (P.obj === 'marmotte') dessineMarmotte(c, p.x, FLOOR, u);
       else if (P.obj === 'tortue') dessineTortue(c, p.x, FLOOR, u);
+      else if (P.obj === 'ver') { const w = Math.min(1, (p.t - 70) / 14); dessineObjet(c, 'ver', p.x, FLOOR + 90 - w * 110 + Math.sin(p.t * .5) * 6, 1.3) }
       else if (P.obj === 'poisson') poisson(c, p.x, FLOOR - 120 - Math.sin(Math.min(1, (p.t - 70) / 50) * Math.PI) * 420, -1.2 + (p.t - 70) * .06, 1.6);
       else if (P.obj === 'grenouille') { const w = Math.min(1, (p.t - 70) / 40); grenouille(c, p.x + p.dir * w * 300, FLOOR - 40 - Math.sin(w * Math.PI) * 380, w < 1 ? 1 : 0, 1.3, p.dir) }
       else { for (let i = 0; i < 16; i++) { const k = ((p.t - 70) * 9 + i * 37) % 420; c.fillStyle = P.obj === 'chaud' ? 'rgba(255,190,120,.75)' : 'rgba(220,245,255,.85)'; c.beginPath(); c.arc(p.x + Math.sin(i * 2.3 + p.t * .2) * 60, FLOOR - k * u, 10 + (i % 4) * 7, 0, TAU); c.fill() } }
@@ -315,6 +326,8 @@ const NOUVEAUX_TROPHEES = [
   ['famille', 'LA GRANDE FAMILLE', 'Gagne avec 20 animaux différents.', 'animaux'],
   ['mer1', 'PREMIÈRE PLONGÉE', 'Gagne un combat dans la MER.', 'animaux'],
   ['roimer', 'ROI DES OCÉANS', 'Gagne avec tous les animaux de la MER.', 'animaux'],
+  ['betes1', 'À LA LOUPE', 'Gagne un combat chez les PETITES BÊTES.', 'animaux'],
+  ['roibetes', 'ROI DES PETITES BÊTES', 'Gagne avec toutes les PETITES BÊTES.', 'animaux'],
   ['roiterre', 'ROI DE LA TERRE', 'Gagne avec tous les animaux de la TERRE.', 'animaux'],
   ['arenes8', 'GLOBE-TROTTEUR', 'Gagne dans 8 arènes différentes.', 'animaux'],
   ['arenes', 'LE TOUR DU MONDE', 'Gagne dans toutes les arènes.', 'animaux'],
@@ -323,6 +336,7 @@ const NOUVEAUX_TROPHEES = [
   ['miroir', 'MIROIR, MIROIR', 'Gagne contre le même animal que le tien.', 'animaux'],
   ['trex', 'LE LÉGENDAIRE', 'Débloque le T. rex.', 'animaux'],
   ['megalo', 'LE MONSTRE DES PROFONDEURS', 'Débloque le mégalodon.', 'animaux'],
+  ['meganeura', 'LA LIBELLULE GÉANTE', 'Débloque la méganeura.', 'animaux'],
   ['pari1', 'BON PARI', 'Trouve la vraie réponse d’un Duel du livre.', 'livre'],
   ['pari5', 'PLUS MALIN QUE GIGI', 'Trouve la vraie réponse de 5 Duels du livre.', 'livre'],
   ['duels', 'TOUS LES DUELS', 'Joue tous les Duels du livre.', 'livre'],
@@ -425,15 +439,16 @@ function tropheesFin(v, l, n, nv) {
     if (!v.st.sauts) aj('pieds');
     if (l && l.kind === v.kind) aj('miroir');
     if (l && CHARS[v.kind].K <= .36 && CHARS[l.kind].K >= .45) aj('petit');
-    if (estMer()) aj('mer1');
+    if (estMer()) aj('mer1'); if ((ARENES.find(a => a.k === G.arene) || {}).monde === 'betes') aj('betes1');
     SAVE.arenesGagnees = SAVE.arenesGagnees || {}; SAVE.arenesGagnees[G.arene] = 1;
     const na = Object.keys(SAVE.arenesGagnees).length; if (na >= 8) aj('arenes8'); if (ARENES.every(a => SAVE.arenesGagnees[a.k] || a.secret)) aj('arenes');
   }
   const g = SAVE.gagneAvec || {}, ng = Object.keys(g).length; if (ng >= 10) aj('zoo'); if (ng >= 20) aj('famille');
   const terre = ORDRE.filter(k => mondeDe(k) === 'terre' && k !== MONDES.terre.legende), mer = ORDRE.filter(k => mondeDe(k) === 'mer' && k !== MONDES.mer.legende);
   if (terre.every(k => g[k])) aj('roiterre'); if (mer.length && mer.every(k => g[k])) aj('roimer');
+  const betes = ORDRE.filter(k => mondeDe(k) === 'betes' && k !== MONDES.betes.legende); if (betes.length >= 2 && betes.every(k => g[k])) aj('roibetes');
   if (Object.values(SAVE.etoiles).reduce((s, x) => s + x, 0) >= 30) aj('etoiles30');
-  if (SAVE.debloques.includes('trex')) aj('trex'); if (SAVE.debloques.includes('megalo')) aj('megalo');
+  if (SAVE.debloques.includes('trex')) aj('trex'); if (SAVE.debloques.includes('megalo')) aj('megalo'); if (SAVE.debloques.includes('meganeura')) aj('meganeura');
   if (nbCartes() >= 50) aj('cartes50');
   sauve();
 }

@@ -427,6 +427,20 @@ const SPECIAUX = {
     if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -8 * u }, true); if (ph === 'act' || u < .4) return SP('bulle', { x: 20 }, true); return repos(); }
     if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 6 < 3 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 20 }, true); return repos(); }
   },
+  // frelon géant (PETITES BÊTES) : ★ les mandibules-ciseaux · → ★ le dard de 6 mm · ↓ ★ le décollage · SUPER la bande à frelons
+  frelon(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -14 * e }, true) } if (ph === 'act') return SP('ciseaux', { x: 40, sx: 1.05 }, true); return u < .5 ? SP('ciseaux', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -10 * u, y: -10 * u }, true); if (ph === 'act') return f.hit ? SP('fort', { x: 30 }, true) : SP('special', { y: 10 * Math.sin(t * 20) }, true); return u < .5 ? SP('fort', {}) : repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'special', { r: f.vy < 0 ? 0 : .15, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { x: 4 * Math.sin(t * 50), sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return SP('victoire', { y: -6 * Math.sin(t * 12) }, true); return repos(); }
+  },
+  // abeilles (PETITES BÊTES) : ★ elles foncent toutes ensemble · → ★ ça vibre, ça chauffe · ↓ ★ le dard vers le ciel · SUPER la boule de chaleur
+  abeille(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -12 * u }, true); if (ph === 'act') return SP(Math.floor(f.t / 5) % 2 ? 'special' : 'coup', { y: -6 * Math.abs(Math.sin(t * 18)) }, true); return u < .5 ? SP('coup', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { sy: .97 }, true); if (ph === 'act') return SP('vibre', { x: 5 * Math.sin(t * 70), sy: 1 + .02 * Math.sin(t * 50) }, true); return repos(); }
+    if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (f.h > 0) return SP(f.vy < 0 ? 'saut' : 'fort', { r: f.vy < 0 ? 0 : .12, y: 20 }, true); return SP('accroupi', { sy: .95 + .05 * u }); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('vibre', { x: 4 * Math.sin(t * 60), sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 30, sx: 1.04 }, true) : SP('vibre', { x: 4 * Math.sin(t * 60) }, true); return repos(); }
+  },
   // léopard : ★ le bond de 6 m · → ★ le repas dans l’arbre (prise : il grimpe avec sa proie) · ↓ ★ tombé du ciel · SUPER l’ombre de la nuit
   leopard(f, t, u, ph, k, repos) {
     if (k === 'S') { if (ph === 'st') return SP('accroupi', { x: -12 * u, sy: .94 }); if (f.h > 0) return SP('special', { r: f.vy < 0 ? -.08 : .12, y: 30 }, true); return u < .5 ? SP('accroupi', { sy: .95 }) : repos(); }
