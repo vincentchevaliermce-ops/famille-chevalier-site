@@ -130,27 +130,28 @@ function montreBulle(t, long) { const b = $('bulle-info'); b.textContent = t; b.
 function partageDefi() {
   const r = G.dernier; if (!r) return;
   demandeNom(() => {
-    const txt = `⚔️ DÉFI ! ${SAVE.nom} a ${r.gagne ? 'battu' : 'affronté'} ${leNom(r.adv)} avec ${leNom(r.moi)}${r.gagne ? ` en ${r.temps} s ${'★'.repeat(r.etoiles)}` : ''}. Fais mieux dans L’Arène des Duels, avec les animaux du livre « C’est qui le plus fort ? » :`;
-    partage('Défi : L’Arène des Duels', txt, lienDefi(r));
+    const txt = `⚔️ DÉFI ! ${SAVE.nom} a ${r.gagne ? 'battu' : 'affronté'} ${leNom(r.adv)} avec ${leNom(r.moi)}${r.gagne ? ` en ${r.temps} s ${'★'.repeat(r.etoiles)}` : ''}. Fais mieux dans « C’est qui le plus fort ? — L’Arène des Duels », le jeu vidéo du livre :`;
+    partage('Défi : C’est qui le plus fort ? — L’Arène des Duels', txt, lienDefi(r));
   });
 }
 function invite() {
   sfx('clic'); G.retourInvite = G.screen || 'titre'; show('invite');
 }
-function envoieJeu() { partage('L’Arène des Duels', '🐯🦍 Viens jouer à L’Arène des Duels, avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans pub :', PUBLIC) }
+function envoieJeu() { partage('C’est qui le plus fort ? — L’Arène des Duels', '🐯🦍 Viens jouer à « C’est qui le plus fort ? — L’Arène des Duels », le jeu vidéo du livre. Gratuit, sans inscription, sans pub :', PUBLIC) }
 // photo de victoire (1080 × 1080) : le gagnant, les étoiles, le QR du jeu
 const charge1 = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src });
 async function photoVictoire() {
   const r = G.dernier; if (!r) return; sfx('clic');
   const c = document.createElement('canvas'); c.width = c.height = 1080; const x = c.getContext('2d');
   const gagnant = r.gagne ? r.moi : r.adv;
-  let img, qr, logo; try { [img, qr, logo] = await Promise.all([charge1(gagnant + '_fin.webp'), charge1('qr_arene.png'), charge1('titre_logo.webp')]) } catch (e) { montreBulle('Oups, la photo n’a pas pu se faire.'); return }
+  let img, qr, logo; try { [img, qr, logo] = await Promise.all([charge1(gagnant + '_fin.webp'), charge1('qr_arene.png'), charge1('titre_cqpf.webp')]) } catch (e) { montreBulle('Oups, la photo n’a pas pu se faire.'); return }
   // fond : rayons jaune/orange comme la couverture
   x.fillStyle = '#FFC629'; x.fillRect(0, 0, 1080, 1080);
   x.save(); x.translate(540, 620); for (let i = 0; i < 24; i++) { x.rotate(Math.PI / 12); x.fillStyle = i % 2 ? '#FF8A4C' : '#FFB13B'; x.beginPath(); x.moveTo(0, 0); x.lineTo(1200, -120); x.lineTo(1200, 120); x.closePath(); x.fill() } x.restore();
-  x.drawImage(logo, 540 - 330, 20, 660, 660 * logo.height / logo.width);
-  const h = 560, w = h * img.width / img.height; x.drawImage(img, 540 - w / 2, 330, w, h);
+  x.drawImage(logo, 540 - 265, 8, 530, 530 * logo.height / logo.width); // 25/09, décision B : le titre du livre en grand…
+  const h = 510, w = h * img.width / img.height; x.drawImage(img, 540 - w / 2, 382, w, h);
   const bandeau = (t, y, s, fond = '#0B2A5B', coul = '#FFF8EC') => { x.font = `900 ${s}px Rubik, "Arial Black", sans-serif`; const tw = x.measureText(t).width; x.fillStyle = fond; x.beginPath(); x.roundRect(540 - tw / 2 - 30, y - s * .8, tw + 60, s * 1.3, 24); x.fill(); x.fillStyle = coul; x.textAlign = 'center'; x.fillText(t, 540, y + s * .15) };
+  bandeau('L’ARÈNE DES DUELS · LE JEU VIDÉO DU LIVRE', 349, 28, '#0B2A5B', '#FFC629'); // …puis le nom du jeu
   bandeau(r.gagne ? `${CHARS[r.moi].nom} GAGNE !` : `${CHARS[r.adv].nom} GAGNE…`, 880, 64);
   if (r.gagne) { x.font = '900 70px Rubik, sans-serif'; x.textAlign = 'center'; x.fillStyle = '#0B2A5B'; x.fillText('★'.repeat(r.etoiles) + '☆'.repeat(3 - r.etoiles), 540, 975) }
   if (SAVE.nom) { x.font = '900 36px Rubik, sans-serif'; x.fillStyle = '#0B2A5B'; x.textAlign = 'left'; x.fillText('CHAMPION : ' + SAVE.nom, 40, 1050) }
@@ -158,7 +159,7 @@ async function photoVictoire() {
   x.font = '900 24px Rubik, sans-serif'; x.fillStyle = '#0B2A5B'; x.textAlign = 'right'; x.fillText('editions-chevalier.fr/arene', 870, 1050);
   const blob = await new Promise(ok => c.toBlob(ok, 'image/png'));
   const fichier = new File([blob], 'victoire-arene-des-duels.png', { type: 'image/png' });
-  const res = await partage('Ma victoire dans L’Arène des Duels', `${r.gagne ? '🏆 ' + CHARS[r.moi].nom + ' GAGNE !' : 'Revanche demain !'} L’Arène des Duels, avec les animaux du livre « C’est qui le plus fort ? » :`, PUBLIC, fichier);
+  const res = await partage('Ma victoire dans C’est qui le plus fort ? — L’Arène des Duels', `${r.gagne ? '🏆 ' + CHARS[r.moi].nom + ' GAGNE !' : 'Revanche demain !'} « C’est qui le plus fort ? — L’Arène des Duels », le jeu vidéo du livre :`, PUBLIC, fichier);
   if (res === 'montre' || res === 'copie') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fichier.name; document.body.appendChild(a); a.click(); a.remove(); montreBulle('La photo est enregistrée !') }
 }
 // ---------------------------------------------------------------------
@@ -179,7 +180,7 @@ function lanceJour() {
 }
 function partageJour() {
   const j = SAVE.jour; if (!j) return; const d = j.date.split('-');
-  const txt = `⚡ Défi du jour ${d[2]}/${d[1]} — L’Arène des Duels\n${EMOJI[j.a] || ''} ${CHARS[j.a].nom} contre ${EMOJI[j.b] || ''} ${CHARS[j.b].nom}\n${j.gagne ? `✅ Gagné en ${j.temps} s ${'★'.repeat(j.etoiles)}${'☆'.repeat(3 - j.etoiles)}` : '❌ Pas encore gagné…'}\nÀ toi :`;
+  const txt = `⚡ Défi du jour ${d[2]}/${d[1]} · « C’est qui le plus fort ? — L’Arène des Duels »\n${EMOJI[j.a] || ''} ${CHARS[j.a].nom} contre ${EMOJI[j.b] || ''} ${CHARS[j.b].nom}\n${j.gagne ? `✅ Gagné en ${j.temps} s ${'★'.repeat(j.etoiles)}${'☆'.repeat(3 - j.etoiles)}` : '❌ Pas encore gagné…'}\nÀ toi :`;
   partage('Défi du jour', txt, PUBLIC + '#jour');
 }
 // ---------------------------------------------------------------------
