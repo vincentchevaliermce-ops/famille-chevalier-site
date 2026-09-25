@@ -1045,6 +1045,26 @@ const CHARS = {
       SUPER: { st: 16, act: 30, rec: 22, dmg: 6, hits: 4, hs: 18, bs: 8, kb: 4, kd: true, box: [200, 1050, -560, 0], rush: 12, grandir: true, lvl: 'mid', mots: ['QUAND JE SERAI GRAND… C’EST MAINTENANT !', 'IL A GRANDI !', 'SSSSUPER !'], son: 'h', nom: 'Quand je serai grand…' },
     },
   },
+  // --- VEUVE NOIRE À DOS ROUGE (à gagner au DÉFI depuis le 25/09, duel 29, p. 65) : un venin très puissant ; elle ficelle sa proie ; le fil gluant, l'ascenseur (p. 66) ;
+  //     point faible (livre) : « on l'écrase d'un doigt » → les attaques qui tombent d'en haut lui font très mal (pose « écrasée »).
+  veuve: {
+    nom: 'VEUVE NOIRE', art: 'LA VEUVE NOIRE', fem: true, monde: 'betes', ecrase: 1.35, force: 1, spr: true, hPose: ['garde', 'coup'], col: '#1A1A22', clair: '#FF4A3A', fond: '#3A1A22', K: .32, hp: 96, walk: 6, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 46,
+    aie: ['SSS ?!', 'MES PATTES !', 'AÏE, MON DOS ROUGE !'], ia: {},
+    hurt: { stand: [-440, 420, -520, 0], crouch: [-460, 440, -300, 0], air: [-420, 400, -500, 0] }, // (mesuré sur l'image : l'abdomen et la tête, pas le bout des pattes)
+    push: [120, 140], reach: 640, speMin: 280, speMax: 1300,
+    moves: {
+      L: { st: 4, act: 3, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [280, 720, -360, -40], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['CROC !', 'TIC !', 'CLAC !'], son: 'l' },
+      cL: { st: 4, act: 3, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [280, 700, -200, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'CROC !'], son: 'l' },
+      H: { st: 11, act: 5, rec: 18, dmg: 13, hs: 20, bs: 15, kb: 11, box: [260, 800, -440, -40], lvl: 'mid', lunge: 6, chain: ['S', 'SUPER'], mots: ['HUIT PATTES !', 'CRAC !', 'CROC !'], son: 'h' },
+      cH: { st: 8, act: 4, rec: 21, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [260, 760, -200, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'CROCHE-PATTE !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 7, dmg: 8, hs: 18, bs: 11, kb: 7, box: [200, 700, -400, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['D’EN HAUT !', 'CROC !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 80, t: 20 }, mots: ['VOLTIGE !', 'ATTRAPÉ !'], son: 'h' },
+      S: { st: 10, act: 4, rec: 22, dmg: 4, hs: 14, bs: 9, kb: 3, lvl: 'mid', proj: { x0: 360, spd: 14, w: 150, h: [-460, -60], life: 70, fil: true }, venin: { t: 150, tick: 999, dmg: 0, genre: 'fil', lent: .45 }, mots: ['LE FIL GLUANT !', 'PFIOU !', 'EMMÊLÉ !'], son: 's', nom: 'Le fil gluant', ia: [400, 1300, 1.2] },
+      SF: { st: 8, act: 5, rec: 22, dmg: 14, hs: 0, bs: 0, kb: 8, kd: true, lvl: 'mid', prise: { portee: 150, t: 44, degage: false, mot: 'EMBALLÉ !', haut: 6, loin: 6, rec: 6 }, cocon: true, venin: { t: 180, tick: 30, dmg: 1 }, mots: ['ELLE FICELLE SA PROIE !', 'EMBALLÉ !', 'ET UN TOUR DE FIL !'], son: 's', nom: 'Elle ficelle sa proie', ia: [0, 560, 1.1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 17, aa: true, inv: 8, saute: [3, 24], land: true, ballon: true, box: [120, 760, -900, -150], lvl: 'mid', mots: ['DÉCOLLAGE SANS AILES !', 'HOP, SUR MON FIL !'], son: 's', nom: 'Le décollage sans ailes', ia: [0, 0, 0] },
+      SUPER: { st: 12, act: 16, rec: 24, dmg: 28, hs: 0, bs: 0, kb: 8, kd: true, rush: 14, lvl: 'mid', cocon: true, ascenseur: true, prise: { portee: 200, t: 64, degage: false, mot: 'L’ASCENSEUR !', haut: 30, loin: 4, rec: 8 }, venin: { t: 180, tick: 30, dmg: 1 }, mots: ['L’ASCENSEUR !', 'EMBALLÉ, MONTÉ !'], son: 'h', nom: 'L’ascenseur' },
+    },
+  },
 };
 // phrases de victoire (drôles, tirées du livre) : le gagnant parle sur l'écran de fin
 const PHRASES = {
@@ -1098,6 +1118,7 @@ const PHRASES = {
   mante: ['Une brindille ? Non : une championne !', 'Clac ! Trop tard !', 'Je ne bouge pas… et je gagne !'],
   colibri: ['Trop rapide, même en marche arrière !', 'Petit comme un bonbon, fort comme un champion !', 'Victoire ! Vite, à boire !'],
   serpentbrun: ['Je débute… mais je gagne déjà !', 'Aucune cachette ne m’échappe !', 'Quand je serai grand… attention !'],
+  veuve: ['Emballé, c’est pesé !', 'Un centimètre de pure victoire !', 'Mon fil ne lâche jamais !'],
 };
 const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
 
@@ -1122,14 +1143,15 @@ const ARENES = [
   { k: 'sable', nom: 'LE DÉSERT À LA LOUPE', img: 'arene_sable.webp', monde: 'betes' },
   { k: 'grotte', nom: 'LA GROTTE', img: 'arene_grotte.webp', monde: 'betes' },
   { k: 'jardin', nom: 'LE JARDIN', img: 'arene_jardin.webp', monde: 'betes' },
+  { k: 'tronc', nom: 'LE VIEUX TRONC', img: 'arene_tronc.webp', monde: 'betes' }, // (duel 29 : sous un vieux tronc, en Australie)
   // arènes secrètes : récompenses de la salle des trophées (surprises.js, RECOMPENSES)
   { k: 'epave', nom: 'L’ÉPAVE AU TRÉSOR', img: 'arene_epave.webp', monde: 'mer', secret: 'epave' },
   { k: 'lune', nom: 'LA LUNE', img: 'arene_lune.webp', secret: 'lune' }, { k: 'prehisto', nom: 'L’ÎLE PRÉHISTORIQUE', img: 'arene_prehisto.webp', secret: 'prehisto' },
 ];
 const estMer = () => (ARENES.find(a => a.k === G.arene) || {}).monde === 'mer';
 // couleur de la poussière soulevée, selon le sol de l'arène
-const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', nord: '#F2F7FF', floride: '#B89A78', asie: '#C9A26E', estuaire: '#9C8A5A', ruche: '#F2C45A', lune: '#C9CCD6', prehisto: '#9C8A6A' , sable: '#F2D39A' , grotte: '#8A8FA0' , jardin: '#B08A5A' };
-const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'frelon', 'abeille', 'mygale', 'guepe', 'scolopendre', 'chauvesouris', 'mante', 'colibri', 'serpentbrun', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'baleine', 'crabe', 'crevette', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
+const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', nord: '#F2F7FF', floride: '#B89A78', asie: '#C9A26E', estuaire: '#9C8A5A', ruche: '#F2C45A', lune: '#C9CCD6', prehisto: '#9C8A6A' , sable: '#F2D39A' , grotte: '#8A8FA0' , jardin: '#B08A5A', tronc: '#C27A4E' };
+const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'frelon', 'abeille', 'mygale', 'guepe', 'scolopendre', 'chauvesouris', 'mante', 'colibri', 'serpentbrun', 'veuve', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'bouledogue', 'baleine', 'crabe', 'crevette', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
 // MONDES (décision de Vincent, 24/09) : un animal n'affronte que les animaux de son monde (TERRE, MER ; PETITES BÊTES plus tard)
 const MONDES = { terre: { nom: 'TERRE', ico: '🌍', places: 16, legende: 'trex', titre: 'CHOISIS TON ANIMAL' }, mer: { nom: 'MER', ico: '🌊', places: 8, legende: 'megalo', titre: 'CHOISIS TON ANIMAL DE LA MER' }, betes: { nom: 'PETITES BÊTES', ico: '🐞', places: 10, legende: 'meganeura', titre: 'CHOISIS TA PETITE BÊTE' } };
 const mondeDe = k => (CHARS[k] && CHARS[k].monde) || 'terre';
@@ -1493,6 +1515,12 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Le coup spécial du serpent brun : il fouille chaque cachette !', // ≈ p. 65
     'Le point faible du jeune serpent brun : tout jeune, il débute !', // ≈ p. 65
   ],
+  veuve: [
+    'La veuve noire : 1 cm, et un venin très puissant !', // ≈ p. 65
+    'Le coup spécial de la veuve noire : elle ficelle sa proie !', // ≈ p. 65
+    'Le point faible de la veuve noire : on l’écrase d’un doigt !', // ≈ p. 65
+    'Les jeunes veuves noires partent sur de longs fils de soie emportés par l’air. Huit pattes, aucune aile !', // ≈ p. 66
+  ],
 };
 
 // ---------------------------------------------------------------------
@@ -1707,6 +1735,13 @@ const QUIZ = {
     ['Avec quoi le jeune serpent brun mord-il ?', ['des crochets à venin', 'des dents plates', 'un bec'], 0],
     ['Quel est le coup spécial du serpent brun ?', ['il fouille chaque cachette', 'il crache du venin', 'il fait le mort'], 1],
     ['Quel est le point faible du jeune serpent brun ?', ['tout jeune, il débute', 'tout petit, il a froid', 'il est trop lent'], 2],
+  ],
+  veuve: [
+    ['Combien mesure la veuve noire ?', ['1 cm', '10 cm', '1 m'], 0],
+    ['Comment est le venin de la veuve noire ?', ['très puissant', 'tout doux', 'sans danger'], 0],
+    ['Quel est le coup spécial de la veuve noire ?', ['elle ficelle sa proie', 'elle saute très loin', 'elle crache du venin'], 1],
+    ['Quel est le point faible de la veuve noire ?', ['on l’écrase d’un doigt', 'on la noie d’une goutte', 'elle a peur du noir'], 2],
+    ['Comment les jeunes veuves noires voyagent-elles ?', ['sur de longs fils de soie', 'sur le dos de leur maman', 'sur les ailes des oiseaux'], 3],
   ],
 };
 // ---------------------------------------------------------------------
@@ -3008,7 +3043,7 @@ function render() {
   dessineFoule(fx); hud(fx); annonce(fx);
 }
 // position de la tête (px image depuis le point au sol, pose de base)
-const TETE = { serpentbrun: [520, -520], colibri: [280, -770], mante: [264, -765], chauvesouris: [220, -383], scolopendre: [540, -180], guepe: [400, -680], mygale: [380, -520], abeille: [470, -640], frelon: [470, -560], crevette: [420, -540], crabe: [100, -520], baleine: [540, -330], bouledogue: [420, -480], girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
+const TETE = { veuve: [125, -300], serpentbrun: [520, -520], colibri: [280, -770], mante: [264, -765], chauvesouris: [220, -383], scolopendre: [540, -180], guepe: [400, -680], mygale: [380, -520], abeille: [470, -640], frelon: [470, -560], crevette: [420, -540], crabe: [100, -520], baleine: [540, -330], bouledogue: [420, -480], girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
 function tete(f) { const p = f.d.tete || TETE[f.kind] || [450, -550], K = f.d.K; return [f.x + f.face * p[0] * K, FLOOR - f.h + p[1] * K] }
 function oiseau(c, x, y, s, t) { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3;
   c.beginPath(); c.ellipse(0, 0, 16, 11, 0, 0, TAU); c.fill(); c.stroke(); c.beginPath(); c.arc(12, -8, 8, 0, TAU); c.fill(); c.stroke();
@@ -3176,6 +3211,7 @@ function poseOf(f) {
   let res = (f.d.spr ? spritePose : f.kind === 'tigre' ? tigerPose : gorillaPose)(f.R, f, G.time); f.state = st0; f.flipV = !!res.flip;
   if (f.poison && f.poison.genre === 'fil' && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && (f.aEmmele ?? (f.aEmmele = f.R.layers.some(l => l.n === 'emmele')))) res = SP('emmele', { x: 4 * Math.sin(G.time * 14) }); // le serpent brun emmêlé dans le fil de la veuve noire
   if (f.d.soif && f.soifT && G.frame - f.soifT < 50 && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && f.R.layers.some(l => l.n === (f.d.soif.pose || 'soif'))) res = SP(f.d.soif.pose || 'soif', { y: 3 * Math.sin(G.time * 12) }); // colibri « J'AI SOIF ! », scolopendre « JE ME DESSÈCHE ! »
+  if (f.d.ecrase && f.ecraseT && G.frame - f.ecraseT < 40 && ['hurt', 'down'].includes(f.state) && f.R && f.R.layers && (f.aEcrasee ?? (f.aEcrasee = f.R.layers.some(l => l.n === 'ecrasee')))) res = SP('ecrasee', { x: 3 * Math.sin(G.time * 22) }); // la veuve noire « ÉCRASÉE ! » (livre : on l'écrase d'un doigt)
   if (f.d.myope && f.retourne > 0 && ['idle', 'walk', 'walkB'].includes(f.state) && f.R && f.R.layers && (f.aMyope ?? (f.aMyope = f.R.layers.some(l => l.n === 'myope')))) res = SP('myope', { x: 3 * Math.sin(G.time * 20) }); // la mygale cherche : « OÙ ES-TU ? »
   if (f.ghost && f.ghost.k > 0) f.ghost.k--;
   // pose dessinée (illustration entière) : fondu-traîne avec l'image précédente
@@ -3312,7 +3348,7 @@ function startMatch() {
   G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
   G.chrono = 0;
   G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
-  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] , bouledogue: [.85, .95, 1.15, .45] , baleine: [1.1, .95, .8, .45] , crabe: [.8, .9, 1.25, .45] , crevette: [1.2, .8, .9, .45] , frelon: [.8, .85, 1.2, .45] , abeille: [.85, .85, 1.15, .45] , mygale: [1.2, .9, .7, .45] , guepe: [1.15, .8, 1.2, .45] , scolopendre: [1.1, .95, .7, .45] , chauvesouris: [.9, .8, 1.2, .45] , mante: [1.1, .9, 1.2, .45] , colibri: [.85, 1.15, .95, .45] , serpentbrun: [1.1, 1, .8, .45] }[p2]; // variante de couleur
+  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] , bouledogue: [.85, .95, 1.15, .45] , baleine: [1.1, .95, .8, .45] , crabe: [.8, .9, 1.25, .45] , crevette: [1.2, .8, .9, .45] , frelon: [.8, .85, 1.2, .45] , abeille: [.85, .85, 1.15, .45] , mygale: [1.2, .9, .7, .45] , guepe: [1.15, .8, 1.2, .45] , scolopendre: [1.1, .95, .7, .45] , chauvesouris: [.9, .8, 1.2, .45] , mante: [1.1, .9, 1.2, .45] , colibri: [.85, 1.15, .95, .45] , serpentbrun: [1.1, 1, .8, .45] , veuve: [1.2, .9, .5, .45] }[p2]; // variante de couleur
   if (G.livre && G.livre.noms) G.f.forEach((f, i) => f.nomAff = G.livre.noms[i]);
   if (NET.on) G.f.forEach((f, i) => f.distant = i !== NET.moi); // en ligne : l'animal de l'ami (ses trophées, ses sons « SUPER prêt ») n'est pas le nôtre
   G.nvTroph = [];

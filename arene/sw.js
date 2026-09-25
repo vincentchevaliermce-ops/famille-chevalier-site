@@ -6,9 +6,9 @@
 //  • à chaque nouvelle version, seuls les fichiers qui ont changé sont oubliés (liste hors-ligne.json).
 //  Fichier fabriqué par deploy.sh à partir de jeu/sw_modele.js : ne pas modifier sw.js à la main.
 // =====================================================================
-const VERSION = '1790329527';
+const VERSION = '1790331005';
 const CODE = 'arene-code-' + VERSION, MEDIA = 'arene-media', LISTE = 'hors-ligne.json';
-const A_GARDER = ["./", "index.html", "manifest.webmanifest", "hors-ligne.json?v=1790329527", "skin.js?v=1790329527", "anim.js?v=1790329527", "game.js?v=1790329527", "net.js?v=1790329527", "livre.js?v=1790329527", "bonus.js?v=1790329527", "surprises.js?v=1790329527"]; // le minimum pour ouvrir le jeu hors connexion
+const A_GARDER = ["./", "index.html", "manifest.webmanifest", "hors-ligne.json?v=1790331005", "skin.js?v=1790331005", "anim.js?v=1790331005", "game.js?v=1790331005", "net.js?v=1790331005", "livre.js?v=1790331005", "bonus.js?v=1790331005", "surprises.js?v=1790331005"]; // le minimum pour ouvrir le jeu hors connexion
 const ICI = new URL('./', self.location).pathname; // « /arene/ »
 
 self.addEventListener('install', e => {
