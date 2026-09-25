@@ -3749,7 +3749,8 @@ function ouvreTrophees(retour) {
 function ongletTroph(t) { $('troph-badges').hidden = t !== 'badges'; $('troph-cartes').hidden = t !== 'cartes'; $('tab-badges').setAttribute('aria-pressed', t === 'badges'); $('tab-cartes').setAttribute('aria-pressed', t === 'cartes') }
 function initUI() {
   $('jouer').onclick = () => { sonInit(); sfx('valide'); G.livre = null; G.defi = null; G.jour = null; finEpreuve(); G.onglet = 'fav'; $('m1').onclick(); const choix = () => { G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
-    if (!SAVE.tuto && window.lanceTuto) { chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(choix) }) } else choix() };
+    // 1re fois : le tutoriel complet ; ceux qui avaient fait l'ancien (sans saut ni coups en bas) : seulement le NOUVEAU (4 étapes)
+    if ((SAVE.tuto || 0) < (typeof TUTO_VERSION !== 'undefined' ? TUTO_VERSION : 1) && window.lanceTuto) { const quoi = SAVE.tuto ? 'nouveau' : 'complet'; chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(choix, quoi) }) } else choix() };
   $('livre-titre').onclick = () => { sonInit(); sfx('valide'); ouvreLivre() };
   $('livre-retour').onclick = () => { sfx('retour'); G.livre = null; show('titre') };
   $('pari-retour').onclick = () => { sfx('retour'); ouvreLivre() };
@@ -3809,8 +3810,30 @@ function initUI() {
   }
   if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) document.body.classList.add('tactile');
 }
-// bouton ★ tactile : devient « SUPER » quand la jauge est pleine
-setInterval(() => { for (const [i, id] of [[0, 'tb-s'], [1, 'tb-s2']]) { const f = G.f[i], s = $(id); if (s && f) s.classList.toggle('super', f.meter >= 100 && !f.cpu) } }, 150);
+// boutons tactiles qui s'adaptent (25/09) : A, B et ★ disent ce qu'ils vont faire TOUT DE SUITE
+// (en l'air, en bas, tout près, jauge pleine) ; les repères du joystick (▲ SAUTE / ▼ GARDE) s'allument quand la direction est prise.
+function etiquettes(f, o, i) {
+  const e = { L: 'RAPIDE', H: 'FORT', S: 'SPÉCIAL', cL: 0, cH: 0 }, fwd = ((i.right ? 1 : 0) - (i.left ? 1 : 0)) * f.face;
+  if (f.state === 'air' && !f.airAtk) { e.L = e.H = 'EN L’AIR !'; e.cL = e.cH = 1 }
+  else if (i.down && f.h <= 0) { e.L = 'EN BAS'; e.cL = 1; if (f.d.moves.cH) { e.H = 'BALAYETTE'; e.cH = 1 } }
+  else if (fwd > 0 && f.h <= 0 && o && f.d.moves.T && portee(f, o, 70) && attrapable(o)) { e.H = 'PROJETTE'; e.cH = 1 }
+  e.S = f.meter >= 100 && f.d.moves.SUPER ? 'SUPER !' : i.down ? '↓ SPÉCIAL' : fwd > 0 ? '→ SPÉCIAL' : 'SPÉCIAL';
+  return e;
+}
+const ETQ = new Map();
+function majBoutons() {
+  for (const [n, id] of [[0, 'pad'], [1, 'pad2']]) {
+    const pad = $(id); if (!pad) continue;
+    const k = n === 0 ? (NET.on ? NET.moi : 0) : 1, f = G.f[k], o = G.f[1 - k];
+    const actif = !!f && !f.cpu && ['fight', 'intro'].includes(G.phase) && (n === 0 || G.mode === 2);
+    const inp = actif ? lire(n) : {}, e = actif ? etiquettes(f, o, inp) : { L: 'RAPIDE', H: 'FORT', S: 'SPÉCIAL' };
+    for (const b of pad.querySelectorAll('.tb')) { const t = b.dataset.k, s = b.querySelector('small'), v = e[t];
+      if (s && ETQ.get(b) !== v) { ETQ.set(b, v); s.textContent = v }
+      b.classList.toggle('ctx', !!(actif && e['c' + t])); if (t === 'S') b.classList.toggle('super', !!(actif && f.meter >= 100)) }
+    for (const [cl, d] of [['haut', 'up'], ['bas', 'down']]) { const g = pad.querySelector('.jg.' + cl); if (g) g.classList.toggle('on', !!inp[d]) }
+  }
+}
+setInterval(majBoutons, 90);
 
 // ---------------------------------------------------------------------
 //  Démarrage

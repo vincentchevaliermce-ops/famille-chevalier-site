@@ -247,37 +247,46 @@ const TUTO = [
   { t: 'AVANCE vers ton adversaire !', tt: 'Pousse le joystick vers lui', tc: 'Flèche → (ou D)', k: 'avance' },
   { t: 'TAPE avec A (coup rapide) !', tk: 'TAPE : coup rapide !', tt: 'Appuie sur le bouton A', tc: 'Touche J (ou F)', k: 'L' },
   { t: 'Et maintenant B (coup fort) !', tk: 'Et maintenant : coup fort !', tt: 'Appuie sur le bouton B', tc: 'Touche K (ou G)', k: 'H' },
+  { t: 'SAUTE !', tt: 'Pousse le joystick VERS LE HAUT ▲', tc: 'Flèche ↑ (ou Espace)', k: 'saut' },
+  { t: 'ATTAQUE EN L’AIR !', tt: 'Saute ▲… et PENDANT le saut, appuie sur A (il s’allume : EN L’AIR !)', tc: 'Saute (↑), puis J pendant le saut', k: 'A' },
+  { t: 'COUP EN BAS !', tt: 'Garde le joystick EN BAS ▼ et appuie sur A', tc: 'Garde ↓ et appuie sur J', k: 'cL' },
+  { t: 'LA BALAYETTE : il tombe !', tt: 'Garde le joystick EN BAS ▼ et appuie sur B', tc: 'Garde ↓ et appuie sur K', k: 'cH' },
   { t: 'IL ATTAQUE ! Protège-toi : tire VERS LE BAS', tt: 'Joystick vers le bas pendant son attaque', tc: 'Flèche ↓ (ou S) pendant son attaque', k: 'garde' },
   { t: '★ : TON COUP SPÉCIAL !', tt: 'Appuie sur ★', tc: 'Touche L (ou H)', k: 'S' },
   { t: 'JAUGE PLEINE : ★ = SUPER !', tt: 'Appuie encore sur ★', tc: 'Encore la touche L (ou H)', k: 'SUPER' },
 ];
-function lanceTuto(ensuite) {
-  G.tutoApres = ensuite; G.tuto = { i: 0, t: 0, ok: 0 }; G.livre = null; G.defi = null; G.jour = null;
+const TUTO_NOUVEAU = ['saut', 'A', 'cL', 'cH']; // pour ceux qui avaient déjà fait l'ancien tutoriel (25/09) : seulement ce qui est nouveau
+const TUTO_VERSION = 2;
+function lanceTuto(ensuite, quoi) {
+  const L = quoi === 'nouveau' ? TUTO.filter(e => TUTO_NOUVEAU.includes(e.k)) : TUTO;
+  G.tutoApres = ensuite; G.tuto = { i: 0, t: 0, ok: 0, L, nouveau: quoi === 'nouveau' }; G.livre = null; G.defi = null; G.jour = null;
   G.mode = 1; G.niv = 0; G.tournoi = null; G.pick = ['tigre', 'gorille']; G.arene = 'savane'; startMatch();
   G.phase = 'fight'; G.pt = 0; for (const f of G.f) setS(f, 'idle'); G.f[1].tuto = true;
-  G.f[0].x = 380; G.f[1].x = 1420; /* assez loin pour que « avance » demande un vrai geste */ $('tuto-passer').hidden = false; majTuto();
+  G.f[0].x = quoi === 'nouveau' ? 700 : 380; G.f[1].x = 1420; /* assez loin pour que « avance » demande un vrai geste */ $('tuto-passer').hidden = false; majTuto();
 }
-function majTuto() { const T = G.tuto; if (!T) return; const e = TUTO[T.i], tact = document.body.classList.contains('tactile'); $('tuto-bulle').hidden = false; $('tuto-bulle').innerHTML = `<small>${T.i + 1} / ${TUTO.length}</small><b class="R">${tact ? e.t : e.tk || e.t}</b><span>${tact ? e.tt : e.tc}</span>` }
+function majTuto() { const T = G.tuto; if (!T) return; const e = T.L[T.i], tact = document.body.classList.contains('tactile'); $('tuto-bulle').hidden = false; $('tuto-bulle').innerHTML = `<small>${T.nouveau ? 'NOUVEAU ! · ' : ''}${T.i + 1} / ${T.L.length}</small><b class="R">${tact ? e.t : e.tk || e.t}</b><span>${tact ? e.tt : e.tc}</span>` }
 function finTuto(passe) {
-  SAVE.tuto = 1; sauve(); $('tuto-bulle').hidden = true; $('tuto-passer').hidden = true; const f = G.tutoApres; G.tuto = null; G.tutoApres = null;
+  SAVE.tuto = TUTO_VERSION; sauve(); $('tuto-bulle').hidden = true; $('tuto-passer').hidden = true; const f = G.tutoApres; G.tuto = null; G.tutoApres = null;
   if (!passe) { addFx({ k: 'mot', x: 960, y: 420, mot: 'BRAVO, TU ES PRÊT !', col: JA }); sfx('badge'); setTimeout(() => { G.phase = 'menu'; G.f = []; if (f) f() }, 1400) } else { G.phase = 'menu'; G.f = []; if (f) f() }
 }
 // appelé à chaque image pendant le tutoriel : l'adversaire « mannequin » et la validation des étapes
 function tutoPas() {
-  const T = G.tuto; if (!T || !G.f.length) return; const [a, b] = G.f, e = TUTO[T.i]; T.t++;
+  const T = G.tuto; if (!T || !G.f.length) return; const [a, b] = G.f, e = T.L[T.i]; T.t++;
   b.hp = Math.max(b.hp, 40); a.hp = a.d.hp; G.timer = 99 * 60; // personne ne perd pendant le tutoriel
   let fait = false;
   if (e.k === 'avance') fait = Math.abs(a.x - b.x) < 620;
   if (e.k === 'L' || e.k === 'H' || e.k === 'S') fait = a.state === 'atk' && (a.mk === e.k || (e.k === 'S' && ['S', 'SF', 'SD'].includes(a.mk)));
+  if (e.k === 'saut') fait = a.state === 'air' || (a.h > 60 && a.state !== 'atk');
+  if (e.k === 'A' || e.k === 'cL' || e.k === 'cH') fait = a.state === 'atk' && a.mk === e.k;
   if (e.k === 'garde') fait = a.state === 'bstun';
   if (e.k === 'SUPER') { a.meter = 100; fait = a.state === 'atk' && a.mk === 'SUPER' }
-  if (fait && T.t > 20) { T.i++; T.t = 0; sfx('valide'); if (T.i >= TUTO.length) { finTuto(false); return } majTuto() }
+  if (fait && T.t > 20) { T.i++; T.t = 0; sfx('valide'); addFx({ k: 'mot', x: a.x, y: FLOOR - a.h - 560, mot: hasard(['BRAVO !', 'SUPER !', 'OUI !', 'BIEN JOUÉ !']), col: JA }); if (T.i >= T.L.length) { finTuto(false); return } majTuto() }
 }
 // cerveau du mannequin : il attend, et attaque seulement à l'étape « protège-toi »
 function tutoBrain(f, o) {
   const r = { left: false, right: false, up: false, down: false, L: false, H: false, S: false }, T = G.tuto; if (!T) return r;
-  if (TUTO[T.i].k === 'garde' && neutral(f) && T.t % 70 === 30) { if (Math.abs(o.x - f.x) > 700) r[o.x > f.x ? 'right' : 'left'] = true; else r.H = !f.prev.H }
-  if (TUTO[T.i].k === 'garde' && Math.abs(o.x - f.x) > 650) r[o.x > f.x ? 'right' : 'left'] = true;
+  if (T.L[T.i].k === 'garde' && neutral(f) && T.t % 70 === 30) { if (Math.abs(o.x - f.x) > 700) r[o.x > f.x ? 'right' : 'left'] = true; else r.H = !f.prev.H }
+  if (T.L[T.i].k === 'garde' && Math.abs(o.x - f.x) > 650) r[o.x > f.x ? 'right' : 'left'] = true;
   return r;
 }
 // ---------------------------------------------------------------------
