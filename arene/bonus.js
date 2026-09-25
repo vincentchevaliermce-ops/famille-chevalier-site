@@ -23,11 +23,11 @@ function valideCodeSecret() {
   if (!v) return;
   if (v === CODE_GOD) {
     SAVE.codes.god = 1; G.god = true; sauve(); sonInit(); sfx('super'); sfx('tigre', .8); vibre([60, 40, 90]);
-    msg(`⚡ GOD MODE ACTIVÉ ! Invincible, SUPER illimité, tous les animaux. Bats les ${questeTxt().tot} animaux de la TERRE pour réveiller… le LÉGENDAIRE ! Et dans la MER, un autre géant attend…`); majGodBtn(); return;
+    msg('⚡ GOD MODE ACTIVÉ ! Invincible, SUPER illimité, et tous les animaux de l’aventure pour tes combats (pas les champions du livre ni les légendes).'); majGodBtn(); return;
   }
   if (v === 'PROUT') { G.prout = !G.prout; sfx('prout', 1); msg(G.prout ? 'MODE PROUT activé pour ta partie. Tu es prévenu…' : 'Mode prout désactivé. Ouf.'); return }
   const k = CODES_ANIMAUX[v] || (typeof CODES !== 'undefined' && CODES[v]);
-  if (!k) { sfx('erreur'); msg('Ce code ne marche pas… Gagne un animal secret au défi pour recevoir son code, ou demande à un copain !'); return }
+  if (!k) { sfx('erreur'); msg('Ce code ne marche pas… Gagne des animaux dans L’AVENTURE pour recevoir leur code, ou demande à un copain !'); return }
   if (!pret(k)) { msg(`Bien trouvé ! Cet animal arrive bientôt dans l’arène : garde ton code !`); return }
   if (debloqueVrai(k)) { msg(`Tu as déjà ${CHARS[k].art} !`); return }
   SAVE.debloques.push(k); const nv = []; badge('secret', nv); sauve(); sonInit(); sfx('super'); sfx(k, 1);
@@ -64,12 +64,7 @@ function apresMatch(v, n, nv) {
   if (!G.f.length) return;
   const [a, b] = G.f, moi = a, adv = b, gagne = v === a && !a.cpu;
   G.dernier = { moi: moi.kind, adv: adv.kind, arene: G.arene, niv: G.niv, gagne, etoiles: gagne ? n : 0, temps: Math.max(1, Math.round((G.chrono || 0) / 60)), god: !!G.god };
-  // quête du légendaire (GOD MODE, en solo)
-  if (G.god && G.mode === 1 && !NET.on && gagne && !estLegendaire(adv.kind)) {
-    const m = mondeDe(adv.kind), leg = MONDES[m].legende; SAVE.godBattus[adv.kind] = 1; const q = questeTxt(m); sauve();
-    if (leg) G.finExtra += `<span class="quete">⚡ QUÊTE DU LÉGENDAIRE ${MONDES[m].ico} : ${q.n} / ${q.tot}</span>`;
-    if (leg && q.tot && q.n >= q.tot && !debloqueVrai(leg) && pret(leg)) { SAVE.debloques.push(leg); sauve(); setTimeout(() => ceremonieLegendaire(leg), 1800) }
-  }
+  // (25/09 : la quête du légendaire en GOD MODE est retirée — les LÉGENDES se réveillent après la finale de L'AVENTURE)
   // défi d'un copain : on compare
   if (G.defi && G.defi.enCours && G.mode === 1) { G.defi.enCours = false; const d = G.defi, moiRes = G.dernier;
     const mieux = moiRes.gagne && (moiRes.etoiles > d.etoiles || (moiRes.etoiles === d.etoiles && moiRes.temps < d.temps));
@@ -87,7 +82,7 @@ function ceremonieLegendaire(k = LEGENDAIRE) {
   G.phase = 'menu'; show('legende'); G.legendeVu = k; sfx(k === 'trex' ? 'dino' : k === 'meganeura' ? 'ailes' : 'requin', 1); sfx('boum', 1); vibre([100, 60, 200]);
   $('legende-img').src = k + '_vs.webp'; { const o = $('legende-ok'); if (o) o.textContent = CHARS[k] && CHARS[k].fem ? 'JOUER AVEC ELLE ▶' : 'JOUER AVEC LUI ▶' } // (la méganeura, le mégalodon…)
   if (window.trophee && (k === 'trex' || k === 'megalo' || k === 'meganeura')) trophee(k, true); // le trophée tout de suite (pas au combat suivant)
-  const t = $('legende-txt'); if (t) t.textContent = k === 'meganeura' ? 'Tu as battu toutes les PETITES BÊTES en GOD MODE… et la MÉGANEURA s’est réveillée : une libellule géante de la préhistoire, grande comme un corbeau ! Elle est à toi pour toujours.' : k === 'trex' ? 'Tu as battu tous les animaux de la TERRE en GOD MODE… et tu as réveillé le T. REX ! Il est à toi pour toujours.' : 'Tu as battu tous les animaux de la MER en GOD MODE… et le MÉGALODON est remonté des profondeurs ! Il est à toi pour toujours.';
+  const t = $('legende-txt'); if (t) t.textContent = k === 'meganeura' ? 'Tu as battu la MÉGANEURA, une libellule géante de la préhistoire, grande comme un corbeau ! Elle est à toi pour toujours.' : k === 'trex' ? 'Tu as battu le T. REX, le roi des dinosaures ! Il est à toi pour toujours.' : 'Tu as battu le MÉGALODON, le plus grand requin de tous les temps ! Il est à toi pour toujours.';
 }
 // ---------------------------------------------------------------------
 //  Nom de champion (inventé : jamais le vrai prénom)
@@ -319,7 +314,7 @@ function initBonus() {
   on('comment-jouer', () => { sfx('clic'); lanceTuto(() => { show('choix'); construitCartes() }) });
   const pi = $('porte-in'); if (pi) pi.addEventListener('keydown', e => { if (e.key === 'Enter') valideParents() });
   // défi du jour : l'autocollant de l'accueil montre les deux animaux du jour
-  const j = defiDuJour(), dj = $('jour-titre'); if (dj) dj.innerHTML = `<small>⚡ DÉFI DU JOUR</small><span>${EMOJI[j.a] || ''} contre ${EMOJI[j.b] || ''}</span>`;
+  const j = defiDuJour(), jt = $('jour-tetes'), jx = $('jour-txt'); if (jt) jt.innerHTML = `<img src="${j.a}_tete.webp" alt=""><em>VS</em><img src="${j.b}_tete.webp" alt="">`; if (jx) jx.textContent = `${CHARS[j.a].nom} contre ${CHARS[j.b].nom}`;
   majGodBtn();
 }
 // au chargement : lien de défi reçu, lien « défi du jour »

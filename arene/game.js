@@ -1190,7 +1190,7 @@ const ONGLETS = [ // k : onglet · m : monde des combats
   { k: 'jungle', m: 'terre', ico: '🐊', nom: 'JUNGLES', titre: 'JUNGLES ET MARAIS' },
   { k: 'nord', m: 'terre', ico: '🌲', nom: 'GRAND NORD', titre: 'FORÊTS ET GRAND NORD' },
   { k: 'mer', m: 'mer', ico: '🌊', nom: 'MER', titre: 'LA MER' },
-  { k: 'betes', m: 'betes', ico: '🐞', nom: 'BÊTES', titre: 'LES PETITES BÊTES' },
+  { k: 'betes', m: 'betes', ico: '🐞', nom: 'PETITES BÊTES', titre: 'LES PETITES BÊTES' },
 ];
 const ongletDe = k => ONGLETS.find(o => o.k === k) || ONGLETS[1];
 const arenesDe = m => ARENES.filter(a => (a.monde || 'terre') === m && (!a.secret || (window.recompense && recompense(a.secret)))); // arènes secrètes : récompenses de trophées (surprises.js)
@@ -1198,7 +1198,7 @@ const arenesDe = m => ARENES.filter(a => (a.monde || 'terre') === m && (!a.secre
 const amphibie = (k, m) => m === 'mer' && CHARS[k] && CHARS[k].amphibie; // le crocodile marin nage aussi en mer (livre, duel 26)
 const memeMonde = (a, b) => mondeDe(a) === mondeDe(b) || amphibie(a, mondeDe(b)) || amphibie(b, mondeDe(a));
 const mondeDuel = (a, b) => mondeDe(a) === 'mer' || mondeDe(b) === 'mer' ? 'mer' : mondeDe(a) === 'betes' || mondeDe(b) === 'betes' ? 'betes' : 'terre';
-const mondeOuvert = m => m !== 'betes' || (ORDRE.filter(k => mondeDe(k) === 'betes' && k !== MONDES.betes.legende).length >= 2 && ARENES.some(a => a.monde === 'betes')); // les PETITES BÊTES s'ouvrent avec 2 animaux et 1 arène
+const mondeOuvert = m => !!MONDES[m] && ARENES.some(a => (a.monde || 'terre') === m); // 25/09 : les 3 mondes sont visibles tout de suite (les animaux à gagner y sont, avec leur duel de l'aventure)
 const LISTE = (m = G.monde) => { const l = ORDRE.filter(k => (mondeDe(k) === m || amphibie(k, m)) && (k !== MONDES[m].legende || debloque(k))), leg = MONDES[m].legende; // (les amphibies juste avant le légendaire)
   return l.filter(k => !amphibie(k, m) && k !== leg).concat(l.filter(k => amphibie(k, m)), l.filter(k => k === leg)) };
 const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, mot pour mot (// p. N) ou à peine adaptées (// ≈ p. N : sujet ajouté).
@@ -1841,8 +1841,8 @@ const BADGES = [
   ['costaud', 'GROS COSTAUD', 'Gagne au niveau COSTAUD.'],
   ['champion', 'CHAMPION DE L’ARÈNE', 'Bats tous les animaux à la suite.'],
   ['explo', 'EXPLORATEUR', 'Gagne avec 4 animaux différents.'],
-  ['secret', 'AS DU DÉFI', 'Gagne un animal secret : bats-le, puis réussis son quiz.'],
-  ['lecteur', 'LECTEUR EXPERT', 'Gagne tous les animaux secrets des défis.'],
+  ['secret', 'AVENTURIER', 'Gagne un animal dans L’AVENTURE : combat gagné, question réussie.'],
+  ['lecteur', 'LECTEUR EXPERT', 'Gagne les 30 duels de L’AVENTURE.'],
   ['livre', 'LIVRE EN MAIN', 'Débloque un champion du livre avec le livre sous les yeux.'],
   ['duo', 'À DEUX, C’EST MIEUX', 'Termine un combat à 2 joueurs.'],
   ['cartes', 'COLLECTIONNEUR', 'Gagne 10 cartes « Le savais-tu ? ».'],
@@ -1851,7 +1851,7 @@ const BADGES = [
 // DÉBLOCAGE (25/09, demandé par Vincent) : 8 animaux tout de suite (les duels 1, 2, 3 et 30 du livre, au moins un par onglet),
 // 31 à gagner au DÉFI (on bat l'animal, on gagne 3 cartes, on réussit 3 questions : QUIZ), 10 CHAMPIONS DU LIVRE (LIVRE_EN_MAIN),
 // et les 3 légendaires (quête du GOD MODE, bonus.js).
-const DE_BASE = ['lion', 'tigre', 'gorille', 'ours', 'orque', 'requin', 'frelon', 'abeille'];
+const DE_BASE = ['lion', 'tigre', 'gorille', 'ours']; // 25/09 : 4 animaux au départ, les autres se gagnent dans L'AVENTURE (les anciens joueurs gardent tout)
 const champion = k => !!LIVRE_EN_MAIN[k]; // carte dorée, vitrine, entrée et aura dorées
 let SAVE = { debloques: DE_BASE.slice(), etoiles: {}, badges: {}, cartes: {}, gagneAvec: {}, quiz: {}, joue: {}, defis: {} };
 try { const s = JSON.parse(localStorage.getItem('arene-duels') || 'null'); if (s && s.debloques) SAVE = Object.assign(SAVE, s) } catch (e) { }
@@ -3354,7 +3354,9 @@ function endMatch() {
   if (G.mode === 1 && G.tournoi) { if (humain) { G.tournoi.i++; if (G.tournoi.i >= G.tournoi.liste.length) { if (G.tournoi.liste.length >= 2 || ORDRE.filter(debloque).length <= 2) { badge('champion', nv); t = 'CHAMPION DE L’ARÈNE !' } G.tournoi.i = 0 } else suite = true } }
   // le DÉFI d'un animal secret : gagné → ses 3 cartes et son quiz ; perdu → revanche
   const ep = G.epreuve && G.mode === 1 && !NET.on && !G.livre && G.f[1] && G.f[1].kind === G.epreuve.k ? G.epreuve.k : null;
-  if (ep && humain) { SAVE.defis[ep] = 1; G.apresEpreuve = ep; t = `TU AS BATTU ${CHARS[ep].art} !` }
+  const legEp = ep && typeof estLegendaire === 'function' && estLegendaire(ep);
+  if (ep && humain && legEp) { if (!SAVE.debloques.includes(ep)) SAVE.debloques.push(ep); G.apresEpreuve = null; t = `TU AS RÉVEILLÉ ${CHARS[ep].art} !`; setTimeout(() => { if (G.screen === 'fin' && window.ceremonieLegendaire) ceremonieLegendaire(ep) }, 2400) }
+  else if (ep && humain) { SAVE.defis[ep] = 1; G.apresEpreuve = ep; t = `TU AS BATTU ${CHARS[ep].art} !` }
   sauve();
   { const gagne = v && (NET.on ? !v.distant : G.mode === 2 ? true : !v.cpu); if (!G.livre) setTimeout(() => sfx(gagne ? 'victoire' : 'defaite'), 250); setTimeout(() => annonceur(!v ? 'tie' : G.mode === 2 && !NET.on ? 'winner' : gagne ? 'you_win' : 'you_lose'), 1100); if (nv.length) setTimeout(() => sfx('badge'), 1500) }
   if (window.tropheesFin) tropheesFin(v, l, n, nv); // trophées (surprises.js)
@@ -3364,12 +3366,13 @@ function endMatch() {
   { const ph = v && PHRASES[v.kind]; $('fin-phrase').hidden = !ph; if (ph) $('fin-phrase').textContent = '« ' + hasard(ph) + ' »' }
   $('fin-etoiles').innerHTML = G.mode === 1 && humain && !G.god ? etoiles(n) : '';
   $('fin-badges').innerHTML = nv.map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
-  $('fait-titre').textContent = neuf ? `NOUVELLE CARTE ! ${nbCartes()}/${totalCartes()} · LE SAVAIS-TU ?` : fait ? 'LE SAVAIS-TU ?' : 'ANIMAUX SECRETS';
-  $('fait-txt').textContent = fait || fin('Bats les animaux secrets ⚔️ et réussis leur quiz : ils rejoignent ton équipe… avec leurs cartes « Le savais-tu ? » !');
+  $('fait-titre').textContent = neuf ? `NOUVELLE CARTE ! ${nbCartes()}/${totalCartes()} · LE SAVAIS-TU ?` : fait ? 'LE SAVAIS-TU ?' : '🗺️ L’AVENTURE';
+  $('fait-txt').textContent = fait || fin('Gagne les duels du livre dans ▶ L’AVENTURE : leurs animaux rejoignent ton équipe… avec leurs cartes « Le savais-tu ? » !');
   $('fin-img').src = (v || a).kind + '_fin.webp';
   const orFin = !!(v && champion(v.kind) && (NET.on ? !v.distant : !v.cpu)); $('fin').classList.toggle('or', orFin); if (orFin) $('fin-badges').innerHTML = '<span class="champ-or">📖 CHAMPION DU LIVRE !</span>' + $('fin-badges').innerHTML;
   $('revanche').textContent = suite ? 'ADVERSAIRE SUIVANT ▶' : G.mode === 1 && G.tournoi && humain ? 'NOUVEAU TOURNOI' : NET.on ? 'REJOUER' : 'REVANCHE !';
-  if (ep) { const d = CHARS[ep];
+  if (ep && legEp) { $('fait-titre').textContent = humain ? '★ LÉGENDE RÉVEILLÉE !' : 'PRESQUE !'; $('fait-txt').textContent = fin(humain ? `${CHARS[ep].art} rejoint tes animaux, pour toujours !` : `${CHARS[ep].art} est costaud… Retente ta chance !`); $('revanche').textContent = humain ? '★ LA CÉRÉMONIE ▶' : '⚔️ REVANCHE !' }
+  else if (ep) { const d = CHARS[ep];
     $('fait-titre').textContent = humain ? '🃏 3 CARTES GAGNÉES !' : 'PRESQUE !';
     $('fait-txt').textContent = fin(humain ? `Découvre 3 secrets ${du(ep).toLowerCase()} et réponds à son quiz : ${d.fem ? 'elle' : 'il'} sera à toi !` : `Retente ta chance contre ${leNom(ep)} ! Astuce : en FACILE, c’est plus simple.`);
     $('revanche').textContent = humain ? '🃏 SES CARTES ▶' : '⚔️ REVANCHE !' }
@@ -3408,12 +3411,13 @@ function show(id) {
   document.body.classList.toggle('en-combat', !id || id === 'pause'); document.body.classList.toggle('en-pause', id === 'pause'); document.body.classList.toggle('en-menu-titre', id === 'titre'); document.body.classList.toggle('en-menu', !!id && id !== 'pause' && id !== 'titre');
   if (id) G.screen = id;
   document.body.dataset.ecran = id || 'combat';
-  if (id === 'titre') { const j = $('jouer'); if (j) { j.classList.toggle('nouveau-defis', !SAVE.vuDefis); j.classList.toggle('nouveau-mer', !!SAVE.vuDefis && !SAVE.vuMer && ORDRE.some(k => mondeDe(k) === 'mer')) } }
+  if (id === 'titre') { const j = $('livre-titre'); if (j) j.classList.toggle('nouveau-defis', !SAVE.vuAventure && Object.keys(SAVE.livre || {}).length > 0); if (window.majAccueil) majAccueil() } // autocollant « NOUVEAU » (anciens joueurs) jusqu'à la 1re visite de l'aventure
+  if (id === 'livre' && !SAVE.vuAventure) { SAVE.vuAventure = 1; sauve() }
   if (id === 'choix' && !SAVE.vuDefis) { SAVE.vuDefis = 1; sauve() } // (l'autocollant « ⚔️ NOUVEAU : LES DÉFIS ! » disparaît après la première visite) // la mer est nouvelle : un autocollant sur JOUER jusqu'à la première visite
 }
 let selCursor = 0, selStage = 0;
 G.onglet = 'fav';
-// cartes de l'onglet affiché : les jouables d'abord, puis les animaux à gagner au défi, puis les champions du livre (cartes dorées)
+// cartes de l'onglet affiché : les jouables d'abord, puis les animaux à gagner dans l'aventure, puis les champions du livre (cartes dorées)
 function favoris() { // les 4 animaux les plus joués (complétés par ceux de base pour un nouveau joueur)
   const l = Object.keys(SAVE.joue || {}).filter(k => CHARS[k] && debloque(k)).sort((a, b) => SAVE.joue[b] - SAVE.joue[a]).slice(0, 4);
   for (const k of DE_BASE) if (l.length < 4 && !l.includes(k) && CHARS[k]) l.push(k);
@@ -3438,7 +3442,7 @@ const nbCartesChoix = () => CARTES().length;
 // aller à la carte d'un animal (on passe dans son onglet)
 function vaVers(k) { G.monde = mondeDe(k); G.onglet = regionDe(k); selCursor = Math.max(0, CARTES().indexOf(k)) }
 function menuKey(code) {
-  if (G.phase === 'menu' && G.screen === 'titre' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('jouer').click(); return }
+  if (G.phase === 'menu' && G.screen === 'titre' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('livre-titre').click(); return } // Entrée : ▶ L'AVENTURE
   if (G.phase === 'menu' && G.screen === 'choix') {
     const n = nbCartesChoix(), col = n <= 5 ? n : 6;
     if (['KeyA', 'ArrowLeft'].includes(code)) { selCursor = (selCursor + n - 1) % n; majChoix(); sfx('clic') }
@@ -3472,7 +3476,7 @@ function construitCartes() {
     const d = CHARS[k], ok = debloque(k), leg = k === 'trex' || k === 'megalo' || k === 'meganeura', ch = champion(k), bloque = !ok && ((selStage === 1 && !NET.on && G.mode === 2) || NET.on || (G.epreuve && !G.pick[1]));
     b.className = 'carte ' + k + (ok ? '' : ' verrou') + (leg ? ' legende' : '') + (ch ? ' champion' : '') + (bloque ? ' inactif' : '') + (d.nom.length > 12 ? ' long' : '') + (selStage === 1 && G.pick[0] === k && !NET.on ? ' pris1' : ''); b.id = 'c-' + k;
     if (selStage === 1 && G.pick[0] === k && !NET.on) b.dataset.tag = G.mode === 2 ? 'J1' : 'TOI';
-    const ets = ok ? etoiles(SAVE.etoiles[k] || 0) : ch ? '📖 LIVRE' : SAVE.defis[k] ? '❓ QUIZ' : '⚔️ DÉFI';
+    const src = !ok && window.sourceDe ? sourceDe(k) : null, ets = ok ? etoiles(SAVE.etoiles[k] || 0) : ch ? '📖 LIVRE' : src && src.t === 'duel' ? `🗺️ DUEL ${String(src.D.n).padStart(2, '0')}` : src && src.t === 'legende' ? '★ LÉGENDE' : '🔒';
     b.innerHTML = `<span class="img"><img src="${k}_corps.webp" alt=""></span><span class="nom">${d.nom}</span><span class="ets${ok ? '' : ' quiz'}">${ets}</span>`;
     b.onclick = () => { selCursor = i; majChoix(); clicCarte(k) };
     b.onmouseenter = () => { selCursor = i; majChoix() };
@@ -3508,8 +3512,10 @@ function majChoix() {
   if (!NET.on) $('choix-titre').textContent = G.epreuve && !G.pick[1] ? `QUI VA AFFRONTER ${CHARS[G.epreuve.k].art} ?` : selStage === 0 ? (G.mode === 2 ? `JOUEUR 1 : CHOISIS TON ANIMAL · ${lieu}` : `CHOISIS TON ANIMAL · ${lieu}`) : G.mode === 2 ? `JOUEUR 2 : À TOI · ${lieu}` : `CHOISIS TON ADVERSAIRE · ${lieu}`;
   const k = CARTES()[selCursor], d = k && CHARS[k], s1 = selStage === 1 && !NET.on;
   $('retour-choix').hidden = !!NET.on; $('hasard-btn').hidden = !!NET.on || !!G.epreuve; $('tournoi-btn').hidden = !(s1 && G.mode === 1 && !G.epreuve); $('trophees-btn').hidden = s1;
-  $('detail').innerHTML = k === 'hasard' ? '🎲 Un animal au hasard, parmi ceux que tu as !' : !d ? '' : !debloque(k) ? (champion(k) ? `📖 <b>CHAMPION DU LIVRE</b> : ${d.fem ? 'elle' : 'il'} t’attend <b>page ${pageLivre(k)}</b> du livre.`
-    : SAVE.defis[k] ? `Tu ${d.fem ? 'l’as battue' : 'l’as battu'} ! Réponds à <b>son quiz</b> pour ${d.fem ? 'la' : 'le'} gagner.` : `⚔️ <b>Animal secret</b> : bats-${d.fem ? 'la' : 'le'} en duel, puis réponds à son quiz pour ${d.fem ? 'la' : 'le'} gagner !`)
+  const src = d && !debloque(k) && window.sourceDe ? sourceDe(k) : null, la = d && d.fem ? 'la' : 'le';
+  $('detail').innerHTML = k === 'hasard' ? '🎲 Un animal au hasard, parmi ceux que tu as !' : !d ? '' : !debloque(k) ? (s1 && G.mode === 1 ? `Tu peux ${d.fem ? 'l’affronter' : 'l’affronter'} ! Pour ${la} jouer, ${src && src.t === 'duel' ? `gagne le <b>duel ${src.D.n}</b> de l’aventure.` : champion(k) ? `trouve-${la} dans le livre (page ${pageLivre(k)}).` : 'finis l’aventure.'}`
+    : champion(k) ? `📖 <b>CHAMPION DU LIVRE</b> : ${d.fem ? 'elle' : 'il'} t’attend <b>page ${pageLivre(k)}</b> du livre.`
+    : src && src.t === 'duel' ? `🗺️ Gagne le <b>duel ${src.D.n}</b> de l’aventure (${esc(src.D.q.toLowerCase())}) : ${d.fem ? 'elle' : 'il'} rejoint tes animaux !` : src && src.t === 'legende' ? '★ <b>LÉGENDE</b> : elle se réveille après la finale de l’aventure !' : 'Bientôt dans l’arène !')
     : `<b>${d.nom}</b> · ★ Spécial : <b>${d.moves[d.speAff || 'S'].nom}</b> · Super : <b>${d.moves.SUPER.nom}</b>`;
 }
 function clicCarte(k) {
@@ -3517,8 +3523,9 @@ function clicCarte(k) {
   if (!debloque(k)) {
     if (NET.on) return;
     if (G.epreuve && !G.pick[1]) { sfx('erreur'); $('detail').innerHTML = `Pour affronter ${leNom(G.epreuve.k, true)}, choisis un animal que tu as déjà !`; return }
-    if (selStage === 1 && G.mode === 2) { sfx('erreur'); $('detail').innerHTML = 'Les animaux verrouillés se gagnent en mode <b>1 JOUEUR</b>.'; return }
-    if (champion(k)) ouvreVitrine(k); else if (QUIZ[k]) ouvreEpreuve(k); else { sfx('erreur'); $('detail').innerHTML = 'Cet animal arrive bientôt dans l’arène !' } return
+    if (G.mode === 2) { sfx('erreur'); $('detail').innerHTML = 'Les animaux à gagner se gagnent dans <b>L’AVENTURE</b>.'; return }
+    if (selStage === 1 && G.mode === 1) { choisir(k); return } // 25/09 : on peut AFFRONTER tous les animaux (on ne joue que ceux qu'on a gagnés)
+    if (champion(k)) ouvreVitrine(k); else ouvreInfoAnimal(k); return
   }
   choisir(k);
 }
@@ -3640,7 +3647,7 @@ function lanceEpreuve(k) {
 // 🃏 les 3 cartes gagnées (ce sont elles qui contiennent les réponses du quiz)
 function ouvreSecrets(k) {
   const z = QUIZ[k]; if (!z) return;
-  sonInit(); G.phase = 'menu'; show('quiz'); $('quiz').classList.add('defi'); $('quiz').classList.remove('or');
+  sonInit(); G.phase = 'menu'; show('quiz'); $('quiz').classList.add('defi'); $('quiz').classList.remove('or', 'q-duel');
   const qs = melange(z).slice(0, 3), cartes = [...new Set(qs.map(q => q[2]))];
   const vu = SAVE.cartes[k] || (SAVE.cartes[k] = []); for (const c of cartes) if (!vu.includes(c)) vu.push(c); sauve();
   Object.assign(Q, { k, lem: null, qs, cartes, i: 0, file: qs.slice(), reussi: [], bloque: false });
@@ -3681,7 +3688,7 @@ function repondDefi(b, juste) {
 }
 // 📖 CHAMPIONS DU LIVRE : la vitrine dorée (on voit l'animal, ses coups… et la page du livre où il attend)
 function ouvreVitrine(k) {
-  sonInit(); sfx('clic'); setTimeout(() => sfx(k, .9), 250); G.phase = 'menu'; show('epreuve');
+  G.retourQuiz = null; sonInit(); sfx('clic'); setTimeout(() => sfx(k, .9), 250); G.phase = 'menu'; show('epreuve');
   const d = CHARS[k], m = d.moves;
   $('epreuve').classList.add('or'); $('epreuve').classList.remove('battu');
   $('ep-img').src = k + '_vs.webp'; $('ep-sur').textContent = '📖 CHAMPION DU LIVRE';
@@ -3690,6 +3697,18 @@ function ouvreVitrine(k) {
   $('ep-txt').innerHTML = fin(`${d.fem ? 'Elle' : 'Il'} t’attend <b>page ${pageLivre(k)}</b> du livre « C’est qui le plus fort ? ». Pour ${d.fem ? 'la' : 'le'} débloquer, trouve un mot dans le livre !`);
   const go = $('ep-go'); go.textContent = '📖 J’AI LE LIVRE !'; go.onclick = () => { sfx('valide'); ouvreLivreEnMain(k) };
   $('ep-quiz').hidden = true;
+}
+// 🗺️ un animal à gagner (25/09) : sa fiche (ses coups spéciaux, son SUPER) et son duel de l'aventure (« ▶ Y ALLER »)
+function ouvreInfoAnimal(k) {
+  const d = CHARS[k], m = d.moves, src = window.sourceDe ? sourceDe(k) : { t: '?' }; sonInit(); sfx('clic'); setTimeout(() => sfx(k, .9), 250); G.phase = 'menu'; show('epreuve');
+  $('epreuve').classList.remove('or', 'battu'); $('ep-img').src = k + '_vs.webp';
+  $('ep-sur').textContent = src.t === 'legende' ? '★ LÉGENDE' : '🗺️ À GAGNER DANS L’AVENTURE'; $('ep-titre').textContent = d.art;
+  $('ep-etapes').innerHTML = ['S', 'SF', 'SD'].filter(x => m[x] && m[x].nom).map(x => `<li><i>★</i>${esc(m[x].nom)}</li>`).join('') + `<li class="super"><i>⚡</i>SUPER : ${esc(m.SUPER.nom)}</li>`;
+  const go = $('ep-go'), qz = $('ep-quiz'); qz.hidden = true;
+  if (src.t === 'duel') { const D = src.D, ouvert = duelOuvert(D);
+    $('ep-txt').innerHTML = fin(`Gagne le <b>duel ${D.n}</b> de l’aventure (${esc(D.q.toLowerCase())}) : ${d.fem ? 'elle' : 'il'} rejoint tes animaux !`);
+    go.hidden = false; go.textContent = ouvert ? `▶ LE DUEL ${D.n}` : '▶ L’AVENTURE'; go.onclick = () => { sfx('valide'); if (ouvert) { G.livre = null; ouvrePari(D) } else { mancheLivre = manche(D); ouvreLivre() } } }
+  else { $('ep-txt').innerHTML = fin(src.t === 'legende' ? 'Elle se réveille après la finale de l’aventure : gagne les 30 duels du livre !' : 'Bientôt dans l’arène !'); go.hidden = src.t !== 'legende'; go.textContent = '▶ L’AVENTURE'; go.onclick = () => { sfx('valide'); ouvreLivre() } }
 }
 // --- LIVRE EN MAIN : un mot à écrire, trouvé dans le livre
 const normMot = v => String(v).toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
@@ -3702,7 +3721,7 @@ function presque(a, b) { // le bon mot, au pluriel près ou à une petite faute 
 }
 function ouvreLivreEnMain(k, suivante) {
   const L = LIVRE_EN_MAIN[k]; if (!L) return;
-  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz'); $('quiz').classList.remove('defi'); $('quiz').classList.add('or');
+  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz'); $('quiz').classList.remove('defi', 'q-duel'); $('quiz').classList.add('or');
   if (!suivante || Q.k !== k || !Q.lem) Object.assign(Q, { k, lem: melange(L), i: 0 }); Q.essais = 0; Q.bloque = false;
   const z = Q.lem[Q.i % Q.lem.length];
   $('quiz-titre').textContent = '📖 CHAMPION DU LIVRE !';
@@ -3744,14 +3763,25 @@ function ouvreTrophees(retour) {
   $('troph-badges').innerHTML = window.htmlTrophees ? htmlTrophees() : BADGES.map(([id, nom, txt]) => `<div class="badge${SAVE.badges[id] ? ' ok' : ''}"><i>★</i><b>${nom}</b><small>${txt}</small></div>`).join('');
   $('troph-cartes').innerHTML = ORDRE.map(k => { const vu = SAVE.cartes[k] || [];
     return `<div class="anim"><h3>${CHARS[k].nom} · ${vu.length}/${FAITS[k].length}</h3>${FAITS[k].map((f, i) => vu.includes(i) ? `<p>★ ${f}</p>` : '<p class="non">??? Gagne contre cet animal pour découvrir cette carte.</p>').join('')}</div>` }).join('');
-  ongletTroph('badges');
+  // 🐾 MES ANIMAUX : par monde ; un animal à gagner dit où le trouver (duel de l'aventure, livre, légende) ; on touche un animal gagné pour jouer avec lui
+  const n2x = n => String(n).padStart(2, '0'), tous = ORDRE.filter(k => CHARS[k]), a = tous.filter(k => SAVE.debloques.includes(k));
+  $('tab-animaux').textContent = `🐾 MES ANIMAUX · ${a.length}/${tous.length}`;
+  $('troph-animaux').innerHTML = Object.keys(MONDES).map(m => { const L = tous.filter(k => mondeDe(k) === m); if (!L.length) return '';
+    return `<div class="col-monde"><h3>${MONDES[m].ico} ${MONDES[m].nom}<small>${L.filter(k => SAVE.debloques.includes(k)).length} / ${L.length}</small></h3><div class="col-grille">` + L.map(k => { const ok = SAVE.debloques.includes(k), src = window.sourceDe ? sourceDe(k) : { t: '?' };
+      const t = ok ? (etoiles(SAVE.etoiles[k] || 0) || '✔') : src.t === 'duel' ? `🗺️ DUEL ${n2x(src.D.n)}` : src.t === 'livre' ? '📖 LIVRE' : src.t === 'legende' ? '★ LÉGENDE' : '🔒';
+      return `<button class="col-a${ok ? '' : ' non'}${champion(k) ? ' or' : ''}" type="button" data-k="${k}"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>${t}</small></button>` }).join('') + '</div></div>' }).join('');
+  $('troph-animaux').querySelectorAll('.col-a').forEach(b => b.onclick = () => { const k = b.dataset.k; sfx('clic');
+    if (SAVE.debloques.includes(k)) { G.livre = null; G.mode = 1; G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes(); choisir(k) }
+    else if (champion(k)) ouvreVitrine(k); else ouvreInfoAnimal(k) });
+  ongletTroph('animaux');
 }
-function ongletTroph(t) { $('troph-badges').hidden = t !== 'badges'; $('troph-cartes').hidden = t !== 'cartes'; $('tab-badges').setAttribute('aria-pressed', t === 'badges'); $('tab-cartes').setAttribute('aria-pressed', t === 'cartes') }
+function ongletTroph(t) { for (const x of ['animaux', 'badges', 'cartes']) { $('troph-' + x).hidden = t !== x; $('tab-' + x).setAttribute('aria-pressed', t === x) } }
 function initUI() {
   $('jouer').onclick = () => { sonInit(); sfx('valide'); G.livre = null; G.defi = null; G.jour = null; finEpreuve(); G.onglet = 'fav'; $('m1').onclick(); const choix = () => { G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
     // 1re fois : le tutoriel complet ; ceux qui avaient fait l'ancien (sans saut ni coups en bas) : seulement le NOUVEAU (4 étapes)
     if ((SAVE.tuto || 0) < (typeof TUTO_VERSION !== 'undefined' ? TUTO_VERSION : 1) && window.lanceTuto) { const quoi = SAVE.tuto ? 'nouveau' : 'complet'; chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(choix, quoi) }) } else choix() };
-  $('livre-titre').onclick = () => { sonInit(); sfx('valide'); ouvreLivre() };
+  $('livre-titre').onclick = () => { sonInit(); sfx('valide'); // ▶ JOUER = L'AVENTURE (1re fois : le tutoriel d'abord)
+    if ((SAVE.tuto || 0) < (typeof TUTO_VERSION !== 'undefined' ? TUTO_VERSION : 1) && window.lanceTuto) { const quoi = SAVE.tuto ? 'nouveau' : 'complet'; chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(() => ouvreLivre(), quoi) }) } else ouvreLivre() };
   $('livre-retour').onclick = () => { sfx('retour'); G.livre = null; show('titre') };
   $('pari-retour').onclick = () => { sfx('retour'); ouvreLivre() };
   $('v-menu').onclick = () => { sfx('clic'); ouvreLivre() };
@@ -3764,7 +3794,7 @@ function initUI() {
   document.querySelectorAll('#niveaux .btn').forEach(b => b.onclick = () => { G.niv = +b.dataset.niv; document.querySelectorAll('#niveaux .btn').forEach(x => x.setAttribute('aria-pressed', x === b)); sfx('clic') });
   $('code-ok').onclick = valideCode; $('code-retour').onclick = () => { show('choix'); construitCartes() };
   $('trophees-btn').onclick = () => { sfx('clic'); ouvreTrophees('choix') };
-  $('quiz-retour').onclick = () => { sfx('retour'); const k = Q.k; finEpreuve(); G.phase = 'menu'; show('choix'); if (k && CHARS[k] && selStage === 0) vaVers(k); construitCartes() };
+  $('quiz-retour').onclick = () => { sfx('retour'); if (G.retourQuiz === 'livre') { G.retourQuiz = null; G.quest = null; ouvreLivre(); return } const k = Q.k; finEpreuve(); G.phase = 'menu'; show('choix'); if (k && CHARS[k] && selStage === 0) vaVers(k); construitCartes() };
   $('ep-retour').onclick = () => { sfx('retour'); G.phase = 'menu'; show('choix'); construitCartes() };
   $('retour-choix').onclick = () => { sfx('clic'); if (G.epreuve && !G.pick[1]) { const k = G.epreuve.k; finEpreuve(); vaVers(k); construitCartes(); return } if (selStage === 0) { G.phase = 'menu'; show(G.mode === 2 ? 'adeux' : 'titre'); return } selStage = 0; G.tournoi = null; const p0 = G.pick[0]; if (p0 && CHARS[p0]) { G.onglet = regionDe(p0); selCursor = Math.max(0, CARTES().indexOf(p0)) } construitCartes() };
   $('hasard-btn').onclick = () => { sfx('clic'); animalAuHasard() };
@@ -3778,8 +3808,8 @@ function initUI() {
   $('m3').onclick = () => { sonInit(); sfx('clic'); G.phase = 'menu'; show('enligne'); netEcran('accueil'); netStatut('') };
   $('net-cree').onclick = () => { sfx('clic'); netCree() }; $('net-rejoint').onclick = () => { sfx('clic'); netEcran('invite'); netStatut(''); setTimeout(() => $('net-in').focus(), 50) };
   $('net-ok').onclick = () => { sfx('clic'); netRejoint() }; $('net-retour').onclick = () => { netFerme(); sfx('retour'); show('adeux') }; for (const id of ['net-retour2', 'net-retour3']) $(id).onclick = () => { netFerme(); sfx('retour'); netEcran('accueil'); netStatut('') };
-  $('tab-badges').onclick = () => ongletTroph('badges'); $('tab-cartes').onclick = () => ongletTroph('cartes');
-  $('revanche').onclick = () => { sonInit(); if (G.apresEpreuve) { const k = G.apresEpreuve; G.apresEpreuve = null; ouvreSecrets(k); return } G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const L = arenesDe(mondeDuel(G.pick[0], G.pick[1])), j = L.findIndex(x => x.k === G.arene); G.arene = L[(j + 1) % L.length].k } vs() };
+  $('tab-animaux').onclick = () => ongletTroph('animaux'); $('tab-badges').onclick = () => ongletTroph('badges'); $('tab-cartes').onclick = () => ongletTroph('cartes');
+  $('revanche').onclick = () => { sonInit(); if (G.epreuve && typeof estLegendaire === 'function' && estLegendaire(G.epreuve.k) && SAVE.debloques.includes(G.epreuve.k)) { const k = G.epreuve.k; finEpreuve(); ceremonieLegendaire(k); return } if (G.apresEpreuve) { const k = G.apresEpreuve; G.apresEpreuve = null; ouvreSecrets(k); return } G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const L = arenesDe(mondeDuel(G.pick[0], G.pick[1])), j = L.findIndex(x => x.k === G.arene); G.arene = L[(j + 1) % L.length].k } vs() };
   $('menu-btn').onclick = toMenu; $('quitter').onclick = toMenu; $('reprendre').onclick = pause; $('pause-btn').onclick = () => { if (['fight', 'intro'].includes(G.phase)) pause() };
   // bouton SON : musique + bruitages → bruitages seuls → muet (choix gardé sur l'appareil)
   const majSon = () => { const m = SAVE.son || 0; SON.on = m < 2; SON.musOff = m === 1; $('son-btn').textContent = ['♪ SON', '♪ SANS MUSIQUE', '♪ MUET'][m]; if (SON.master) SON.master.gain.value = SON.on ? .8 : 0 };
