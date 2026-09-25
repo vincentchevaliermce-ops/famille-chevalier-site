@@ -98,6 +98,12 @@ body{margin:0;background:#050d22;color:var(--creme);font-family:Nunito,"Trebuche
 .carte.loup .img{background:radial-gradient(circle at 50% 110%,#EEF0F2,#56606E 72%)}
 .carte.mangouste .img{background:radial-gradient(circle at 50% 110%,#F0E7D2,#6B604C 72%)}
 .carte.cobra .img{background:radial-gradient(circle at 50% 110%,#F0E4BC,#5E4C24 72%)}
+.carte.oursnoir .img{background:radial-gradient(circle at 50% 110%,#E2D4B4,#34303A 72%)}
+.carte.glouton .img{background:radial-gradient(circle at 50% 110%,#EAD6AE,#3E2A1C 72%)}
+.carte.python .img{background:radial-gradient(circle at 50% 110%,#EADCB8,#4E3E24 72%)}
+.carte.alligator .img{background:radial-gradient(circle at 50% 110%,#DDE4D2,#2C362E 72%)}
+.carte.lionne .img{background:radial-gradient(circle at 50% 110%,#FBE7C2,#9A6A2E 72%)}
+.carte.girafe .img{background:radial-gradient(circle at 50% 110%,#FBE6B5,#D9A04A 72%)}
 .carte.megalo .img{background:radial-gradient(circle at 50% 110%,#C9D8E8,#1B2D48 72%)}
 .cartes.treize{grid-template-columns:repeat(5,17.2cqw);gap:1cqw}.cartes.treize .carte .img{height:9.4cqw}.cartes.treize .carte .nom{font-size:1.7cqw}
 .carte.legende{border-color:var(--jaune);box-shadow:0 0 0 .3cqw #FF8A00,0 0 1.6cqw #FFC629,0 .6cqw 0 rgba(0,0,0,.4);position:relative}
@@ -480,6 +486,13 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 #choix .cartes.trois .carte.verrou .img::after{font-size:3.6cqw}
 #choix .cartes.defile{max-width:92cqw;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;padding:.4cqw .4cqw 1cqw;-webkit-overflow-scrolling:touch;scrollbar-color:var(--jaune) rgba(8,31,69,.6);scrollbar-width:thin}
 #choix .cartes.defile .carte{scroll-snap-align:start}
+#choix .cartes.defile,#choix .cartes.defile *{touch-action:pan-x!important} /* on peut faire glisser la grille du doigt (le reste du jeu bloque les gestes) */
+.cartes-zone{position:relative;display:flex;align-items:center;justify-content:center;max-width:100%}
+.fleche-cartes{position:absolute;top:50%;z-index:3;width:4cqw;height:10cqw;margin-top:-5cqw;border:.3cqw solid var(--creme);border-radius:1.2cqw;background:var(--jaune);color:var(--marine);font:900 2.6cqw Rubik,"Arial Black",sans-serif;box-shadow:0 .4cqw 0 rgba(0,0,0,.45);cursor:pointer;touch-action:manipulation!important;display:flex;align-items:center;justify-content:center;padding:0;animation:fleche 1s ease-in-out infinite alternate}
+.fleche-cartes.g{left:-4.3cqw}.fleche-cartes.d{right:-4.3cqw}
+.fleche-cartes[hidden]{display:none}
+.fleche-cartes:active{filter:brightness(.85)}
+@keyframes fleche{from{box-shadow:0 .4cqw 0 rgba(0,0,0,.45),0 0 0 0 rgba(255,210,63,.6)}to{box-shadow:0 .4cqw 0 rgba(0,0,0,.45),0 0 0 .8cqw rgba(255,210,63,0)}}
 #choix .cartes.defile::-webkit-scrollbar{height:.8cqw}#choix .cartes.defile::-webkit-scrollbar-thumb{background:var(--jaune);border-radius:1cqw}#choix .cartes.defile::-webkit-scrollbar-track{background:rgba(8,31,69,.6);border-radius:1cqw}
 </style></head><body>
 
@@ -514,7 +527,7 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
       <div class="grp" role="group" aria-label="Niveau de l’ordinateur" id="niveaux"><button class="btn" data-niv="0" type="button" aria-pressed="true">FACILE</button><button class="btn" data-niv="1" type="button" aria-pressed="false">NORMAL</button><button class="btn" data-niv="2" type="button" aria-pressed="false">COSTAUD</button></div>
     </div>
     <h2 id="choix-titre" class="R">CHOISIS TON ANIMAL</h2>
-    <div class="cartes" id="cartes"></div>
+    <div class="cartes-zone" id="cartes-zone"><button class="fleche-cartes g" id="cartes-g" type="button" aria-label="Voir les animaux d’avant" hidden>◀</button><div class="cartes" id="cartes"></div><button class="fleche-cartes d" id="cartes-d" type="button" aria-label="Voir les autres animaux" hidden>▶</button></div>
     <div class="ligne bas-choix"><button class="btn" id="retour-choix" type="button" hidden>◀ RETOUR</button><span id="detail" class="detail"></span><button class="btn" id="hasard-btn" type="button" hidden>🎲 AU HASARD</button><button class="btn" id="tournoi-btn" type="button" hidden>🏆 TOURNOI</button><button class="btn" id="tenue-btn" type="button" hidden>🎨 NORMAL</button><button class="btn" id="comment-jouer" type="button">❓ COMMENT JOUER</button><button class="btn" id="trophees-btn" type="button">TROPHÉES</button></div>
     <p class="petit clavier">Clavier : <b>Z Q S D</b> pour bouger · <b>F</b> rapide · <b>G</b> fort · <b>H</b> ★ spécial (2ᵉ joueur : flèches + <b>1 2 3</b> du pavé ou <b>, ; !</b>). Pour te protéger : <b>vers le bas</b> (ou recule). Baisse-toi pour esquiver.</p>
   </section>
@@ -718,11 +731,11 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790290544"></script>
-<script src="anim.js?v=1790290544"></script>
-<script src="game.js?v=1790290544"></script>
-<script src="net.js?v=1790290544"></script>
-<script src="livre.js?v=1790290544"></script>
-<script src="bonus.js?v=1790290544"></script>
-<script src="surprises.js?v=1790290544"></script>
+<script src="skin.js?v=1790304468"></script>
+<script src="anim.js?v=1790304468"></script>
+<script src="game.js?v=1790304468"></script>
+<script src="net.js?v=1790304468"></script>
+<script src="livre.js?v=1790304468"></script>
+<script src="bonus.js?v=1790304468"></script>
+<script src="surprises.js?v=1790304468"></script>
 </body></html>

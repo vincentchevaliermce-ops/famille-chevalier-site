@@ -627,6 +627,137 @@ const CHARS = {
       SUPER: { st: 14, act: 44, rec: 22, dmg: 4, hits: 7, hs: 16, bs: 8, kb: 3, kd: true, box: [150, 1000, -800, 0], rush: 10, venin: { t: 420, tick: 20, dmg: 1, lent: .6 }, lvl: 'mid', mots: ['LE ROI DES SERPENTS !', 'SSSSSS !', 'VENIN ROYAL !'], son: 'h', nom: 'Le venin royal' },
     },
   },
+  // --- OURS NOIR (« livre en main », duel 19, p. 43) : des griffes courbes, il charge pour faire peur, la pause goûter, l'ours esprit (tout blanc).
+  //     Point faible (livre) : « plus gourmand que bagarreur » → il frappe moins fort qu'un grizzly, et la caisse « MIAM » le soigne deux fois plus.
+  oursnoir: {
+    nom: 'OURS NOIR', art: 'L’OURS NOIR', gourmand: true, force: .86, spr: true, hPose: ['garde', 'fort'], col: '#2B2A2E', clair: '#D9C9A8', fond: '#4A4650', K: .44, hp: 114, walk: 5.8, back: 4.4, dash: 15, jumpV: 19, jumpX: 7, grav: 1.2, etour: 56,
+    aie: ['GROAR ?!', 'MON MUSEAU !', 'AÏE, MES GRIFFES !'], ia: {},
+    hurt: { stand: [-520, 600, -700, 0], crouch: [-520, 620, -440, 0], air: [-480, 560, -620, 0] },
+    push: [220, 260], reach: 700, speMin: 300, speMax: 1100,
+    moves: {
+      L: { st: 5, act: 4, rec: 10, dmg: 7, hs: 15, bs: 11, kb: 7, box: [480, 960, -660, -100], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PAF !', 'SCRITCH !', 'BAM !'], son: 'l' },
+      cL: { st: 5, act: 4, rec: 11, dmg: 6, hs: 15, bs: 11, kb: 6, box: [460, 940, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'SCRITCH !'], son: 'l' },
+      H: { st: 12, act: 5, rec: 20, dmg: 14, hs: 21, bs: 16, kb: 13, box: [460, 1040, -720, -40], lvl: 'mid', lunge: 5, armor: true, chain: ['S', 'SUPER'], mots: ['GRIFFES COURBES !', 'BAM !', 'CRAC !'], son: 'h' },
+      cH: { st: 9, act: 5, rec: 22, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [460, 1000, -240, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 4, act: 99, rec: 8, dmg: 9, hs: 18, bs: 12, kb: 8, box: [200, 880, -420, 160], lvl: 'high', air: true, land: true, dive: 4, chain: ['L', 'cL', 'H'], mots: ['D’EN HAUT !', 'BAM !'], son: 'l' },
+      T: { st: 5, act: 3, rec: 22, dmg: 13, hs: 0, bs: 0, kb: 13, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['CÂLIN D’OURS !', 'HOP, PAR-DESSUS !'], son: 'h' },
+      S: { st: 8, act: 14, rec: 18, dmg: 3, hs: 0, bs: 0, kb: 18, peur: true, box: [300, 900, -720, 0], rush: 17, stopHit: true, faux: 12, lvl: 'mid', mots: ['BOUH !', 'FAUSSE CHARGE !', 'HA HA, PEUR ?'], son: 's', nom: 'Il charge pour faire peur', ia: [300, 1000, 1] },
+      SF: { st: 6, act: 90, rec: 16, dmg: 0, hs: 0, bs: 0, kb: 0, lvl: 'mid', gouter: 10, mots: ['MIAM, DES BAIES !'], son: 's', nom: 'La pause goûter', ia: [900, 1900, .5] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 12, hs: 0, bs: 14, kb: 6, kd: true, lance: 18, aa: true, inv: 7, saute: [1, 18], land: true, box: [150, 800, -950, -250], lvl: 'mid', mots: ['GRIFFES EN L’AIR !', 'BAM !'], son: 's', nom: 'Les griffes courbes', ia: [0, 0, 0] },
+      SUPER: { st: 16, act: 46, rec: 22, dmg: 5, hits: 6, hs: 20, bs: 8, kb: 3, kd: true, box: [250, 1050, -760, 0], rush: 12, esprit: true, lvl: 'mid', mots: ['L’OURS ESPRIT !', 'TOUT BLANC !', 'BOUH !'], son: 'h', nom: 'L’ours esprit' },
+    },
+  },
+  // --- GLOUTON (« livre en main », duel 19, p. 43) : une dent pour la viande gelée, il gronde et fonce, des raquettes aux pattes, il ne recule jamais.
+  //     Point faible (livre) : « des pattes courtes » → petite portée et petits sauts.
+  glouton: {
+    nom: 'GLOUTON', art: 'LE GLOUTON', force: .94, spr: true, hPose: ['garde', 'coup'], col: '#4A3526', clair: '#E3C89A', fond: '#6B4E36', K: .38, hp: 110, walk: 7, back: 5.4, dash: 19, jumpV: 18, jumpX: 8, grav: 1.2, etour: 44,
+    aie: ['GRRR ?!', 'MA DENT !', 'AÏE, MES PATTES !'], ia: { saut: .5 },
+    hurt: { stand: [-460, 560, -560, 0], crouch: [-460, 580, -360, 0], air: [-420, 540, -500, 0] },
+    push: [170, 205], reach: 620, speMin: 280, speMax: 1000,
+    moves: {
+      L: { st: 3, act: 3, rec: 8, dmg: 6, hs: 14, bs: 10, kb: 5, box: [440, 860, -520, -60], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['CROC !', 'GRRR !', 'CLAC !'], son: 'l' },
+      cL: { st: 3, act: 3, rec: 9, dmg: 5, hs: 13, bs: 10, kb: 4, box: [440, 840, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'CLAC !'], son: 'l' },
+      H: { st: 9, act: 5, rec: 17, dmg: 12, hs: 19, bs: 14, kb: 11, box: [420, 940, -560, -40], lvl: 'mid', lunge: 8, chain: ['S', 'SUPER'], mots: ['CROC !', 'CRAC !', 'GRRRAOU !'], son: 'h' },
+      cH: { st: 7, act: 4, rec: 20, dmg: 8, hs: 17, bs: 12, kb: 8, kd: true, box: [420, 900, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 7, hs: 17, bs: 11, kb: 7, box: [200, 800, -420, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['D’EN HAUT !', 'CROC !'], son: 'l' },
+      T: { st: 3, act: 3, rec: 20, dmg: 11, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 18 }, mots: ['VOLTIGE !', 'HOP !'], son: 'h' },
+      S: { st: 10, act: 16, rec: 22, dmg: 12, hs: 22, bs: 15, kb: 14, kd: true, box: [250, 880, -560, 0], rush: 22, stopHit: true, armor: true, gronde: true, lvl: 'mid', mots: ['GRRR… ET JE FONCE !', 'GRRRAOU !', 'POUSSE-TOI !'], son: 's', nom: 'Il gronde et fonce', ia: [350, 1100, 1.2] },
+      SF: { st: 9, act: 5, rec: 22, dmg: 14, hs: 24, bs: 18, kb: 12, kd: true, casse: true, lunge: 8, box: [400, 920, -560, -60], lvl: 'mid', mots: ['LA DENT QUI COUPE TOUT !', 'CRAC !', 'MÊME GELÉ !'], son: 's', nom: 'La dent pour la viande gelée', ia: [0, 800, 1.1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 10, hs: 0, bs: 14, kb: 6, kd: true, lance: 17, aa: true, inv: 8, saute: [3, 19], land: true, box: [120, 760, -820, -150], lvl: 'mid', mots: ['LE GRIMPEUR !', 'CROC !'], son: 's', nom: 'Le grimpeur', ia: [0, 0, 0] },
+      SUPER: { st: 14, act: 50, rec: 22, dmg: 4, hits: 8, hs: 16, bs: 8, kb: 3, kd: true, box: [200, 1000, -600, 0], rush: 14, armor: true, lvl: 'mid', mots: ['JE NE RECULE JAMAIS !', 'GRRR !', 'C’EST À MOI !'], son: 'h', nom: 'Il ne recule jamais' },
+    },
+  },
+
+
+
+  // --- PYTHON (« livre en main », duels 20 et 23, p. 45 et 53 ; python birman au duel 20, python réticulé au duel 23) :
+  //     un corps qui serre, l'attaque surprise, il mord puis il s'enroule, il « voit » la chaleur, il avale tout rond.
+  //     Points faibles (livre) : « il ne supporte pas le froid » (plus lent sur la neige et la glace) ; « aucun venin ».
+  python: {
+    nom: 'PYTHON', art: 'LE PYTHON', serpent: true, expose: true, froid: true, force: .88, spr: true, poseLance: 'serre', hPose: ['garde', 'fort'], col: '#6A5536', clair: '#E8D9B4', fond: '#85704A', K: .38, hp: 112, walk: 4.6, back: 4, dash: 17, jumpV: 17, jumpX: 8, grav: 1.1, etour: 52,
+    aie: ['SSS ?!', 'MA QUEUE !', 'AÏE, MES ANNEAUX !'], ia: {},
+    hurt: { stand: [-560, 560, -600, 0], crouch: [-600, 600, -300, 0], air: [-520, 520, -540, 0] },
+    push: [210, 250], reach: 760, speMin: 300, speMax: 1200,
+    moves: {
+      L: { st: 5, act: 4, rec: 10, dmg: 6, hs: 15, bs: 11, kb: 6, box: [440, 960, -560, -160], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['SSSCLAC !', 'CROC !', 'TCHAC !'], son: 'l' },
+      cL: { st: 5, act: 4, rec: 11, dmg: 5, hs: 15, bs: 11, kb: 5, box: [440, 980, -220, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['FLIC !', 'FOUETTÉ !'], son: 'l' },
+      H: { st: 12, act: 6, rec: 19, dmg: 13, hs: 20, bs: 15, kb: 11, box: [420, 1060, -620, -120], lvl: 'mid', lunge: 6, chain: ['S', 'SUPER'], mots: ['SSSCHLAC !', 'GROSSE MORSURE !', 'CROC !'], son: 'h' },
+      cH: { st: 9, act: 5, rec: 22, dmg: 9, hs: 18, bs: 12, kb: 9, kd: true, box: [300, 1080, -200, 0], lvl: 'low', chain: ['S'], mots: ['COUP DE QUEUE !', 'FLAC !'], son: 'h' },
+      A: { st: 4, act: 99, rec: 8, dmg: 8, hs: 18, bs: 12, kb: 8, box: [150, 880, -420, 160], lvl: 'high', air: true, land: true, dive: 4, chain: ['L', 'cL', 'H'], mots: ['D’EN HAUT !', 'SSSCLAC !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 110, t: 22 }, mots: ['ENROULÉ !', 'HOP, PAR-DESSUS !'], son: 'h' },
+      S: { st: 22, act: 6, rec: 24, dmg: 14, hs: 24, bs: 16, kb: 12, kd: true, aplat: 'branche', box: [200, 1000, -600, 0], lunge: 12, lvl: 'mid', mots: ['L’ATTAQUE SURPRISE !', 'SSSURPRISE !', 'CROC !'], son: 's', nom: 'L’attaque surprise', ia: [200, 900, 1] },
+      SF: { st: 8, act: 12, rec: 24, dmg: 15, hs: 0, bs: 0, kb: 8, kd: true, rush: 10, lvl: 'mid', serre: true, prise: { portee: 150, t: 44, degage: false, mot: 'IL MORD… ET S’ENROULE !', haut: 10, loin: 6, rec: 6 }, mots: ['CROC… ET JE SERRE !', 'ENROULÉ !'], son: 'h', nom: 'Il mord, puis il s’enroule', ia: [150, 700, 1.1] },
+      SD: { st: 4, act: 26, rec: 20, dmg: 0, hs: 0, bs: 0, kb: 0, lvl: 'mid', radar: 'chaleur', contre: { dmg: 13, hs: 24, bs: 0, kb: 14, kd: true, lvl: 'mid', mots: ['JE VOIS TA CHALEUR !', 'TROUVÉ !'], son: 'h' }, motsContre: ['JE VOIS TA CHALEUR !', 'MÊME DANS LE NOIR !', 'TROUVÉ !'], mots: ['JE SENS LA CHALEUR…'], son: 's', nom: 'Il « voit » la chaleur', ia: [0, 700, .8] },
+      SUPER: { st: 12, act: 16, rec: 24, dmg: 26, hs: 0, bs: 0, kb: 8, kd: true, rush: 16, lvl: 'mid', avale: true, prise: { portee: 200, t: 60, degage: false, mot: 'GLOUPS : AVALÉ TOUT ROND !', haut: 18, loin: 9, rec: 8 }, mots: ['JE T’AVALE !', 'GLOUPS !'], son: 'h', nom: 'Il avale tout rond' },
+    },
+  },
+
+  // --- ALLIGATOR (« livre en main », duel 20, p. 45) : jusqu'à 80 dents, il mord, puis il roule, le grondement qui fait danser l'eau, le chef des marais.
+  //     Point faible (livre) : « jeune, il se fait avaler » → quand il est rétréci (caisse « TOUT PETIT »), les prises lui font deux fois plus mal.
+  alligator: {
+    nom: 'ALLIGATOR', art: 'L’ALLIGATOR', petitFragile: 2, force: .92, spr: true, hPose: ['garde', 'coup'], col: '#3E4A30', clair: '#DCD8B0', fond: '#556345', K: .46, hp: 114, walk: 5.2, back: 4.4, dash: 16, jumpV: 18, jumpX: 8, grav: 1.1, etour: 56,
+    aie: ['GRRR ?!', 'MA QUEUE !', 'AÏE, MES DENTS !'], ia: {},
+    hurt: { stand: [-600, 660, -720, 0], crouch: [-620, 680, -440, 0], air: [-560, 620, -620, 0] }, // (la boîte est plus haute que le corps, comme le crocodile : sinon on le rate trop)
+    push: [230, 270], reach: 740, speMin: 300, speMax: 1200,
+    moves: {
+      L: { st: 5, act: 4, rec: 10, dmg: 7, hs: 15, bs: 11, kb: 6, box: [480, 980, -420, 0], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['CLAC !', 'CROC !', 'CHOMP !'], son: 'l' },
+      cL: { st: 5, act: 4, rec: 11, dmg: 6, hs: 15, bs: 11, kb: 5, box: [480, 980, -220, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['CLAC !', 'TIC !'], son: 'l' },
+      H: { st: 12, act: 5, rec: 20, dmg: 14, hs: 21, bs: 16, kb: 12, box: [460, 1060, -480, 0], lvl: 'mid', lunge: 6, chain: ['S', 'SUPER'], mots: ['CHOMP !', '80 DENTS !', 'CRAC !'], son: 'h' },
+      cH: { st: 9, act: 5, rec: 22, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [-520, 1000, -200, 0], lvl: 'low', chain: ['S'], mots: ['COUP DE QUEUE !', 'FLAC !'], son: 'h' },
+      A: { st: 4, act: 99, rec: 8, dmg: 9, hs: 18, bs: 12, kb: 8, box: [150, 900, -420, 160], lvl: 'high', air: true, land: true, dive: 4, chain: ['L', 'cL', 'H'], mots: ['D’EN HAUT !', 'CLAC !'], son: 'l' },
+      T: { st: 5, act: 3, rec: 22, dmg: 13, hs: 0, bs: 0, kb: 13, kd: true, lvl: 'mid', prise: { portee: 80, t: 22 }, mots: ['VOLTIGE !', 'ATTRAPÉ !'], son: 'h' },
+      S: { st: 9, act: 36, rec: 24, dmg: 4, hits: 4, hs: 18, bs: 8, kb: 3, kd: true, box: [380, 1000, -440, 0], rush: 9, agrippe: true, lvl: 'mid', mots: ['JE MORDS…', 'ET JE ROULE !', 'LA ROULADE !'], son: 's', nom: 'Il mord, puis il roule', ia: [300, 720, 1] },
+      SF: { st: 16, act: 8, rec: 24, dmg: 8, hs: 20, bs: 12, kb: 8, box: [150, 800, -300, 0], seisme: 780, motSeisme: 'L’EAU DANSE !', gronde: true, lvl: 'low', mots: ['GRRROOOON…', 'TON SOL VIBRE !', 'L’EAU DANSE !'], son: 's', nom: 'Le grondement qui fait danser l’eau', ia: [0, 750, 1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 12, hs: 0, bs: 14, kb: 6, kd: true, lance: 17, aa: true, inv: 7, saute: [2, 18], land: true, box: [100, 800, -880, -150], lvl: 'mid', mots: ['80 DENTS EN L’AIR !', 'CLAC !'], son: 's', nom: 'La mâchoire aux 80 dents', ia: [0, 0, 0] },
+      SUPER: { st: 12, act: 48, rec: 22, dmg: 4, hits: 7, hs: 16, bs: 8, kb: 3, kd: true, box: [150, 1050, -520, 0], rush: 12, dents: true, lvl: 'mid', mots: ['LE CHEF DES MARAIS !', 'CHOMP !', '80 DENTS !'], son: 'h', nom: 'Le chef des marais' },
+    },
+  },
+
+  // --- LIONNE (« livre en main », duel 22, p. 51 : les lionnes) : des griffes pour s'accrocher, elles sautent sur le dos, l'embuscade, l'équipe de foot.
+  //     Point faible (livre) : « 7 fois plus légères qu'elle » → elle vole plus loin quand on la frappe (légère).
+  lionne: {
+    nom: 'LIONNE', art: 'LA LIONNE', fem: true, leger: 1.15, force: .85, spr: true, hPose: ['garde', 'fort'], col: '#B98A4A', clair: '#F6DDB0', fond: '#C9A060', K: .43, hp: 97, walk: 7, back: 5.3, dash: 18, jumpV: 25, jumpX: 9, grav: 1.12, etour: 46,
+    aie: ['GRAOU ?!', 'MA QUEUE !', 'AÏE, MON MUSEAU !'], ia: { saut: 1 },
+    hurt: { stand: [-470, 600, -680, 0], crouch: [-470, 620, -440, 0], air: [-420, 580, -600, 0] },
+    push: [190, 230], reach: 700, speMin: 300, speMax: 1100,
+    moves: {
+      L: { st: 4, act: 4, rec: 9, dmg: 6, hs: 15, bs: 11, kb: 6, box: [520, 1000, -660, -60], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['PAF !', 'SCRITCH !', 'GRIFF !'], son: 'l' },
+      cL: { st: 4, act: 4, rec: 10, dmg: 5, hs: 15, bs: 11, kb: 5, box: [500, 960, -240, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'SCRITCH !'], son: 'l' },
+      H: { st: 11, act: 5, rec: 18, dmg: 12, hs: 20, bs: 15, kb: 12, box: [480, 1060, -660, -40], lvl: 'mid', lunge: 5, chain: ['S', 'SUPER'], mots: ['CRAC !', 'CROC !', 'GRAOU !'], son: 'h' },
+      cH: { st: 8, act: 4, rec: 22, dmg: 9, hs: 18, bs: 12, kb: 8, kd: true, box: [480, 1020, -220, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 3, act: 99, rec: 6, dmg: 8, hs: 18, bs: 11, kb: 7, box: [250, 900, -420, 160], lvl: 'high', air: true, land: true, dive: 5, chain: ['L', 'cL', 'H', 'S'], mots: ['D’EN HAUT !', 'GRIFF !'], son: 'l' },
+      T: { st: 4, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 12, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP LÀ !'], son: 'h' },
+      S: { st: 7, act: 12, rec: 24, dmg: 15, hs: 0, bs: 0, kb: 8, kd: true, rush: 14, lvl: 'mid', prise: { portee: 120, t: 34, degage: false, mot: 'ACCROCHÉE AU DOS !', haut: 14, loin: 7, rec: 6 }, mots: ['SUR LE DOS !', 'JE M’ACCROCHE !'], son: 'h', nom: 'Elles sautent sur le dos', ia: [150, 650, .7] },
+      SF: { st: 12, act: 14, rec: 24, dmg: 11, hs: 22, bs: 15, kb: 12, kd: true, box: [250, 950, -400, 0], rush: 23, stopHit: true, rampe: true, lvl: 'low', mots: ['L’EMBUSCADE !', 'DANS L’HERBE…', 'SURPRISE !'], son: 's', nom: 'L’embuscade dans l’herbe', ia: [400, 1300, 1] },
+      SD: { st: 3, act: 99, rec: 22, dmg: 11, hs: 0, bs: 14, kb: 6, kd: true, lance: 19, aa: true, inv: 8, saute: [3, 20], land: true, box: [150, 800, -900, -200], lvl: 'mid', mots: ['GRIFFES EN L’AIR !', 'GRIFF !'], son: 's', nom: 'Les griffes pour s’accrocher', ia: [0, 0, 0] },
+      SUPER: { st: 16, act: 44, rec: 22, dmg: 5, hits: 6, hs: 18, bs: 8, kb: 3, kd: true, box: [150, 1300, -700, 0], lvl: 'mid', clan: 'lionne', mots: ['L’ÉQUIPE DE FOOT !', 'PASSE… ET BUT !', 'TOUTE LA TROUPE !'], son: 'h', nom: 'L’équipe de foot' },
+    },
+  },
+
+  // --- GIRAFE (« livre en main », duel 22, p. 51) : un sabot large de 30 cm, le coup de pied qui assomme, le rodéo (elle se secoue), le coup de cou.
+  //     Point faible (livre) : « si elle tombe, c'est fini » → par terre, elle met plus longtemps à se relever et prend plus cher.
+  girafe: {
+    nom: 'GIRAFE', art: 'LA GIRAFE', fem: true, chute: 1.3, rodeo: true, force: .82, spr: true, hPose: ['garde', 'coup'], col: '#C98A2E', clair: '#FBE6B5', fond: '#D9A04A', K: .58, hp: 104, walk: 5.2, back: 4.4, dash: 14, jumpV: 17, jumpX: 7, grav: 1.2, etour: 56,
+    aie: ['MÔÔH ?!', 'MON COU !', 'AÏE, MES SABOTS !'], ia: { saut: .3 },
+    hurt: { stand: [-300, 420, -860, 0], crouch: [-340, 400, -450, 0], air: [-420, 420, -520, 0] }, // (mesuré sur les images : un grand « lampadaire »)
+    push: [160, 200], reach: 700, speMin: 320, speMax: 1200,
+    moves: {
+      L: { st: 5, act: 4, rec: 10, dmg: 7, hs: 15, bs: 11, kb: 7, box: [300, 700, -520, -120], lvl: 'mid', chain: ['L', 'H', 'S'], mots: ['TAC !', 'CLOC !', 'SABOT !'], son: 'l' },
+      cL: { st: 5, act: 4, rec: 11, dmg: 6, hs: 15, bs: 11, kb: 6, box: [300, 680, -220, 0], lvl: 'low', chain: ['L', 'cL', 'H', 'cH', 'S'], mots: ['TIC !', 'CLOC !'], son: 'l' },
+      H: { st: 12, act: 5, rec: 20, dmg: 14, hs: 21, bs: 16, kb: 13, box: [280, 780, -700, -100], lvl: 'mid', chain: ['S', 'SUPER'], mots: ['GRAND COUP DE PIED !', 'BAM !', 'SABOT DE 30 CM !'], son: 'h' },
+      cH: { st: 9, act: 5, rec: 22, dmg: 10, hs: 18, bs: 12, kb: 9, kd: true, box: [280, 760, -240, 0], lvl: 'low', chain: ['S'], mots: ['BALAYETTE !', 'PATATRAS !'], son: 'h' },
+      A: { st: 4, act: 99, rec: 8, dmg: 9, hs: 18, bs: 12, kb: 8, box: [150, 820, -420, 160], lvl: 'high', air: true, land: true, dive: 4, chain: ['L', 'cL', 'H'], mots: ['D’EN HAUT !', 'CLOC !'], son: 'l' },
+      T: { st: 5, act: 3, rec: 22, dmg: 12, hs: 0, bs: 0, kb: 13, kd: true, lvl: 'mid', prise: { portee: 70, t: 20 }, mots: ['VOLTIGE !', 'HOP, PAR-DESSUS !'], son: 'h' },
+      S: { st: 13, act: 6, rec: 24, dmg: 13, hs: 26, bs: 16, kb: 12, assomme: 40, box: [250, 800, -640, -60], lvl: 'mid', mots: ['BAM, ASSOMMÉ !', 'SABOT DE 30 CM !', 'CLOC… DODO !'], son: 's', nom: 'Le coup de pied qui assomme', ia: [0, 800, 1.2] },
+      SF: { st: 4, act: 20, rec: 20, dmg: 9, hs: 20, bs: 14, kb: 16, kd: true, box: [-420, 700, -1100, 0], armor: true, secoue: true, lvl: 'mid', mots: ['LE RODÉO !', 'JE ME SECOUE !', 'DESCENDS DE LÀ !'], son: 's', nom: 'Le rodéo', ia: [0, 450, 1] },
+      SD: { st: 10, act: 6, rec: 24, dmg: 12, hs: 22, bs: 14, kb: 12, kd: true, box: [250, 820, -420, 0], lvl: 'low', mots: ['LE COUP DE COU !', 'VLAN !', 'BONG !'], son: 's', nom: 'Le coup de cou', ia: [300, 1000, 1] },
+      SUPER: { st: 16, act: 44, rec: 22, dmg: 5, hits: 6, hs: 18, bs: 8, kb: 3, kd: true, box: [150, 800, -800, 0], rush: 8, lvl: 'mid', mots: ['DES PATTES DE 1,80 M !', 'CLOC !', 'BAM !', 'TAC !'], son: 'h', nom: 'Les pattes de 1,80 m' },
+    },
+  },
+
+
+
+
 };
 // phrases de victoire (drôles, tirées du livre) : le gagnant parle sur l'écran de fin
 const PHRASES = {
@@ -661,6 +792,12 @@ const PHRASES = {
   loup: ['AOUUUH ! C’est ma victoire !', 'Tout seul… mais champion !', 'Je blesse, j’attends… et je gagne !'],
   mangouste: ['Trop rapide pour toi !', 'Je danse… et je gagne !', 'Petite, mais 40 dents !'],
   cobra: ['Sssssuper !', 'Mon capuchon t’a fait peur, avoue !', 'Le roi des serpents, c’est moi !'],
+  oursnoir: ['Bon, et maintenant, le goûter !', 'Plus gourmand que bagarreur… mais champion !', 'Des baies pour fêter ça !'],
+  glouton: ['Je ne recule jamais !', 'Gros comme un chien, fort comme un ours !', 'Ce repas est à moi !'],
+  python: ['Je t’ai vu, même dans le noir !', 'Un câlin de python, ça serre !', 'Brrr… vivement la chaleur !'],
+  alligator: ['Grrroooon… champion !', '80 dents pour sourire !', 'Le chef des marais, c’est moi !'],
+  lionne: ['L’équipe a gagné !', 'Légère, mais redoutable !', 'On chasse ensemble, on gagne ensemble !'],
+  girafe: ['Vu d’en haut, c’est encore plus beau !', 'Un coup de sabot, et au dodo !', 'Mes pattes sont plus grandes que toi !'],
 };
 const JET = { dmg: 3, hs: 10, bs: 8, kb: 3, lvl: 'mid', mots: ['SPLOTCH !', 'BEURK !'], son: 'splotch', sale: true, super: true }; // une « crotte » du ventilateur de l'hippo
 
@@ -675,6 +812,9 @@ const ARENES = [
   { k: 'marais', nom: 'MARAIS', img: 'arene_marais.webp' },
   { k: 'montagnes', nom: 'MONTAGNES', img: 'arene_montagnes.webp' },
   { k: 'inde', nom: 'INDE', img: 'arene_inde.webp' },
+  { k: 'nord', nom: 'FORÊT DU NORD', img: 'arene_nord.webp' },
+  { k: 'floride', nom: 'FLORIDE', img: 'arene_floride.webp' },
+  { k: 'asie', nom: 'FORÊT D’ASIE', img: 'arene_asie.webp' },
   // MER : on se bat sous l'eau, au-dessus du sable
   { k: 'ocean', nom: 'OCÉAN', img: 'arene_ocean.webp', monde: 'mer' }, { k: 'recif', nom: 'RÉCIF DE CORAIL', img: 'arene_recif.webp', monde: 'mer' },
   { k: 'aquarium', nom: 'AQUARIUM', img: 'arene_aquarium.webp', monde: 'mer' }, { k: 'abysses', nom: 'ABYSSES', img: 'arene_abysses.webp', monde: 'mer' },
@@ -684,8 +824,8 @@ const ARENES = [
 ];
 const estMer = () => (ARENES.find(a => a.k === G.arene) || {}).monde === 'mer';
 // couleur de la poussière soulevée, selon le sol de l'arène
-const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', lune: '#C9CCD6', prehisto: '#9C8A6A' };
-const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
+const POUSSIERE = { banquise: '#EEF7FF', foret: '#F7FBFF', plage: '#D8D0BF', volcan: '#77706B', nuit: '#A7AFCB', riviere: '#CFE6EE', ocean: '#E6DDBF', recif: '#F1E6C8', aquarium: '#EFE7CF', abysses: '#4A5A70', epave: '#E6DDBF', pantanal: '#E8C98B', marais: '#E3CF8E', montagnes: '#D8D2C8', inde: '#E2B878', nord: '#F2F7FF', floride: '#B89A78', asie: '#C9A26E', lune: '#C9CCD6', prehisto: '#9C8A6A' };
+const ORDRE = ['tigre', 'gorille', 'lion', 'ours', 'croco', 'hippo', 'ratel', 'komodo', 'grizzly', 'hyene', 'buffle', 'morse', 'leopard', 'porcepic', 'guepard', 'autruche', 'jaguar', 'anaconda', 'caiman', 'puma', 'loup', 'mangouste', 'cobra', 'oursnoir', 'glouton', 'python', 'alligator', 'lionne', 'girafe', 'orque', 'requin', 'pieuvre', 'aiguillat', 'espadon', 'requinbleu', 'megalo', 'trex']; // le T. rex (légendaire) reste le dernier // les autres animaux du livre arrivent au fur et à mesure
 // MONDES (décision de Vincent, 24/09) : un animal n'affronte que les animaux de son monde (TERRE, MER ; PETITES BÊTES plus tard)
 const MONDES = { terre: { nom: 'TERRE', ico: '🌍', places: 16, legende: 'trex', titre: 'CHOISIS TON ANIMAL' }, mer: { nom: 'MER', ico: '🌊', places: 8, legende: 'megalo', titre: 'CHOISIS TON ANIMAL DE LA MER' } };
 const mondeDe = k => (CHARS[k] && CHARS[k].monde) || 'terre';
@@ -717,7 +857,6 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Le lion se repose environ 20 heures par jour. Flemmard ? Non : il garde ses forces pour chasser !', // p. 19
     'À la naissance, le lionceau est couvert de petites taches ! Elles pâlissent en grandissant.', // p. 10
     'Certains lions cachent une petite pointe dure dans le pompon de leur queue. À quoi sert-elle ? Personne ne le sait !', // p. 41
-    'Comme une équipe de foot : chaque lionne a son poste ! Les plus légères poussent la proie vers les plus lourdes, cachées au centre !', // p. 51
   ],
   ours: [
     'Les grands poils de l’ours polaire sont creux, comme des pailles, et pleins d’air : ils gardent bien la chaleur !', // p. 15
@@ -917,6 +1056,44 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Le cobra royal mange presque uniquement… d’autres serpents ! C’est ce que veut dire son nom savant.', // p. 53
     'Le cobra royal : le seul serpent qui construit un nid !', // ≈ p. 54
   ],
+  oursnoir: [
+    'L’ours noir : jusqu’à 270 kg, et des griffes courbes !', // ≈ p. 43
+    'Le coup spécial de l’ours noir : il charge pour faire peur !', // ≈ p. 43
+    'Le point faible de l’ours noir : plus gourmand que bagarreur !', // ≈ p. 43
+    'Les ours esprits : de rares ours noirs au pelage blanc !', // ≈ p. 43
+  ],
+  glouton: [
+    'Le glouton : jusqu’à 30 kg, et une dent pour la viande gelée !', // ≈ p. 43
+    'Le coup spécial du glouton : il gronde et fonce !', // ≈ p. 43
+    'Le point faible du glouton : des pattes courtes !', // ≈ p. 43
+    '1 500 m grimpés en 90 minutes par un glouton, en pleine montagne : plus haut que quatre tours Eiffel empilées !', // p. 44
+    'Grâce à ses larges pattes, le glouton court sur la neige sans s’enfoncer. Il peut ainsi attraper un caribou !', // ≈ p. 44
+  ],
+  python: [
+    'Le python birman : jusqu’à 98 kg, et un corps qui serre !', // ≈ p. 45
+    'Le coup spécial du python birman : l’attaque surprise !', // ≈ p. 45
+    'Le point faible du python birman : il ne supporte pas le froid !', // ≈ p. 45
+    'Le python le plus lourd jamais capturé en Floride était une femelle pleine de 122 œufs : un record !', // p. 46
+    'Le python réticulé nage si bien qu’on en a vu en pleine mer !', // p. 53
+    'Des creux sur ses lèvres captent la chaleur des animaux. Dans le noir, il sait où tu es… enfin, où est la souris.', // p. 54
+  ],
+  alligator: [
+    'L’alligator : jusqu’à 450 kg, et jusqu’à 80 dents !', // ≈ p. 45
+    'Le coup spécial de l’alligator : il mord, puis il roule !', // ≈ p. 45
+    'Le point faible de l’alligator : jeune, il se fait avaler !', // ≈ p. 45
+  ],
+  lionne: [
+    'Les lionnes : jusqu’à 180 kg chacune, et des griffes pour s’accrocher !', // ≈ p. 51
+    'Le coup spécial des lionnes : elles sautent sur le dos !', // ≈ p. 51
+    'Le point faible des lionnes : 7 fois plus légères qu’une girafe !', // ≈ p. 51
+    'Comme une équipe de foot : chaque lionne a son poste ! Les plus légères poussent la proie vers les plus lourdes, cachées au centre !', // p. 51
+  ],
+  girafe: [
+    'La girafe : jusqu’à 1 360 kg, et un sabot large de 30 cm !', // ≈ p. 51
+    'Le coup spécial de la girafe : le coup de pied qui assomme !', // ≈ p. 51
+    'Le point faible de la girafe : si elle tombe, c’est fini !', // ≈ p. 51
+    'La langue de la girafe mesure 46 cm et elle est presque noire. Sans doute pour ne pas attraper de coup de soleil !', // ≈ p. 52
+  ],
 };
 
 // ---------------------------------------------------------------------
@@ -1075,6 +1252,30 @@ const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r
   cobra: [
     { p: 33, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'flûte', x: 'IL N’ENTEND PAS LA FLÛTE' },
     { p: 33, ou: 'l’encart « LE TRUC FOU »', q: 'Le cobra n’a pas d’… pour entendre la musique. (un seul mot)', r: 'oreilles', x: 'n’a pas d’oreilles pour entendre la musique' },
+  ],
+  oursnoir: [
+    { p: 43, ou: 'l’encart « LE TRUC FOU »', q: 'Dans quel pays vivent ces rares ours noirs au pelage blanc ?', r: 'Canada', x: 'Au Canada vivent de rares ours noirs' },
+    { p: 43, ou: 'l’encart « LE TRUC FOU »', q: 'Il n’en existe que quelques… ? (un seul mot)', r: 'centaines', x: 'Il n’en existe que quelques centaines' },
+  ],
+  glouton: [
+    { p: 43, ou: 'l’encart « BEURK ! »', q: 'Le glouton a un surnom en Amérique : l’ours-… ?', r: 'putois', x: 'L’OURS-PUTOIS' },
+    { p: 43, ou: 'l’encart « BEURK ! »', q: 'Il arrose ses… d’un liquide qui pue. (un seul mot)', r: 'réserves', x: 'Il arrose ses réserves' },
+  ],
+  python: [
+    { p: 45, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Quel animal de 35 kg un python birman a-t-il déjà avalé ?', r: 'cerf', x: 'avalé un cerf de 35 kg' },
+    { p: 45, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Depuis que les pythons sont là, presque tous les… laveurs ont disparu.', r: 'ratons', x: 'presque tous les ratons laveurs ont disparu' },
+  ],
+  alligator: [
+    { p: 45, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Une partie de son grondement est trop… pour tes oreilles. (un seul mot)', r: 'grave', x: 'trop grave pour tes oreilles' },
+    { p: 45, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Quand il gronde, quelle partie de son corps vibre ?', r: 'dos', x: 'son dos vibre' },
+  ],
+  lionne: [
+    { p: 51, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Où se cachent les lionnes les plus lourdes ?', r: 'centre', x: 'cachées au centre' },
+    { p: 51, ou: 'l’encart « À RACONTER À LA RÉCRÉ »', q: 'Chaque lionne a son… ? (un seul mot)', r: 'poste', x: 'Chaque lionne a son poste' },
+  ],
+  girafe: [
+    { p: 51, ou: 'l’encart « CORPS DE CHAMPION »', q: 'La girafe a des pattes plus hautes qu’un… ?', r: 'adulte', x: 'des pattes plus hautes qu’un adulte' },
+    { p: 51, ou: 'l’encart « CORPS DE CHAMPION »', q: 'Qu’est-ce qui pèse 11 kg chez la girafe ?', r: 'cœur', x: 'son cœur pèse 11 kg' },
   ],
 };
 
@@ -1488,8 +1689,11 @@ function update(f, o, inp) {
       break;
     }
     case 'dash': f.dist += Math.abs(f.vx); f.vx *= .9; if (f.t > 16) setS(f, 'idle'); { const sp = special(); if (sp) startMove(f, sp.k, sp.fort); else if (wantAtk) startMove(f, wantAtk === 'H' && inp.down && f.d.moves.cH ? 'cH' : wantAtk); } break;
-    case 'prejump': if (f.t >= 3) { f.vy = -f.d.jumpV; f.h = .1; f.vx = f.jdir * f.d.jumpX; setS(f, 'air'); f.airAtk = false; f.sautN = (f.sautN || 0) + 1; sfx('saut'); effort(f) } break;
-    case 'air': if (wantAtk && !f.airAtk && wantAtk !== 'S') { f.airAtk = true; startMove(f, 'A'); } break;
+    case 'prejump': if (f.t >= 3) { f.vy = -f.d.jumpV; f.h = .1; f.battu = false; f.vx = f.jdir * f.d.jumpX; setS(f, 'air'); f.airAtk = false; f.sautN = (f.sautN || 0) + 1; sfx('saut'); effort(f) } break;
+    case 'air': if (wantAtk && !f.airAtk && wantAtk !== 'S') { f.airAtk = true; startMove(f, 'A'); }
+      // les petites bêtes qui volent (frelon, abeilles, guêpe, chauve-souris, colibri, méganeura) : un 2e battement d'ailes en plein saut
+      else if (f.d.vole && inp.up && !f.prev.up && !f.battu && f.vy > -f.d.jumpV * .5) { f.battu = true; f.vy = -f.d.jumpV * .8; f.vx = (inp.right ? 1 : inp.left ? -1 : f.vx > 0 ? .5 : f.vx < 0 ? -.5 : 0) * f.d.jumpX; sfx('ailes', .7); addFx({ k: 'poussiere', x: f.x, y: FLOOR - f.h + 40 }) }
+      break;
     case 'land': if (f.t >= 5) setS(f, 'idle'); break;
     // projection : celui qui attrape (« lance ») et celui qui est attrapé (« tenu »)
     case 'lance': {
@@ -1498,7 +1702,7 @@ function update(f, o, inp) {
       d.x = f.x + f.face * (f.d.push[1] + d.d.push[1] - 40); d.h = Math.min(60, f.t * 6);
       if (m.serre && f.t === 1 && window.statCombat) statCombat(f, 'serre'); // trophée « GROS CÂLIN » : 3 fois dans un combat
       if (m.serre && f.t % 10 === 5) { sfx('vent', .5); G.shake = Math.max(G.shake, 4); addFx({ k: 'mot', x: d.x + (Math.random() - .5) * 140, y: FLOOR - 460 + (Math.random() - .5) * 80, mot: hasard(['SERRE !', 'CRRR…', 'ENCORE UN TOUR !']), col: '#F2EDA0' }) }
-      if (m.avale) { d.cache = f.t > 10 && f.t < m.prise.t - 4; if (f.t === 10) { sfx('gloups', 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 620, mot: 'GLOUPS !', col: JA }) } if (f.t % 12 === 6 && f.t > 10) addFx({ k: 'mot', x: f.x + (Math.random() - .5) * 200, y: FLOOR - 380, mot: hasard(['MIAM…', 'GLOUB…', 'BLOUP…']), col: '#F2EDA0' }); if (f.t === m.prise.t - 4) { sfx('prout', .7); addFx({ k: 'mot', x: f.x, y: FLOOR - 560, mot: 'PTOU ! TROP GROS !', col: '#FF7AB6' }) } }
+      if (m.avale) { d.cache = f.t > 10 && f.t < m.prise.t - 4; if (f.t === 10) { if (window.trophee) trophee('avale', f); sfx('gloups', 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 620, mot: 'GLOUPS !', col: JA }) } if (f.t % 12 === 6 && f.t > 10) addFx({ k: 'mot', x: f.x + (Math.random() - .5) * 200, y: FLOOR - 380, mot: hasard(['MIAM…', 'GLOUB…', 'BLOUP…']), col: '#F2EDA0' }); if (f.t === m.prise.t - 4) { sfx('prout', .7); addFx({ k: 'mot', x: f.x, y: FLOOR - 560, mot: 'PTOU ! TROP GROS !', col: '#FF7AB6' }) } }
       if (m.os && f.t % 9 === 4) { sfx('crac_os', .9); G.shake = Math.max(G.shake, 5); addFx({ k: 'mot', x: d.x + (Math.random() - .5) * 160, y: FLOOR - 470 + (Math.random() - .5) * 80, mot: hasard(['CRAC !', 'CRONCH !', 'CROC !']), col: '#FFF1C9' }) } // croque-os : ça croque !
       if (f.t >= (m.prise.t || 22)) { lache(f, d, m); }
       break;
@@ -1508,6 +1712,8 @@ function update(f, o, inp) {
       if (!a || a.state !== 'lance') { setS(f, 'idle'); f.h = 0; f.cache = false; break }
       // se dégager d'une projection normale : appuyer sur A ou B tout de suite
       if (f.t <= 8 && a.prise.prise.degage !== false && (press('L') || press('H'))) degage(a, f);
+      // girafe : « le rodéo » (livre p. 52 : elle se secoue et se débarrasse des lionnes) — même accrochée sur le dos, ★ (30 de jauge) la libère
+      else if (f.d.rodeo && f.t >= 4 && f.meter >= 30 && !f.cache && a.mkPrise !== 'SUPER' && press('S')) { f.meter -= 30; f.h = 0; setS(a, 'hurt'); a.prise = null; a.cible = null; startMove(f, 'SF'); f.hit = 1; f.hitT = f.t; const hb = hurtBox(a); touche(f, a, f.d.moves.SF, hb, hb, { dir: f.face, prise: true, last: true, spe: true }); G.shake = Math.max(G.shake, 14); if (window.trophee) trophee('rodeo', f) }
       break;
     }
     case 'fuite': f.vx = -f.face * 9.5; f.dist -= 9.5; if (f.t % 10 === 0) addFx({ k: 'poussiere', x: f.x, y: FLOOR }); if (--f.stun <= 0) setS(f, 'idle'); break;
@@ -1595,7 +1801,7 @@ function update(f, o, inp) {
         // ours noir : la fausse charge s'arrête net (« BOUH ! ») · la pause goûter (il reprend des forces, si on le laisse manger)
         if (m.faux && ph === 'act' && f.t === m.st + m.faux) { f.vx = 0; f.t = m.st + m.act; addFx({ k: 'mot', x: f.x + f.face * 200, y: FLOOR - 620, mot: hasard(['BOUH !', 'HA HA, FAUSSE CHARGE !']), col: JA }); sfx('ours_huff', .8) }
         if (m.gouter && ph === 'act') { if (f.t === m.st + 1) { f.gouter = 0; addFx({ k: 'mot', x: f.x, y: FLOOR - 620 * f.d.K / .44, mot: hasard(['MIAM, DES BAIES !', 'UNE PETITE PAUSE…', 'D’ABORD LE GOÛTER !']), col: '#FF7AB6' }) } f.vx = 0;
-          if (f.t % 9 === 0 && f.gouter < m.gouter) { f.gouter++; f.hp = Math.min(f.d.hp, f.hp + 1); sfx('slurp', .35); if (f.t % 27 === 0) addFx({ k: 'mot', x: f.x + (Math.random() - .5) * 200, y: FLOOR - 520 * f.d.K / .44, mot: hasard(['MIAM !', 'CROUNCH !', '+1']), col: '#7BD35A' }) } }
+          if (f.t % 9 === 0 && f.gouter < m.gouter) { f.gouter++; if (f.gouter === m.gouter && window.statCombat) statCombat(f, 'gouter'); f.hp = Math.min(f.d.hp, f.hp + 1); sfx('slurp', .35); if (f.t % 27 === 0) addFx({ k: 'mot', x: f.x + (Math.random() - .5) * 200, y: FLOOR - 520 * f.d.K / .44, mot: hasard(['MIAM !', 'CROUNCH !', '+1']), col: '#7BD35A' }) } }
         // glouton, alligator : il gronde d'abord · loup : le hurlement
         if (m.gronde && f.t === 2) { sfx(f.kind + '_grr', 1); addFx({ k: 'mot', x: f.x, y: FLOOR - 600 * f.d.K / .44, mot: f.kind === 'alligator' ? 'GRRROOOON…' : 'GRRRRR !', col: '#FFB38A' }) }
         if (m.hurle && f.t === 2) { sfx(f.kind, 1.1); addFx({ k: 'mot', x: f.x, y: FLOOR - 700 * f.d.K / .44, mot: 'AOUUUUH !', col: '#E8E6DF' }) }
@@ -1690,7 +1896,7 @@ function touche(a, d, m, hb, hu, o) {
   // morse : le mur de défenses renvoie le coup (pas les projectiles ni les prises)
   if (!o.proj && !o.prise && d.state === 'atk' && d.move && d.move.contre && d.ph === 'act' && !d.contre) {
     d.contre = true; d.hit = 1; d.hitT = d.t; G.stop = 12; G.shake = 14; sfx('garde'); sfx('boing', .8);
-    addFx({ k: 'mot', x: d.x, y: FLOOR - 600, mot: hasard(d.move.motsContre || ['CONTRE !', 'PAS TOUCHE !', 'RETOUR À L’ENVOYEUR !']), col: JA }); if (d.move.sieste && window.trophee) trophee('sieste', d); if (d.move.radar) { if (window.trophee) trophee('radar', d); sfx('sonar', .6); addFx({ k: 'etincelles', x: d.x + d.face * 330 * d.d.K / .44, y: FLOOR - 300 * d.d.K / .44 }) }
+    addFx({ k: 'mot', x: d.x, y: FLOOR - 600, mot: hasard(d.move.motsContre || ['CONTRE !', 'PAS TOUCHE !', 'RETOUR À L’ENVOYEUR !']), col: JA }); if (d.move.sieste && window.trophee) trophee('sieste', d); if (d.move.esquive && window.statCombat) statCombat(d, 'esquive'); if (d.move.radar) { if (window.trophee) trophee('radar', d); sfx('sonar', .6); addFx({ k: 'etincelles', x: d.x + d.face * 330 * d.d.K / .44, y: FLOOR - 300 * d.d.K / .44 }) }
     touche(d, a, d.move.contre, hu, hb, { dir: d.face, last: true, spe: true }); return;
   }
   const crouchB = d.state === 'cblock' || (d.state === 'bstun' && d.crouchB), standB = d.state === 'walkB' || d.state === 'block' || (d.state === 'bstun' && !d.crouchB);
@@ -1712,8 +1918,9 @@ function touche(a, d, m, hb, hu, o) {
   const bonus = (o.fin ? 1.15 : 1) * (a.fort && spe ? 1.2 : 1) * (m.aa && d.h > 0 ? 1.25 : 1) * (a.arme && m.charge ? 1 + .35 * a.arme : 1) * (fesses ? 1.3 : 1) * (a.d.force || 1);
   if (fesses && Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 560, mot: hasard(['FESSES À L’AIR !', 'PAF, LES FESSES !']), col: '#FF7AB6' });
   // points faibles du livre : le puma fuit devant une meute (attaques en bande) · le cobra, « serré, il est en danger » · l'alligator « jeune, il se fait avaler » (rétréci) · la girafe : « si elle tombe, c'est fini »
-  const faible = (m.clan && d.d.meute ? d.d.meute : 1) * (o.prise ? (d.d.fragilePrise || 1) * (d.d.petitFragile && d.boost && d.boost.k === 'mini' ? d.d.petitFragile : 1) : 1) * (d.d.chute && m.kd && o.last ? d.d.chute : 1);
+  const faible = (m.clan && d.d.meute ? d.d.meute : 1) * (o.prise ? (d.d.fragilePrise || 1) * (d.d.petitFragile && d.boost && d.boost.k === 'mini' ? d.d.petitFragile : 1) : 1) * (d.d.chute && m.kd && o.last ? d.d.chute : 1) * (d.d.carapace && m.casse && !o.proj ? d.d.carapace : 1);
   if (m.clan && d.d.meute && !d.meuteDit) { d.meuteDit = true; addFx({ k: 'mot', x: d.x, y: FLOOR - 700 * d.d.K / .44, mot: hasard(['UNE MEUTE ?! AU SECOURS !', 'TROP NOMBREUX !', 'JE FILE !']), col: CY }) }
+  if (d.d.carapace && m.casse && !o.proj && d.hp > 0) { addFx({ k: 'mot', x: d.x, y: FLOOR - 560 * d.d.K / .44, mot: hasard(['CRAC ! MA CARAPACE !', 'LA CARAPACE CRAQUE !', 'OUILLE, MON ARMURE !']), col: '#FFD9C2' }); sfx('crac_os', .8) }
   if (d.d.chute && m.kd && o.last && d.hp > 0) addFx({ k: 'mot', x: d.x, y: FLOOR - 820 * d.d.K / .44, mot: hasard(['NE TOMBE PAS !', 'DUR DE SE RELEVER !', 'OUILLE, LES GRANDES PATTES !']), col: '#FBE6B5' });
   let dmg = Math.max(1, Math.round(m.dmg * scale * aideK * bonus * (d.d.peau || 1) * faible));
   if (invincible(d)) dmg = 0;
@@ -1751,7 +1958,7 @@ function touche(a, d, m, hb, hu, o) {
   if (m.souffle) { d.glisse = 26; addFx({ k: 'poussiere', x: d.x, y: FLOOR }); G.shake = Math.max(G.shake, 18) }
   if (d.hp <= 0) { a.dernierSuper = m === a.d.moves.SUPER || !!m.super; ko(a, d); return }
   // grizzly : « Un grizzly arrive… et la plage se vide ! » (l'autre part en courant)
-  if (m.peur && !armor && d.h <= 0) { setS(d, 'fuite'); d.stun = 46; d.vx = face * 10; addFx({ k: 'mot', x: d.x, y: FLOOR - 620, mot: hasard(['AU SECOURS !', 'SAUVE QUI PEUT !', 'MAMAN !']), col: PA }); sfx('pouet', .5); return }
+  if (m.peur && !armor && d.h <= 0) { if (window.statCombat) statCombat(a, 'peur'); setS(d, 'fuite'); d.stun = 46; d.vx = face * 10; addFx({ k: 'mot', x: d.x, y: FLOOR - 620, mot: hasard(['AU SECOURS !', 'SAUVE QUI PEUT !', 'MAMAN !']), col: PA }); sfx('pouet', .5); return }
   if (armor) { addFx({ k: 'mot', x: d.x, y: FLOOR - 460, mot: hasard(['TIENT BON !', 'MÊME PAS MAL !', 'BLINDÉ !']), col: CY }); return }
   setS(d, 'hurt'); d.stun = m.hs || 18; d.hurtK = 1; d.vx = face * m.kb * (d.d.leger || 1);
   if (o.fin) { addFx({ k: 'mot', x: (a.x + d.x) / 2, y: FLOOR - 560, mot: 'COMBO FINAL !', col: JA }); G.stop = 12; G.shake = Math.max(G.shake, 16); vibre(50); acclame(.6) }
@@ -1879,6 +2086,12 @@ function dessineProj(c) {
       for (let i = 0; i < 4; i++) { const r = 60 + i * 60 + (p.t * 5) % 60; c.lineWidth = 18 - i * 3; c.strokeStyle = i % 2 ? 'rgba(232,247,255,.95)' : '#4F86BF'; c.beginPath(); c.arc(-r * .6, 0, r, -.85, .85); c.stroke() }
       c.scale(p.dir, 1); c.font = '900 88px sans-serif'; c.textAlign = 'center'; c.fillStyle = '#FFFFFF'; c.strokeStyle = NV; c.lineWidth = 8; ['♪', '♫'].forEach((n, i) => { const x = (i ? -90 : 40) * p.dir, y = -120 + Math.sin(p.t * .3 + i * 2) * 40; c.strokeText(n, x, y); c.fillText(n, x, y) });
       c.restore(); if (p.t < 30) comic(c, 'OUUUUH !', p.x - p.dir * 40, FLOOR + p.y0 - 40, p.t / 60, .5, a, '#BFE9FF'); continue }
+    if (p.m && p.m.proj && p.m.proj.bulle) { c.save(); c.globalAlpha = a; const yc = FLOOR + (p.y0 + p.y1) / 2, r = 50 + 8 * Math.sin(p.t * .5); // crevette-mante : la bulle qui éclate (livre p. 50)
+      const g = c.createRadialGradient(p.x - r * .3, yc - r * .3, r * .1, p.x, yc, r); g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(.5, 'rgba(190,235,255,.45)'); g.addColorStop(1, 'rgba(120,200,255,.3)');
+      c.fillStyle = g; c.strokeStyle = '#FFFFFF'; c.lineWidth = 6; c.beginPath(); c.arc(p.x, yc, r, 0, TAU); c.fill(); c.stroke();
+      c.fillStyle = 'rgba(255,255,255,.9)'; c.beginPath(); c.arc(p.x - r * .35, yc - r * .35, r * .18, 0, TAU); c.fill();
+      for (let i = 0; i < 3; i++) { c.beginPath(); c.arc(p.x - p.dir * (r + 20 + i * 26), yc + Math.sin(p.t * .6 + i) * 14, 9 - i * 2, 0, TAU); c.stroke() }
+      c.restore(); if (p.t < 20) comic(c, 'BLOUP !', p.x, yc - 100, p.t / 40, .45, a, '#BFE9FF'); continue }
     if (p.m && p.m.proj && p.m.proj.rire) { c.save(); c.globalAlpha = a; const yc = FLOOR + (p.y0 + p.y1) / 2;
       ['HI', 'HA', 'HI'].forEach((s, i) => { const x = p.x - p.dir * i * 95, y = yc - 60 + i * 55 + Math.sin(p.t * .5 + i * 2) * 34, sz = 86 - i * 12;
         c.save(); c.translate(x, y); c.rotate(Math.sin(p.t * .3 + i) * .25); c.font = `900 ${sz}px Rubik, "Arial Black", sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
@@ -1936,7 +2149,7 @@ function brain(f, o) {
   const ia = f.d.ia || {}, mv = f.d.moves, appuie = k => { r[k] = !f.prev[k] };
   const tenirSpe = k => { ai.hold.S = true; if (k === 'SF') ai.hold[toward] = true; if (k === 'SD') ai.hold.down = true };
   // attrapé : il essaie de se dégager (décidé une fois)
-  if (f.state === 'tenu') { if (f.t === 2) ai.techGo = Math.random() < n.tech; if (f.t === 4 && ai.techGo) appuie('L'); return r }
+  if (f.state === 'tenu') { if (f.t === 2) ai.techGo = Math.random() < n.tech; if (f.t === 4 && ai.techGo) appuie('L'); if (f.d.rodeo && f.t === 7 && f.meter >= 30 && Math.random() < .55) appuie('S'); return r }
   // étourdi : il tapote partout pour se réveiller
   if (f.state === 'dizzy') { if (Math.random() < .22) appuie(Math.random() < .5 ? 'L' : 'H'); return r }
   // combo : si le coup a touché, on enchaîne
@@ -2269,7 +2482,7 @@ function render() {
   dessineFoule(fx); hud(fx); annonce(fx);
 }
 // position de la tête (px image depuis le point au sol, pose de base)
-const TETE = { cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
+const TETE = { girafe: [380, -840], lionne: [480, -680], alligator: [470, -330], python: [410, -670], glouton: [470, -410], oursnoir: [500, -560], cobra: [360, -790], mangouste: [420, -370], loup: [430, -600], puma: [490, -520], caiman: [450, -360], anaconda: [400, -620], jaguar: [495, -500], megalo: [470, -570], pieuvre: [-60, -720], aiguillat: [600, -380], espadon: [300, -400], requinbleu: [600, -400], orque: [570, -460], requin: [580, -470], leopard: [515, -640], guepard: [440, -680], autruche: [280, -760], porcepic: [444, -260], trex: [520, -560], morse: [380, -700], buffle: [560, -560], hyene: [520, -600], grizzly: [594, -606], tigre: [561, -558], gorille: [404, -681], lion: [413, -618], ours: [594, -606], croco: [565, -285], hippo: [631, -606], ratel: [519, -445], komodo: [520, -456] };
 function tete(f) { const p = f.d.tete || TETE[f.kind] || [450, -550], K = f.d.K; return [f.x + f.face * p[0] * K, FLOOR - f.h + p[1] * K] }
 function oiseau(c, x, y, s, t) { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = '#7FD0F5'; c.strokeStyle = NV; c.lineWidth = 3;
   c.beginPath(); c.ellipse(0, 0, 16, 11, 0, 0, TAU); c.fill(); c.stroke(); c.beginPath(); c.arc(12, -8, 8, 0, TAU); c.fill(); c.stroke();
@@ -2528,7 +2741,7 @@ function startMatch() {
   G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
   G.chrono = 0;
   G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
-  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] }[p2]; // variante de couleur
+  if (p1 === p2) G.f[1].tint = { tigre: [1.05, 1.02, 1.1, .82], gorille: [.75, .8, 1.15, .45], lion: [1.1, .95, .75, .5], ours: [.8, .95, 1.2, .35], croco: [.7, .9, 1.2, .45], hippo: [1.1, .8, .8, .4], ratel: [.9, .8, .6, .45], komodo: [.8, 1, .8, .4], grizzly: [1.1, .85, .65, .45], hyene: [1.12, .88, .7, .45], buffle: [.85, .9, 1.15, .4], morse: [1.1, .85, .8, .4], trex: [.8, 1.05, .8, .45], leopard: [.9, .85, 1.15, .45], porcepic: [1.15, .95, .8, .4], guepard: [.85, 1, 1.15, .45], autruche: [1.1, .9, 1.1, .4], orque: [.75, .85, 1.25, .45], requin: [.8, 1, 1.2, .4], pieuvre: [.8, .6, 1.2, .45], aiguillat: [.9, .8, .6, .45], espadon: [.7, .9, 1.2, .45], requinbleu: [.8, 1.1, .8, .45], megalo: [.85, .8, 1.2, .45] , jaguar: [.75, .75, .9, .5] , anaconda: [.8, 1, .6, .45] , caiman: [1.1, .95, .7, .45] , puma: [.85, .9, 1.2, .45] , loup: [1.15, .95, .75, .45] , mangouste: [1.12, .95, .78, .45] , cobra: [.7, .72, .95, .5] , oursnoir: [1.35, 1, .7, .55] , glouton: [1.2, 1.05, .8, .45] , python: [.8, .95, .7, .45] , alligator: [.85, 1.05, .8, .45] , lionne: [1.05, .9, 1.15, .45] , girafe: [1.15, .82, .62, .45] }[p2]; // variante de couleur
   if (G.livre && G.livre.noms) G.f.forEach((f, i) => f.nomAff = G.livre.noms[i]);
   if (NET.on) G.f.forEach((f, i) => f.distant = i !== NET.moi); // en ligne : l'animal de l'ami (ses trophées, ses sons « SUPER prêt ») n'est pas le nôtre
   G.nvTroph = [];
@@ -2598,7 +2811,13 @@ function construitCartes() {
     b.onmouseenter = () => { selCursor = i; majChoix() };
     box.appendChild(b);
   }
-  majChoix();
+  majChoix(); box.scrollLeft = Math.min(box.scrollLeft, box.scrollWidth); majFleches();
+}
+// grille qui défile (plus de 18 animaux) : flèches ◀ ▶, doigt (pan-x) et molette
+function majFleches() {
+  const box = $('cartes'), g = $('cartes-g'), d = $('cartes-d'); if (!box || !g || !d) return;
+  const def = box.classList.contains('defile') && box.scrollWidth > box.clientWidth + 4, max = box.scrollWidth - box.clientWidth;
+  g.hidden = !def || box.scrollLeft <= 4; d.hidden = !def || box.scrollLeft >= max - 4;
 }
 // onglets TERRE / MER : on change de monde à l'écran de choix (pas pendant le choix de l'adversaire : il doit être du même monde)
 function majMondes() {
@@ -2807,6 +3026,10 @@ function initUI() {
   $('quiz-suite').onclick = () => { sfx('clic'); ouvreQuiz(Q.k) };
   $('retour-choix').onclick = () => { sfx('clic'); if (selStage === 0) { G.phase = 'menu'; show(G.mode === 2 ? 'adeux' : 'titre'); return } selStage = 0; G.tournoi = null; selCursor = Math.max(0, LISTE().indexOf(G.pick[0])); construitCartes() };
   $('hasard-btn').onclick = () => { sfx('clic'); adversaireAuHasard() };
+  { const box = $('cartes'), pas = s => { sfx('clic'); box.scrollBy({ left: s * Math.max(200, box.clientWidth * .75), behavior: 'smooth' }) };
+    $('cartes-g').onclick = () => pas(-1); $('cartes-d').onclick = () => pas(1);
+    box.addEventListener('scroll', majFleches, { passive: true }); addEventListener('resize', majFleches);
+    box.addEventListener('wheel', e => { if (!box.classList.contains('defile') || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return; box.scrollLeft += e.deltaY; e.preventDefault() }, { passive: false }); } // la molette fait défiler de côté
   document.querySelectorAll('#mondes .monde').forEach(b => b.onclick = () => changeMonde(b.dataset.monde));
   $('tournoi-btn').onclick = () => lanceTournoi();
   $('arenes-retour').onclick = () => { sfx('clic'); if (NET.on) { G.phase = 'menu'; show('choix'); $('choix-titre').textContent = 'EN ATTENTE…'; return } G.phase = 'menu'; show('choix'); selStage = 1; construitCartes() }; $('trophees-titre').onclick = () => { sonInit(); sfx('clic'); ouvreTrophees('titre') };

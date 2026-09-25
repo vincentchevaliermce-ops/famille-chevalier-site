@@ -380,7 +380,7 @@ const SPECIAUX = {
   // girafe : ★ le coup de pied qui assomme · → ★ le rodéo (elle se secoue) · ↓ ★ le coup de cou · SUPER les pattes de 1,80 m
   girafe(f, t, u, ph, k, repos) {
     if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -16 * e }, true) } if (ph === 'act') return SP('fort', { x: 40, sx: 1.04 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
-    if (k === 'SF') { if (ph === 'act') return SP(f.t % 8 < 4 ? 'garde' : 'touche', { x: 18 * Math.sin(t * 40), r: .06 * Math.sin(t * 40) }, true); return repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: 6 * Math.sin(t * 50) }, true); if (ph === 'act') return SP(f.t % 12 < 6 ? 'special' : 'garde', { x: 16 * Math.sin(t * 40), r: .05 * Math.sin(t * 40) }, true); return repos(); } // le rodéo : elle se cabre et se secoue
     if (k === 'SD') { if (ph === 'st') return SP('garde', { r: -.08 }, true); if (ph === 'act') return SP('cou', { r: .04 }, true); return u < .5 ? SP('cou', {}) : repos(); }
     if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 40, sx: 1.04 }, true) : SP('coup', { x: 20 }, true); return repos(); }
   },
@@ -411,6 +411,18 @@ const SPECIAUX = {
     if (k === 'S') { if (ph === 'st') return SP('garde', { sy: 1 + .02 * Math.sin(t * 20) }, true); if (ph === 'act') return SP('coup', { x: 10 }, true); return repos(); }
     if (k === 'SD') { if (ph === 'st') return SP('accroupi', { sy: .95 }); if (ph === 'act') return SP('souffle', { sy: 1 + .02 * Math.sin(t * 20) }, true); return u < .5 ? SP('souffle', {}) : repos(); }
     if (k === 'SUPER') { if (ph === 'st') return SP('fort', { sy: 1 + .03 * Math.sin(t * 30) }, true); if (ph === 'act') return SP('fort', { x: 20 + 10 * Math.sin(t * 10), sx: 1.04 }, true); return repos(); }
+  },
+  // crabe (MER) : ★ il pince et ne lâche plus (prise) · → ★ la marche de côté · ↓ ★ les pinces vers le ciel · SUPER l'armure de chevalier
+  crabe(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') return SP('garde', { x: -10 * u }, true); return SP('pince', { x: 30, sx: 1.03 }, true) }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { sy: .96 }, true); if (ph === 'act') return f.hit ? SP('fort', { x: 30 }, true) : SP('special', { y: -4 * Math.abs(Math.sin(t * 24)) }, true); return u < .5 ? SP('special', {}) : repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 10 < 5 ? SP('fort', { x: 40, sx: 1.04 }, true) : SP('pince', { x: 20 }, true); return repos(); }
+  },
+  // crevette-mante (MER) : ★ elle casse les coquilles · → ★ la bulle qui éclate · ↓ ★ la massue vers le ciel · SUPER plus rapide qu'un clin d'œil
+  crevette(f, t, u, ph, k, repos) {
+    if (k === 'S') { if (ph === 'st') { const e = eo(u); return SP('garde', { x: -14 * e, sy: .97 }, true) } if (ph === 'act') return SP('fort', { x: 40, sx: 1.05 }, true); return u < .5 ? SP('fort', { x: 20 * (1 - u) }) : repos(); }
+    if (k === 'SF') { if (ph === 'st') return SP('garde', { x: -8 * u }, true); if (ph === 'act' || u < .4) return SP('bulle', { x: 20 }, true); return repos(); }
+    if (k === 'SUPER') { if (ph === 'st') return SP('garde', { sy: 1 + .03 * Math.sin(t * 40) }, true); if (ph === 'act') return f.t % 6 < 3 ? SP('fort', { x: 40, sx: 1.05 }, true) : SP('coup', { x: 20 }, true); return repos(); }
   },
   // léopard : ★ le bond de 6 m · → ★ le repas dans l’arbre (prise : il grimpe avec sa proie) · ↓ ★ tombé du ciel · SUPER l’ombre de la nuit
   leopard(f, t, u, ph, k, repos) {
