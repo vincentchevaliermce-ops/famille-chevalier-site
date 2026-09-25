@@ -2038,7 +2038,7 @@ function joue(k, v = 1, o = {}) {
   s.start(A.currentTime + (o.delai || 0)); return true;
 }
 function sfx(k, v = 1, distant) {
-  if (window.NET && NET.on && NET.role === 'hote' && !distant && ['fight', 'intro', 'ko'].includes(G.phase)) NET.sons.push([k, v]);
+  if (window.NET && NET.on && NET.role === 'hote' && !distant && k !== 'pret' && ['fight', 'intro', 'ko'].includes(G.phase)) NET.sons.push([k, v]); // (« SUPER prêt » : seulement pour soi)
   if (!SON.ctx || !SON.on) return;
   const t = SON.ctx.currentTime, reel = SONS.pret || Object.keys(SONS.buf).length > 20;
   if (!reel) { sfxSynth(k.replace('_grr', ''), v); return }
@@ -3912,6 +3912,7 @@ function etiquettes(f, o, i) {
 }
 const ETQ = new Map();
 function majBoutons() {
+  if (typeof NET === 'undefined') return; // (net.js pas encore chargé : réseau lent)
   for (const [n, id] of [[0, 'pad'], [1, 'pad2']]) {
     const pad = $(id); if (!pad) continue;
     const k = n === 0 ? (NET.on ? NET.moi : 0) : 1, f = G.f[k], o = G.f[1 - k];

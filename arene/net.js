@@ -7,6 +7,7 @@
 //  • rien d'autre ne circule : pas de pseudo, pas de discussion, pas de donnée personnelle — un code à 4 chiffres, c'est tout
 // =====================================================================
 const NET = { on: false, role: null, peer: null, conn: null, moi: 0, entree: {}, fx: [], sons: [], snap: null, pret: {}, lu: 0 };
+window.NET = NET; // (25/09) : game.js teste « window.NET && NET.on » : sans cette ligne, l'hôte n'envoyait ni les effets ni les sons à son ami
 const PREFIXE = 'arene-des-duels-cqpf-';
 // (tests) serveur de mise en relation local : ?peerhost=localhost&peerport=9000
 const QS = new URLSearchParams(location.search), PEER_OPTS = QS.get('peerhost') ? { host: QS.get('peerhost'), port: +QS.get('peerport'), path: QS.get('peerpath') || '/', secure: false } : {};
@@ -142,7 +143,7 @@ function recoit(m) {
   else if (m.t === 'arene') { $('choix-titre').textContent = 'TON AMI CHOISIT L’ARÈNE…' }
   else if (m.t === 'go') { G.pick = m.pick; G.mode = 2; if (m.arene) G.arene = m.arene; vs() }
   else if (m.t === 'i') { NET.entree = m.k }
-  else if (m.t === 's') { NET.snap = m }
+  else if (m.t === 's') { if (NET.snap) { m.fx = (NET.snap.fx || []).concat(m.fx || []); m.so = (NET.snap.so || []).concat(m.so || []) } NET.snap = m } // (une image sautée garde ses effets et ses sons)
   else if (m.t === 'fin') { appliqueSnap(m.s); G.f.forEach((f, i) => { f.st = m.st[i]; f.parfait = m.pf[i] }); endMatch() }
   else if (m.t === 'rejoue') { NET.pret = {}; selStage = 0; G.phase = 'menu'; show('choix'); construitCartes(); $('choix-titre').textContent = 'CHOISIS TON ANIMAL' }
 }
