@@ -1,6 +1,6 @@
 // =====================================================================
 //  L'AVENTURE (25/09, architecture validée par Vincent : « 1A 2A 3A ») — le jeu suit le livre « C'est qui le plus fort ? » :
-//  les 30 duels, dans l'ordre, en 3 manches de 10 (boss aux duels 10, 20, 30 ; ordi FACILE, NORMAL puis COSTAUD).
+//  les 30 duels, dans l'ordre, en 3 manches de 10 (boss aux duels 10, 20, 30 ; l'ordi monte en pente douce de FACILE à COSTAUD : nivDuel).
 //  1. tu paries (contre Gigi), 2. tu te bats avec ton champion, 3. tu découvres la vraie réponse,
 //  4. une question sur ce que tu viens de lire → les animaux du duel rejoignent ta collection (les champions du livre :
 //     avec le livre en main). Après la finale : les 3 LÉGENDES. Un nouveau tome = un nouveau tableau DUELS, même moule.
@@ -14,7 +14,7 @@ const DUELS = [
     gigi: { pari: 'abeille', dit: 'Les abeilles.', pourquoi: 'Je parie toujours sur les plus nombreux.', apres: 'J’AVAIS BON ! Premier point pour Gigi. Trop facile !' },
     rep: { g: 'abeille', titre: 'LA VRAIE RÉPONSE', cri: 'LES ABEILLES !', punch: 'Le frelon est cuit !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
       film: 'Sans piquer, plus de 500 abeilles enferment le frelon dans une boule vivante. Là-dedans, toutes les abeilles grelottent en même temps. La boule chauffe comme un four ! Une demi-heure plus tard, le frelon ne bouge plus.' } },
-  { n: 2, lieu: 'OCÉAN', q: 'ORQUE OU GRAND REQUIN BLANC ?', a: 'orque', b: 'requin', noms: ['ORQUE', 'GRAND REQUIN BLANC'], arene: 'ocean', p: 7, pv: 8,
+  { n: 2, lieu: 'OCÉAN', q: 'ORQUE OU GRAND REQUIN BLANC ?', a: 'orque', b: 'requin', noms: ['ORQUE', 'GRAND REQUIN BLANC'], arene: 'ocean', force: { orque: 1.1 }, p: 7, pv: 8,
     intro: 'Deux tueurs des mers. Aucun ennemi connu… sauf peut-être l’autre. Près de l’Afrique du Sud, ils se croisent pour de vrai. Qui fait fuir l’autre ?',
     fiches: [['jusqu’à 10 tonnes', 'des dents de 8 cm', 'un coup de queue qui assomme', 'elle doit remonter respirer'], ['jusqu’à 2 tonnes', '300 dents sur 7 rangées', 'il attaque par en dessous', 'sur le dos, il ne bouge plus']],
     gigi: { pari: 'orque', dit: 'L’orque.', pourquoi: 'Un dauphin géant ! J’adore les dauphins.', apres: 'J’AVAIS BON ! Je suis un génie.' },
@@ -26,7 +26,7 @@ const DUELS = [
     gigi: { pari: 'lion', dit: 'Le lion.', pourquoi: 'C’est le roi, c’est écrit partout !', apres: '« Le roi », c’était écrit partout. Sauf ici !' },
     rep: { g: 'tigre', titre: 'L’AVIS DES EXPERTS', cri: 'LE TIGRE !', punch: 'Un contre un, les rayures gagnent !', tampon: 'bleu', label: 'JAMAIS VU DANS LA NATURE',
       film: 'Le tigre pèse environ 30 kg de plus que le lion. Selon un expert, le tigre va droit à la gorge. Le lion, lui, cogne et joue avec l’adversaire. Mais attention… Un lion vient rarement seul : à deux ou trois, les lions battraient le tigre.' } },
-  { n: 4, lieu: 'SAVANE DE NUIT', q: 'LÉOPARD OU PORC-ÉPIC ?', a: 'leopard', b: 'porcepic', noms: ['LÉOPARD', 'PORC-ÉPIC'], arene: 'nuit', p: 11, pv: 12,
+  { n: 4, lieu: 'SAVANE DE NUIT', q: 'LÉOPARD OU PORC-ÉPIC ?', a: 'leopard', b: 'porcepic', noms: ['LÉOPARD', 'PORC-ÉPIC'], arene: 'nuit', force: { leopard: 1.076 }, p: 11, pv: 12,
     intro: 'La nuit, en Afrique. Un léopard affamé trouve un porc-épic : trente kilos de viande… sous des milliers de piquants. Qui fait reculer l’autre ?',
     fiches: [['jusqu’à 75 kg', 'des griffes pour grimper', 'un bond de 6 m', 'il attaque la gueule en avant'], ['jusqu’à 30 kg', 'des piquants de 30 cm', 'la charge en marche arrière', 'une très mauvaise vue']],
     gigi: { pari: 'leopard', dit: 'Le léopard.', pourquoi: 'L’autre, c’est une brosse à cheveux.', apres: 'Une brosse à cheveux DE COMBAT. D’accord.' },
@@ -38,7 +38,7 @@ const DUELS = [
     gigi: { pari: 'hippo', dit: 'L’hippo.', pourquoi: 'Plus grande bouche = plus fort. Logique.', apres: 'Logique de Gigi : 1. Reste du monde : 0.' },
     rep: { g: 'hippo', titre: 'LA VRAIE RÉPONSE', cri: 'L’HIPPOPOTAME !', punch: 'Trois tonnes de mauvaise humeur.', tampon: 'vert', label: 'FILMÉ OU PHOTOGRAPHIÉ',
       film: 'Un crocodile s’approche d’un bébé hippopotame. Aussitôt, tout le troupeau se serre autour du petit. Pour s’échapper, le crocodile grimpe… sur le dos des hippopotames ! Mordu plusieurs fois, il disparaît sous l’eau.' } },
-  { n: 6, lieu: 'GRAND NORD', q: 'OURS POLAIRE OU GRIZZLY ?', a: 'ours', b: 'grizzly', noms: ['OURS POLAIRE', 'GRIZZLY'], arene: 'plage', p: 15, pv: 16,
+  { n: 6, lieu: 'GRAND NORD', q: 'OURS POLAIRE OU GRIZZLY ?', a: 'ours', b: 'grizzly', noms: ['OURS POLAIRE', 'GRIZZLY'], arene: 'plage', force: { ours: 1.118 }, p: 15, pv: 16,
     intro: 'Sur une plage d’Alaska, des restes de baleine : un festin. Des ours polaires énormes sont déjà à table. Arrive un grizzly, un ours brun, tout seul. Qui mange ?',
     fiches: [['de 350 à 545 kg', 'des griffes en crochet', 'un coup de patte de géant', 'il a vite trop chaud en courant'], ['environ 180 kg', 'des griffes de 6 cm', 'il attrape les saumons au vol', 'deux à trois fois plus léger']],
     gigi: { pari: 'ours', dit: 'L’ours polaire.', pourquoi: 'Il est assorti à la neige : trop la classe.', apres: 'La classe ne suffit pas ? On aurait pu me prévenir !' },
@@ -50,13 +50,13 @@ const DUELS = [
     gigi: { pari: 'jaguar', dit: 'Le jaguar.', pourquoi: 'Un chat contre une ficelle : facile.', apres: 'Le chat a eu la ficelle. Comme prévu !' },
     rep: { g: 'jaguar', titre: 'LA VRAIE RÉPONSE', cri: 'LE JAGUAR !', punch: 'Plouf ! Et c’est gagné !', tampon: 'vert', label: 'FILMÉ OU PHOTOGRAPHIÉ',
       film: 'Brésil, 2017. Un jaguar repère un anaconda et le poursuit jusque dans l’eau. Le serpent mord le jaguar au museau, plusieurs fois. Le félin ne lâche pas. Sous les yeux d’un photographe, le jaguar prend le dessus. Quelques morsures, et le serpent ne bouge plus.' } },
-  { n: 8, lieu: 'SAVANE', q: 'LION OU RATEL ?', a: 'lion', b: 'ratel', noms: ['LION', 'RATEL'], arene: 'desert', p: 19, pv: 20,
+  { n: 8, lieu: 'SAVANE', q: 'LION OU RATEL ?', a: 'lion', b: 'ratel', noms: ['LION', 'RATEL'], arene: 'desert', force: { lion: 1.03 }, p: 19, pv: 20,
     intro: 'Sur Internet, des vidéos montrent le ratel, une sorte de blaireau d’Afrique, tenir tête à des lions. 13 kilos de rage contre 190 ! Des chercheurs sont allés vérifier. Alors, qui gagne ?',
     fiches: [['environ 190 kg', 'des crocs de 7 cm', 'il plaque sa proie au sol', 'il chasse mal en plein jour'], ['jusqu’à 13 kg', 'de longues griffes', 'la bombe puante', 'surpris, il fonce sans réfléchir']],
     gigi: { pari: 'ratel', dit: 'Le ratel !', pourquoi: 'J’ai vu la vidéo : il est INVINCIBLE.', apres: 'Internet m’a menti. Je suis très déçu.' },
     rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'Courageux… mais pas fou !', tampon: 'vert', label: 'VU DANS LA NATURE',
       film: 'Dans le désert du Kalahari, des lions et des léopards ont déjà tué des ratels. Son vrai talent ? Il ne gagne pas : il dégoûte. Il mord, il pue… et parfois, le fauve renonce !' } },
-  { n: 9, lieu: 'AQUARIUM', q: 'PIEUVRE GÉANTE OU REQUIN ?', a: 'pieuvre', b: 'aiguillat', noms: ['PIEUVRE GÉANTE', 'REQUIN AIGUILLAT'], arene: 'aquarium', p: 21, pv: 22,
+  { n: 9, lieu: 'AQUARIUM', q: 'PIEUVRE GÉANTE OU REQUIN ?', a: 'pieuvre', b: 'aiguillat', noms: ['PIEUVRE GÉANTE', 'REQUIN AIGUILLAT'], arene: 'aquarium', force: { aiguillat: 1.15 }, p: 21, pv: 22,
     intro: 'D’un côté, un aiguillat : un requin d’un mètre. De l’autre, un gros sac mou à huit bras. Ils partagent le même bassin. Qui mange l’autre ?',
     fiches: [['souvent plus de 20 kg', 'des bras à ventouses', 'elle mord avec un bec caché', 'vite fatiguée en nageant'], ['moins de 10 kg', 'deux épines à venin', 'il se plie et pique', 'petit, pour un requin']],
     gigi: { pari: 'aiguillat', dit: 'Le requin.', pourquoi: 'Il a des dents, lui !', apres: 'Il avait des dents, lui ! Elle, un bec caché. Tricheuse !' },
@@ -86,7 +86,7 @@ const DUELS = [
     gigi: { pari: 'ours', dit: 'L’ours.', pourquoi: 'Le morse, c’est un canapé à moustaches.', apres: 'Un canapé d’une tonne et demie, avec des épées.' },
     rep: { g: 'morse', titre: 'LA VRAIE RÉPONSE', cri: 'LE MORSE !', punch: 'Pas touche au troupeau !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
       film: 'L’ours fonce sur le troupeau de morses pour lui faire peur. Les adultes font face, défenses en avant. L’ours freine. 23 sur 25 attaques d’ours contre des morses ont raté.' } },
-  { n: 14, lieu: 'INDE', q: 'MANGOUSTE OU COBRA ?', a: 'mangouste', b: 'cobra', noms: ['MANGOUSTE', 'COBRA'], arene: 'inde', p: 33, pv: 34,
+  { n: 14, lieu: 'INDE', q: 'MANGOUSTE OU COBRA ?', a: 'mangouste', b: 'cobra', noms: ['MANGOUSTE', 'COBRA'], arene: 'inde', force: { mangouste: 1.237 }, p: 33, pv: 34,
     intro: 'Un cobra se dresse, capuchon ouvert. Son venin peut tuer un humain. En face, une mangouste : moins de 2 kilos de poils qui sautillent. Une seule morsure, et tout est fini. Mais la morsure de qui ?',
     fiches: [['environ 40 cm sans la queue', '40 dents pointues', 'elle esquive, puis mord la tête', 'trop de venin peut la tuer'], ['jusqu’à 220 cm', 'un venin mortel', 'il ouvre son capuchon', 'il frappe trop lentement']],
     gigi: { pari: 'cobra', dit: 'Le cobra.', pourquoi: 'Je ne parie jamais contre un truc qui siffle.', apres: 'Elle danse, il tombe. Je veux la même prof de sport.' },
@@ -116,13 +116,13 @@ const DUELS = [
     gigi: { pari: 'lion', dit: 'Le lion.', pourquoi: 'La hyène rigole, mais elle va moins rigoler.', apres: 'J’AVAIS BON ! Pourquoi tu as l’air surpris ?' },
     rep: { g: 'lion', titre: 'LA VRAIE RÉPONSE', cri: 'LE LION !', punch: 'Table réservée au patron !', tampon: 'vert', label: 'COMPTÉ PAR DES CHERCHEURS',
       film: 'Une hyène seule n’a aucune chance face à lui. Nombreuses, elles volent le repas des lionnes. Mais avec un lion mâle, c’est perdu d’avance.' } },
-  { n: 19, lieu: 'FORÊT DU NORD', q: 'OURS NOIR OU GLOUTON ?', a: 'oursnoir', b: 'glouton', noms: ['OURS NOIR', 'GLOUTON'], arene: 'nord', p: 43, pv: 44,
+  { n: 19, lieu: 'FORÊT DU NORD', q: 'OURS NOIR OU GLOUTON ?', a: 'oursnoir', b: 'glouton', noms: ['OURS NOIR', 'GLOUTON'], arene: 'nord', force: { oursnoir: 1.076 }, p: 43, pv: 44,
     intro: 'Forêt du Grand Nord. Un ours noir a trouvé un repas caché sous la neige ! Arrive un glouton, gros comme un chien, neuf fois plus léger. Il ne s’en va pas. Qui garde le repas ?',
     fiches: [['jusqu’à 270 kg', 'des griffes courbes', 'il charge pour faire peur', 'plus gourmand que bagarreur'], ['jusqu’à 30 kg', 'une dent pour la viande gelée', 'il gronde et fonce', 'des pattes courtes']],
     gigi: { pari: 'glouton', dit: 'Le glouton.', pourquoi: 'Rien que le nom, il me plaît.', apres: 'Glouton un jour, glouton toujours. Comme moi.' },
     rep: { g: 'glouton', titre: 'CE QUE DISENT LES TÉMOINS', cri: 'LE GLOUTON !', punch: 'Qui gronde le plus fort mange en premier.', tampon: 'bleu', label: 'RACONTÉ PAR DES TÉMOINS',
       film: 'Souvent, le glouton fait fuir de leur repas des animaux bien plus gros que lui. Ours noirs, pumas… et des loups lui ont cédé la place ! Il ne recule pas. L’ours pourrait gagner… mais se faire mordre pour un repas ? Il préfère aller manger ailleurs.' } },
-  { n: 20, boss: 2, lieu: 'FLORIDE', q: 'PYTHON OU ALLIGATOR ?', a: 'python', b: 'alligator', noms: ['PYTHON BIRMAN', 'ALLIGATOR'], arene: 'floride', p: 45, pv: 46,
+  { n: 20, boss: 2, lieu: 'FLORIDE', q: 'PYTHON OU ALLIGATOR ?', a: 'python', b: 'alligator', noms: ['PYTHON BIRMAN', 'ALLIGATOR'], arene: 'floride', force: { alligator: 1.05 }, p: 45, pv: 46,
     intro: 'Des pythons birmans, lâchés par leurs maîtres, ont envahi les marais de Floride. Problème : le chef, là-bas, c’est l’alligator ! Qui gagne ?',
     fiches: [['jusqu’à 98 kg', 'un corps qui serre', 'l’attaque surprise', 'il ne supporte pas le froid'], ['jusqu’à 450 kg', 'jusqu’à 80 dents', 'il mord, puis il roule', 'jeune, il se fait avaler']],
     gigi: { pari: 'alligator', dit: 'L’alligator.', pourquoi: 'Non, le python. Non… l’alligator.', apres: 'Match nul ?! On a le droit ? Et moi, zéro point ? Je proteste.' },
@@ -140,7 +140,7 @@ const DUELS = [
     gigi: { pari: 'lionne', dit: 'Les lionnes.', pourquoi: 'Elles sont trois. Et la girafe, c’est un lampadaire.', apres: 'Un lampadaire qui cogne ! Trois contre une… et elles perdent ?' },
     rep: { g: 'girafe', titre: 'LA VRAIE RÉPONSE', cri: 'LA GIRAFE !', punch: 'Trois lionnes au tapis !', tampon: 'vert', label: 'FILMÉ OU PHOTOGRAPHIÉ',
       film: 'Une lionne saute sur le dos d’une girafe. Deux autres s’accrochent à ses pattes. La girafe se secoue : en 5 minutes, elle s’en débarrasse. Pendant 5 heures, elles reviennent à la charge. La girafe tient bon… et repart.' } },
-  { n: 23, lieu: 'FORÊT D’ASIE', q: 'COBRA ROYAL OU PYTHON ?', a: 'cobra', b: 'python', noms: ['COBRA ROYAL', 'PYTHON RÉTICULÉ'], arene: 'asie', p: 53, pv: 54,
+  { n: 23, lieu: 'FORÊT D’ASIE', q: 'COBRA ROYAL OU PYTHON ?', a: 'cobra', b: 'python', noms: ['COBRA ROYAL', 'PYTHON RÉTICULÉ'], arene: 'asie', force: { cobra: 1.162 }, p: 53, pv: 54,
     intro: 'Un cobra royal, le plus long serpent venimeux du monde, croise un python réticulé, le plus long serpent tout court ! Mordre ou serrer : qui gagne ?',
     fiches: [['celui-ci : 3,60 m', 'un venin qui coupe le souffle', 'dressé, il poursuit l’ennemi', 'serré, il est en danger'], ['celui-ci : environ 1,80 m', 'des anneaux qui serrent', 'il mord, puis il s’enroule', 'aucun venin']],
     gigi: { pari: 'cobra', dit: 'Le cobra royal.', pourquoi: 'Il y a « royal » dans son nom.', apres: 'Roi des serpents, roi des pronostics : c’est moi.' },
@@ -152,7 +152,7 @@ const DUELS = [
     gigi: { pari: 'tigre', dit: 'Pile, le tigre.', pourquoi: 'Face, l’ourse… Pile !', apres: 'Ma pièce ne se trompe jamais. Je la garde.' },
     rep: { g: 'tigre', titre: 'CE QUE DISENT LES INDICES', cri: 'LE TIGRE !', punch: 'Une morsure, et l’ourse n’a rien vu venir.', tampon: 'bleu', label: 'D’APRÈS LES INDICES',
       film: 'Des chercheurs suivent Dima, un tigre, grâce à son collier radio. Ils trouvent les restes d’une grande ourse. Les traces le disent : Dima a bondi du haut d’un talus raide.' } },
-  { n: 25, lieu: 'GROTTE', q: 'SCOLOPENDRE GÉANTE OU CHAUVE-SOURIS ?', a: 'scolopendre', b: 'chauvesouris', noms: ['SCOLOPENDRE GÉANTE', 'CHAUVE-SOURIS'], arene: 'grotte', p: 57, pv: 58,
+  { n: 25, lieu: 'GROTTE', q: 'SCOLOPENDRE GÉANTE OU CHAUVE-SOURIS ?', a: 'scolopendre', b: 'chauvesouris', noms: ['SCOLOPENDRE GÉANTE', 'CHAUVE-SOURIS'], arene: 'grotte', force: { scolopendre: 1.142 }, p: 57, pv: 58,
     intro: 'Une grotte du Venezuela. Au plafond, 50 000 chauves-souris. Sur la roche, une scolopendre géante, un mille-pattes venimeux long comme ta règle. L’une vole, l’autre rampe. Qui attrape l’autre ?',
     fiches: [['jusqu’à 30 cm', 'un venin qui paralyse', 'elle chasse la tête en bas', 'elle se dessèche vite'], ['corps de moins de 10 cm', 'de petites dents pointues', 'elle chasse au sonar', 'des ailes en peau très fine']],
     gigi: { pari: 'scolopendre', dit: 'La scolopendre.', pourquoi: 'Plus tu as de pattes, plus tu es fort.', apres: 'Logique de Gigi : 2. Reste du monde : 0.' },
@@ -164,13 +164,13 @@ const DUELS = [
     gigi: { pari: 'croco', dit: 'Le croco.', pourquoi: 'Il a plus de dents. J’ai compté.', apres: 'Il lui manque des dents ? J’ai bon quand même. Ça compte !' },
     rep: { g: 'croco', titre: 'LA VRAIE RÉPONSE', cri: 'LE CROCODILE !', punch: 'Même sur trois pattes, papi croque encore.', tampon: 'vert', label: 'FILMÉ OU PHOTOGRAPHIÉ',
       film: '2014. Une famille en bateau aperçoit Brutus. Sa patte avant ? Arrachée par un requin… ou par un autre croco. Et il a perdu des dents ! Dans sa gueule, en travers : un requin-bouledogue. La revanche ?' } },
-  { n: 27, lieu: 'OCÉAN', q: 'BALEINE BLEUE OU ORQUES ?', a: 'baleine', b: 'orque', noms: ['BALEINE BLEUE', 'BANDE D’ORQUES'], arene: 'ocean', p: 61, pv: 62,
+  { n: 27, lieu: 'OCÉAN', q: 'BALEINE BLEUE OU ORQUES ?', a: 'baleine', b: 'orque', noms: ['BALEINE BLEUE', 'BANDE D’ORQUES'], arene: 'ocean', force: { orque: 1.28 }, p: 61, pv: 62,
     intro: 'Le plus gros animal de la planète : sa langue pèse autant qu’un éléphant. Près de l’Australie, une bande d’orques l’encercle. La baleine plonge. Qui va gagner ?',
     fiches: [['jusqu’à 150 tonnes', 'un corps de 30 m', 'elle file à 32 km/h', 'pas une seule dent'], ['jusqu’à 10 tonnes chacune', 'des dents de 8 cm', 'l’attaque en bande', 'quinze fois plus légères']],
     gigi: { pari: 'orque', dit: 'Les orques.', pourquoi: 'Je parie toujours sur les plus nombreux.', apres: 'J’AVAIS BON ! Les plus nombreux gagnent. Retiens bien ça.' },
     rep: { g: 'orque', titre: 'LA VRAIE RÉPONSE', cri: 'LES ORQUES !', punch: 'Géante, oui. Invincible, non !', tampon: 'vert', label: 'VU DANS LA NATURE',
       film: 'Australie, 2019 : des chercheurs voient une douzaine d’orques foncer sur une baleine bleue adulte. D’autres arrivent, et encore d’autres. Ce sont les femelles qui mènent l’attaque.' } },
-  { n: 28, lieu: 'JARDIN', q: 'MANTE RELIGIEUSE OU COLIBRI ?', a: 'mante', b: 'colibri', noms: ['MANTE RELIGIEUSE', 'COLIBRI'], arene: 'jardin', p: 63, pv: 64,
+  { n: 28, lieu: 'JARDIN', q: 'MANTE RELIGIEUSE OU COLIBRI ?', a: 'mante', b: 'colibri', noms: ['MANTE RELIGIEUSE', 'COLIBRI'], arene: 'jardin', force: { mante: 1.085 }, p: 63, pv: 64,
     intro: 'Le colibri, oiseau minuscule, bat des ailes 53 fois par seconde. Il fonce vers une mangeoire d’eau sucrée. Une mante religieuse guette tout près. Un insecte contre un oiseau : qui attrape l’autre ?',
     fiches: [['jusqu’à 7 g', 'des pattes-pièges à piquants', 'elle frappe en un éclair', 'souvent mangée par les oiseaux'], ['environ 3 g', 'un bec en aiguille', 'il vole même en arrière', 'il doit boire sans arrêt']],
     gigi: { pari: 'colibri', dit: 'Le colibri.', pourquoi: 'Ceux qui volent gagnent toujours !', apres: '« Ceux qui volent gagnent toujours » ? Je retire tout.' },
@@ -353,6 +353,8 @@ function ouvrePari(D, rejoue) {
   const r = SAVE.livre[D.n];
   $('pari-titre').textContent = rejoue || r ? `TON PARI : ${r ? (r.pari === 'nul' ? 'MATCH NUL' : nomDuel(D, r.pari)) : '?'}` : 'QUI GAGNE ?';
   if (r) { $('pari-nul').hidden = true; G.livre.choixCombat = true; $('pari-gigi-dit').closest('.pari-gigi').hidden = true } // (rejouer : on choisit juste avec qui se battre)
+  // (M7) pendant que l'enfant lit et parie, les deux animaux et l'arène se chargent : sur un téléphone, le combat part tout de suite
+  setTimeout(() => { try { chargeAnimal(D.a).catch(() => { }); chargeAnimal(D.b).catch(() => { }); chargeArene(D.arene).catch(() => { }) } catch (e) { } }, 250);
 }
 function choisitPari(k) {
   const L = G.livre, D = L.D; sonInit();
@@ -364,9 +366,13 @@ function choisitPari(k) {
   if (k === 'nul') return;
   sfx('valide'); lanceDuelLivre(k);
 }
+// (M6, 25/09) difficulté de l'ordi dans un duel : de 0 (FACILE) au duel 1 à 2 (COSTAUD) au duel 30, en pente douce ; les boss (10, 20, 30) +0,12
+// (mesuré avec outils/enfant_session.py : un enfant qui tape partout gagne chaque duel en 3 essais au plus, grâce à l'aide qui suit les manches perdues)
+const nivDuel = D => Math.min(2, Math.round((2 * (D.n - 1) / 29 + (D.boss ? .12 : 0)) * 100) / 100);
 function lanceDuelLivre(k) {
   const L = G.livre, D = L.D, adv = k === D.a ? D.b : D.a;
   L.moi = k; G.mode = 1; G.tournoi = null; G.pick = [k, adv]; G.arene = D.arene; G.areneHasard = false; G.niv = Math.min(2, manche(D) - 1); // ordi FACILE (manche 1), NORMAL (2), COSTAUD (3)
+  G.nivDuel = nivDuel(D); // (M6) …et, pour l'ordi, une pente douce : duel 1 FACILE → duel 30 COSTAUD, les boss un cran au-dessus
   L.noms = [nomDuel(D, k), nomDuel(D, adv)];
   sfx(k, .8); vs();
 }
@@ -450,7 +456,7 @@ function duelGagne(D) {
   const deja = [...new Set([D.a, D.b])].filter(k => pret(k) && !nouveaux.includes(k) && !champs.includes(k));
   $('quiz-q').innerHTML = `<span class="gains">${nouveaux.map(k => `<span class="gain"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>NOUVEAU !</small></span>`).join('')}${champs.map(k => `<span class="gain or"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>📖 AVEC LE LIVRE</small></span>`).join('')}${deja.map(k => `<span class="gain deja"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>✔ DÉJÀ À TOI</small></span>`).join('')}</span>`;
   $('quiz-rep').innerHTML = ''; for (const k of champs) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn or'; b.textContent = `📖 J’AI LE LIVRE : ${CHARS[k].nom}`; b.onclick = () => { sfx('valide'); ouvreLivreEnMain(k) }; $('quiz-rep').appendChild(b) }
-  $('quiz-msg').innerHTML = (mancheFinie ? `<span class="quete">${D.n === 30 ? '★ LES LÉGENDES SE RÉVEILLENT ! (onglet ★ LÉGENDES)' : `🔓 MANCHE ${manche(D) + 1} OUVERTE ! L’ordi devient ${['', 'NORMAL', 'COSTAUD'][manche(D)]}.`}</span>` : '') +
+  $('quiz-msg').innerHTML = (mancheFinie ? `<span class="quete">${D.n === 30 ? '★ LES LÉGENDES SE RÉVEILLENT ! (onglet ★ LÉGENDES)' : `🔓 MANCHE ${manche(D) + 1} OUVERTE ! L’ordi devient plus fort.`}</span>` : '') +
     (nv.length ? `<span>NOUVEAU TROPHÉE : ${nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ')}</span>` : '') + (window.codeAOffrir ? nouveaux.map(codeAOffrir).join('') : '');
   sfx('badge'); setTimeout(() => sfx('super'), 350); nouveaux.forEach((k, i) => setTimeout(() => sfx(k, 1), 800 + i * 700));
   const s = $('quiz-suite'); s.hidden = false;
@@ -462,7 +468,8 @@ function majAccueil() {
   const suivant = prochainDuel(), fin = !suivant && DUELS.every(fini), leg = fin && LEGENDES_LIVRE.find(x => pret(x.k) && !SAVE.debloques.includes(x.k));
   const im = (id, k) => { const e = $(id); if (e) { e.src = k + '_tete.webp'; e.hidden = !k } }, tx = (id, t) => { const e = $(id); if (e) e.textContent = t };
   if (suivant) { const [na, nb] = (SOMMAIRE[suivant.n - 1] || suivant.noms.join(' / ')).split(' / '), r = SAVE.livre[suivant.n];
-    im('aj-a', suivant.a); im('aj-b', suivant.b); tx('aj-sur', `Duel ${n2(suivant.n)} / ${LIVRE_TOTAL}${suivant.boss ? ' · BOSS !' : ''}`); tx('aj-q', `${na} ou ${nb} ?`.toUpperCase()) }
+    im('aj-a', suivant.a); im('aj-b', suivant.b); tx('aj-sur', `Duel ${n2(suivant.n)} / ${LIVRE_TOTAL}${suivant.boss ? ' · BOSS !' : ''}`); tx('aj-q', `${na} ou ${nb} ?`.toUpperCase());
+    majAccueil.pre = [suivant.a, suivant.b].map(k => { const i = new Image(); i.src = k + '_corps.webp'; return i }) } // (M7) les grandes images du pari, prêtes avant qu'on touche ▶ JOUER
   else if (leg) { const autre = LEGENDES_LIVRE.find(x => x !== leg) || leg; im('aj-a', leg.k); im('aj-b', autre.k); tx('aj-sur', 'Bonus'); tx('aj-q', '★ LES LÉGENDES T’ATTENDENT !') }
   else { im('aj-a', 'tigre'); im('aj-b', 'gorille'); tx('aj-sur', 'Les 30 duels'); tx('aj-q', fin ? 'TOUT EST GAGNÉ ! REJOUE…' : 'LES 30 DUELS DU LIVRE') }
   const tous = ORDRE.filter(pret), a = tous.filter(k => SAVE.debloques.includes(k)), t = $('t-tetes');

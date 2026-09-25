@@ -15,7 +15,7 @@ const CHARS = {
   // ia = [distance min, max, poids] : où l'ordi aime utiliser le coup. aie = ce que l'animal crie quand il prend un gros coup.
   // --- TIGRE : le chasseur rapide (bonds, ruées, griffes vers le ciel)
   tigre: {
-    nom: 'TIGRE', art: 'LE TIGRE', force: 1.017, col: OR, clair: '#FF8A4C', fond: '#FF8A4C', K: .44, hp: 102, walk: 7.2, back: 5.2, dash: 17, jumpV: 25, jumpX: 8.5, grav: 1.15, etour: 44,
+    nom: 'TIGRE', art: 'LE TIGRE', force: 1.096, col: OR, clair: '#FF8A4C', fond: '#FF8A4C', K: .44, hp: 102, walk: 7.2, back: 5.2, dash: 17, jumpV: 25, jumpX: 8.5, grav: 1.15, etour: 44,
     aie: ['MIAOU ?!', 'AÏE AÏE !', 'MES RAYURES !'], ia: { saut: 1.2, spe: 1.1 },
     hurt: { stand: [-300, 720, -800, 0], crouch: [-300, 740, -440, 0], air: [-300, 700, -700, 0] },
     push: [160, 290], // largeur arrière, avant (monde)
@@ -34,7 +34,7 @@ const CHARS = {
   },
   // --- GORILLE : le colosse (coups blindés, prise du dos argenté, onde de choc)
   gorille: {
-    nom: 'GORILLE', art: 'LE GORILLE', force: 1.108, spr: true, gardeBas: 'accroupi', col: BL, clair: '#4F8FF5', fond: '#3B86F0', K: .42, hp: 108, walk: 5.4, back: 4.2, dash: 14, jumpV: 22.5, jumpX: 7, grav: 1.2, etour: 52,
+    nom: 'GORILLE', art: 'LE GORILLE', force: 1.052, spr: true, gardeBas: 'accroupi', col: BL, clair: '#4F8FF5', fond: '#3B86F0', K: .42, hp: 108, walk: 5.4, back: 4.2, dash: 14, jumpV: 22.5, jumpX: 7, grav: 1.2, etour: 52,
     aie: ['OUGH !', 'OUH OUH !', 'MÊME PAS MAL… AÏE !'], ia: { chope: 2 },
     hurt: { stand: [-560, 600, -960, 0], crouch: [-560, 620, -820, 0], air: [-400, 500, -900, 0], up: [-330, 400, -1080, 0] },
     push: [200, 280],
@@ -53,7 +53,7 @@ const CHARS = {
   },
   // --- GRIZZLY : le pêcheur (la patte à saumons envoie en l'air… et un saumon s'envole, charge, grognement qui fait fuir)
   grizzly: {
-    nom: 'GRIZZLY', art: 'LE GRIZZLY', force: 0.947, spr: true, col: '#8B5A2B', clair: '#D9A36A', fond: '#A8703E', K: .42, hp: 110, walk: 5.9, back: 4.4, dash: 14, jumpV: 22, jumpX: 7, grav: 1.2, etour: 50,
+    nom: 'GRIZZLY', art: 'LE GRIZZLY', force: 1.165, spr: true, col: '#8B5A2B', clair: '#D9A36A', fond: '#A8703E', K: .42, hp: 110, walk: 5.9, back: 4.4, dash: 14, jumpV: 22, jumpX: 7, grav: 1.2, etour: 50,
     aie: ['GROAR ?!', 'MON SAUMON !', 'OUILLE LA TRUFFE !'], ia: {},
     hurt: { stand: [-640, 755, -880, 0], crouch: [-640, 760, -600, 0], air: [-500, 700, -760, 0] },
     push: [215, 280], reach: 690, speMin: 300, speMax: 1000,
@@ -72,7 +72,7 @@ const CHARS = {
   },
   // --- HYÈNE : la harceleuse increvable (son rire vide la jauge SUPER, elle ne lâche jamais, croque-os, et… le clan !)
   hyene: {
-    nom: 'HYÈNE', art: 'LA HYÈNE', fem: true, force: 0.831, spr: true, poseLance: 'coup', col: '#A87B3C', clair: '#F2D49B', fond: '#C9974E', K: .39, hp: 110, walk: 7.2, back: 5.6, dash: 18, jumpV: 24, jumpX: 8.6, grav: 1.15, etour: 44,
+    nom: 'HYÈNE', art: 'LA HYÈNE', fem: true, force: 1.0, spr: true, poseLance: 'coup', col: '#A87B3C', clair: '#F2D49B', fond: '#C9974E', K: .39, hp: 110, walk: 7.2, back: 5.6, dash: 18, jumpV: 24, jumpX: 8.6, grav: 1.15, etour: 44,
     aie: ['HI… HI… AÏE !', 'C’EST NERVEUX !', 'OUILLE LE MUSEAU !'], ia: {},
     hurt: { stand: [-560, 730, -800, 0], crouch: [-560, 740, -540, 0], air: [-480, 700, -700, 0] },
     push: [190, 240], reach: 760, speMin: 300, speMax: 1500,
@@ -91,7 +91,7 @@ const CHARS = {
   },
   // --- BUFFLE D'EAU : le tank qui charge (recule pour armer sa charge, lance aux cornes, se secoue quand on le mord)
   buffle: {
-    nom: 'BUFFLE', art: 'LE BUFFLE', force: 0.841, spr: true, col: '#56707E', clair: '#D5E3EA', fond: '#7C94A2', K: .46, hp: 110, walk: 5, back: 3.8, dash: 13, jumpV: 20, jumpX: 6.5, grav: 1.28, etour: 58,
+    nom: 'BUFFLE', art: 'LE BUFFLE', force: 0.924, spr: true, col: '#56707E', clair: '#D5E3EA', fond: '#7C94A2', K: .46, hp: 110, walk: 5, back: 3.8, dash: 13, jumpV: 20, jumpX: 6.5, grav: 1.28, etour: 58,
     aie: ['MEUH ?!', 'MA CORNE !', 'MÊME PAS MAL… UN PEU.'], ia: {},
     hurt: { stand: [-560, 700, -800, 0], crouch: [-560, 720, -560, 0], air: [-500, 680, -700, 0] },
     push: [230, 290], reach: 740, speMin: 350, speMax: 1300,
@@ -110,7 +110,7 @@ const CHARS = {
   },
   // --- MORSE : la forteresse moustachue (le mur de défenses renvoie les coups, il se hisse sur ses dents, l'aspirateur à moustaches, le canapé)
   morse: {
-    nom: 'MORSE', art: 'LE MORSE', force: 1.104, spr: true, col: '#B97A63', clair: '#FFE3D3', fond: '#C98E74', K: .46, hp: 130, peau: .8, walk: 4.6, back: 3.4, dash: 10, jumpV: 18, jumpX: 6, grav: 1.35, etour: 62,
+    nom: 'MORSE', art: 'LE MORSE', force: 0.665, spr: true, col: '#B97A63', clair: '#FFE3D3', fond: '#C98E74', K: .46, hp: 130, peau: .8, walk: 4.6, back: 3.4, dash: 10, jumpV: 18, jumpX: 6, grav: 1.35, etour: 62,
     aie: ['MA MOUSTACHE !', 'OUILLE LES DÉFENSES !', 'PFFFF !'], ia: {},
     hurt: { stand: [-650, 520, -800, 0], crouch: [-650, 540, -520, 0], air: [-560, 500, -700, 0] },
     push: [300, 215], reach: 560, speMin: 300, speMax: 1200,
@@ -129,7 +129,7 @@ const CHARS = {
   },
   // --- T. REX (légendaire : il se gagne en GOD MODE en battant tous les animaux) : le pas qui fait trembler, la morsure géante, le coup de queue, le rugissement du roi
   trex: {
-    nom: 'T. REX', art: 'LE T. REX', force: 1.08, spr: true, col: '#5E7A2E', clair: '#E3E89A', fond: '#8C9A3E', K: .5, hp: 118, walk: 5.4, back: 4, dash: 14, jumpV: 21, jumpX: 7, grav: 1.25, etour: 60,
+    nom: 'T. REX', art: 'LE T. REX', force: 1.35, spr: true, col: '#5E7A2E', clair: '#E3E89A', fond: '#8C9A3E', K: .5, hp: 174, walk: 5.4, back: 4, dash: 14, jumpV: 21, jumpX: 7, grav: 1.25, etour: 60,
     aie: ['ROAR ?!', 'MES PETITS BRAS !', 'OUILLE, MA QUEUE !'], ia: {},
     hurt: { stand: [-560, 660, -720, 0], crouch: [-560, 680, -480, 0], air: [-500, 640, -640, 0] },
     push: [260, 300], reach: 760, speMin: 300, speMax: 1500,
@@ -149,7 +149,7 @@ const CHARS = {
   // --- animaux « 100 % illustrations » (boîtes en px de l'image de base, sol = centre de gravité)
   // --- LION : le roi polyvalent (rugissement à distance, plaquage, coup de patte vers le ciel)
   lion: {
-    nom: 'LION', art: 'LE LION', force: 0.846, spr: true, col: '#D9901A', clair: '#FFC24D', fond: '#F0A830', K: .44, hp: 114, walk: 6.8, back: 5, dash: 16, jumpV: 24.5, jumpX: 8.2, grav: 1.15, etour: 48,
+    nom: 'LION', art: 'LE LION', force: 0.751, spr: true, col: '#D9901A', clair: '#FFC24D', fond: '#F0A830', K: .44, hp: 114, walk: 6.8, back: 5, dash: 16, jumpV: 24.5, jumpX: 8.2, grav: 1.15, etour: 48,
     aie: ['OUILLE !', 'MA CRINIÈRE !', 'PAS LA COIFFURE !'], ia: { loin: 780, spe: 1.2 },
     hurt: { stand: [-520, 540, -880, 0], crouch: [-520, 560, -520, 0], air: [-480, 540, -700, 0] },
     push: [200, 235], reach: 640, speMin: 480, speMax: 1450,
@@ -168,7 +168,7 @@ const CHARS = {
   },
   // --- OURS POLAIRE : le géant solide (glissade, saut qui brise la glace, baffe vers le ciel)
   ours: {
-    nom: 'OURS POLAIRE', art: 'L’OURS POLAIRE', force: 1.102, spr: true, col: '#2E8FC7', clair: '#9ADCFF', fond: '#5BB8E8', K: .45, hp: 112, walk: 5.3, back: 4, dash: 13, jumpV: 21.5, jumpX: 6.6, grav: 1.22, etour: 54,
+    nom: 'OURS POLAIRE', art: 'L’OURS POLAIRE', force: 1.28, spr: true, col: '#2E8FC7', clair: '#9ADCFF', fond: '#5BB8E8', K: .45, hp: 112, walk: 5.3, back: 4, dash: 13, jumpV: 21.5, jumpX: 6.6, grav: 1.22, etour: 54,
     aie: ['BRRR !', 'OUILLE LA TRUFFE !', 'J’AI CHAUD !'], ia: {},
     hurt: { stand: [-640, 755, -880, 0], crouch: [-640, 760, -640, 0], air: [-500, 700, -760, 0] },
     push: [220, 285], reach: 700, speMin: 480, speMax: 1000,
@@ -187,7 +187,7 @@ const CHARS = {
   },
   // --- CROCODILE : l'embuscade (il plonge, il attrape et tourne, coup de queue)
   croco: {
-    nom: 'CROCODILE', art: 'LE CROCODILE', amphibie: true, forceMer: .85, force: 0.966, spr: true, col: '#4E8A2E', clair: '#A8DC6E', fond: '#6DB33F', K: .46, hp: 110, walk: 5.6, back: 4.2, dash: 16, jumpV: 20, jumpX: 7, grav: 1.25, etour: 50,
+    nom: 'CROCODILE', art: 'LE CROCODILE', amphibie: true, forceMer: .85, force: 0.987, spr: true, col: '#4E8A2E', clair: '#A8DC6E', fond: '#6DB33F', K: .46, hp: 110, walk: 5.6, back: 4.2, dash: 16, jumpV: 20, jumpX: 7, grav: 1.25, etour: 50,
     aie: ['CLAC ?!', 'AÏE LES ÉCAILLES !', 'GLOUPS !'], ia: { saut: .6 },
     hurt: { stand: [-560, 700, -800, 0], crouch: [-560, 700, -420, 0], air: [-500, 650, -600, 0] },
     push: [230, 300], reach: 690, speMin: 330, speMax: 780,
@@ -206,7 +206,7 @@ const CHARS = {
   },
   // --- HIPPOPOTAME : le tank blindé. ★ il se retourne et sa queue-hélice mitraille des crottes !
   hippo: {
-    nom: 'HIPPOPOTAME', art: 'L’HIPPOPOTAME', force: 1.333, spr: true, col: '#8E6FA8', clair: '#DCC2F2', fond: '#B48CD6', K: .5, hp: 112, walk: 4.4, back: 3.6, dash: 12, jumpV: 18.5, jumpX: 6, grav: 1.3, etour: 58,
+    nom: 'HIPPOPOTAME', art: 'L’HIPPOPOTAME', force: 1.35, spr: true, col: '#8E6FA8', clair: '#DCC2F2', fond: '#B48CD6', K: .5, hp: 127, walk: 4.4, back: 3.6, dash: 12, jumpV: 18.5, jumpX: 6, grav: 1.3, etour: 58,
     aie: ['OUMPF !', 'GROMPF !', 'MES DENTS !', 'AÏE MON NEZ !'], ia: { saut: .5 },
     hurt: { stand: [-620, 780, -760, 0], crouch: [-620, 780, -600, 0], air: [-560, 720, -700, 0] },
     push: [260, 300], reach: 700, speMin: 480, speMax: 1100,
@@ -226,7 +226,7 @@ const CHARS = {
   },
   // --- RATEL : le teigneux minuscule (nuage puant, il fonce, il mord et ne lâche pas)
   ratel: {
-    nom: 'RATEL', art: 'LE RATEL', force: 0.951, spr: true, col: '#3A3A48', clair: '#E3E3EE', fond: '#6B6B80', K: .38, hp: 108, walk: 7.8, peau: .85, back: 6, dash: 19, jumpV: 25, jumpX: 9, grav: 1.15, etour: 46,
+    nom: 'RATEL', art: 'LE RATEL', force: 0.731, spr: true, col: '#3A3A48', clair: '#E3E3EE', fond: '#6B6B80', K: .38, hp: 108, walk: 7.8, peau: .85, back: 6, dash: 19, jumpV: 25, jumpX: 9, grav: 1.15, etour: 46,
     aie: ['MÊME PAS MAL !', 'MÊME PAS PEUR !', 'GRRR !'], ia: { saut: 1.1 },
     hurt: { stand: [-560, 660, -780, 0], crouch: [-560, 660, -520, 0], air: [-500, 600, -680, 0] },
     push: [170, 210], reach: 580, speMin: 300, speMax: 560,
@@ -245,7 +245,7 @@ const CHARS = {
   },
   // --- DRAGON DE KOMODO : le venimeux (morsure à venin, coup de queue, morsure en l'air)
   komodo: {
-    nom: 'KOMODO', art: 'LE DRAGON DE KOMODO', force: 0.955, spr: true, col: '#8A7A45', clair: '#E2D49A', fond: '#B09C5A', K: .44, hp: 116, walk: 6, back: 4.4, dash: 15, jumpV: 21, jumpX: 7.5, grav: 1.2, etour: 52,
+    nom: 'KOMODO', art: 'LE DRAGON DE KOMODO', force: 0.962, spr: true, col: '#8A7A45', clair: '#E2D49A', fond: '#B09C5A', K: .44, hp: 116, walk: 6, back: 4.4, dash: 15, jumpV: 21, jumpX: 7.5, grav: 1.2, etour: 52,
     aie: ['SSSS !', 'SSSS… AÏE !', 'HEIN ? J’ENTENDS RIEN !'], ia: {},
     hurt: { stand: [-560, 680, -700, 0], crouch: [-560, 680, -440, 0], air: [-500, 620, -620, 0] },
     push: [220, 280], reach: 680, speMin: 380, speMax: 640,
@@ -264,7 +264,7 @@ const CHARS = {
   },
   // --- LÉOPARD : le chasseur de la nuit (bond de 6 m, il emporte sa proie dans son arbre, il tombe du ciel, l'ombre de la nuit)
   leopard: {
-    nom: 'LÉOPARD', art: 'LE LÉOPARD', force: .79, spr: true, poseLance: 'grimpe', hPose: ['garde', 'fort'], col: '#A8651F', clair: '#F7C77B', fond: '#C27F36', K: .42, hp: 104, walk: 7, back: 5.3, dash: 18, jumpV: 26, jumpX: 9, grav: 1.12, etour: 46,
+    nom: 'LÉOPARD', art: 'LE LÉOPARD', force: 0.73, spr: true, poseLance: 'grimpe', hPose: ['garde', 'fort'], col: '#A8651F', clair: '#F7C77B', fond: '#C27F36', K: .42, hp: 104, walk: 7, back: 5.3, dash: 18, jumpV: 26, jumpX: 9, grav: 1.12, etour: 46,
     aie: ['MIAOU ?!', 'MES TACHES !', 'OUILLE LE MUSEAU !'], ia: { saut: 1.2 },
     hurt: { stand: [-470, 600, -760, 0], crouch: [-470, 620, -480, 0], air: [-420, 580, -640, 0] },
     push: [190, 230], reach: 700, speMin: 300, speMax: 1100,
@@ -283,7 +283,7 @@ const CHARS = {
   },
   // --- PORC-ÉPIC : la pelote d'épingles (qui le touche se pique ! charge en marche arrière, le hochet qui contre, la boule piquante)
   porcepic: {
-    nom: 'PORC-ÉPIC', art: 'LE PORC-ÉPIC', force: .73, spr: true, piquants: 1, speAff: 'SF', hPose: ['accroupi', 'fort'], col: '#6B4A33', clair: '#FFF5E0', fond: '#9C7B5B', K: .34, hp: 104, walk: 6.2, back: 4.8, dash: 15, jumpV: 22, jumpX: 7.5, grav: 1.2, etour: 50,
+    nom: 'PORC-ÉPIC', art: 'LE PORC-ÉPIC', force: 0.543, spr: true, piquants: 1, speAff: 'SF', hPose: ['accroupi', 'fort'], col: '#6B4A33', clair: '#FFF5E0', fond: '#9C7B5B', K: .34, hp: 104, walk: 6.2, back: 4.8, dash: 15, jumpV: 22, jumpX: 7.5, grav: 1.2, etour: 50,
     aie: ['PIC ?!', 'MES PIQUANTS !', 'OUILLE LE NEZ !'], ia: {},
     hurt: { stand: [-560, 560, -640, 0], crouch: [-560, 580, -460, 0], air: [-520, 540, -560, 0] },
     push: [160, 170], reach: 560, speMin: 250, speMax: 900,
@@ -303,7 +303,7 @@ const CHARS = {
   },
   // --- GUÉPARD : la tornade tachetée (le plus rapide et le plus fragile : croche-patte, démarrage turbo, saut de l'éclair)
   guepard: {
-    nom: 'GUÉPARD', art: 'LE GUÉPARD', force: .89, spr: true, hPose: ['garde', 'fort'], col: '#B8961E', clair: '#FFF3B0', fond: '#D8BA4E', K: .38, hp: 96, walk: 8.4, back: 6.4, dash: 22, jumpV: 25, jumpX: 10, grav: 1.15, etour: 42,
+    nom: 'GUÉPARD', art: 'LE GUÉPARD', force: 0.887, spr: true, hPose: ['garde', 'fort'], col: '#B8961E', clair: '#FFF3B0', fond: '#D8BA4E', K: .38, hp: 96, walk: 8.4, back: 6.4, dash: 22, jumpV: 25, jumpX: 10, grav: 1.15, etour: 42,
     aie: ['CUI-CUI ?!', 'AÏE AÏE !', 'MES TACHES !'], ia: { saut: 1 },
     hurt: { stand: [-470, 600, -900, 0], crouch: [-470, 620, -560, 0], air: [-420, 580, -760, 0] },
     push: [175, 215], reach: 720, speMin: 300, speMax: 1300,
@@ -322,7 +322,7 @@ const CHARS = {
   },
   // --- AUTRUCHE : la karatéka géante (très longues pattes, pas de géant, couchée comme un tas de terre, karaté-poule !)
   autruche: {
-    nom: 'AUTRUCHE', art: 'L’AUTRUCHE', fem: true, force: .82, spr: true, hPose: ['garde', 'fort'], col: '#3B3B46', clair: '#FFC6D5', fond: '#E48CA8', K: .45, hp: 104, walk: 7.4, back: 5.6, dash: 20, jumpV: 23, jumpX: 8.4, grav: 1.2, etour: 50,
+    nom: 'AUTRUCHE', art: 'L’AUTRUCHE', fem: true, force: 0.775, spr: true, hPose: ['garde', 'fort'], col: '#3B3B46', clair: '#FFC6D5', fond: '#E48CA8', K: .45, hp: 104, walk: 7.4, back: 5.6, dash: 20, jumpV: 23, jumpX: 8.4, grav: 1.2, etour: 50,
     aie: ['COT COT ?!', 'MES PLUMES !', 'AÏE, MON ŒIL !'], ia: {},
     hurt: { stand: [-470, 540, -960, 0], crouch: [-470, 560, -540, 0], air: [-440, 520, -860, 0], aplat: [-480, 560, -200, 0] },
     push: [175, 185], reach: 780, speMin: 300, speMax: 1300,
@@ -343,7 +343,7 @@ const CHARS = {
   // --- ORQUE (« livre en main », duel 2) : la géante noire et blanche. Coup de queue qui assomme (livre), sonar, plongeon de 10 tonnes, la bande d'orques.
   //     Point faible (livre) : « elle doit remonter respirer » → toutes les 20 s : « DE L'AIR ! » ; si elle saute, « PFFOUH ! » et sa jauge SUPER grimpe.
   orque: {
-    nom: 'ORQUE', art: 'L’ORQUE', fem: true, monde: 'mer', nage: true, respire: true, force: 1.3, spr: true, hPose: ['garde', 'coup'], poseLance: 'coup', col: '#1B2433', clair: '#F4F7FB', fond: '#2E6FB5', K: .46, hp: 112, walk: 5.6, back: 4.4, dash: 15, jumpV: 17, jumpX: 7, grav: .6, etour: 60,
+    nom: 'ORQUE', art: 'L’ORQUE', fem: true, monde: 'mer', nage: true, respire: true, force: 1.357, spr: true, hPose: ['garde', 'coup'], poseLance: 'coup', col: '#1B2433', clair: '#F4F7FB', fond: '#2E6FB5', K: .46, hp: 112, walk: 5.6, back: 4.4, dash: 15, jumpV: 17, jumpX: 7, grav: .6, etour: 60,
     aie: ['IIIH ?!', 'MA NAGEOIRE !', 'OUILLE, MON AILERON !'], ia: { saut: .5 },
     hurt: { stand: [-680, 640, -760, -140], crouch: [-700, 660, -300, 0], air: [-620, 600, -700, -100] },
     push: [260, 300], reach: 700, speMin: 330, speMax: 1300,
@@ -363,7 +363,7 @@ const CHARS = {
   // --- GRAND REQUIN BLANC (« livre en main », duel 2) : 300 dents, il attaque par en dessous (livre), la torpille (→★), il sent ses proies (radar, ↓★ : il contre).
   //     Point faible (livre) : « sur le dos, il ne bouge plus » → quand il tombe, il reste figé un moment de plus.
   requin: {
-    nom: 'REQUIN BLANC', art: 'LE GRAND REQUIN BLANC', monde: 'mer', nage: true, dosFige: 32, force: 0.87, spr: true, hPose: ['garde', 'coup'], col: '#4B5A68', clair: '#E9EEF2', fond: '#3F7FB8', K: .42, hp: 104, walk: 7, back: 5.2, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 50,
+    nom: 'REQUIN BLANC', art: 'LE GRAND REQUIN BLANC', monde: 'mer', nage: true, dosFige: 32, force: 0.854, spr: true, hPose: ['garde', 'coup'], col: '#4B5A68', clair: '#E9EEF2', fond: '#3F7FB8', K: .42, hp: 104, walk: 7, back: 5.2, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 50,
     aie: ['GLOUPS ?!', 'MES DENTS !', 'AÏE, MON AILERON !'], ia: {},
     hurt: { stand: [-650, 640, -720, -170], crouch: [-680, 660, -300, 0], air: [-600, 600, -680, -120] },
     push: [240, 280], reach: 720, speMin: 320, speMax: 1400,
@@ -383,7 +383,7 @@ const CHARS = {
   // --- PIEUVRE GÉANTE (« livre en main », duel 9) : huit bras à ventouses, le bec caché (livre), le nuage d'encre, le camouflage, la danse des 8 bras.
   //     Point faible (livre) : « vite fatiguée en nageant » → trois sauts ou élans rapprochés : « PFF… FATIGUÉE ! » (plus lente un moment).
   pieuvre: {
-    nom: 'PIEUVRE', art: 'LA PIEUVRE GÉANTE', fem: true, monde: 'mer', nage: true, fatigue: true, force: 0.87, spr: true, hPose: ['garde', 'fort'], poseLance: 'special', col: '#C4412B', clair: '#FFD9CC', fond: '#E0674E', K: .42, hp: 110, walk: 5.2, back: 4.4, dash: 15, jumpV: 17, jumpX: 7, grav: .6, etour: 50,
+    nom: 'PIEUVRE', art: 'LA PIEUVRE GÉANTE', fem: true, monde: 'mer', nage: true, fatigue: true, force: 0.868, spr: true, hPose: ['garde', 'fort'], poseLance: 'special', col: '#C4412B', clair: '#FFD9CC', fond: '#E0674E', K: .42, hp: 110, walk: 5.2, back: 4.4, dash: 15, jumpV: 17, jumpX: 7, grav: .6, etour: 50,
     aie: ['GLOUPS ?!', 'MES BRAS !', 'AÏE, MES VENTOUSES !'], ia: { saut: .4 },
     hurt: { stand: [-520, 520, -760, 0], crouch: [-600, 580, -520, 0], air: [-560, 400, -760, 0] }, // (le manteau et le haut des bras : les bouts de bras ne comptent pas)
     push: [220, 250], reach: 880, speMin: 300, speMax: 1200,
@@ -403,7 +403,7 @@ const CHARS = {
   // --- AIGUILLAT (« livre en main », duel 9) : le petit requin à épines. Il se plie et pique (livre, venin), la flèche grise, l'épine du dos, la bande (il chasse par milliers).
   //     Point faible (livre) : « petit, pour un requin » → il vole plus loin quand il est touché (léger).
   aiguillat: {
-    nom: 'AIGUILLAT', art: 'L’AIGUILLAT', monde: 'mer', nage: true, leger: 1.15, force: 0.77, spr: true, hPose: ['garde', 'coup'], col: '#5B6776', clair: '#EEF2F6', fond: '#6F8FB0', K: .36, hp: 104, walk: 7.6, back: 5.8, dash: 21, jumpV: 19, jumpX: 9, grav: .62, etour: 44,
+    nom: 'AIGUILLAT', art: 'L’AIGUILLAT', monde: 'mer', nage: true, leger: 1.15, force: 0.717, spr: true, hPose: ['garde', 'coup'], col: '#5B6776', clair: '#EEF2F6', fond: '#6F8FB0', K: .36, hp: 104, walk: 7.6, back: 5.8, dash: 21, jumpV: 19, jumpX: 9, grav: .62, etour: 44,
     aie: ['AÏE ?!', 'MES ÉPINES !', 'OUILLE, MON AILERON !'], ia: { saut: .6 },
     hurt: { stand: [-680, 600, -560, -120], crouch: [-700, 620, -330, 0], air: [-640, 560, -560, -100] },
     push: [190, 215], reach: 640, speMin: 280, speMax: 1300,
@@ -423,7 +423,7 @@ const CHARS = {
   // --- ESPADON (« livre en main », duel 17) : l'épée ! La plus longue portée de la mer. Il tranche d'un coup de tête (livre), la charge (épée coincée dans le mur !), l'épée vers le ciel, la tempête d'épée.
   //     Point faible (livre) : « ni dents ni écailles » → il prend un peu plus cher (peau 1.1).
   espadon: {
-    nom: 'ESPADON', art: 'L’ESPADON', monde: 'mer', nage: true, peau: 1.15, force: 0.76, spr: true, hPose: ['garde', 'coup'], col: '#4B3A5E', clair: '#F2E6C9', fond: '#7A5FA0', K: .42, hp: 100, walk: 6.6, back: 5, dash: 20, jumpV: 18, jumpX: 8.5, grav: .62, etour: 48,
+    nom: 'ESPADON', art: 'L’ESPADON', monde: 'mer', nage: true, peau: 1.15, force: 0.743, spr: true, hPose: ['garde', 'coup'], col: '#4B3A5E', clair: '#F2E6C9', fond: '#7A5FA0', K: .42, hp: 100, walk: 6.6, back: 5, dash: 20, jumpV: 18, jumpX: 8.5, grav: .62, etour: 48,
     aie: ['OUILLE ?!', 'MON ÉPÉE !', 'AÏE, MON NEZ !'], ia: { saut: .5 },
     hurt: { stand: [-560, 500, -620, -140], crouch: [-600, 500, -300, 0], air: [-520, 480, -600, -120] }, // (le corps et le début de l'épée)
     push: [220, 250], reach: 950, speMin: 350, speMax: 1400,
@@ -443,7 +443,7 @@ const CHARS = {
   // --- REQUIN BLEU (« livre en main », duel 17) : il tourne autour de sa proie (livre : il passe derrière et mord), les dents en scie, le museau en l'air, la tornade bleue.
   //     Point faible (livre) : « il se balade à 1 km/h » → la marche la plus lente de la mer (mais ses élans sont rapides).
   requinbleu: {
-    nom: 'REQUIN BLEU', art: 'LE REQUIN BLEU', monde: 'mer', nage: true, force: 0.8, spr: true, hPose: ['garde', 'coup'], col: '#1F4FA8', clair: '#EAF3FF', fond: '#2D73D6', K: .42, hp: 108, walk: 4.4, back: 3.8, dash: 22, jumpV: 18, jumpX: 8, grav: .62, etour: 50,
+    nom: 'REQUIN BLEU', art: 'LE REQUIN BLEU', monde: 'mer', nage: true, force: 0.809, spr: true, hPose: ['garde', 'coup'], col: '#1F4FA8', clair: '#EAF3FF', fond: '#2D73D6', K: .42, hp: 108, walk: 4.4, back: 3.8, dash: 22, jumpV: 18, jumpX: 8, grav: .62, etour: 50,
     aie: ['GLOUPS ?!', 'MES NAGEOIRES !', 'AÏE, MON MUSEAU !'], ia: {},
     hurt: { stand: [-700, 640, -540, -130], crouch: [-720, 660, -300, 0], air: [-660, 600, -540, -110] },
     push: [230, 260], reach: 720, speMin: 320, speMax: 1300,
@@ -463,7 +463,7 @@ const CHARS = {
   // --- MÉGALODON (légendaire de la MER, hors livre : NHM, Smithsonian, Florida Museum) : le plus gros requin de tous les temps. La mâchoire géante, la vague géante,
   //     surgi des profondeurs, les dents de 18 cm. Il se gagne en battant tous les animaux de la mer en GOD MODE.
   megalo: {
-    nom: 'MÉGALODON', art: 'LE MÉGALODON', monde: 'mer', nage: true, force: 0.96, spr: true, hPose: ['garde', 'coup'], col: '#3A4A5C', clair: '#F2F5F8', fond: '#1F3F66', K: .54, hp: 115, walk: 5.6, back: 4.6, dash: 18, jumpV: 16, jumpX: 7, grav: .6, etour: 70,
+    nom: 'MÉGALODON', art: 'LE MÉGALODON', monde: 'mer', nage: true, force: 1.12, spr: true, hPose: ['garde', 'coup'], col: '#3A4A5C', clair: '#F2F5F8', fond: '#1F3F66', K: .54, hp: 115, walk: 5.6, back: 4.6, dash: 18, jumpV: 16, jumpX: 7, grav: .6, etour: 70,
     aie: ['GRRR ?!', 'MES DENTS !', 'AÏE, MA MÂCHOIRE !'], ia: {},
     hurt: { stand: [-700, 680, -760, -140], crouch: [-720, 700, -330, 0], air: [-660, 640, -720, -110] },
     push: [270, 310], reach: 800, speMin: 330, speMax: 1400,
@@ -483,7 +483,7 @@ const CHARS = {
   // --- JAGUAR (« livre en main », duels 7 et 15, p. 17 et 35) : la morsure perce-crâne, l'attaque par-derrière, la griffe vers le ciel, le jaguar tout noir.
   //     Points faibles (livre) : « des pattes courtes pour un félin » (il saute moins haut que les autres chats) ; « repéré, il rate son coup » (l'attaque par-derrière rate si l'autre se protège).
   jaguar: {
-    nom: 'JAGUAR', art: 'LE JAGUAR', force: .88, spr: true, hPose: ['garde', 'fort'], col: '#9A6A1C', clair: '#F5CD7A', fond: '#B98A2E', K: .46, hp: 108, walk: 6.6, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.12, etour: 50,
+    nom: 'JAGUAR', art: 'LE JAGUAR', force: 0.767, spr: true, hPose: ['garde', 'fort'], col: '#9A6A1C', clair: '#F5CD7A', fond: '#B98A2E', K: .46, hp: 108, walk: 6.6, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.12, etour: 50,
     aie: ['MIAOU ?!', 'MON MUSEAU !', 'OUILLE, MES PATTES !'], ia: { saut: .7 },
     hurt: { stand: [-480, 600, -640, 0], crouch: [-480, 620, -420, 0], air: [-440, 580, -560, 0] },
     push: [200, 240], reach: 700, speMin: 300, speMax: 1100,
@@ -504,7 +504,7 @@ const CHARS = {
   // --- ANACONDA (« livre en main », duel 7, p. 17) : un corps de près de 4 m, il serre à bloquer le sang, caché dans l'herbe, sous l'eau, les bébés anacondas.
   //     Point faible (livre) : « lent et maladroit sur terre » → la marche la plus lente (plus vif dans la rivière, le marais et le Pantanal).
   anaconda: {
-    nom: 'ANACONDA', art: 'L’ANACONDA', serpent: true, expose: true, maladroit: true, force: .88, spr: true, poseLance: 'serre', hPose: ['garde', 'fort'], col: '#8A8A2A', clair: '#F2EDA0', fond: '#A6A23A', K: .44, hp: 104, walk: 4, back: 3.6, dash: 18, jumpV: 18, jumpX: 8, grav: 1.1, etour: 50,
+    nom: 'ANACONDA', art: 'L’ANACONDA', serpent: true, expose: true, maladroit: true, force: 0.854, spr: true, poseLance: 'serre', hPose: ['garde', 'fort'], col: '#8A8A2A', clair: '#F2EDA0', fond: '#A6A23A', K: .44, hp: 104, walk: 4, back: 3.6, dash: 18, jumpV: 18, jumpX: 8, grav: 1.1, etour: 50,
     aie: ['SSS ?!', 'MA QUEUE !', 'AÏE, MES ÉCAILLES !'], ia: {},
     hurt: { stand: [-480, 580, -660, 0], crouch: [-500, 700, -260, 0], air: [-440, 560, -600, 0] },
     push: [200, 240], reach: 700, speMin: 300, speMax: 1200,
@@ -525,7 +525,7 @@ const CHARS = {
   // --- CAÏMAN (« livre en main », duel 15, p. 35) : une peau à plaques d'os (armure), il plonge pour se cacher, la sieste au soleil, 10 millions de caïmans.
   //     Point faible (livre) : « lent quand il est à terre » → marche lente (sauf dans l'eau).
   caiman: {
-    nom: 'CAÏMAN', art: 'LE CAÏMAN', maladroit: true, peau: .92, force: .875, spr: true, hPose: ['garde', 'coup'], col: '#5E6B3A', clair: '#E3E0B0', fond: '#70803E', K: .42, hp: 104, walk: 4.6, back: 4, dash: 16, jumpV: 18, jumpX: 8, grav: 1.1, etour: 52,
+    nom: 'CAÏMAN', art: 'LE CAÏMAN', maladroit: true, peau: .92, force: 0.92, spr: true, hPose: ['garde', 'coup'], col: '#5E6B3A', clair: '#E3E0B0', fond: '#70803E', K: .42, hp: 104, walk: 4.6, back: 4, dash: 16, jumpV: 18, jumpX: 8, grav: 1.1, etour: 52,
     aie: ['GRRR ?!', 'MA QUEUE !', 'AÏE, MES ÉCAILLES !'], ia: {},
     hurt: { stand: [-560, 640, -700, 0], crouch: [-580, 660, -420, 0], air: [-500, 600, -600, 0] },
     push: [220, 260], reach: 720, speMin: 300, speMax: 1200,
@@ -546,7 +546,7 @@ const CHARS = {
   // --- PUMA (« livre en main », duel 11, p. 27) : de grosses pattes griffues, il saute sur le dos et mord, le saut de 5,50 m, 2 400 km à pied.
   //     Point faible (livre) : « il fuit devant une meute » → les attaques en bande (meute, clan, troupe) lui font plus mal, et il panique.
   puma: {
-    nom: 'PUMA', art: 'LE PUMA', meute: 1.35, force: .86, spr: true, hPose: ['garde', 'fort'], col: '#A0703A', clair: '#F3D9A8', fond: '#B98A55', K: .43, hp: 100, walk: 7, back: 5.3, dash: 18, jumpV: 29, jumpX: 9, grav: 1.15, etour: 46,
+    nom: 'PUMA', art: 'LE PUMA', meute: 1.35, force: 0.75, spr: true, hPose: ['garde', 'fort'], col: '#A0703A', clair: '#F3D9A8', fond: '#B98A55', K: .43, hp: 100, walk: 7, back: 5.3, dash: 18, jumpV: 29, jumpX: 9, grav: 1.15, etour: 46,
     aie: ['MIAOU ?!', 'MES PATTES !', 'OUILLE, MA QUEUE !'], ia: { saut: 1.2 },
     hurt: { stand: [-470, 600, -700, 0], crouch: [-470, 620, -440, 0], air: [-420, 580, -600, 0] },
     push: [190, 230], reach: 700, speMin: 300, speMax: 1100,
@@ -567,7 +567,7 @@ const CHARS = {
   // --- LOUP (« livre en main », duel 11, p. 27) : des crocs qui percent le cuir, il blesse, puis il attend, le hurlement, la meute (37 loups !). (livre en main : « allô » et « faux », jamais affichés)
   //     Point faible (livre) : « il ne grimpe pas aux arbres » → le plus petit saut des animaux de la terre.
   loup: {
-    nom: 'LOUP', art: 'LE LOUP', force: .91, spr: true, hPose: ['garde', 'coup'], col: '#6B6F78', clair: '#E8E6DF', fond: '#7C8494', K: .4, hp: 102, walk: 6.8, back: 5.6, dash: 18, jumpV: 17, jumpX: 8, grav: 1.15, etour: 48,
+    nom: 'LOUP', art: 'LE LOUP', force: 0.767, spr: true, hPose: ['garde', 'coup'], col: '#6B6F78', clair: '#E8E6DF', fond: '#7C8494', K: .4, hp: 102, walk: 6.8, back: 5.6, dash: 18, jumpV: 17, jumpX: 8, grav: 1.15, etour: 48,
     aie: ['OUAF ?!', 'MA QUEUE !', 'AÏE, MES OREILLES !'], ia: { saut: .5 },
     hurt: { stand: [-480, 580, -640, 0], crouch: [-480, 600, -420, 0], air: [-440, 560, -560, 0] },
     push: [190, 225], reach: 680, speMin: 300, speMax: 1100,
@@ -588,7 +588,7 @@ const CHARS = {
   // --- MANGOUSTE (« livre en main », duel 14, p. 33) : 40 dents pointues, elle esquive, puis mord la tête, la danse, elle croque le dard.
   //     Point faible (livre) : « trop de venin peut la tuer » → le venin lui fait deux fois plus mal. Toute petite : elle vole plus loin (légère).
   mangouste: {
-    nom: 'MANGOUSTE', art: 'LA MANGOUSTE', fem: true, sensVenin: 2, leger: 1.2, force: 1.05, spr: true, hPose: ['garde', 'coup'], col: '#8C7A5C', clair: '#EEE3CC', fond: '#A08E6E', K: .35, hp: 100, walk: 8, back: 6.2, dash: 22, jumpV: 24, jumpX: 10, grav: 1.2, etour: 40,
+    nom: 'MANGOUSTE', art: 'LA MANGOUSTE', fem: true, sensVenin: 2, leger: 1.2, force: 0.925, spr: true, hPose: ['garde', 'coup'], col: '#8C7A5C', clair: '#EEE3CC', fond: '#A08E6E', K: .35, hp: 100, walk: 8, back: 6.2, dash: 22, jumpV: 24, jumpX: 10, grav: 1.2, etour: 40,
     aie: ['IIIK ?!', 'MA QUEUE !', 'AÏE, MON NEZ !'], ia: { saut: .9 },
     hurt: { stand: [-460, 560, -620, 0], crouch: [-460, 580, -380, 0], air: [-420, 540, -560, 0] },
     push: [150, 180], reach: 600, speMin: 260, speMax: 1000,
@@ -610,7 +610,7 @@ const CHARS = {
   //     un venin mortel, il ouvre son capuchon (l'autre prend peur), dressé, il poursuit l'ennemi, le roi des serpents.
   //     Points faibles (livre) : « il frappe trop lentement » (morsures lentes à partir) ; « serré, il est en danger » (les prises lui font plus mal).
   cobra: {
-    nom: 'COBRA', art: 'LE COBRA', serpent: true, expose: true, fragilePrise: 1.35, force: .95, spr: true, hPose: ['garde', 'coup'], col: '#6E5A2E', clair: '#EDE0B6', fond: '#8A7440', K: .4, hp: 102, walk: 5.2, back: 4.4, dash: 17, jumpV: 19, jumpX: 8, grav: 1.1, etour: 46,
+    nom: 'COBRA', art: 'LE COBRA', serpent: true, expose: true, fragilePrise: 1.35, force: 1.06, spr: true, hPose: ['garde', 'coup'], col: '#6E5A2E', clair: '#EDE0B6', fond: '#8A7440', K: .4, hp: 102, walk: 5.2, back: 4.4, dash: 17, jumpV: 19, jumpX: 8, grav: 1.1, etour: 46,
     aie: ['SSS ?!', 'MON CAPUCHON !', 'AÏE, MA QUEUE !'], ia: {},
     hurt: { stand: [-420, 460, -820, 0], crouch: [-460, 500, -360, 0], air: [-400, 440, -700, 0] },
     push: [180, 215], reach: 760, speMin: 300, speMax: 1200,
@@ -630,7 +630,7 @@ const CHARS = {
   // --- OURS NOIR (« livre en main », duel 19, p. 43) : des griffes courbes, il charge pour faire peur, la pause goûter, l'ours esprit (tout blanc).
   //     Point faible (livre) : « plus gourmand que bagarreur » → il frappe moins fort qu'un grizzly, et la caisse « MIAM » le soigne deux fois plus.
   oursnoir: {
-    nom: 'OURS NOIR', art: 'L’OURS NOIR', gourmand: true, force: .86, spr: true, hPose: ['garde', 'fort'], col: '#2B2A2E', clair: '#D9C9A8', fond: '#4A4650', K: .44, hp: 114, walk: 5.8, back: 4.4, dash: 15, jumpV: 19, jumpX: 7, grav: 1.2, etour: 56,
+    nom: 'OURS NOIR', art: 'L’OURS NOIR', gourmand: true, force: 0.889, spr: true, hPose: ['garde', 'fort'], col: '#2B2A2E', clair: '#D9C9A8', fond: '#4A4650', K: .44, hp: 114, walk: 5.8, back: 4.4, dash: 15, jumpV: 19, jumpX: 7, grav: 1.2, etour: 56,
     aie: ['GROAR ?!', 'MON MUSEAU !', 'AÏE, MES GRIFFES !'], ia: {},
     hurt: { stand: [-520, 600, -700, 0], crouch: [-520, 620, -440, 0], air: [-480, 560, -620, 0] },
     push: [220, 260], reach: 700, speMin: 300, speMax: 1100,
@@ -650,7 +650,7 @@ const CHARS = {
   // --- GLOUTON (« livre en main », duel 19, p. 43) : une dent pour la viande gelée, il gronde et fonce, des raquettes aux pattes, il ne recule jamais.
   //     Point faible (livre) : « des pattes courtes » → petite portée et petits sauts.
   glouton: {
-    nom: 'GLOUTON', art: 'LE GLOUTON', force: .94, spr: true, hPose: ['garde', 'coup'], col: '#4A3526', clair: '#E3C89A', fond: '#6B4E36', K: .38, hp: 110, walk: 7, back: 5.4, dash: 19, jumpV: 18, jumpX: 8, grav: 1.2, etour: 44,
+    nom: 'GLOUTON', art: 'LE GLOUTON', force: 0.762, spr: true, hPose: ['garde', 'coup'], col: '#4A3526', clair: '#E3C89A', fond: '#6B4E36', K: .38, hp: 110, walk: 7, back: 5.4, dash: 19, jumpV: 18, jumpX: 8, grav: 1.2, etour: 44,
     aie: ['GRRR ?!', 'MA DENT !', 'AÏE, MES PATTES !'], ia: { saut: .5 },
     hurt: { stand: [-460, 560, -560, 0], crouch: [-460, 580, -360, 0], air: [-420, 540, -500, 0] },
     push: [170, 205], reach: 620, speMin: 280, speMax: 1000,
@@ -674,7 +674,7 @@ const CHARS = {
   //     un corps qui serre, l'attaque surprise, il mord puis il s'enroule, il « voit » la chaleur, il avale tout rond.
   //     Points faibles (livre) : « il ne supporte pas le froid » (plus lent sur la neige et la glace) ; « aucun venin ».
   python: {
-    nom: 'PYTHON', art: 'LE PYTHON', serpent: true, expose: true, froid: true, force: .88, spr: true, poseLance: 'serre', hPose: ['garde', 'fort'], col: '#6A5536', clair: '#E8D9B4', fond: '#85704A', K: .38, hp: 112, walk: 4.6, back: 4, dash: 17, jumpV: 17, jumpX: 8, grav: 1.1, etour: 52,
+    nom: 'PYTHON', art: 'LE PYTHON', serpent: true, expose: true, froid: true, force: 0.966, spr: true, poseLance: 'serre', hPose: ['garde', 'fort'], col: '#6A5536', clair: '#E8D9B4', fond: '#85704A', K: .38, hp: 112, walk: 4.6, back: 4, dash: 17, jumpV: 17, jumpX: 8, grav: 1.1, etour: 52,
     aie: ['SSS ?!', 'MA QUEUE !', 'AÏE, MES ANNEAUX !'], ia: {},
     hurt: { stand: [-560, 560, -600, 0], crouch: [-600, 600, -300, 0], air: [-520, 520, -540, 0] },
     push: [210, 250], reach: 760, speMin: 300, speMax: 1200,
@@ -695,7 +695,7 @@ const CHARS = {
   // --- ALLIGATOR (« livre en main », duel 20, p. 45) : jusqu'à 80 dents, il mord, puis il roule, le grondement qui fait danser l'eau, le chef des marais.
   //     Point faible (livre) : « jeune, il se fait avaler » → quand il est rétréci (caisse « TOUT PETIT »), les prises lui font deux fois plus mal.
   alligator: {
-    nom: 'ALLIGATOR', art: 'L’ALLIGATOR', petitFragile: 2, force: .92, spr: true, hPose: ['garde', 'coup'], col: '#3E4A30', clair: '#DCD8B0', fond: '#556345', K: .46, hp: 114, walk: 5.2, back: 4.4, dash: 16, jumpV: 18, jumpX: 8, grav: 1.1, etour: 56,
+    nom: 'ALLIGATOR', art: 'L’ALLIGATOR', petitFragile: 2, force: 1.063, spr: true, hPose: ['garde', 'coup'], col: '#3E4A30', clair: '#DCD8B0', fond: '#556345', K: .46, hp: 114, walk: 5.2, back: 4.4, dash: 16, jumpV: 18, jumpX: 8, grav: 1.1, etour: 56,
     aie: ['GRRR ?!', 'MA QUEUE !', 'AÏE, MES DENTS !'], ia: {},
     hurt: { stand: [-600, 660, -720, 0], crouch: [-620, 680, -440, 0], air: [-560, 620, -620, 0] }, // (la boîte est plus haute que le corps, comme le crocodile : sinon on le rate trop)
     push: [230, 270], reach: 740, speMin: 300, speMax: 1200,
@@ -716,7 +716,7 @@ const CHARS = {
   // --- LIONNE (« livre en main », duel 22, p. 51 : les lionnes) : des griffes pour s'accrocher, elles sautent sur le dos, l'embuscade, l'équipe de foot.
   //     Point faible (livre) : « 7 fois plus légères qu'elle » → elle vole plus loin quand on la frappe (légère).
   lionne: {
-    nom: 'LIONNE', art: 'LA LIONNE', fem: true, leger: 1.15, force: .85, spr: true, hPose: ['garde', 'fort'], col: '#B98A4A', clair: '#F6DDB0', fond: '#C9A060', K: .43, hp: 97, walk: 7, back: 5.3, dash: 18, jumpV: 25, jumpX: 9, grav: 1.12, etour: 46,
+    nom: 'LIONNE', art: 'LA LIONNE', fem: true, leger: 1.15, force: 0.765, spr: true, hPose: ['garde', 'fort'], col: '#B98A4A', clair: '#F6DDB0', fond: '#C9A060', K: .43, hp: 97, walk: 7, back: 5.3, dash: 18, jumpV: 25, jumpX: 9, grav: 1.12, etour: 46,
     aie: ['GRAOU ?!', 'MA QUEUE !', 'AÏE, MON MUSEAU !'], ia: { saut: 1 },
     hurt: { stand: [-470, 600, -680, 0], crouch: [-470, 620, -440, 0], air: [-420, 580, -600, 0] },
     push: [190, 230], reach: 700, speMin: 300, speMax: 1100,
@@ -737,7 +737,7 @@ const CHARS = {
   // --- GIRAFE (« livre en main », duel 22, p. 51) : un sabot large de 30 cm, le coup de pied qui assomme, le rodéo (elle se secoue), le coup de cou.
   //     Point faible (livre) : « si elle tombe, c'est fini » → par terre, elle met plus longtemps à se relever et prend plus cher.
   girafe: {
-    nom: 'GIRAFE', art: 'LA GIRAFE', fem: true, chute: 1.3, rodeo: true, force: .82, spr: true, hPose: ['garde', 'coup'], col: '#C98A2E', clair: '#FBE6B5', fond: '#D9A04A', K: .58, hp: 104, walk: 5.2, back: 4.4, dash: 14, jumpV: 17, jumpX: 7, grav: 1.2, etour: 56,
+    nom: 'GIRAFE', art: 'LA GIRAFE', fem: true, chute: 1.3, rodeo: true, force: 0.924, spr: true, hPose: ['garde', 'coup'], col: '#C98A2E', clair: '#FBE6B5', fond: '#D9A04A', K: .58, hp: 104, walk: 5.2, back: 4.4, dash: 14, jumpV: 17, jumpX: 7, grav: 1.2, etour: 56,
     aie: ['MÔÔH ?!', 'MON COU !', 'AÏE, MES SABOTS !'], ia: { saut: .3 },
     hurt: { stand: [-300, 420, -860, 0], crouch: [-340, 400, -450, 0], air: [-420, 420, -520, 0] }, // (mesuré sur les images : un grand « lampadaire »)
     push: [160, 200], reach: 700, speMin: 320, speMax: 1200,
@@ -762,7 +762,7 @@ const CHARS = {
   // --- REQUIN-BOULEDOGUE (« livre en main », duel 26, p. 59) : une morsure record pour sa taille, il cogne, puis il mord, le requin de rivière.
   //     Point faible (livre) : « une peau sans armure » → il prend plus cher (peau 1.25).
   bouledogue: {
-    nom: 'REQUIN-BOULEDOGUE', art: 'LE REQUIN-BOULEDOGUE', monde: 'mer', nage: true, peau: 1.25, force: 0.79, spr: true, hPose: ['garde', 'coup'], col: '#6B7480', clair: '#EEF1F4', fond: '#7D93A8', K: .46, hp: 104, walk: 6.6, back: 5, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 46,
+    nom: 'REQUIN-BOULEDOGUE', art: 'LE REQUIN-BOULEDOGUE', monde: 'mer', nage: true, peau: 1.25, force: 0.812, spr: true, hPose: ['garde', 'coup'], col: '#6B7480', clair: '#EEF1F4', fond: '#7D93A8', K: .46, hp: 104, walk: 6.6, back: 5, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 46,
     aie: ['GLOUPS ?!', 'MON MUSEAU !', 'AÏE, MON AILERON !'], ia: {},
     hurt: { stand: [-520, 460, -600, -130], crouch: [-540, 480, -300, 0], air: [-500, 440, -560, -110] }, // (mesuré sur l'image : un requin trapu)
     push: [220, 255], reach: 700, speMin: 300, speMax: 1300,
@@ -784,7 +784,7 @@ const CHARS = {
   // --- BALEINE BLEUE (« livre en main », duel 27, p. 61) : un corps de 30 m, elle file à 32 km/h, le souffle de 9 m, le chant, la grande gorgée.
   //     Point faible (livre) : « pas une seule dent » → ses coups poussent fort mais font peu de dégâts.
   baleine: {
-    nom: 'BALEINE BLEUE', art: 'LA BALEINE BLEUE', fem: true, monde: 'mer', nage: true, force: 0.68, spr: true, hPose: ['garde', 'coup'], col: '#3E6A96', clair: '#E3EEF7', fond: '#4F86BF', K: .68, hp: 156, walk: 4.6, back: 3.8, dash: 14, jumpV: 15, jumpX: 6, grav: .58, etour: 80,
+    nom: 'BALEINE BLEUE', art: 'LA BALEINE BLEUE', fem: true, monde: 'mer', nage: true, force: 0.68, spr: true, hPose: ['garde', 'coup'], col: '#3E6A96', clair: '#E3EEF7', fond: '#4F86BF', K: .68, hp: 184, walk: 4.6, back: 3.8, dash: 14, jumpV: 15, jumpX: 6, grav: .58, etour: 80,
     aie: ['OUUUH ?!', 'MES FANONS !', 'AÏE, MA QUEUE !'], ia: { spe: 1.3 },
     hurt: { stand: [-600, 600, -430, -110], crouch: [-620, 620, -270, 0], air: [-560, 580, -410, -100] }, // (mesuré sur l'image : longue et plate, la queue ne compte pas)
     push: [300, 340], reach: 840, speMin: 360, speMax: 1400,
@@ -807,7 +807,7 @@ const CHARS = {
   //     Point faible (livre) : « sa carapace peut casser » → les coups qui cassent la garde lui font beaucoup plus mal (CRAC !).
   //     Il ne nage pas : il marche au fond (comme le crocodile sous la mer).
   crabe: {
-    nom: 'CRABE', art: 'LE CRABE', monde: 'mer', carapace: 1.5, force: 0.99, spr: true, hPose: ['garde', 'coup'], col: '#B3452A', clair: '#FFD9C2', fond: '#D0603E', K: .36, hp: 104, walk: 6.2, back: 6.2, dash: 20, jumpV: 20, jumpX: 8, grav: 1.1, etour: 48,
+    nom: 'CRABE', art: 'LE CRABE', monde: 'mer', carapace: 1.5, force: 0.975, spr: true, hPose: ['garde', 'coup'], col: '#B3452A', clair: '#FFD9C2', fond: '#D0603E', K: .36, hp: 104, walk: 6.2, back: 6.2, dash: 20, jumpV: 20, jumpX: 8, grav: 1.1, etour: 48,
     aie: ['CLIC ?!', 'MA PINCE !', 'AÏE, MA CARAPACE !'], ia: {},
     hurt: { stand: [-480, 520, -500, 0], crouch: [-500, 540, -330, 0], air: [-460, 500, -480, 0] }, // (mesuré sur l'image, sans le bout des pattes)
     push: [200, 240], reach: 700, speMin: 280, speMax: 1100,
@@ -828,7 +828,7 @@ const CHARS = {
   // --- CREVETTE-MANTE (« livre en main », duel 21, p. 49-50) : deux massues à ressort, elle casse les coquilles, la frappe plus rapide qu'un clin d'œil.
   //     Point faible (livre) : « molle quand elle mue » → une peau fragile (elle prend plus cher).
   crevette: {
-    nom: 'CREVETTE-MANTE', art: 'LA CREVETTE-MANTE', fem: true, monde: 'mer', peau: 1.05, force: 0.93, spr: true, hPose: ['garde', 'coup'], col: '#2E8F5E', clair: '#FFE08A', fond: '#3DAE74', K: .38, hp: 102, walk: 7, back: 5.6, dash: 20, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 44,
+    nom: 'CREVETTE-MANTE', art: 'LA CREVETTE-MANTE', fem: true, monde: 'mer', peau: 1.05, force: 0.895, spr: true, hPose: ['garde', 'coup'], col: '#2E8F5E', clair: '#FFE08A', fond: '#3DAE74', K: .38, hp: 102, walk: 7, back: 5.6, dash: 20, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 44,
     aie: ['AÏE ?!', 'MES MASSUES !', 'OUILLE, MES YEUX !'], ia: {},
     hurt: { stand: [-560, 520, -480, 0], crouch: [-580, 540, -320, 0], air: [-520, 500, -460, 0] }, // (mesuré sur l'image, sans les antennes)
     push: [180, 220], reach: 660, speMin: 260, speMax: 1100,
@@ -850,7 +850,7 @@ const CHARS = {
   // --- FRELON GÉANT (« livre en main », duel 1, p. 5) : un dard de 6 mm, il coupe la tête des abeilles (mandibules-ciseaux), la bande à frelons.
   //     Point faible (livre) : « il supporte mal la chaleur » → les coups « chaleur » (abeilles) et les arènes chaudes lui font plus mal.
   frelon: {
-    nom: 'FRELON GÉANT', art: 'LE FRELON GÉANT', monde: 'betes', vole: true, chaud: 1.6, force: 0.88, spr: true, hPose: ['garde', 'coup'], col: '#E0782A', clair: '#FFE2A8', fond: '#E8963A', K: .4, hp: 102, walk: 6.8, back: 5.4, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
+    nom: 'FRELON GÉANT', art: 'LE FRELON GÉANT', monde: 'betes', vole: true, chaud: 1.6, force: 0.946, spr: true, hPose: ['garde', 'coup'], col: '#E0782A', clair: '#FFE2A8', fond: '#E8963A', K: .4, hp: 102, walk: 6.8, back: 5.4, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
     aie: ['BZZ ?!', 'MES AILES !', 'AÏE, MON DARD !'], ia: { saut: .9 },
     hurt: { stand: [-380, 560, -600, -120], crouch: [-400, 560, -330, 0], air: [-380, 540, -560, -100] }, // (mesuré sur l'image : le corps, pas le bout des ailes)
     push: [190, 230], reach: 700, speMin: 280, speMax: 1200,
@@ -872,7 +872,7 @@ const CHARS = {
   // --- ABEILLES JAPONAISES (« livre en main », duel 1, p. 5) : un petit dard, elles foncent toutes ensemble, ça vibre et ça chauffe, la boule de chaleur.
   //     Point faible (livre) : « un corps fragile » → peau fragile, un peu moins de vie.
   abeille: {
-    nom: 'ABEILLES', art: 'LES ABEILLES', fem: true, monde: 'betes', vole: true, peau: 1.05, force: 0.93, spr: true, hPose: ['garde', 'coup'], col: '#D8A21E', clair: '#FFF1B8', fond: '#E9B93A', K: .34, hp: 108, walk: 7.4, back: 5.8, dash: 20, jumpV: 20, jumpX: 9, grav: .7, etour: 44,
+    nom: 'ABEILLES', art: 'LES ABEILLES', fem: true, monde: 'betes', vole: true, peau: 1.05, force: 0.986, spr: true, hPose: ['garde', 'coup'], col: '#D8A21E', clair: '#FFF1B8', fond: '#E9B93A', K: .34, hp: 108, walk: 7.4, back: 5.8, dash: 20, jumpV: 20, jumpX: 9, grav: .7, etour: 44,
     aie: ['BZZ ?!', 'OUILLE, MON DARD !', 'AÏE !'], ia: { saut: 1 },
     hurt: { stand: [-400, 560, -700, -120], crouch: [-420, 560, -400, 0], air: [-400, 540, -660, -100] }, // (mesuré sur l'image : le corps, pas le haut des ailes)
     push: [170, 210], reach: 660, speMin: 260, speMax: 1100,
@@ -894,7 +894,7 @@ const CHARS = {
   // --- MYGALE (« livre en main », duel 12, p. 29) : des crochets à venin, elle jette ses poils piquants, la soupe de proie (p. 30).
   //     Point faible (livre) : « elle voit très mal » → elle met du temps à se retourner quand on passe derrière elle.
   mygale: {
-    nom: 'MYGALE', art: 'LA MYGALE', fem: true, monde: 'betes', myope: 22, force: 0.98, spr: true, hPose: ['garde', 'coup'], col: '#6B4A2E', clair: '#E8D8B8', fond: '#8A6A48', K: .38, hp: 102, walk: 6.2, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 50,
+    nom: 'MYGALE', art: 'LA MYGALE', fem: true, monde: 'betes', myope: 22, force: 0.955, spr: true, hPose: ['garde', 'coup'], col: '#6B4A2E', clair: '#E8D8B8', fond: '#8A6A48', K: .38, hp: 102, walk: 6.2, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 50,
     aie: ['SSS ?!', 'MES PATTES !', 'AÏE, MES POILS !'], ia: {},
     hurt: { stand: [-560, 600, -560, 0], crouch: [-580, 620, -330, 0], air: [-540, 580, -520, 0] }, // (mesuré sur l'image, sans le bout des pattes)
     push: [200, 240], reach: 700, speMin: 280, speMax: 1200,
@@ -915,7 +915,7 @@ const CHARS = {
   // --- GUÊPE GÉANTE (« livre en main », duel 12, p. 29) : un dard de 7 mm, elle pique et paralyse, la note de douleur 4 sur 4 (p. 30).
   //     Point faible (livre) : « elle doit piquer entre les pattes » → sa piqûre qui paralyse ne touche qu'en bas, et de tout près.
   guepe: {
-    nom: 'GUÊPE GÉANTE', art: 'LA GUÊPE GÉANTE', fem: true, monde: 'betes', vole: true, force: 1.02, spr: true, hPose: ['garde', 'coup'], col: '#1E2A44', clair: '#FFB347', fond: '#E8783A', K: .38, hp: 104, walk: 7, back: 5.6, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
+    nom: 'GUÊPE GÉANTE', art: 'LA GUÊPE GÉANTE', fem: true, monde: 'betes', vole: true, force: 1.067, spr: true, hPose: ['garde', 'coup'], col: '#1E2A44', clair: '#FFB347', fond: '#E8783A', K: .38, hp: 104, walk: 7, back: 5.6, dash: 19, jumpV: 20, jumpX: 8.5, grav: .7, etour: 46,
     aie: ['BZZ ?!', 'MES AILES !', 'AÏE, MON DARD !'], ia: { saut: .9 },
     hurt: { stand: [-420, 560, -660, -120], crouch: [-440, 560, -380, 0], air: [-400, 540, -620, -100] }, // (mesuré sur l'image : le corps, pas le haut des ailes)
     push: [190, 230], reach: 700, speMin: 280, speMax: 1200,
@@ -961,7 +961,7 @@ const CHARS = {
   // --- CHAUVE-SOURIS (« livre en main », duel 25, p. 57) : de petites dents pointues ; elle chasse au sonar (l'onde repère l'adversaire : les coups suivants font plus mal) ;
   //     point faible (livre) : « des ailes en peau très fine » → touchée en l'air, elle a plus mal. Mots interdits : effort, poids.
   chauvesouris: {
-    nom: 'CHAUVE-SOURIS', art: 'LA CHAUVE-SOURIS', fem: true, monde: 'betes', vole: true, ailesFines: 1.25, force: 1.17, spr: true, hPose: ['garde', 'coup'], col: '#5A3A2A', clair: '#E8C8A8', fond: '#3E2A4A', K: .36, hp: 104, walk: 7, back: 6.2, dash: 19, jumpV: 21, jumpX: 9, grav: .7, etour: 46,
+    nom: 'CHAUVE-SOURIS', art: 'LA CHAUVE-SOURIS', fem: true, monde: 'betes', vole: true, ailesFines: 1.25, force: 1.239, spr: true, hPose: ['garde', 'coup'], col: '#5A3A2A', clair: '#E8C8A8', fond: '#3E2A4A', K: .36, hp: 104, walk: 7, back: 6.2, dash: 19, jumpV: 21, jumpX: 9, grav: .7, etour: 46,
     aie: ['IIIK ?!', 'MES AILES !', 'AÏE, MES OREILLES !'], ia: { saut: .9 },
     hurt: { stand: [-350, 390, -610, -130], crouch: [-360, 380, -380, 0], air: [-330, 370, -570, -110] }, // (mesuré sur l'image : le corps, pas le bout des ailes)
     push: [130, 150], reach: 700, speMin: 300, speMax: 1300, // (petit corps : on peut l'approcher de près)
@@ -983,7 +983,7 @@ const CHARS = {
   // --- MANTE RELIGIEUSE (« livre en main », duel 28, p. 63) : des pattes-pièges à piquants ; elle frappe en un éclair ; la brindille verte qui attend (p. 64) ;
   //     point faible (livre) : « souvent mangée par les oiseaux » → les attaques qui tombent du ciel lui font plus mal. Mots interdits : lunettes, relief.
   mante: {
-    nom: 'MANTE RELIGIEUSE', art: 'LA MANTE', fem: true, monde: 'betes', proieDuCiel: 1.12, force: 0.95, spr: true, hPose: ['garde', 'coup'], col: '#5E9E2E', clair: '#D8F0A0', fond: '#7DB84A', K: .4, hp: 94, walk: 5.8, back: 5, dash: 16, jumpV: 21, jumpX: 8.5, grav: 1, etour: 48,
+    nom: 'MANTE RELIGIEUSE', art: 'LA MANTE', fem: true, monde: 'betes', proieDuCiel: 1.12, force: 0.98, spr: true, hPose: ['garde', 'coup'], col: '#5E9E2E', clair: '#D8F0A0', fond: '#7DB84A', K: .4, hp: 94, walk: 5.8, back: 5, dash: 16, jumpV: 21, jumpX: 8.5, grav: 1, etour: 48,
     aie: ['CRIC ?!', 'MES PATTES !', 'AÏE, MES ANTENNES !'], ia: {},
     hurt: { stand: [-560, 460, -800, 0], crouch: [-600, 480, -420, 0], air: [-540, 440, -760, 0] }, // (mesuré sur l'image : le corps, sans le bout des pattes)
     push: [170, 190], reach: 760, speMin: 280, speMax: 1200,
@@ -1006,7 +1006,7 @@ const CHARS = {
   // --- COLIBRI (« livre en main », duel 28, p. 63) : un bec en aiguille ; il vole même en arrière ; il bat des ailes 53 fois par seconde (p. 63) ;
   //     point faible (livre) : « il doit boire sans arrêt » → il perd un peu de vie avec le temps (sauf au JARDIN, où il y a la mangeoire). Mots interdits : nectar, 1200.
   colibri: {
-    nom: 'COLIBRI', art: 'LE COLIBRI', monde: 'betes', vole: true, soif: { mots: ['J’AI SOIF !', 'VITE, À BOIRE !', 'DE L’EAU SUCRÉE, VITE !'], sauf: ['jardin'], t: 240 }, force: 0.99, spr: true, hPose: ['garde', 'coup'], col: '#2E8B57', clair: '#D8F5E0', fond: '#3FA36B', K: .34, hp: 96, walk: 8, back: 9, dash: 22, jumpV: 21, jumpX: 9.5, grav: .6, etour: 44,
+    nom: 'COLIBRI', art: 'LE COLIBRI', monde: 'betes', vole: true, soif: { mots: ['J’AI SOIF !', 'VITE, À BOIRE !', 'DE L’EAU SUCRÉE, VITE !'], sauf: ['jardin'], t: 240 }, force: 1.007, spr: true, hPose: ['garde', 'coup'], col: '#2E8B57', clair: '#D8F5E0', fond: '#3FA36B', K: .34, hp: 96, walk: 8, back: 9, dash: 22, jumpV: 21, jumpX: 9.5, grav: .6, etour: 44,
     aie: ['PIOU ?!', 'MES PLUMES !', 'AÏE, MON BEC !'], ia: { saut: 1 },
     hurt: { stand: [-300, 360, -800, -180], crouch: [-300, 360, -520, 0], air: [-280, 340, -760, -160] }, // (mesuré sur l'image : le corps, sans le bout des ailes ni le bec)
     push: [110, 130], reach: 760, // (tout petit : on peut l'approcher de près) speMin: 300, speMax: 1300,
@@ -1028,7 +1028,7 @@ const CHARS = {
   // --- JEUNE SERPENT BRUN (« livre en main », duel 29, p. 65) : des crochets à venin ; il fouille chaque cachette ;
   //     point faible (livre) : « tout jeune, il débute » → il commence petit… et GRANDIT à chaque coup qu'il donne (SUPER : il devient grand d'un coup). Mots interdits : cinq, 5, terrestres.
   serpentbrun: {
-    nom: 'JEUNE SERPENT BRUN', art: 'LE JEUNE SERPENT BRUN', monde: 'betes', grandit: { pas: .04, max: 1.3 }, force: 0.88, spr: true, hPose: ['garde', 'coup'], col: '#8A6A44', clair: '#EBD8B0', fond: '#A07A4E', K: .34, hp: 104, walk: 6.4, back: 5.2, dash: 18, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 48,
+    nom: 'JEUNE SERPENT BRUN', art: 'LE JEUNE SERPENT BRUN', monde: 'betes', grandit: { pas: .04, max: 1.3 }, force: 0.859, spr: true, hPose: ['garde', 'coup'], col: '#8A6A44', clair: '#EBD8B0', fond: '#A07A4E', K: .34, hp: 104, walk: 6.4, back: 5.2, dash: 18, jumpV: 20, jumpX: 8.5, grav: 1.1, etour: 48,
     aie: ['SSS ?!', 'MA QUEUE !', 'AÏE, MES ÉCAILLES !'], ia: {},
     hurt: { stand: [-700, 560, -460, 0], crouch: [-720, 580, -260, 0], air: [-660, 520, -420, 0] }, // (mesuré sur l'image, sans le bout de la queue)
     push: [170, 190], reach: 740, speMin: 280, speMax: 1200,
@@ -1048,7 +1048,7 @@ const CHARS = {
   // --- VEUVE NOIRE À DOS ROUGE (à gagner au DÉFI depuis le 25/09, duel 29, p. 65) : un venin très puissant ; elle ficelle sa proie ; le fil gluant, l'ascenseur (p. 66) ;
   //     point faible (livre) : « on l'écrase d'un doigt » → les attaques qui tombent d'en haut lui font très mal (pose « écrasée »).
   veuve: {
-    nom: 'VEUVE NOIRE', art: 'LA VEUVE NOIRE', fem: true, monde: 'betes', ecrase: 1.35, force: 1.02, spr: true, hPose: ['garde', 'coup'], col: '#1A1A22', clair: '#FF4A3A', fond: '#3A1A22', K: .32, hp: 96, walk: 6, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 46,
+    nom: 'VEUVE NOIRE', art: 'LA VEUVE NOIRE', fem: true, monde: 'betes', ecrase: 1.35, force: 1.053, spr: true, hPose: ['garde', 'coup'], col: '#1A1A22', clair: '#FF4A3A', fond: '#3A1A22', K: .32, hp: 96, walk: 6, back: 5, dash: 17, jumpV: 21, jumpX: 8, grav: 1.1, etour: 46,
     aie: ['SSS ?!', 'MES PATTES !', 'AÏE, MON DOS ROUGE !'], ia: {},
     hurt: { stand: [-440, 420, -520, 0], crouch: [-460, 440, -300, 0], air: [-420, 400, -500, 0] }, // (mesuré sur l'image : l'abdomen et la tête, pas le bout des pattes)
     push: [120, 140], reach: 640, speMin: 280, speMax: 1300,
@@ -1068,7 +1068,7 @@ const CHARS = {
   // --- MÉGANEURA (LÉGENDAIRE des PETITES BÊTES, hors livre) : la libellule géante de la préhistoire (environ 70 cm d'ailes, il y a environ 300 millions d'années).
   //     Elle se réveille quand on a battu toutes les PETITES BÊTES en GOD MODE (bonus.js : ceremonieLegendaire). Sources : Wikipédia « Meganeura », The Conversation (25/09/2026).
   meganeura: {
-    nom: 'MÉGANEURA', art: 'LA MÉGANEURA', fem: true, monde: 'betes', vole: true, force: 0.94, spr: true, hPose: ['garde', 'coup'], col: '#1E7A7A', clair: '#BFF5E8', fond: '#2A6A7A', K: .46, hp: 96, walk: 7, back: 6.2, dash: 20, jumpV: 21, jumpX: 9.5, grav: .6, etour: 60,
+    nom: 'MÉGANEURA', art: 'LA MÉGANEURA', fem: true, monde: 'betes', vole: true, force: 0.987, spr: true, hPose: ['garde', 'coup'], col: '#1E7A7A', clair: '#BFF5E8', fond: '#2A6A7A', K: .46, hp: 96, walk: 7, back: 6.2, dash: 20, jumpV: 21, jumpX: 9.5, grav: .6, etour: 60,
     aie: ['BZZOUM ?!', 'MES AILES !', 'AÏE, MES GRANDS YEUX !'], ia: { saut: .9 },
     hurt: { stand: [-560, 520, -660, -160], crouch: [-560, 540, -420, -100], air: [-540, 500, -640, -150] }, // (mesuré : le corps et le bas des ailes ; sprite flottant, +120)
     push: [210, 250], reach: 780, speMin: 300, speMax: 1300,
@@ -1999,6 +1999,10 @@ const BANQUE = {
   oursnoir: { f: ['ours_roar'], v: .9, r: 1.1 }, oursnoir_grr: { f: ['ours_grr', 'ours_huff'], v: .8, r: 1.1, j: .05 },
   glouton: { f: ['ratel_grr'], v: .9, r: .85 }, glouton_grr: { f: ['ratel_grr'], v: .8, r: .8, j: .06 },
   girafe: { f: ['vapeur'], v: .8, r: .9 }, girafe_grr: { f: ['vapeur'], v: .7, r: .8, j: .06 },
+  // (M6, 25/09) ils étaient muets (ni cri au choix, ni grognement, ni cri de la vraie réponse) : sons CC0 déjà présents, transposés
+  hippo: { f: ['buffle', 'ours_huff'], v: .95, r: .72 }, hippo_grr: { f: ['ours_huff'], v: .85, r: .66, j: .05 },
+  crabe: { f: ['clic', 'crac_os'], v: .8, r: 1.25, j: .08 }, crabe_grr: { f: ['crac_os'], v: .7, r: 1.4, j: .08 },
+  crevette: { f: ['pop'], v: .9, r: 1.1 }, crevette_grr: { f: ['pop', 'clic'], v: .75, r: 1.35, j: .08 },
   lionne: { f: ['lion_roar'], v: .85, r: 1.2 }, lionne_grr: { f: ['lion_grr'], v: .8, r: 1.2, j: .05 },
   python: { f: ['komodo_hiss'], v: .85, r: .8 }, python_grr: { f: ['komodo_hiss', 'chat_hiss'], v: .7, r: .75, j: .06 },
   alligator: { f: ['croco_roar'], v: 1, r: .9 }, alligator_grr: { f: ['croco_roar', 'croco_hiss'], v: .85, r: .85, j: .05 },
@@ -2508,7 +2512,7 @@ function touche(a, d, m, hb, hu, o) {
   const aideK = a.cpu && G.mode === 1 ? 1 - .12 * G.aide : 1;
   // dos tourné (hippo qui mitraille, ratel qui pschitte…) : les fesses à l'air prennent plus cher
   const fesses = d.state === 'atk' && d.move && d.move.dos && d.ph === 'act';
-  const bonus = (o.fin ? 1.15 : 1) * (a.fort && spe ? 1.2 : 1) * (m.aa && d.h > (vol2d(a) ? a.h + 40 : 0) ? 1.25 : 1) * (a.arme && m.charge ? 1 + .35 * a.arme : 1) * (fesses ? 1.3 : 1) * (a.d.force || 1) * (a.d.forceMer && estMer() ? a.d.forceMer : 1); // forceMer : le crocodile, invité de la MER, y tape moins fort
+  const bonus = (o.fin ? 1.15 : 1) * (a.fort && spe ? 1.2 : 1) * (m.aa && d.h > (vol2d(a) ? a.h + 40 : 0) ? 1.25 : 1) * (a.arme && m.charge ? 1 + .35 * a.arme : 1) * (fesses ? 1.3 : 1) * (a.d.force || 1) * (a.d.forceMer && estMer() ? a.d.forceMer : 1) * forceDuel(a); // forceMer : le crocodile, invité de la MER, y tape moins fort
   if (fesses && Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 560, mot: hasard(['FESSES À L’AIR !', 'PAF, LES FESSES !']), col: '#FF7AB6' });
   // points faibles du livre : le puma fuit devant une meute (attaques en bande) · le cobra, « serré, il est en danger » · l'alligator « jeune, il se fait avaler » (rétréci) · la girafe : « si elle tombe, c'est fini »
   const faible = (m.clan && d.d.meute ? d.d.meute : 1) * (o.prise ? (d.d.fragilePrise || 1) * (d.d.petitFragile && d.boost && d.boost.k === 'mini' ? d.d.petitFragile : 1) : 1) * (d.d.chute && m.kd && o.last ? d.d.chute : 1) * (d.d.carapace && m.casse && !o.proj ? d.d.carapace : 1) * (d.d.chaud && m.chaleur ? d.d.chaud : 1) * (d.d.ailesFines && ailesTouchees(d, m) ? d.d.ailesFines : 1) * (d.repereT > G.frame && d.repereBy === a && !m.repere ? 1.25 : 1) * (d.d.proieDuCiel && (duCiel(a) || m.air) ? d.d.proieDuCiel : 1) * (d.d.ecrase && (m.air || (duCiel(a) && m.kd)) ? d.d.ecrase : 1) * (m.fouille && (d.state === 'crouch' || (d.state === 'atk' && d.move && (d.move.camoufle || d.move.aplat))) ? m.fouille : 1);
@@ -2745,6 +2749,10 @@ const NIV = [
   { react: 22, garde: .28, agress: .5, spe: .008, saut: .005, combo: .3, aa: .12, chope: .012, tech: .06, punir: .15 },
   { react: 13, garde: .55, agress: .72, spe: .016, saut: .007, combo: .65, aa: .4, chope: .03, tech: .25, punir: .45 },
   { react: 6, garde: .86, agress: .9, spe: .026, saut: .009, combo: 1, aa: .75, chope: .06, tech: .5, punir: .8 }];
+// (M6, 25/09) dans l'aventure, la difficulté monte en pente douce d'un duel à l'autre (G.nivDuel, livre.js : 0 → 2) au lieu de 3 marches :
+// un niveau « à virgule » mélange les réglages des deux niveaux voisins. Ailleurs : FACILE, NORMAL ou COSTAUD, comme avant.
+function nivIA() { const x = G.livre && G.nivDuel != null ? G.nivDuel : G.niv; const i = Math.floor(x), t = x - i; if (!t) return NIV[x];
+  const a = NIV[i], b = NIV[Math.min(2, i + 1)], o = {}; for (const k in a) o[k] = a[k] + (b[k] - a[k]) * t; return o }
 // coup spécial adapté à la distance (chaque coup dit où il sert : ia = [distance min, max, poids])
 function choixSpe(f, dist) {
   let tot = 0; const c = [];
@@ -2753,14 +2761,18 @@ function choixSpe(f, dist) {
 }
 // portée de l'ordi (25/09) : jusqu'où ses coups A et B touchent VRAIMENT cet adversaire (boîtes des coups, élan, devant de l'adversaire).
 // Avant, la « reach » réglée à la main était trop grande pour 28 animaux : leur ordi tapait dans le vide (pieuvre contre pieuvre : jamais un coup).
+// (M6, 25/09) « que tous les duels soient égaux » : dans un Duel du livre, un petit coup de pouce (D.force, livre.js) équilibre la paire
+// là où les deux animaux, bien réglés contre tous les autres, ne font pas jeu égal entre eux (mesuré : outils/duel_force.py). Ailleurs : 1.
+function forceDuel(f) { const L = G.livre, D = L && L.D; return D && D.force && G.mode === 1 && G.pick.includes(D.a) && G.pick.includes(D.b) ? D.force[f.kind] || 1 : 1 }
 function porteeIA(f, o) {
-  if ((f.d.monde || 'terre') === 'terre') return f.d.reach || 680; // (la TERRE garde ses réglages : son équilibre a été mesuré avec eux)
+  // (M6, 25/09) la TERRE aussi : l'ordi attaque à la vraie portée de ses coups (avant : autruche, cobra, python, guépard, hyène, T. rex… tapaient dans le vide) — forces refaites (regle2.py)
   const tape = k => { const m = f.d.moves[k]; return m && m.box ? m.box[1] * f.d.K + (m.lunge ? m.lunge * m.act * .6 : 0) : 0 };
   const l = tape('L'), h = tape('H'), coup = l && h ? Math.min(l, h) : Math.max(l, h);
-  return Math.round(Math.max(f.d.push[1] + o.d.push[1] + 40, Math.min(f.d.reach || 680, coup + o.d.hurt.stand[1] * o.d.K - 20)));
+  // (M6) plus de plafond « reach » réglé à la main : contre un grand animal (baleine, hippo, T. rex…), on peut taper de plus loin (orque contre baleine : 0 victoire sur 20 → 5)
+  return Math.round(Math.max(f.d.push[1] + o.d.push[1] + 40, coup + o.d.hurt.stand[1] * o.d.K - 20));
 }
 function brain(f, o) {
-  const n0 = NIV[G.niv], ai = f.ai, ag = G.mode === 1 ? G.aide : 0;
+  const n0 = nivIA(), ai = f.ai, ag = G.mode === 1 ? G.aide : 0;
   const n = ag ? Object.assign({}, n0, { react: n0.react + 5 * ag, garde: n0.garde * (1 - .3 * ag), agress: n0.agress * (1 - .15 * ag), spe: n0.spe * (1 - .25 * ag), combo: n0.combo * (1 - .3 * ag), aa: n0.aa * (1 - .35 * ag), chope: n0.chope * (1 - .4 * ag), punir: n0.punir * (1 - .35 * ag) }) : n0;
   const r = { left: false, right: false, up: false, down: false, L: false, H: false, S: false };
   if (G.phase !== 'fight') return r;
@@ -2952,6 +2964,9 @@ function worldT(c) { c.setTransform(1, 0, 0, 1, 0, 0); c.translate(W / 2 + cam.o
 //  Interface de combat
 // ---------------------------------------------------------------------
 function rr(c, x, y, w, h, r) { c.beginPath(); c.roundRect(x, y, w, h, r) }
+// (M7, 25/09) lisible sur téléphone : le canevas fait 1 920 px de large, le cadre ~576 px sur un iPhone (× 0,3) → les petits textes du haut
+// (nom, TOI / ORDI, SUPER, MANCHE) ne descendent plus sous 12 à 14 px réels ; sur tablette et ordinateur, rien ne change.
+const hudPx = (px, mini) => Math.max(px, mini * W / Math.max(300, fxC.clientWidth || W));
 function hud(c) {
   c.setTransform(1, 0, 0, 1, 0, 0);
   for (const f of G.f) {
@@ -2972,24 +2987,25 @@ function hud(c) {
     const img = G.heads[f.kind]; c.translate(px, py); c.scale(s ? -1 : 1, 1); c.drawImage(img, -70, -70, 140, 140); c.restore();
     c.lineWidth = 7; c.strokeStyle = champion(f.kind) ? '#FFC629' : PA; c.beginPath(); c.arc(px, py, 62, 0, TAU); c.stroke(); if (champion(f.kind)) { c.lineWidth = 3; c.strokeStyle = '#7A3E00'; c.beginPath(); c.arc(px, py, 67, 0, TAU); c.stroke() }
     // nom + étiquette + manches
-    txt(c, f.nomAff || f.d.nom, s ? x0 + w - 4 : x0 + 4, y + h + 34, (f.nomAff || f.d.nom).length > 13 ? 32 : 40, PA, { al: s ? 'right' : 'left', out: 10 });
-    const qui = NET.on ? (s === NET.moi ? 'TOI' : 'AMI') : G.mode === 1 ? (f.cpu ? 'ORDI' : G.god ? '⚡ GOD MODE' : 'TOI') : (s ? 'J2' : 'J1');
-    c.font = '900 24px Rubik, "Arial Black", sans-serif'; const lw = c.measureText(qui).width + 26, lx = s ? x0 + w - lw : x0;
-    rr(c, lx, y - 44, lw, 32, 10); c.fillStyle = f.cpu ? VI : (s ? BL : OR); c.fill(); c.lineWidth = 3; c.strokeStyle = PA; c.stroke(); txt(c, qui, lx + lw / 2, y - 27, 24, PA);
+    txt(c, f.nomAff || f.d.nom, s ? x0 + w - 4 : x0 + 4, y + h + 36, (f.nomAff || f.d.nom).length > 13 ? hudPx(32, 12) : hudPx(40, 14), PA, { al: s ? 'right' : 'left', out: 10 });
+    // TOI / ORDI : sous le portrait (au-dessus de la barre, il n'y avait la place que pour 7 px sur iPhone)
+    const qui = NET.on ? (s === NET.moi ? 'TOI' : 'AMI') : G.mode === 1 ? (f.cpu ? 'ORDI' : G.god ? '⚡ GOD' : 'TOI') : (s ? 'J2' : 'J1');
+    const tq = hudPx(24, 12); c.font = `900 ${tq}px Rubik, "Arial Black", sans-serif`; const lw = c.measureText(qui).width + 26, lh = tq + 10, lx = Math.max(4, Math.min(W - 4 - lw, px - lw / 2)), ly = py + 66;
+    rr(c, lx, ly, lw, lh, 10); c.fillStyle = f.cpu ? VI : (s ? BL : OR); c.fill(); c.lineWidth = 3; c.strokeStyle = PA; c.stroke(); txt(c, qui, lx + lw / 2, ly + lh / 2 + 1, tq, PA);
     for (let i = 0; i < 2; i++) { const sx = s ? x0 + 30 + i * 46 : x0 + w - 30 - i * 46; star(c, sx, y + h + 32, 18, 8, 5, i < f.wins ? JA : 'rgba(255,255,255,.2)', NV, 4) }
     // jauge de SUPER (sous le nom)
     const mw = 330, mx = s ? x0 + w - mw : x0, my = y + h + 70, full = f.meter >= 100;
     rr(c, mx - 5, my - 5, mw + 10, 28, 10); c.fillStyle = NV; c.fill();
     if (f.meter > 0) { rr(c, mx, my, Math.max(16, mw * f.meter / 100), 18, 7); c.fillStyle = full ? (Math.sin(G.time * 14) > 0 ? JA : '#FFE8A0') : CY; c.fill(); }
     c.lineWidth = 3; c.strokeStyle = PA; rr(c, mx, my, mw, 18, 7); c.stroke();
-    txt(c, full ? '★ SUPER PRÊT !' : 'SUPER', s ? mx - 14 : mx + mw + 14, my + 9, full ? 30 : 22, full ? JA : PA, { al: s ? 'right' : 'left', out: 8 });
+    txt(c, full ? '★ SUPER !' : 'SUPER', s ? mx - 14 : mx + mw + 14, my + 9, full ? hudPx(30, 14) : hudPx(22, 12), full ? JA : PA, { al: s ? 'right' : 'left', out: 8 });
   }
   // chrono
   c.beginPath(); c.arc(960, 80, 66, 0, TAU); c.fillStyle = NV; c.fill(); c.lineWidth = 7; c.strokeStyle = PA; c.stroke();
   const sec = Math.max(0, Math.ceil(G.timer / 60)); txt(c, String(sec), 960, 84, 66, sec <= 10 && G.phase === 'fight' && Math.sin(G.time * 10) > 0 ? '#FF6B4A' : JA);
-  txt(c, 'MANCHE ' + G.round, 960, 172, 26, PA, { out: 8 });
+  txt(c, 'MANCHE ' + G.round, 960, 174, hudPx(26, 12), PA, { out: 8 });
   // combos
-  for (const e of FX) if (e.k === 'combo') { const u = G.time - e.t0; if (u < 1) txt(c, e.n + ' COUPS !', e.side ? 1560 : 360, 250, 60, JA, { out: 14, sc: back(P(u, 0, .15)), rot: e.side ? .05 : -.05 }) }
+  for (const e of FX) if (e.k === 'combo') { const u = G.time - e.t0; if (u < 1) txt(c, e.n + ' COUPS !', e.side ? 1620 : 300, 250, 60, JA, { out: 14, sc: back(P(u, 0, .15)), rot: e.side ? .05 : -.05 }) }
 }
 function annonce(c) {
   c.setTransform(1, 0, 0, 1, 0, 0);
@@ -3451,12 +3467,12 @@ function startMatch() {
   document.body.classList.toggle('deux', G.mode === 2 && !NET.on);
   for (const T of [TOUCH, TOUCH2]) { T.x = T.y = 0; T.L = T.H = T.S = T.G = false }
 }
-// 2D : « TU VOLES ! / TU NAGES ! ▲ monte, ▼ descends » (6 s, dans la bulle du tutoriel)
+// 2D : « TU VOLES ! / TU NAGES ! ▲ monte, ▼ descends » (6 s, dans la bulle du tutoriel) — (M7) textes courts : la bulle ne cache plus le combat
 function astuceVol(k) {
   const e = $('tuto-bulle'); if (!e) return; const tact = document.body.classList.contains('tactile');
   const contre = k === 'contreAir' || k === 'contreEau';
-  e.innerHTML = contre ? `<small>ATTENTION !</small><b class="R">${k === 'contreAir' ? 'IL VOLE !' : 'IL NAGE AU-DESSUS !'}</b><span>${tact ? 'Saute (joystick ▲) et tape avec A ou B PENDANT le saut' : 'Saute (↑) et tape (J ou K) PENDANT le saut'} : tu l’attrapes en l’air !</span>`
-    : `<small>NOUVEAU !</small><b class="R">${k === 'air' ? 'TU VOLES !' : 'TU NAGES !'}</b><span>${tact ? 'Joystick ▲ pour monter, ▼ pour descendre' : 'Flèches ↑ pour monter, ↓ pour descendre'} : mets-toi à sa hauteur… et tape !</span>`; e.hidden = false;
+  e.innerHTML = contre ? `<small>ATTENTION !</small><b class="R">${k === 'contreAir' ? 'IL VOLE !' : 'IL NAGE AU-DESSUS !'}</b><span>${tact ? 'Saute (▲) et tape PENDANT le saut !' : 'Saute (↑) et tape (J ou K) PENDANT le saut !'}</span>`
+    : `<small>NOUVEAU !</small><b class="R">${k === 'air' ? 'TU VOLES !' : 'TU NAGES !'}</b><span>${tact ? '▲ monte · ▼ descends' : '↑ monte · ↓ descends'} : tape à sa hauteur !</span>`; e.hidden = false;
   clearTimeout(astuceVol.t); astuceVol.t = setTimeout(() => { if (!G.tuto) e.hidden = true }, 6500);
 }
 function pause() { if (NET.on) return; if (G.phase === 'pause') { G.phase = G.before; show(null) } else { G.before = G.phase; G.phase = 'pause'; KEYS.clear(); show('pause') } }
