@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="L’Arène des Duels : choisis ton animal et défie tes copains, avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans publicité."><meta property="og:title" content="L’Arène des Duels"><meta property="og:description" content="Choisis ton animal et défie tes copains ! Avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790331005"><title>L'Arène des Duels</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="L’Arène des Duels : choisis ton animal et défie tes copains, avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans publicité."><meta property="og:title" content="L’Arène des Duels"><meta property="og:description" content="Choisis ton animal et défie tes copains ! Avec les animaux du livre « C’est qui le plus fort ? ». Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790331416"><title>L'Arène des Duels</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -595,6 +595,11 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
 #vs.or-g .g img,#vs.or-d .d img{filter:drop-shadow(0 0 1.3cqw rgba(255,248,200,.95)) drop-shadow(0 .8cqw 0 rgba(0,0,0,.35))}
 #vs.or-g .g::after,#vs.or-d .d::after{content:"📖 CHAMPION DU LIVRE";position:absolute;bottom:6%;left:44%;transform:translateX(-50%) rotate(-3deg);background:linear-gradient(#FFF3B0,#FFB200);color:#3A1E00;font:900 1.7cqw Rubik,"Arial Black",sans-serif;padding:.35cqw 1.3cqw;border-radius:1cqw;border:.3cqw solid #7A3E00;white-space:nowrap;z-index:2;box-shadow:0 .4cqw 0 rgba(0,0,0,.35)}
 #vs.or-d .d::after{left:56%;transform:translateX(-50%) rotate(3deg)}
+/* victoire d'un champion du livre : l'écran de fin passe en or */
+#fin.or{background:radial-gradient(circle at 30% 45%,rgba(122,86,0,.75),rgba(22,13,0,.95) 72%)}
+#fin.or #gagnant{color:#FFE680}
+#fin.or #fin-img{filter:drop-shadow(0 0 1.6cqw rgba(255,230,140,.9)) drop-shadow(0 .6cqw 0 rgba(0,0,0,.4))}
+.nouveau span.champ-or{background:linear-gradient(#FFF3B0,#FFB200);color:#3A1E00;border-color:#7A3E00;font-size:1.6cqw}
 </style></head><body>
 
 <div id="cadre">
@@ -844,11 +849,11 @@ body[data-ecran="choix"] #outils,body[data-ecran="arenes"] #outils,body[data-ecr
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790331005"></script>
-<script src="anim.js?v=1790331005"></script>
-<script src="game.js?v=1790331005"></script>
-<script src="net.js?v=1790331005"></script>
-<script src="livre.js?v=1790331005"></script>
-<script src="bonus.js?v=1790331005"></script>
-<script src="surprises.js?v=1790331005"></script>
+<script src="skin.js?v=1790331416"></script>
+<script src="anim.js?v=1790331416"></script>
+<script src="game.js?v=1790331416"></script>
+<script src="net.js?v=1790331416"></script>
+<script src="livre.js?v=1790331416"></script>
+<script src="bonus.js?v=1790331416"></script>
+<script src="surprises.js?v=1790331416"></script>
 </body></html>

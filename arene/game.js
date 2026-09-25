@@ -1772,6 +1772,7 @@ const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r
   ],
   anaconda: [
     { p: 17, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le dernier mot du titre, écrit en gros ?', r: 'géante', x: 'MADAME EST UNE GÉANTE' },
+    { p: 17, ou: 'l’encart « CHIFFRE WAOUH »', q: 'Quel est le premier mot du titre, écrit en gros ?', r: 'madame', x: 'MADAME EST UNE GÉANTE' }, // (25/09 : 2e question impossible à deviner)
   ],
   loup: [
     { p: 27, ou: 'l’encart « LE TRUC FOU »', q: 'Quel est le premier mot du titre, écrit en gros ?', r: 'allô', x: 'ALLÔ, LA MEUTE ?' },
@@ -1793,6 +1794,7 @@ const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r
   ],
   mante: [
     { p: 63, ou: 'l’encart « LE TRUC FOU »', q: 'Qu’ont collé des chercheurs sur des mantes ? De toutes petites… ?', r: 'lunettes', x: 'de toutes petites lunettes 3D sur des mantes' },
+    { p: 70, ou: 'la mante, dans « UNE SEULE OREILLE »', q: 'Où est cachée son oreille ? Au milieu de sa… ?', r: 'poitrine', x: 'cachée au milieu de sa poitrine' }, // (page bonus, 25/09)
   ],
 };
 
@@ -2914,6 +2916,8 @@ function annonce(c) {
   const ph = G.phase, k = G.pt;
   const big = (s, col, t0, size = 200, y = 470) => { const u = back(P(k, t0, t0 + 12)); if (u > 0) txt(c, s, 960, y, size, col, { out: 32, sh: 16, sc: u, rot: -.03 }) };
   if (ph === 'intro') {
+    // 📖 un champion du livre entre dans l'arène (1re manche)
+    if (G.round === 1 && k < 70) { const ch = G.f.filter(f => champion(f.kind)); if (ch.length) { const a = Math.min(1, P(k, 2, 12), 1 - P(k, 58, 68)); c.globalAlpha = a; c.fillStyle = 'rgba(58,30,0,.6)'; c.fillRect(0, 262, W, 136); txt(c, ch.length === 2 ? '★ DEUX CHAMPIONS DU LIVRE ★' : `★ ${ch[0].d.art} : CHAMPION DU LIVRE ★`, 960, 332, ch.length === 2 || ch[0].d.art.length > 12 ? 56 : 66, '#FFD84A', { out: 14, sc: back(P(k, 2, 14)) }); c.globalAlpha = 1 } }
     if (k > 70 && k < 150) { c.fillStyle = 'rgba(11,42,91,.55)'; c.fillRect(0, 370, W, 200 * eo(P(k, 70, 80))); big(G.round === 3 ? 'MANCHE DÉCISIVE' : 'MANCHE ' + G.round, PA, 72, G.round === 3 ? 150 : 190) }
     if (k >= 150) big('BAGARRE !', JA, 150, 230);
     // une astuce différente à chaque manche : se protéger, le SUPER, le combo final
@@ -3336,6 +3340,7 @@ function endMatch() {
   $('fait-titre').textContent = neuf ? `NOUVELLE CARTE ! ${nbCartes()}/${totalCartes()} · LE SAVAIS-TU ?` : fait ? 'LE SAVAIS-TU ?' : 'ANIMAUX SECRETS';
   $('fait-txt').textContent = fait || fin('Bats les animaux secrets ⚔️ et réussis leur quiz : ils rejoignent ton équipe… avec leurs cartes « Le savais-tu ? » !');
   $('fin-img').src = (v || a).kind + '_fin.webp';
+  const orFin = !!(v && champion(v.kind) && (NET.on ? !v.distant : !v.cpu)); $('fin').classList.toggle('or', orFin); if (orFin) $('fin-badges').innerHTML = '<span class="champ-or">📖 CHAMPION DU LIVRE !</span>' + $('fin-badges').innerHTML;
   $('revanche').textContent = suite ? 'ADVERSAIRE SUIVANT ▶' : G.mode === 1 && G.tournoi && humain ? 'NOUVEAU TOURNOI' : NET.on ? 'REJOUER' : 'REVANCHE !';
   if (ep) { const d = CHARS[ep];
     $('fait-titre').textContent = humain ? '🃏 3 CARTES GAGNÉES !' : 'PRESQUE !';
@@ -3353,6 +3358,7 @@ function startMatch() {
   if (NET.on) G.f.forEach((f, i) => f.distant = i !== NET.moi); // en ligne : l'animal de l'ami (ses trophées, ses sons « SUPER prêt ») n'est pas le nôtre
   G.nvTroph = [];
   for (const f of G.f) if (!f.cpu && !f.distant && !G.tuto) SAVE.joue[f.kind] = (SAVE.joue[f.kind] || 0) + 1; // ⭐ TES PRÉFÉRÉS
+  if (G.f.some(f => champion(f.kind))) setTimeout(() => sfx('super', .5), 200); // 📖 l'entrée d'un champion du livre
   G.round = 1; newRound(); show(null);
   document.body.classList.toggle('deux', G.mode === 2 && !NET.on);
   for (const T of [TOUCH, TOUCH2]) { T.x = T.y = 0; T.L = T.H = T.S = T.G = false }
