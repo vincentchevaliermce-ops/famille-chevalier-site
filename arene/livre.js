@@ -269,15 +269,33 @@ function ouvreLivre() {
   sonInit(); G.phase = 'menu'; G.livre = null; G.quest = null; show('livre');
   const s = scoreLivre(), suivant = prochainDuel(), legAttend = legendesOuvertes() && LEGENDES_LIVRE.some(x => pret(x.k) && !SAVE.debloques.includes(x.k));
   $('livre-score').innerHTML = `<span>TOI <b>${s.toi}</b></span><img src="gigi/duel_03_recto.svg" alt=""><span>GIGI <b>${s.gigi}</b></span>` + (s.etoiles ? `<span class="boss-et">${'★'.repeat(s.etoiles)}</span>` : '');
-  $('livre-msg').textContent = suivant ? `Ton prochain duel : le ${n2(suivant.n)}${suivant.boss ? ', un duel de boss' : ''}. Dans le livre, il est page ${suivant.p} !` : legAttend ? 'Les 30 duels sont gagnés… LES LÉGENDES SE RÉVEILLENT ! (onglet ★ LÉGENDES)' : DUELS.every(fini) ? 'Tu as tout gagné ! Tu peux tout rejouer.' : '';
+  $('livre-msg').textContent = '';
+  heroLivre(suivant, legAttend);
   ongletLivre(dePari ? manche(dePari) : suivant ? manche(suivant) : legAttend ? 4 : mancheLivre || 1);
+}
+// (25/09, M5) la grande carte orange : le prochain duel, en un geste (comme ▶ JOUER sur l'accueil)
+function heroLivre(suivant, legAttend) {
+  const h = $('livre-hero'); if (!h) return;
+  if (suivant) {
+    const [na, nb] = (SOMMAIRE[suivant.n - 1] || suivant.noms.join(' / ')).split(' / '), r = SAVE.livre[suivant.n];
+    const etat = r && !fini(suivant) ? (r.combat ? '❓ LA QUESTION !' : '⚔️ À GAGNER !') : suivant.boss ? '💥 BOSS !' : '';
+    h.className = 'livre-hero' + (suivant.boss ? ' boss' : ''); h.hidden = false;
+    h.innerHTML = `<span class="lh-go R">▶ JOUER<small>DUEL ${n2(suivant.n)}</small></span><span class="lh-corps"><span class="lh-tetes"><img src="${suivant.a}_tete.webp" alt=""><em>VS</em><img src="${suivant.b}_tete.webp" alt=""></span>` +
+      `<span class="lh-txt"><small>📖 page ${suivant.p}</small><b class="R">${na.toUpperCase()} OU ${nb.toUpperCase()} ?</b>${etat ? `<i>${etat}</i>` : ''}</span></span>`;
+    h.onclick = () => { sfx('valide'); if (r && !fini(suivant) && r.combat) ouvreQuestion(suivant); else ouvrePari(suivant) };
+  } else if (legAttend) {
+    const L = LEGENDES_LIVRE.filter(x => pret(x.k) && !SAVE.debloques.includes(x.k));
+    h.className = 'livre-hero leg'; h.hidden = false;
+    h.innerHTML = `<span class="lh-go R">★<small>BONUS</small></span><span class="lh-corps"><span class="lh-tetes">${L.slice(0, 2).map(x => `<img src="${x.k}_tete.webp" alt="">`).join('<em>·</em>')}</span><span class="lh-txt"><small>Les 30 duels sont gagnés !</small><b class="R">LES LÉGENDES SE RÉVEILLENT !</b><i>★ VIENS LES AFFRONTER</i></span></span>`;
+    h.onclick = () => { sfx('valide'); ongletLivre(4) };
+  } else h.hidden = true;
 }
 function ongletLivre(m) {
   mancheLivre = m; const suivant = prochainDuel(), ong = $('livre-onglets'), legOk = legendesOuvertes();
   ong.innerHTML = [1, 2, 3].map(k => {
     const L = DUELS.filter(D => manche(D) === k), f = L.filter(fini).length, ouverte = f || L.some(duelOuvert);
-    return `<button class="btn R" type="button" data-manche="${k}" aria-pressed="${k === m}">MANCHE ${k}<small>${!ouverte ? '🔒' : f === L.length ? '✔' : f + '/' + L.length}</small></button>`;
-  }).join('') + `<button class="btn R leg" type="button" data-manche="4" aria-pressed="${m === 4}">★ LÉGENDES<small>${!legOk ? '🔒' : LEGENDES_LIVRE.filter(x => SAVE.debloques.includes(x.k)).length + '/3'}</small></button>`;
+    return `<button class="btn R" type="button" data-manche="${k}" aria-pressed="${k === m}">MANCHE ${k}${!ouverte ? '<small>🔒</small>' : f === L.length ? '<small>✔</small>' : ''}</button>`;
+  }).join('') + `<button class="btn R leg" type="button" data-manche="4" aria-pressed="${m === 4}">★ LÉGENDES${!legOk ? '<small>🔒</small>' : ''}</button>`;
   ong.querySelectorAll('button').forEach(b => b.onclick = () => { const k = +b.dataset.manche; if (k !== mancheLivre) { sfx('clic'); ongletLivre(k) } });
   const box = $('duels-liste'); box.innerHTML = ''; box.classList.toggle('legendes', m === 4);
   if (m === 4) { carteslegendes(box, legOk); return }
@@ -287,10 +305,10 @@ function ongletLivre(m) {
     const tete = k => pret(k) ? `<img src="${k}_tete.webp" alt="">` : '<i>?</i>';
     const [na, nb] = (SOMMAIRE[D.n - 1] || D.noms.join(' / ')).split(' / ');
     const etat = !duelPret(D) ? 'BIENTÔT' : !ok ? (D.n === 30 ? '🔒 APRÈS LES AUTRES' : '🔒') : gagne ? '✔ GAGNÉ' + (r && r.etoiles ? ' · ' + '★'.repeat(r.etoiles) : '') : enCours ? (r.combat ? '❓ LA QUESTION !' : '⚔️ À GAGNER !') : D.boss ? 'DUEL DE BOSS !' : 'À TOI DE PARIER !';
-    b.innerHTML = `<span class="haut"><span class="num R">${n2(D.n)}</span>${D.boss ? '<span class="boss-tag R">BOSS</span>' : ''}</span>` +
-      `<span class="tetes">${tete(D.a)}<em class="R">VS</em>${tete(D.b)}</span>` +
-      `<span class="q R"><span><b>${na}</b>&nbsp;<i>/</i> <b>${nb}</b></span></span>` +
-      `<span class="etat">${etat}</span>`;
+    const ic = !duelPret(D) ? '…' : !ok ? '🔒' : gagne ? '✔' : enCours ? (r.combat ? '❓' : '⚔️') : '▶';
+    b.title = `Duel ${n2(D.n)} : ${na} ou ${nb} ? — ${etat}`;
+    b.innerHTML = `<span class="md"><span class="num R">${n2(D.n)}</span>${D.boss ? '<span class="boss-tag R">BOSS</span>' : ''}${tete(D.a)}${tete(D.b)}<span class="ic">${ic}</span></span>` +
+      `<span class="q R"><span><b>${na}</b>&nbsp;<i>/</i> <b>${nb}</b></span></span><span class="etat">${etat}</span>`;
     b.onclick = () => {
       if (!ok) { sfx('erreur'); if (!duelPret(D)) montreMsg('livre-msg', 'Cet animal arrive bientôt dans l’arène !'); else montreMsg('livre-msg', D.n === 30 ? 'La grande finale ? Interdit d’y aller avant d’avoir gagné les autres !' : 'Gagne d’abord le duel d’avant !'); return }
       sfx('valide'); if (enCours && r.combat) ouvreQuestion(D); else ouvrePari(D);
@@ -303,7 +321,7 @@ function carteslegendes(box, legOk) {
   for (const L of LEGENDES_LIVRE) {
     const k = L.k, d = CHARS[k]; if (!d) continue; const a = SAVE.debloques.includes(k), b = document.createElement('button'); b.type = 'button'; b.dataset.leg = k;
     b.className = 'duel legende-carte' + (legOk ? '' : ' ferme') + (a ? ' joue' : '') + (legOk && !a ? ' suivant' : '');
-    b.innerHTML = `<span class="haut"><span class="num R">★</span><span class="boss-tag R">${MONDES[L.m].ico} ${MONDES[L.m].nom}</span></span><span class="tetes"><img src="${k}_tete.webp" alt=""></span><span class="q R"><span><b>${d.nom}</b></span></span>` +
+    b.innerHTML = `<span class="md"><span class="num R">${MONDES[L.m].ico} ${MONDES[L.m].nom}</span><img src="${k}_tete.webp" alt=""><span class="ic">${a ? '✔' : legOk ? '★' : '🔒'}</span></span><span class="q R"><span><b>${d.nom}</b></span></span>` +
       `<span class="etat">${!legOk ? '🔒 APRÈS LA FINALE' : a ? '✔ À TOI' : d.fem ? '★ RÉVEILLE-LA !' : '★ RÉVEILLE-LE !'}</span>`;
     b.onclick = () => {
       if (!legOk) { sfx('erreur'); montreMsg('livre-msg', 'Les légendes dorment encore… Gagne d’abord les 30 duels !'); return }
@@ -318,28 +336,29 @@ function montreMsg(id, t) { const e = $(id); e.textContent = t; e.classList.remo
 // --- écran 2 : le pari (comme la page de gauche du livre)
 function ouvrePari(D, rejoue) {
   G.phase = 'menu'; show('pari'); G.livre = { D, rejoue: !!rejoue || fait(D), pari: null, choixCombat: false };
-  $('pari-num').textContent = `DUEL ${String(D.n).padStart(2, '0')} / ${LIVRE_TOTAL} · ${D.lieu}` + (D.boss ? ` · DUEL DE BOSS ${D.boss} / 3` : '');
-  $('pari-q').textContent = D.q;
+  $('pari-num').textContent = `DUEL ${String(D.n).padStart(2, '0')} / ${LIVRE_TOTAL}` + (D.boss ? ' · BOSS !' : '');
+  { const [na, nb] = (SOMMAIRE[D.n - 1] || D.noms.join(' / ')).split(' / '); $('pari-q').textContent = `${na} OU ${nb} ?`.toUpperCase() } // (25/09 : les noms courts du sommaire, lisibles sur iPhone)
   $('pari-gigi-img').src = `gigi/duel_${String(D.n).padStart(2, '0')}_recto.svg`;
-  $('pari-gigi-dit').textContent = D.gigi.dit; $('pari-gigi-pourquoi').textContent = D.gigi.pourquoi;
+  $('pari-gigi-dit').textContent = D.gigi.dit; $('pari-gigi-pourquoi').textContent = D.gigi.pourquoi; $('pari-gigi-dit').closest('.pari-gigi').hidden = false;
   $('pari-intro').textContent = D.intro;
   for (const [i, k] of [[0, D.a], [1, D.b]]) {
     const f = D.fiches[i], el = $(i ? 'pari-b' : 'pari-a');
     el.className = 'fiche ' + k;
     el.innerHTML = `<span class="img"><img src="${k}_corps.webp" alt=""></span><b class="R">${D.noms[i]}</b>` +
-      `<span class="l"><i>⚖</i>${f[0]}</span><span class="l"><i>⚔</i>${f[1]}</span><span class="l"><i>★</i>${f[2]}</span><span class="l"><i>⚠</i>${f[3]}</span>`;
+      `<span class="l"><i>⚖</i>${f[0]}</span><span class="l"><i>⚔</i>${f[1]}</span><span class="l"><i>★</i>${f[2]}</span><span class="l"><i>⚠</i>${f[3]}</span>` +
+      `<span class="fiche-go">${rejoue || SAVE.livre[D.n] ? 'JE ME BATS ▶' : 'JE PARIE ▶'}</span>`;
     el.onclick = () => choisitPari(k);
   }
   $('pari-nul').hidden = !D.boss; $('pari-nul').onclick = () => choisitPari('nul');
   const r = SAVE.livre[D.n];
-  $('pari-titre').textContent = rejoue || r ? `TON PARI ÉTAIT : ${r ? (r.pari === 'nul' ? 'MATCH NUL' : nomDuel(D, r.pari)) : '?'} · AVEC QUI TU TE BATS ?` : D.boss ? 'TON PARI DE BOSS : QUI GAGNE ? (OU MATCH NUL)' : 'TON PARI : QUI GAGNE ?';
-  if (r) { $('pari-nul').hidden = true; G.livre.choixCombat = true }
+  $('pari-titre').textContent = rejoue || r ? `TON PARI : ${r ? (r.pari === 'nul' ? 'MATCH NUL' : nomDuel(D, r.pari)) : '?'}` : 'QUI GAGNE ?';
+  if (r) { $('pari-nul').hidden = true; G.livre.choixCombat = true; $('pari-gigi-dit').closest('.pari-gigi').hidden = true } // (rejouer : on choisit juste avec qui se battre)
 }
 function choisitPari(k) {
   const L = G.livre, D = L.D; sonInit();
   if (!L.choixCombat) {
     L.pari = k; sfx('valide');
-    if (k === 'nul') { L.choixCombat = true; $('pari-nul').hidden = true; $('pari-titre').textContent = 'MATCH NUL ! ET TOI, AVEC QUI TU TE BATS ?'; return }
+    if (k === 'nul') { L.choixCombat = true; $('pari-nul').hidden = true; $('pari-titre').textContent = 'TON PARI : MATCH NUL'; $('pari-gigi-dit').closest('.pari-gigi').hidden = true; document.querySelectorAll('#pari .fiche-go').forEach(e => e.textContent = 'JE ME BATS ▶'); return }
     lanceDuelLivre(k); return
   }
   if (k === 'nul') return;
@@ -367,18 +386,19 @@ function verdictLivre(v, etoilesCombat, nv) {
   sauve();
   G.phase = 'menu'; show('verdict');
   const moi = nomDuel(D, L.moi);
-  $('v-arene').innerHTML = gagneArene ? `DANS L’ARÈNE, ${ton(moi)} A GAGNÉ ! <span class="et">${'★'.repeat(etoilesCombat)}</span>` : `DANS L’ARÈNE, ${ton(moi)} A PERDU…`;
+  $('v-arene').innerHTML = gagneArene ? `${ton(moi)} A GAGNÉ ! <span class="et">${'★'.repeat(etoilesCombat)}</span>` : `${ton(moi)} A PERDU…`;
+  $('v-question').hidden = false; $('v-suite1').hidden = true; $('verdict').classList.add('temps1');
   $('v-question').textContent = 'ET DANS LA VRAIE VIE ?';
   const carte = $('v-carte'); carte.classList.remove('tamponne'); carte.hidden = true;
   $('v-tampon').className = 'tampon ' + R.tampon; $('v-tampon').textContent = R.label;
   $('v-titre').textContent = R.titre; $('v-cri').textContent = R.cri; $('v-punch').textContent = R.punch; $('v-film').textContent = R.film;
   $('v-img').src = R.img || R.g + '_fin.webp'; // (duel 20 : match nul → une image avec les deux animaux)
   const pariTxt = r.pari === 'nul' ? 'MATCH NUL' : nomDuel(D, r.pari);
-  $('v-toi').innerHTML = deja && L.rejoue ? `Ton pari (déjà compté) : <b>${pariTxt}</b> ${r.bon ? '✔' : '✘'}` : r.bon ? `Ton pari : <b>${pariTxt}</b> ✔ BON PARI ! +1 point${D.boss ? ' + 1 étoile de boss ★' : ''}` : `Ton pari : <b>${pariTxt}</b> ✘ raté… Ce n’est pas grave : dans la nature, le plus fort ne gagne pas à tous les coups !`;
+  $('v-toi').innerHTML = deja && L.rejoue ? `TON PARI : <b>${pariTxt}</b> ${r.bon ? '✔' : '✘'}<small>(déjà compté)</small>` : r.bon ? `TON PARI : <b>${pariTxt}</b> ✔<small>BON PARI ! +1 POINT${D.boss ? ' + 1 ÉTOILE DE BOSS ★' : ''}</small>` : `TON PARI : <b>${pariTxt}</b> ✘<small>Raté… Dans la nature, le plus fort ne gagne pas à tous les coups !</small>`;
   $('v-gigi-img').src = `gigi/duel_${String(D.n).padStart(2, '0')}_verso.svg`;
-  $('v-gigi').innerHTML = `<b>GIGI</b> avait parié : ${D.gigi.dit} ${D.gigi.pari === R.g ? '✔' : '✘'}<br><i>${D.gigi.apres}</i>`;
+  $('v-gigi').innerHTML = `<b>GIGI : ${D.gigi.dit} ${D.gigi.pari === R.g ? '✔' : '✘'}</b><i>${D.gigi.apres}</i>`;
   const s = scoreLivre(); $('v-score').innerHTML = `TOI <b>${s.toi}</b> · GIGI <b>${s.gigi}</b>`;
-  $('v-page').textContent = `La suite de l’enquête est à la page ${D.pv} du livre !`;
+  $('v-page').textContent = `📖 La suite : page ${D.pv} du livre`;
   $('v-badges').innerHTML = (nv || []).map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
   // la suite : duel déjà gagné → DUEL SUIVANT ; combat gagné → LA QUESTION ; combat perdu → REVANCHE (avec l'animal de son choix)
   const suivant = prochainDuel(), gagne = fini(D), noms = gagnesDuel(D).concat(championsDuel(D)).filter(k => !SAVE.debloques.includes(k)).map(k => CHARS[k].art);
@@ -392,14 +412,16 @@ function verdictLivre(v, etoilesCombat, nv) {
   $('v-reste').hidden = true; sfx('tam', .6);
   let k = 0; const roule = setInterval(() => { if (G.screen !== 'verdict') { clearInterval(roule); return } sfx('tam', .4 + .05 * k); if (++k >= 6) clearInterval(roule) }, 180);
   setTimeout(() => { if (G.screen !== 'verdict') return; carte.hidden = false; void carte.offsetWidth; carte.classList.add('tamponne'); sfx('boum', .9); sfx(R.g, .9); acclameMenu() }, 1250);
-  setTimeout(() => { if (G.screen !== 'verdict') return; $('v-reste').hidden = false; sfx(r.bon ? 'victoire' : 'defaite', .8); if (D.n === 30 && !deja) finaleFaite() }, 2100);
+  // 2e temps (25/09) : on a lu la vraie réponse → SUITE ▶ → ton pari, Gigi, le score et la suite (un seul écran lisible à la fois)
+  setTimeout(() => { if (G.screen !== 'verdict') return; const b = $('v-suite1'); b.hidden = false;
+    b.onclick = () => { sfx('valide'); b.hidden = true; carte.hidden = true; $('v-question').hidden = true; $('v-reste').hidden = false; $('verdict').classList.remove('temps1'); sfx(r.bon ? 'victoire' : 'defaite', .8); if (D.n === 30 && !deja) finaleFaite() } }, 2000);
 }
 // --- écran 4 : LA QUESTION (2A) — une seule, sur la vraie réponse qu'on vient de lire. Raté ? On relit, on réessaie.
 function ouvreQuestion(D, relis) {
   const z = QUESTIONS[D.n]; if (!z) { duelGagne(D); return }
-  sonInit(); G.phase = 'menu'; show('quiz'); const qz = $('quiz'); qz.classList.remove('defi', 'or'); qz.classList.add('q-duel'); G.quest = { D, bloque: false }; G.retourQuiz = 'livre';
-  $('quiz-titre').textContent = `❓ LA QUESTION DU DUEL ${n2(D.n)}`;
-  $('quiz-intro').innerHTML = fin(relis ? 'Relis bien… et réessaie !' : 'Tu as lu la vraie réponse ? Réponds juste : les animaux du duel sont à toi !');
+  sonInit(); G.phase = 'menu'; show('quiz'); const qz = $('quiz'); qz.classList.remove('defi', 'or', 'gagne', 'relis'); qz.classList.add('q-duel'); G.quest = { D, bloque: false }; G.retourQuiz = 'livre';
+  $('quiz-titre').textContent = `❓ LA QUESTION`;
+  $('quiz-intro').innerHTML = fin(relis ? 'Réessaie !' : 'Réponds juste : les animaux sont à toi !');
   $('quiz-img').style.backgroundImage = `url(${D.rep.g === 'nul' ? D.a : D.rep.g}_corps.webp)`; $('quiz-img').classList.remove('ombre');
   $('quiz-pas').innerHTML = ''; $('quiz-q').textContent = fin(z[0]); $('quiz-msg').textContent = ''; $('quiz-suite').hidden = true;
   const box = $('quiz-rep'); box.innerHTML = '';
@@ -409,8 +431,8 @@ function repondQuestion(b, juste) {
   const Qd = G.quest; if (!Qd || Qd.bloque || !Qd.D) return; Qd.bloque = true; const D = Qd.D;
   document.querySelectorAll('#quiz-rep .btn').forEach(x => { x.disabled = true });
   if (juste) { b.classList.add('bon'); sfx('valide'); $('quiz-msg').textContent = hasard(['BRAVO !', 'EXACT !', 'TOUT JUSTE !']); setTimeout(() => { if (G.screen === 'quiz' && G.quest && G.quest.D === D) duelGagne(D) }, 900); return }
-  b.classList.add('faux'); sfx('erreur');
-  $('quiz-msg').innerHTML = `Pas tout à fait… Relis : <span class="carte-rappel">${esc(fin(D.rep.film))}</span>`;
+  b.classList.add('faux'); sfx('erreur'); $('quiz').classList.add('relis');
+  $('quiz-msg').innerHTML = `Pas tout à fait… Relis bien : <span class="carte-rappel">${esc(fin(D.rep.film))}</span>`;
   const s = $('quiz-suite'); s.hidden = false; s.textContent = 'RÉESSAYER ▶'; s.onclick = () => { sfx('clic'); ouvreQuestion(D, true) };
 }
 // --- écran 5 : DUEL GAGNÉ ! les animaux rejoignent la collection (les champions du livre : « 📖 J'AI LE LIVRE »)
@@ -420,12 +442,13 @@ function duelGagne(D) {
   for (const k of nouveaux) SAVE.debloques.push(k);
   if (nouveaux.length) badge('secret', nv);
   if (DUELS.filter(duelPret).every(fini)) badge('lecteur', nv);
-  sauve(); G.quest = { D, fini: true }; G.retourQuiz = 'livre';
+  sauve(); G.quest = { D, fini: true }; G.retourQuiz = 'livre'; $('quiz').classList.add('gagne');
   const suivant = prochainDuel(), mancheFinie = premier && D.n % 10 === 0;
-  $('quiz-titre').textContent = `🎉 DUEL ${n2(D.n)} GAGNÉ !`;
-  $('quiz-intro').innerHTML = fin(nouveaux.length ? `${nouveaux.map(k => CHARS[k].art).join(' et ')} ${nouveaux.length > 1 ? 'rejoignent' : 'rejoint'} ta collection !` : champs.length ? 'Un champion du livre t’attend…' : 'Bravo ! Tu avais déjà ces animaux.');
+  $('quiz-titre').textContent = `🎉 DUEL ${n2(D.n)} GAGNÉ !`; $('quiz').classList.remove('relis');
+  $('quiz-intro').innerHTML = fin(nouveaux.length ? `${nouveaux.length > 1 ? 'Ils sont' : (CHARS[nouveaux[0]].fem ? 'Elle est' : 'Il est')} à toi !` : champs.length ? 'Un champion du livre t’attend…' : 'Bravo !');
   $('quiz-pas').innerHTML = '';
-  $('quiz-q').innerHTML = `<span class="gains">${nouveaux.map(k => `<span class="gain"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>NOUVEAU !</small></span>`).join('')}${champs.map(k => `<span class="gain or"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>📖 AVEC LE LIVRE</small></span>`).join('')}</span>`;
+  const deja = [...new Set([D.a, D.b])].filter(k => pret(k) && !nouveaux.includes(k) && !champs.includes(k));
+  $('quiz-q').innerHTML = `<span class="gains">${nouveaux.map(k => `<span class="gain"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>NOUVEAU !</small></span>`).join('')}${champs.map(k => `<span class="gain or"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>📖 AVEC LE LIVRE</small></span>`).join('')}${deja.map(k => `<span class="gain deja"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>✔ DÉJÀ À TOI</small></span>`).join('')}</span>`;
   $('quiz-rep').innerHTML = ''; for (const k of champs) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn or'; b.textContent = `📖 J’AI LE LIVRE : ${CHARS[k].nom}`; b.onclick = () => { sfx('valide'); ouvreLivreEnMain(k) }; $('quiz-rep').appendChild(b) }
   $('quiz-msg').innerHTML = (mancheFinie ? `<span class="quete">${D.n === 30 ? '★ LES LÉGENDES SE RÉVEILLENT ! (onglet ★ LÉGENDES)' : `🔓 MANCHE ${manche(D) + 1} OUVERTE ! L’ordi devient ${['', 'NORMAL', 'COSTAUD'][manche(D)]}.`}</span>` : '') +
     (nv.length ? `<span>NOUVEAU TROPHÉE : ${nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ')}</span>` : '') + (window.codeAOffrir ? nouveaux.map(codeAOffrir).join('') : '');
@@ -439,11 +462,11 @@ function majAccueil() {
   const suivant = prochainDuel(), fin = !suivant && DUELS.every(fini), leg = fin && LEGENDES_LIVRE.find(x => pret(x.k) && !SAVE.debloques.includes(x.k));
   const im = (id, k) => { const e = $(id); if (e) { e.src = k + '_tete.webp'; e.hidden = !k } }, tx = (id, t) => { const e = $(id); if (e) e.textContent = t };
   if (suivant) { const [na, nb] = (SOMMAIRE[suivant.n - 1] || suivant.noms.join(' / ')).split(' / '), r = SAVE.livre[suivant.n];
-    im('aj-a', suivant.a); im('aj-b', suivant.b); tx('aj-sur', `L’aventure du livre · duel ${n2(suivant.n)} / ${LIVRE_TOTAL}${suivant.boss ? ' · BOSS !' : r ? ' · à gagner !' : ''}`); tx('aj-q', `${na} ou ${nb} ?`.toUpperCase()) }
-  else if (leg) { const autre = LEGENDES_LIVRE.find(x => x !== leg) || leg; im('aj-a', leg.k); im('aj-b', autre.k); tx('aj-sur', 'L’aventure du livre · bonus'); tx('aj-q', '★ LES LÉGENDES T’ATTENDENT !') }
-  else { im('aj-a', 'tigre'); im('aj-b', 'gorille'); tx('aj-sur', 'L’aventure du livre'); tx('aj-q', fin ? 'TOUT EST GAGNÉ ! REJOUE…' : 'LES 30 DUELS DU LIVRE') }
+    im('aj-a', suivant.a); im('aj-b', suivant.b); tx('aj-sur', `Duel ${n2(suivant.n)} / ${LIVRE_TOTAL}${suivant.boss ? ' · BOSS !' : ''}`); tx('aj-q', `${na} ou ${nb} ?`.toUpperCase()) }
+  else if (leg) { const autre = LEGENDES_LIVRE.find(x => x !== leg) || leg; im('aj-a', leg.k); im('aj-b', autre.k); tx('aj-sur', 'Bonus'); tx('aj-q', '★ LES LÉGENDES T’ATTENDENT !') }
+  else { im('aj-a', 'tigre'); im('aj-b', 'gorille'); tx('aj-sur', 'Les 30 duels'); tx('aj-q', fin ? 'TOUT EST GAGNÉ ! REJOUE…' : 'LES 30 DUELS DU LIVRE') }
   const tous = ORDRE.filter(pret), a = tous.filter(k => SAVE.debloques.includes(k)), t = $('t-tetes');
-  tx('t-nb', `${a.length} / ${tous.length} gagnés`);
+  tx('t-nb', `${a.length} / ${tous.length}`);
   if (t) t.innerHTML = a.slice(-3).map(k => `<img src="${k}_tete.webp" alt="">`).join('');
 }
 function acclameMenu() { sfx('foule', .5) }

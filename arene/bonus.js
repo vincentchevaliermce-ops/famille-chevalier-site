@@ -253,8 +253,11 @@ const TUTO = [
 ];
 const TUTO_NOUVEAU = ['saut', 'A', 'cL', 'cH']; // pour ceux qui avaient déjà fait l'ancien tutoriel (25/09) : seulement ce qui est nouveau
 const TUTO_VERSION = 2;
+// (25/09, bonnes pratiques des jeux mobiles) : la 1re fois, l'essentiel en 6 étapes ; les coups avancés s'apprennent PENDANT les premiers combats (astuces)
+const TUTO_BASE = ['avance', 'L', 'H', 'garde', 'S', 'SUPER'];
+function tutoAFaire() { if (!window.lanceTuto) return false; if ((SAVE.tuto || 0) >= TUTO_VERSION) return false; if (SAVE.tuto) { SAVE.tuto = TUTO_VERSION; sauve(); return false } return true } // (l'ancien tutoriel fait : les astuces suffisent)
 function lanceTuto(ensuite, quoi) {
-  const L = quoi === 'nouveau' ? TUTO.filter(e => TUTO_NOUVEAU.includes(e.k)) : TUTO;
+  const L = quoi === 'tout' ? TUTO : quoi === 'nouveau' ? TUTO.filter(e => TUTO_NOUVEAU.includes(e.k)) : TUTO.filter(e => TUTO_BASE.includes(e.k));
   G.tutoApres = ensuite; G.tuto = { i: 0, t: 0, ok: 0, L, nouveau: quoi === 'nouveau' }; G.livre = null; G.defi = null; G.jour = null;
   G.mode = 1; G.niv = 0; G.tournoi = null; G.pick = ['tigre', 'gorille']; G.arene = 'savane'; startMatch();
   G.phase = 'fight'; G.pt = 0; for (const f of G.f) setS(f, 'idle'); G.f[1].tuto = true;
@@ -277,6 +280,25 @@ function tutoPas() {
   if (e.k === 'garde') fait = a.state === 'bstun';
   if (e.k === 'SUPER') { a.meter = 100; fait = a.state === 'atk' && a.mk === 'SUPER' }
   if (fait && T.t > 20) { T.i++; T.t = 0; sfx('valide'); addFx({ k: 'mot', x: a.x, y: FLOOR - a.h - 560, mot: hasard(['BRAVO !', 'SUPER !', 'OUI !', 'BIEN JOUÉ !']), col: JA }); if (T.i >= T.L.length) { finTuto(false); return } majTuto() }
+}
+// ASTUCES (25/09) : pendant les premiers combats, UN coup avancé à essayer (au plus 3 fois chacun), dans l'ordre ; réussi → BRAVO et on passe au suivant
+const ASTUCES = [
+  { k: 'air', t: 'ATTAQUE EN L’AIR !', tt: 'Saute (▲) puis A pendant le saut', tc: 'Saute (↑) puis J pendant le saut', ok: f => f.state === 'atk' && f.mk === 'A', peut: f => !vol2d(f) && f.d.moves.A },
+  { k: 'bas', t: 'LE COUP EN BAS !', tt: 'Joystick en bas (▼) et A', tc: 'Garde ↓ et appuie sur J', ok: f => f.state === 'atk' && f.mk === 'cL', peut: f => !vol2d(f) && f.d.moves.cL },
+  { k: 'balayette', t: 'LA BALAYETTE !', tt: 'Joystick en bas (▼) et B : il tombe !', tc: 'Garde ↓ et appuie sur K', ok: f => f.state === 'atk' && f.mk === 'cH', peut: f => !vol2d(f) && f.d.moves.cH },
+];
+function astuceDebut() {
+  if (G.mode !== 1 || NET.on || !G.f.length || G.f[0].cpu) return; SAVE.astuces = SAVE.astuces || {};
+  const f = G.f[0], a = ASTUCES.find(x => (SAVE.astuces[x.k] || 0) < 3 && SAVE.astuces[x.k] !== 'ok' && x.peut(f)); if (!a) return;
+  SAVE.astuces[a.k] = (SAVE.astuces[a.k] || 0) + 1; sauve(); G.astuce = { a, t: 0, fini: false };
+}
+function astucePas() {
+  const A = G.astuce, f = G.f[0], e = $('tuto-bulle'); if (!A || !f || !e) return; A.t++;
+  if (G.phase !== 'fight') { if (A.t > 1 && !e.hidden && A.montre) { e.hidden = true; A.montre = false } return }
+  if (!A.montre && !A.fini && A.t > 40) { const tact = document.body.classList.contains('tactile'); A.montre = true; A.t0 = A.t;
+    e.innerHTML = `<small>NOUVEAU COUP · ESSAIE !</small><b class="R">${A.a.t}</b><span>${tact ? A.a.tt : A.a.tc}</span>`; e.hidden = false }
+  if (A.montre && !A.fini && A.a.ok(f)) { A.fini = true; SAVE.astuces[A.a.k] = 'ok'; sauve(); sfx('valide'); addFx({ k: 'mot', x: f.x, y: FLOOR - f.h - 560, mot: hasard(['BRAVO !', 'SUPER !', 'BIEN JOUÉ !']), col: JA }); e.hidden = true; A.montre = false }
+  if (A.montre && A.t - A.t0 > 600) { e.hidden = true; A.montre = false; A.fini = true } // 10 s au plus : on n'insiste pas
 }
 // cerveau du mannequin : il attend, et attaque seulement à l'étape « protège-toi »
 function tutoBrain(f, o) {
@@ -301,9 +323,9 @@ function ouvreDefiRecu(d) {
 function releveDefi() { const d = G.defi; if (!d) return; sonInit(); sfx('valide'); finEpreuve(); d.enCours = true; G.livre = null; G.jour = null; G.mode = 1; G.tournoi = null; G.niv = d.niv; G.pick = [d.moi, d.adv]; G.arene = d.arene; G.areneHasard = false; vs() }
 function initBonus() {
   const on = (id, f) => { const e = $(id); if (e) e.onclick = f };
-  on('codes-titre', ouvreCodes); on('code-ok', valideCodeSecret); on('code-retour', () => { sfx('retour'); show('titre') });
+  on('codes-titre', ouvreCodes); on('codes-collec', () => { G.retourCode = 'trophees'; ouvreCodes() }); on('code-ok', valideCodeSecret); on('code-retour', () => { sfx('retour'); const r = G.retourCode; G.retourCode = null; if (r === 'trophees') ouvreTrophees(); else show('titre') });
   on('god-btn', basculeGod);
-  on('invite-titre', invite); on('invite-envoie', envoieJeu); on('invite-retour', () => { sfx('retour'); show(G.retourInvite || 'titre') });
+  on('invite-titre', invite); on('invite-adeux', invite); on('invite-envoie', envoieJeu); on('invite-retour', () => { sfx('retour'); show(G.retourInvite || 'titre') });
   on('parents-titre', ouvreParents); on('porte-ok', valideParents); on('hl-go', hlTelecharge); hlEnregistre(); on('parents-retour', () => { sfx('retour'); show(G.retourParents || 'titre') });
   on('jour-titre', lanceJour); on('fin-jour', partageJour);
   on('fin-photo', photoVictoire); on('fin-defi', partageDefi); on('v-defi', () => { partageDefi() });
@@ -311,10 +333,10 @@ function initBonus() {
   on('defi-go', releveDefi); on('defi-non', () => { sfx('retour'); G.defi = null; history.replaceState(null, '', location.pathname); show('titre') });
   on('legende-ok', () => { sfx('valide'); G.phase = 'menu'; selStage = 0; show('choix'); vaVers(G.legendeVu || LEGENDAIRE); construitCartes() });
   on('tuto-passer', () => { sfx('clic'); finTuto(true) });
-  on('comment-jouer', () => { sfx('clic'); lanceTuto(() => { show('choix'); construitCartes() }) });
+  on('comment-jouer', () => { sfx('clic'); lanceTuto(() => { show('choix'); construitCartes() }, 'tout') });
   const pi = $('porte-in'); if (pi) pi.addEventListener('keydown', e => { if (e.key === 'Enter') valideParents() });
   // défi du jour : l'autocollant de l'accueil montre les deux animaux du jour
-  const j = defiDuJour(), jt = $('jour-tetes'), jx = $('jour-txt'); if (jt) jt.innerHTML = `<img src="${j.a}_tete.webp" alt=""><em>VS</em><img src="${j.b}_tete.webp" alt="">`; if (jx) jx.textContent = `${CHARS[j.a].nom} contre ${CHARS[j.b].nom}`;
+  const j = defiDuJour(), jt = $('jour-tetes'), jx = $('jour-txt'); if (jt) jt.innerHTML = `<img src="${j.a}_tete.webp" alt=""><em>VS</em><img src="${j.b}_tete.webp" alt="">`; if (jx) jx.textContent = 'Chaque jour !'; if (false) jx.textContent = `${CHARS[j.a].nom} contre ${CHARS[j.b].nom}`;
   majGodBtn();
 }
 // au chargement : lien de défi reçu, lien « défi du jour »

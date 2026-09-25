@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790343108"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790349454"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -520,7 +520,7 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
 .tuile.t-jour.appel{box-shadow:0 0 0 .5cqw var(--jaune),.35cqw .45cqw 0 rgba(11,42,91,.65)}
 #titre .appli-btn{position:absolute;top:5.6cqw;right:1.3cqw;font-size:1.2cqw;padding:.35cqw 1cqw;z-index:3}
 #titre #livre-titre.nouveau-defis{position:relative}
-#titre #livre-titre.nouveau-defis::after{content:"NOUVEAU : GAGNE LES ANIMAUX DU LIVRE !";position:absolute;top:-2.3cqw;right:-2cqw;left:auto;white-space:nowrap;background:#FF5A1F;color:#fff;font:900 1.2cqw Rubik,"Arial Black",sans-serif;letter-spacing:.03em;padding:.35cqw .8cqw;border:.25cqw solid var(--marine);border-radius:.9cqw;transform:rotate(3deg);box-shadow:0 .25cqw 0 rgba(0,0,0,.4)}
+#titre #livre-titre.nouveau-defis::after{content:"NOUVEAU !";position:absolute;top:-2.3cqw;right:-2cqw;left:auto;white-space:nowrap;background:#FF5A1F;color:#fff;font:900 1.2cqw Rubik,"Arial Black",sans-serif;letter-spacing:.03em;padding:.35cqw .8cqw;border:.25cqw solid var(--marine);border-radius:.9cqw;transform:rotate(3deg);box-shadow:0 .25cqw 0 rgba(0,0,0,.4)}
 /* ===== BONUS : codes, défis, invitation, parents, tutoriel ===== */
 .coin-titre{position:absolute;top:1.3cqw;left:1.5cqw;display:flex;gap:.7cqw;z-index:2}
 .btn.rond{display:flex;flex-direction:column;align-items:center;gap:.1cqw;font-size:2.3cqw;padding:.35cqw .8cqw .45cqw;border-radius:1.2cqw;background:rgba(11,42,91,.9);line-height:1}
@@ -675,6 +675,402 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
 #fin.or #gagnant{color:#FFE680}
 #fin.or #fin-img{filter:drop-shadow(0 0 1.6cqw rgba(255,230,140,.9)) drop-shadow(0 .6cqw 0 rgba(0,0,0,.4))}
 .nouveau span.champ-or{background:linear-gradient(#FFF3B0,#FFB200);color:#3A1E00;border-color:#7A3E00;font-size:1.6cqw}
+/* =====================================================================
+   INTERFACE V4 (25/09, M5) — pensée pour l'iPhone. Demandes de Vincent : « une belle interface globale, intuitive et fluide »,
+   « la lisibilité optimisée pour la lecture sur iPhone », « illisible et moche, trop de boutons, écriture trop petite ».
+   Sur un iPhone à l'horizontale (Safari), le cadre du jeu fait ~ 576 px : 1 cqw ≈ 5,8 px.
+   Règles : aucun texte sous 2,5 cqw (14 px) · boutons 3,1 cqw (18 px) · titres 4,6 cqw (26 px) · une grande action orange
+   par écran + ◀ en haut à gauche · SON et PLEIN ÉCRAN seulement sur l'accueil et dans la pause · le décor de l'accueil partout.
+   Contrôle automatique : python3 outils/lisible_test.py (mesure chaque texte de chaque écran à la taille d'un iPhone).
+   ===================================================================== */
+:root{--or:#EC5A2C;--pomme:#7BD35A;--vert:#2FA85B;--c:.26cqw;--t-min:2.5cqw;--t-corps:2.75cqw;--t-btn:3.1cqw;--t-titre:4.6cqw}
+/* ---------- commun ---------- */
+#cadre .ecran.menu{background:#FFC629 url(fond_menu.webp) center/cover no-repeat;color:var(--marine);justify-content:flex-start;padding:1.2cqw 1.6cqw 1.4cqw;gap:1.2cqw}
+#cadre #quiz.or{background:radial-gradient(circle at 50% 35%,#7a5600,#160d00 75%)}
+@keyframes entreEcran{from{opacity:0;transform:scale(.985)}}
+#cadre .ecran:not([hidden]):not(#vs):not(#titre){animation:entreEcran .22s cubic-bezier(.2,.9,.3,1) both}
+@media (prefers-reduced-motion:reduce){#cadre .ecran{animation:none!important}}
+#cadre .titre-ecran{margin:0;min-height:7.4cqw;max-width:70cqw;display:flex;align-items:center;justify-content:center;text-align:center;text-wrap:balance;
+  font:900 var(--t-titre)/1 Rubik,"Arial Black",system-ui,sans-serif;color:var(--creme);letter-spacing:.02em;
+  text-shadow:var(--c) var(--c) 0 var(--marine),calc(-1*var(--c)) calc(-1*var(--c)) 0 var(--marine),var(--c) calc(-1*var(--c)) 0 var(--marine),calc(-1*var(--c)) var(--c) 0 var(--marine),0 var(--c) 0 var(--marine),0 calc(-1*var(--c)) 0 var(--marine),.5cqw .6cqw 0 var(--or)}
+/* ◀ : une grosse flèche ronde, toujours en haut à gauche */
+#cadre .ecran .btn.retour{position:absolute;top:1.2cqw;left:1.4cqw;z-index:6;display:flex;align-items:center;justify-content:center;width:7.4cqw;height:7.4cqw;padding:0 .3cqw 0 0;box-sizing:border-box;
+  font:900 3.4cqw/1 Rubik,"Arial Black",sans-serif;border-radius:50%;background:var(--marine);border:.35cqw solid var(--creme);color:var(--creme);box-shadow:.3cqw .4cqw 0 rgba(0,0,0,.35)}
+#cadre .ecran .btn.retour small{display:none}
+/* SON et PLEIN ÉCRAN : seulement sur l'accueil (en haut à droite) et dans la pause */
+.en-menu #outils{display:none!important}
+.en-menu-titre #outils{top:1.3cqw;bottom:auto;right:1.5cqw}
+.en-menu-titre #outils .btn{font-size:var(--t-min);padding:.55cqw 1.2cqw;border-width:.28cqw;border-radius:1.2cqw;background:rgba(11,42,91,.94)}
+.en-pause #outils{bottom:3cqw}.en-pause #outils .btn{font-size:var(--t-btn);padding:.7cqw 1.8cqw}
+.en-combat #pause-btn{font-size:var(--t-min);padding:.5cqw 1.4cqw}
+/* boutons */
+#cadre .btn{font-size:var(--t-btn);border-radius:1.4cqw;box-shadow:.3cqw .4cqw 0 rgba(0,0,0,.35);transition:transform .08s,box-shadow .08s,filter .12s}
+#cadre .btn:active{transform:translate(.15cqw,.22cqw);box-shadow:.08cqw .12cqw 0 rgba(0,0,0,.35)}
+#cadre .btn:disabled{box-shadow:none}
+#cadre .btn.go{background:var(--or);border:.42cqw solid var(--marine);color:#FAF0D2;font-size:3.7cqw;padding:.9cqw 3.4cqw;border-radius:1.8cqw;box-shadow:.45cqw .55cqw 0 var(--marine);
+  text-shadow:.2cqw .2cqw 0 var(--marine),-.2cqw -.2cqw 0 var(--marine),.2cqw -.2cqw 0 var(--marine),-.2cqw .2cqw 0 var(--marine)}
+#cadre .btn.go:active{box-shadow:.12cqw .15cqw 0 var(--marine)}
+#cadre .panneau{background:rgba(11,42,91,.95);color:var(--creme);border:.38cqw solid var(--creme);border-radius:2cqw;box-shadow:.45cqw .55cqw 0 rgba(11,42,91,.55);padding:1.6cqw 2.6cqw;
+  display:flex;flex-direction:column;align-items:center;gap:1.2cqw;box-sizing:border-box;max-width:92cqw;font-size:var(--t-corps)}
+#cadre .panneau .petit{color:#E4ECFB;font-size:var(--t-corps);line-height:1.3;max-width:84cqw;margin:0}
+#cadre .panneau .petit br{display:none}
+#cadre .ecran .code-msg{font-size:var(--t-corps);min-height:0;margin:0}
+/* ---------- ACCUEIL ---------- */
+#cadre #titre .btn.rond{font-size:3.2cqw;padding:.5cqw 1.2cqw .6cqw;border-radius:1.4cqw}
+#cadre #titre .btn.rond small{font-size:var(--t-min)}
+#cadre .aj-go{font-size:5cqw;padding:0 2.2cqw}
+#cadre .aj-duel{padding:.8cqw 1.8cqw .8cqw 1.1cqw;gap:1cqw}
+#cadre .aj-tetes img{width:7.6cqw;height:7.6cqw}#cadre .aj-tetes em{font-size:var(--t-min)}
+#cadre .aj-txt{max-width:36cqw;gap:.2cqw}
+#cadre .aj-txt small{font-size:var(--t-min);color:#7a5200}
+#cadre .aj-txt b{font-size:3.3cqw;line-height:1.02}
+#cadre .tuiles{grid-template-columns:repeat(4,22cqw);gap:1.3cqw}
+#cadre .tuile{height:12.6cqw;gap:.25cqw;padding:.5cqw .4cqw}
+#cadre .tuile .t-ico{font-size:3.6cqw;height:4.6cqw}
+#cadre .tuile .t-tetes img{width:4.6cqw;height:4.6cqw}
+#cadre .tuile b{font-size:2.8cqw;letter-spacing:.01em;white-space:nowrap}
+#cadre .tuile small{font:800 var(--t-min)/1.1 Nunito,"Trebuchet MS",sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:21cqw}
+#cadre .t-jour .t-tetes em{font-size:var(--t-min)}
+#cadre #titre #livre-titre.nouveau-defis::after{font-size:var(--t-min);top:-3.2cqw}
+#cadre #titre .accueil{bottom:1.8cqw;gap:1.4cqw}
+#cadre #titre .logo{width:30cqw;top:1.2cqw}
+#cadre #titre .appli-btn{font-size:var(--t-min);top:7.4cqw}
+/* ---------- L'AVENTURE ---------- */
+#cadre #livre{gap:1.2cqw}
+.livre-barre{display:flex;align-items:center;gap:1.2cqw}
+#cadre #livre .livre-score{position:absolute;top:1.6cqw;right:1.6cqw;font-size:var(--t-min);padding:.4cqw 1.1cqw;border:.3cqw solid var(--creme);box-shadow:.25cqw .35cqw 0 rgba(0,0,0,.3);gap:.7cqw}
+#cadre #livre .livre-score b{font-size:3.1cqw}#cadre #livre .livre-score img{height:4.2cqw}
+#cadre .onglets-livre{gap:.8cqw}
+#cadre .onglets-livre .btn{font-size:2.7cqw;padding:.55cqw 1.4cqw;border-width:.3cqw;gap:.6cqw}
+#cadre .onglets-livre .btn small{font-size:var(--t-min)}
+.livre-hero{display:flex;align-items:stretch;padding:0;border:.45cqw solid var(--marine);border-radius:2cqw;background:var(--or);box-shadow:.5cqw .6cqw 0 var(--marine);cursor:pointer;font:inherit;color:var(--creme);animation:battre 1.1s .6s ease-in-out infinite alternate;flex:none}
+.livre-hero:active{transform:translate(.2cqw,.3cqw);box-shadow:.2cqw .25cqw 0 var(--marine)}
+.lh-go{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 2.2cqw;font-size:4.6cqw;line-height:1;color:#FAF0D2;white-space:nowrap;
+  text-shadow:.22cqw .22cqw 0 var(--marine),-.22cqw -.22cqw 0 var(--marine),.22cqw -.22cqw 0 var(--marine),-.22cqw .22cqw 0 var(--marine)}
+.lh-go small{font-size:var(--t-min);letter-spacing:.05em;margin-top:.4cqw}
+.lh-corps{display:flex;align-items:center;gap:1.1cqw;background:var(--creme);color:var(--marine);padding:.7cqw 2cqw .7cqw 1.1cqw;border-left:.45cqw solid var(--marine);border-radius:0 1.6cqw 1.6cqw 0}
+.lh-tetes{display:flex;align-items:center;gap:.25cqw}.lh-tetes img{width:7.8cqw;height:7.8cqw;border-radius:50%;background:#F7C41F;border:.32cqw solid var(--marine);object-fit:cover;box-sizing:border-box}
+.lh-tetes img:last-child{transform:scaleX(-1)}.lh-tetes em{font:900 var(--t-min) Rubik,sans-serif;font-style:normal;color:var(--or)}
+.lh-txt{display:flex;flex-direction:column;align-items:flex-start;gap:.25cqw;text-align:left;max-width:40cqw}
+.lh-txt small{font:900 var(--t-min) Nunito,"Trebuchet MS",sans-serif;color:#7a5200}
+.lh-txt b{font-size:3.3cqw;line-height:1.02}
+.lh-txt i{font:900 var(--t-min) Rubik,"Arial Black",sans-serif;font-style:normal;color:var(--or)}
+.livre-hero.boss .lh-corps{background:linear-gradient(135deg,#FFE9A8,#FFF8EC)}
+.livre-hero.leg{background:linear-gradient(#FFD84A,#E08A00)}
+#cadre #duels-liste{display:grid;grid-template-columns:repeat(5,15.4cqw);gap:2.4cqw 2.2cqw;margin:auto 0}
+#cadre .duel{height:auto;padding:0;border:0;background:none;box-shadow:none;gap:0;animation:none;border-radius:0;color:var(--marine)}
+#cadre .duel:hover{transform:none}
+#cadre .duel .md{position:relative;width:15.4cqw;height:10cqw;display:flex;align-items:center;justify-content:center;border-radius:5cqw;background:var(--creme);border:.4cqw solid var(--marine);box-shadow:.3cqw .4cqw 0 rgba(11,42,91,.55);transition:transform .1s}
+#cadre .duel:active .md{transform:translate(.15cqw,.2cqw)}
+#cadre .duel .md img,#cadre .duel .md i{width:7cqw;height:7cqw;border-radius:50%;background:#F7C41F;border:.28cqw solid var(--marine);object-fit:cover;box-sizing:border-box;margin:0 -.4cqw;display:inline-flex;align-items:center;justify-content:center;font:900 3cqw Rubik,sans-serif;font-style:normal;color:var(--marine)}
+#cadre .duel .md img:last-of-type{transform:scaleX(-1)}
+#cadre .duel .num{position:absolute;top:-1.4cqw;left:-.8cqw;font:900 var(--t-min)/1 Rubik,"Arial Black",sans-serif;background:var(--marine);color:var(--creme);border:.25cqw solid var(--creme);border-radius:1.2cqw;padding:.3cqw .6cqw;text-shadow:none}
+#cadre .duel .ic{position:absolute;bottom:-1.2cqw;right:-.7cqw;min-width:3.8cqw;height:3.8cqw;padding:0 .3cqw;box-sizing:border-box;border-radius:1.9cqw;display:flex;align-items:center;justify-content:center;font:900 2.6cqw/1 Rubik,"Arial Black",sans-serif;background:var(--vert);color:#fff;border:.25cqw solid var(--creme)}
+#cadre .duel .boss-tag{position:absolute;top:-1.4cqw;right:-.8cqw;font-size:var(--t-min);padding:.25cqw .6cqw}
+#cadre .duel .q,#cadre .duel .etat{display:none}
+#cadre .duel.joue .md{background:#E6F7EA}
+#cadre .duel.suivant .md{border-color:var(--or);animation:suivant .9s ease-in-out infinite alternate}
+#cadre .duel.suivant .ic,#cadre .duel.encours .ic{background:var(--or)}
+#cadre .duel.boss .md{background:linear-gradient(135deg,#FFE9A8,#FFF8EC);border-color:#B8860B}
+#cadre .duel.ferme .md{background:#E9E4D8;border-color:#8391AE;box-shadow:.3cqw .4cqw 0 rgba(11,42,91,.25)}
+#cadre .duel.ferme .md img{filter:grayscale(.75) brightness(.9);opacity:.8}
+#cadre .duel.ferme .ic{background:#8391AE}
+#cadre .duel.bientot .md{border-style:dashed}
+#cadre #duels-liste.legendes{grid-template-columns:repeat(3,24cqw);gap:2.4cqw}
+#cadre .duel.legende-carte{gap:.6cqw}
+#cadre .duel.legende-carte .md{width:20cqw;height:15cqw;border-radius:2.4cqw;background:linear-gradient(160deg,#FFF3C4,#FFE08A);border-color:#B8860B}
+#cadre .duel.legende-carte .md img{width:12cqw;height:12cqw;margin:0}
+#cadre .duel.legende-carte .num{font-size:var(--t-min)}
+#cadre .duel.legende-carte .q,#cadre .duel.legende-carte .etat{display:block;font:900 var(--t-min) Rubik,sans-serif;color:var(--marine);background:rgba(255,248,236,.94);border-radius:1cqw;padding:.2cqw .8cqw}
+#cadre .duel.legende-carte .q{font-size:2.9cqw}
+#cadre .duel.legende-carte.ferme .md{background:#E9E4D8}
+#cadre .livre-msg{position:absolute;left:50%;bottom:1.2cqw;transform:translateX(-50%);margin:0;min-height:0;max-width:86cqw;font:900 var(--t-corps) Nunito,sans-serif;color:var(--creme);background:rgba(11,42,91,.95);border:.3cqw solid var(--jaune);border-radius:1.2cqw;padding:.5cqw 1.4cqw;z-index:7}
+#cadre .livre-msg:empty{display:none}
+/* ---------- LE PARI ---------- */
+#cadre #pari{gap:1cqw}
+#cadre #pari .pari-num{position:absolute;top:1.8cqw;right:1.6cqw;margin:0;font:900 var(--t-min) Rubik,"Arial Black",sans-serif;color:var(--creme);background:var(--marine);border:.28cqw solid var(--creme);border-radius:1.2cqw;padding:.4cqw 1cqw}
+#cadre .pari-corps{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;gap:1.2cqw;width:100%}
+#cadre .fiche{width:40.5cqw;padding:0;gap:0;border:.42cqw solid var(--marine);border-radius:2cqw;background:var(--creme);box-shadow:.45cqw .55cqw 0 var(--marine);overflow:hidden;position:relative}
+#cadre .fiche:hover,#cadre .fiche:focus-visible{transform:translateY(-.3cqw);box-shadow:0 0 0 .45cqw var(--jaune),.45cqw .55cqw 0 var(--marine)}
+#cadre .fiche:active{transform:translate(.2cqw,.3cqw);box-shadow:.15cqw .2cqw 0 var(--marine)}
+#cadre .fiche .img{height:auto;flex:1;min-height:9cqw;border-radius:0;background:radial-gradient(circle at 50% 115%,#8CC8FF,#1160D8 72%)}
+#cadre #pari-b .img{background:radial-gradient(circle at 50% 115%,#FFC08A,#EC5A2C 72%)}
+#cadre .fiche .img img{max-height:94%}
+#cadre .fiche b{font-size:3.2cqw;margin:.5cqw .8cqw .3cqw;line-height:1.02}
+#cadre .fiche .l{font-size:var(--t-min);line-height:1.18;padding:0 1.2cqw;grid-template-columns:3cqw 1fr;margin-bottom:.35cqw}
+#cadre .fiche .l i{font-size:var(--t-min)}
+#cadre .fiche .fiche-go{margin-top:.5cqw;display:block;text-align:center;font:900 3.4cqw Rubik,"Arial Black",sans-serif;letter-spacing:.03em;color:#FAF0D2;background:var(--or);border-top:.4cqw solid var(--marine);padding:.6cqw 0 .8cqw;
+  text-shadow:.18cqw .18cqw 0 var(--marine),-.18cqw -.18cqw 0 var(--marine),.18cqw -.18cqw 0 var(--marine),-.18cqw .18cqw 0 var(--marine)}
+#cadre #pari-a .fiche-go{background:var(--bleu)}
+#cadre .pari-milieu{width:13.4cqw;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1cqw}
+#cadre .pari-milieu .vs{font:900 5.4cqw/1 Rubik,sans-serif;color:var(--creme);text-shadow:.25cqw .25cqw 0 var(--marine),-.25cqw -.25cqw 0 var(--marine),.25cqw -.25cqw 0 var(--marine),-.25cqw .25cqw 0 var(--marine),.45cqw .55cqw 0 var(--or)}
+#cadre .pari-titre{margin:0;font-size:var(--t-min);line-height:1.1;text-align:center;color:var(--creme);background:var(--marine);border:.28cqw solid var(--creme);border-radius:1.2cqw;padding:.5cqw .7cqw}
+#cadre .pari-gigi{flex-direction:column;align-items:center;gap:.3cqw;margin:0}
+#cadre .pari-gigi img{height:8cqw}
+#cadre .pari-gigi .bulle{font-size:var(--t-min);line-height:1.1;text-align:center;padding:.4cqw .6cqw;gap:0;border-width:.28cqw}
+#cadre .pari-gigi .bulle b{font-size:var(--t-min)}
+#cadre .pari-gigi .bulle::before{left:50%;top:-1.3cqw;transform:translateX(-50%);border:.6cqw solid transparent;border-bottom:.8cqw solid var(--marine)}
+#cadre .btn.nul{font-size:var(--t-min);padding:.6cqw .8cqw}
+/* ---------- LA VRAIE RÉPONSE (2 temps) ---------- */
+#cadre #verdict{gap:1.1cqw}
+#cadre .v-arene{margin:0;font:900 var(--t-min) Rubik,"Arial Black",sans-serif;color:var(--creme);background:var(--marine);border:.28cqw solid var(--creme);border-radius:1.2cqw;padding:.45cqw 1.3cqw;min-height:0}
+#cadre .v-arene .et{color:var(--jaune)}
+#cadre #verdict .v-question{font-size:4.2cqw;min-height:0}
+#cadre .v-carte{flex-direction:column;align-items:stretch;gap:.8cqw;background:var(--creme);border:.42cqw solid var(--marine);border-radius:2cqw;box-shadow:.45cqw .55cqw 0 var(--marine);max-width:94cqw;width:92cqw;padding:1cqw 2cqw 1.2cqw;box-sizing:border-box}
+#cadre .v-haut{display:flex;align-items:center;gap:2cqw}
+#cadre .v-carte img{height:12cqw}
+#cadre .v-txt small{font-size:var(--t-min)}
+#cadre .tampon{font-size:var(--t-min)}
+#cadre #v-cri{font-size:5.6cqw}
+#cadre .v-punch{font:900 3cqw/1.1 Nunito,sans-serif;color:var(--marine)}
+#cadre .v-film{font:800 var(--t-corps)/1.3 Nunito,sans-serif;color:#1d2d4d;max-width:none;margin:0}
+#cadre .v-reste{gap:1.4cqw;margin:auto 0;width:92cqw}
+#cadre .v-pari{margin:0;display:flex;flex-direction:column;align-items:center;gap:.4cqw;font:900 4cqw/1.05 Rubik,"Arial Black",sans-serif;color:var(--creme);text-align:center;
+  text-shadow:.22cqw .22cqw 0 var(--marine),-.22cqw -.22cqw 0 var(--marine),.22cqw -.22cqw 0 var(--marine),-.22cqw .22cqw 0 var(--marine),.45cqw .5cqw 0 var(--or)}
+#cadre .v-pari b{color:var(--jaune)}
+#cadre .v-pari small{font:900 var(--t-corps)/1.2 Nunito,sans-serif;text-shadow:none;color:var(--marine);background:rgba(255,248,236,.95);border:.28cqw solid var(--marine);border-radius:1.2cqw;padding:.4cqw 1.2cqw;max-width:80cqw}
+#cadre .v-gigi{display:flex;align-items:center;gap:1cqw;background:#fff;border:.3cqw solid var(--marine);border-radius:1.6cqw;padding:.5cqw 1.4cqw;box-shadow:.3cqw .4cqw 0 rgba(11,42,91,.45)}
+#cadre .v-gigi img{height:7cqw}
+#cadre .v-gigi p{margin:0;font-size:var(--t-corps);line-height:1.2;max-width:66cqw;display:flex;flex-direction:column;text-align:left;color:var(--marine)}
+#cadre .v-gigi b{font:900 var(--t-corps) Rubik,sans-serif}#cadre .v-gigi i{font-style:normal;color:var(--or);font-weight:900}
+#cadre .v-bas{gap:1.4cqw}
+#cadre .v-score{font-size:3cqw;padding:.4cqw 1.4cqw;border:.28cqw solid var(--creme)}
+#cadre .v-page{font:900 var(--t-min) Nunito,sans-serif;color:var(--marine);background:rgba(255,248,236,.95);border:.25cqw solid var(--marine);border-radius:1.1cqw;padding:.35cqw 1cqw}
+#cadre #verdict .nouveau span{font-size:var(--t-min)}
+#cadre #verdict .ligne .btn{font-size:var(--t-btn)}#cadre #verdict .ligne .btn.go{font-size:3.7cqw}
+#cadre #v-suite1{margin-top:auto}
+/* ---------- LA QUESTION, LA RÉCOMPENSE (et les autres quiz) ---------- */
+#cadre #quiz{gap:1.2cqw}
+#cadre .quiz-tete{min-height:7.4cqw;max-width:72cqw;gap:1.2cqw;background:rgba(255,248,236,.95);border:.35cqw solid var(--marine);border-radius:1.8cqw;padding:.4cqw 1.8cqw .4cqw .8cqw;box-shadow:.35cqw .45cqw 0 rgba(11,42,91,.45);box-sizing:border-box}
+#cadre #quiz-titre{font-size:3.6cqw;line-height:1;color:var(--or);text-shadow:.18cqw .18cqw 0 var(--marine)}
+#cadre #quiz .quiz-tete .petit{color:var(--marine);font-size:var(--t-min);max-width:52cqw;margin:0}
+#cadre .quiz-img{width:10cqw;height:6.6cqw}
+#cadre .quiz-panneau{width:90cqw;gap:1.2cqw;padding:1.4cqw 2.2cqw;margin:auto 0}
+#cadre .quiz-q{font-size:3.3cqw;line-height:1.15;max-width:84cqw}
+#cadre .quiz-rep{grid-template-columns:1fr;gap:1cqw;width:74cqw}
+#cadre .quiz-rep .btn{font-size:3.1cqw;min-height:0;padding:.9cqw 1.6cqw;background:#1D4F9E;border-color:var(--creme);line-height:1.15}
+#cadre .quiz-rep .btn:hover{filter:brightness(1.15)}
+#cadre #quiz .code-msg{font-size:var(--t-corps);color:var(--jaune)}
+#cadre .carte-rappel{font-size:var(--t-corps);max-width:84cqw}
+#cadre #quiz.relis .quiz-rep,#cadre #quiz.relis .quiz-q{display:none}
+#cadre #quiz .ligne{margin-bottom:auto}
+#cadre .quiz-pas i{width:3cqw;height:3cqw}
+#cadre #quiz.gagne{background:#FFC629 repeating-conic-gradient(from 0deg at 50% 55%,#FFD84A 0deg 9deg,#FFBE1A 9deg 18deg)}
+#cadre #quiz.gagne .quiz-panneau{background:rgba(255,248,236,.96);color:var(--marine);border-color:var(--marine)}
+#cadre #quiz.gagne .quiz-q{color:var(--marine);text-shadow:none}
+#cadre .gains{gap:3cqw}
+#cadre #quiz .gain img{width:12cqw;height:12cqw}
+#cadre #quiz .gain b{font-size:3cqw}
+#cadre #quiz .gain small{font-size:var(--t-min)}
+#cadre #quiz.gagne .gain.deja small{color:#4b5b7c}
+#cadre #quiz.gagne .code-msg{color:var(--marine)}
+#cadre #quiz .code-msg .quete,#cadre #quiz .code-msg span{font-size:var(--t-min)}
+#cadre #quiz.gagne #quiz-suite{font-size:4.2cqw;padding:1cqw 4cqw}
+#cadre #quiz-rep .btn.or{font-size:var(--t-btn)}
+/* les quiz « défi » et « livre en main » */
+#cadre .lem input{font-size:3.6cqw;width:44cqw}
+#cadre .lem .btn{font-size:var(--t-btn)}
+#cadre .quiz-q .lem-ou{font-size:var(--t-min)}
+#cadre .quiz-q .quiz-page{font-size:var(--t-min)}
+#cadre .carte-secret{font-size:var(--t-corps)}#cadre .carte-secret b{font-size:var(--t-min)}
+#cadre .cadeau-quiz small{font-size:var(--t-min)}
+/* ---------- CHOISIS TON ANIMAL ---------- */
+#cadre #choix{gap:1cqw;padding-top:1.2cqw}
+#cadre #choix #choix-titre{order:-2;font-size:3.9cqw;max-width:52cqw;margin-right:auto;margin-left:10cqw;justify-content:flex-start;text-align:left}
+#cadre #choix > .ligne:first-of-type{order:-2;position:absolute;top:1.3cqw;right:1.5cqw}
+#cadre #choix #mondes{background:rgba(11,42,91,.94);border:.28cqw solid var(--creme);border-radius:1.6cqw;padding:.35cqw;gap:.35cqw}
+#cadre #choix #mondes .btn{font-size:3.2cqw;width:6cqw;height:6cqw;padding:0;border-width:.25cqw;box-shadow:none;justify-content:center;border-radius:1.2cqw}
+#cadre #choix #mondes .btn em{display:none}
+#cadre #choix #mondes .btn.nouveau::after{font-size:1.9cqw;top:-1.6cqw;right:-1.4cqw}
+#cadre .aide-coin{position:absolute;left:1.4cqw;bottom:1.6cqw;z-index:6;width:6.4cqw;height:6.4cqw;padding:0;border-radius:50%;font:900 3.6cqw/1 Rubik,sans-serif;background:var(--marine);border:.32cqw solid var(--creme)}
+#cadre #choix .cartes-zone{flex:1;min-height:0;width:100%}
+#cadre #choix .cartes{display:grid!important;grid-template-columns:repeat(4,19.6cqw);gap:1.4cqw 1.6cqw!important;max-width:none!important;justify-content:center}
+#cadre #choix .cartes .carte{width:auto;height:19cqw;border:.35cqw solid var(--marine);box-shadow:.3cqw .4cqw 0 rgba(11,42,91,.6);border-radius:1.6cqw;padding:0 0 .4cqw;gap:.1cqw;transform:none}
+#cadre #choix .cartes .carte .img{height:auto!important;flex:1;min-height:0}
+#cadre #choix .cartes .carte .img img{max-height:92%}
+#cadre #choix .cartes .carte .nom{font-size:2.6cqw!important;line-height:1.05;white-space:normal;overflow:visible;padding:0 .4cqw!important;text-align:center;min-height:0}
+#cadre #choix .cartes .carte .ets{font-size:var(--t-min)!important;line-height:1.1;color:var(--jaune)}
+#cadre #choix .cartes .carte .ets.quiz{font-size:var(--t-min)!important}
+#cadre #choix .cartes .carte.verrou .img::after{font-size:6cqw!important}
+#cadre #choix .cartes .carte.champion.verrou .img::after{font-size:3cqw!important}
+#cadre #choix .carte.curseur{border-color:var(--jaune);box-shadow:0 0 0 .5cqw var(--jaune),.3cqw .4cqw 0 rgba(11,42,91,.6)}
+#cadre #choix .carte.legende::before{font-size:var(--t-min)}
+#cadre #choix .carte[data-tag]::before{font-size:var(--t-min)}
+#cadre .fleche-cartes{width:6cqw;height:12cqw;margin-top:-6cqw;font-size:3.6cqw;border:.35cqw solid var(--marine)}
+#cadre .fleche-cartes.g{left:.4cqw}#cadre .fleche-cartes.d{right:.4cqw}
+#cadre #choix .bas-choix{background:rgba(11,42,91,.94);border:.28cqw solid var(--creme);border-radius:1.6cqw;padding:.5cqw 1cqw;gap:.8cqw;flex-wrap:nowrap;max-width:none;align-items:center}
+#cadre #choix .bas-choix .btn{font-size:var(--t-min);padding:.55cqw 1.2cqw}
+#cadre #choix .bas-choix .btn.retour{display:none!important}
+#cadre #choix #retour-choix:not([hidden]){display:flex!important;position:absolute;top:1.2cqw;left:1.4cqw}
+#cadre #choix .bas-choix #niveaux{background:none;padding:0;gap:.4cqw}
+#cadre #choix .bas-choix #niveaux .btn{font-size:var(--t-min);padding:.55cqw 1.2cqw;box-shadow:none}
+#cadre #choix #niveaux::before{font-size:var(--t-min)}
+#cadre #choix #niveaux .btn[data-niv="0"][aria-pressed="true"]{background:#7BD35A}#cadre #choix #niveaux .btn[data-niv="2"][aria-pressed="true"]{background:#FF7A4A;color:#fff}
+#cadre #choix .detail{position:absolute;left:50%;bottom:9cqw;transform:translateX(-50%);z-index:7;max-width:80cqw;font:900 var(--t-corps) Nunito,sans-serif;color:var(--creme);background:rgba(11,42,91,.95);border:.3cqw solid var(--jaune);border-radius:1.2cqw;padding:.5cqw 1.4cqw;text-align:center;white-space:normal}
+#cadre #choix .detail:empty{display:none}#cadre #choix .detail b{color:var(--jaune)}
+#cadre #choix .clavier{display:none}
+/* ---------- L'ARÈNE ---------- */
+#cadre #arenes{gap:1.2cqw}
+#cadre .arenes-zone{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+#cadre .arenes,#cadre .arenes.tres,#cadre .arenes.beaucoup,#cadre .arenes.peu{grid-template-columns:repeat(4,20.4cqw);gap:1.6cqw}
+#cadre .arenes .arene,#cadre .arenes.tres .arene,#cadre .arenes.beaucoup .arene,#cadre .arenes.peu .arene{height:14.6cqw;border:.38cqw solid var(--marine);box-shadow:.3cqw .4cqw 0 rgba(11,42,91,.6);border-radius:1.6cqw}
+#cadre .arenes .arene span,#cadre .arenes.tres .arene span,#cadre .arenes.beaucoup .arene span{font-size:var(--t-min);line-height:1.05;padding:.5cqw .3cqw .6cqw}
+#cadre .arene.curseur{border-color:var(--jaune);box-shadow:0 0 0 .5cqw var(--jaune)}
+#cadre #arene-hasard{margin-bottom:.4cqw}
+#cadre #arene-hasard.curseur{box-shadow:0 0 0 .5cqw var(--jaune),.45cqw .55cqw 0 var(--marine)}
+/* ---------- PAUSE ---------- */
+#cadre #pause .titre{font-size:7cqw}
+#cadre #pause .ligne{gap:2cqw}
+#cadre #pause .btn{font-size:3.4cqw;padding:.8cqw 2.4cqw}#cadre #pause .btn.go{font-size:4.2cqw}
+/* ---------- FIN DU COMBAT ---------- */
+#cadre #fin #gagnant{font-size:4.6cqw}
+#cadre #fin .fin-g{width:40cqw}#cadre #fin .fin-d{width:52cqw;gap:1.4cqw}
+#cadre #fin .phrase{font-size:var(--t-min);max-width:40cqw}
+#cadre #fin .fait{font-size:var(--t-corps);max-width:52cqw;padding:1cqw 1.6cqw}
+#cadre #fin .fait b{font-size:var(--t-min)}
+#cadre #fin .nouveau span{font-size:var(--t-min)}
+#cadre #fin .ligne{gap:1.2cqw}
+#cadre #fin #revanche{font-size:4cqw}
+#cadre #fin #menu-btn{font-size:var(--t-btn)}
+#cadre #fin .partages .btn{font-size:var(--t-min);padding:.55cqw 1.3cqw}
+/* ---------- MA COLLECTION ---------- */
+#cadre #trophees{gap:1cqw}
+.onglets-collec{display:flex;gap:.8cqw;justify-content:center}
+#cadre .onglets-collec .btn{font-size:2.8cqw;padding:.5cqw 1.4cqw;border-width:.3cqw}
+#cadre .code-coin{position:absolute;top:1.8cqw;right:1.6cqw;font-size:var(--t-min);padding:.5cqw 1.1cqw;background:var(--or);border:.3cqw solid var(--marine)}
+#cadre .collec-panneau{width:96cqw;max-width:96cqw;padding:1cqw 1.2cqw;flex:1;min-height:0;align-items:stretch}
+#cadre .collec-panneau .troph-animaux,#cadre .collec-panneau .troph-liste,#cadre .collec-panneau .troph-cartes{width:100%;max-height:none;flex:1;min-height:0;overflow:auto}
+#cadre .collec-panneau .troph-cartes{display:block}
+#cadre .col-monde h3{font-size:3cqw}#cadre .col-monde h3 small{font-size:var(--t-min)}
+#cadre .col-grille{grid-template-columns:repeat(6,1fr);gap:1.2cqw}
+#cadre .col-a{padding:.6cqw .3cqw;gap:.3cqw}
+#cadre .col-a img{width:8cqw;height:8cqw}
+#cadre .col-a b{font-size:var(--t-min);min-height:0;line-height:1.05}
+#cadre .col-a small{font-size:var(--t-min)}
+#cadre .troph-tete b{font-size:3cqw}#cadre .troph-tete small{font-size:var(--t-min)}
+#cadre .troph-recomp{grid-template-columns:repeat(2,1fr)}#cadre .troph-recomp b,#cadre .troph-recomp small{font-size:var(--t-min)}
+#cadre .troph-fam{font-size:3cqw}#cadre .troph-fam small{font-size:var(--t-min)}
+#cadre .troph-liste .troph-grille{grid-template-columns:repeat(2,1fr);gap:1cqw}
+#cadre .badge{grid-template-columns:5cqw 1fr;padding:.8cqw 1cqw}
+#cadre .badge i{font-size:3.6cqw}#cadre .badge b{font-size:2.7cqw}#cadre .badge small{font-size:var(--t-min);line-height:1.15}
+#cadre .cartes-info{margin:0 0 1cqw;font-size:var(--t-corps);color:var(--creme)}#cadre .cartes-info b{color:var(--jaune)}
+#cadre .troph-cartes .anim{background:rgba(255,248,236,.08);border-radius:1.4cqw;padding:1cqw 1.4cqw;margin-bottom:1cqw}
+#cadre .troph-cartes h3{display:flex;align-items:center;gap:1cqw;font-size:3cqw;margin:0 0 .5cqw}#cadre .troph-cartes h3 img{width:5cqw;height:5cqw;border-radius:50%;background:#F7C41F}
+#cadre .troph-cartes h3 small{font-size:var(--t-min);color:var(--creme);margin-left:auto}
+#cadre .troph-cartes p{font-size:var(--t-corps);margin:.4cqw 0;line-height:1.3}
+#cadre #trophees .credits{position:absolute;left:10cqw;right:10cqw;bottom:.2cqw;margin:0 auto;color:rgba(11,42,91,.8);font-size:var(--t-min);line-height:1.1;text-align:center}
+/* ---------- CODE SECRET, À DEUX, 2 TÉLÉPHONES ---------- */
+#cadre #code .panneau{margin:auto 0;gap:1.4cqw}
+#cadre .code-in{font-size:5cqw;width:50cqw}
+#cadre .choix-deux{gap:2cqw;margin:auto 0}
+#cadre .btn.gros{width:28cqw;padding:1.8cqw 1.4cqw 2cqw;border:.45cqw solid var(--marine);box-shadow:.45cqw .55cqw 0 var(--marine);border-radius:2.2cqw;align-items:center;gap:1cqw}
+#cadre .btn.gros .gros-ico{font-size:6cqw;line-height:1}
+#cadre .btn.gros b{font-size:3.3cqw;line-height:1.05}
+#cadre .btn.gros small{font-size:var(--t-min);line-height:1.2}
+#cadre #invite-adeux{background:var(--turq, #0797A8)}
+#cadre #enligne .panneau{margin:auto 0;min-width:76cqw}
+#cadre .net-choix .btn.gros{width:32cqw}
+#cadre #enligne .net-code{font-size:12cqw}
+/* ---------- LE DÉFI (fiche d'un animal) ---------- */
+#cadre #epreuve .ep-img{width:38cqw;height:38cqw}
+#cadre #epreuve .ep-d{width:52cqw;gap:1.2cqw}
+#cadre .ep-sur{font-size:var(--t-min);letter-spacing:.06em}
+#cadre #ep-titre{font-size:5cqw}
+#cadre .ep-etapes li{font-size:var(--t-corps);padding:.6cqw 1.4cqw}
+#cadre .ep-txt{font-size:var(--t-corps)}
+#cadre #epreuve .btn{font-size:var(--t-btn)}#cadre #epreuve .btn.go{font-size:3.7cqw}
+/* ---------- INVITER, PARENTS, NOM, DÉFI, APPLI, LÉGENDE ---------- */
+#cadre .invite-corps{flex-direction:row;gap:3cqw;margin:auto 0;padding:2cqw 3cqw}
+#cadre .qr{width:26cqw;height:26cqw}
+#cadre .invite-txt{font-size:var(--t-corps);max-width:44cqw}
+#cadre #parents .porte{font-size:3cqw;margin:auto 0;padding:2cqw 4cqw}
+#cadre #porte-in{width:18cqw;font-size:5cqw}
+#cadre #parents .parents-txt{font-size:var(--t-corps);max-width:94cqw;width:94cqw;align-items:stretch;overflow:auto;touch-action:pan-y!important;flex:1;min-height:0;margin:0}
+#cadre #parents .parents-txt *{touch-action:pan-y!important}
+#cadre #parents .parents-txt p{margin:0;line-height:1.35}
+#cadre #parents .parents-txt .btn{font-size:var(--t-min)}
+#cadre #nom .panneau{margin:auto 0}
+#cadre #nom .nom-btn,#cadre #nom #nom-choix .btn{font-size:3cqw}
+#cadre #nom #nom-autre{font-size:var(--t-btn)}
+#cadre .defi-vs{height:18cqw;margin-top:auto}
+#cadre #defi .defi-txt{font-size:var(--t-corps);max-width:84cqw;margin:0}
+#cadre #defi .ligne{margin-bottom:auto}
+#cadre #appli .panneau{margin-top:auto;gap:1cqw;padding:1.4cqw 2.4cqw}
+#cadre #appli ol{font-size:var(--t-corps);max-width:84cqw;gap:1cqw}
+#cadre #appli li{grid-template-columns:4.6cqw 1fr}
+#cadre #appli li i{font-size:3cqw;width:4.4cqw;height:4.4cqw}
+#cadre #appli #appli-ok{margin-bottom:auto}
+#cadre .legende-titre{font-size:5cqw}
+#cadre #legende .petit{font-size:var(--t-corps);max-width:80cqw}
+#cadre #legende .btn.go{font-size:3.8cqw}
+/* ---------- bulles : tutoriel, astuces, messages ---------- */
+#cadre .tuto-bulle b{font-size:3.6cqw}#cadre .tuto-bulle small{font-size:var(--t-min)}#cadre .tuto-bulle span{font-size:var(--t-corps)}
+#cadre .tuto-passer{font-size:var(--t-min)}
+#cadre .bulle-info{font-size:var(--t-corps)}#cadre .bulle-info.long{font-size:var(--t-min)}
+/* ---------- commandes tactiles (hors du cadre) : les petits mots en 12 px au moins ---------- */
+.tbs{grid-template-columns:repeat(3,calc(10.5*var(--u)));gap:calc(1.2*var(--u))}
+.tb{height:calc(10.5*var(--u))}
+.tb small{font-size:calc(2.1*var(--u))}
+.tb.super small{font-size:calc(2.1*var(--u))!important}
+.jg{font-size:calc(2.1*var(--u))}
+
+/* V4, retouches (25/09) */
+#cadre #choix .bas-choix .aide-coin{position:static;width:auto;height:auto;border-radius:1.2cqw;font-size:var(--t-min);padding:.55cqw 1.2cqw;background:var(--marine)}
+#cadre #choix #mondes .btn.nouveau::after{content:"";width:1.6cqw;height:1.6cqw;padding:0;top:-.5cqw;right:-.5cqw;border-radius:50%;border:.25cqw solid #fff;animation:none;transform:none}
+#cadre #choix .cartes .carte .nom{font-size:2.5cqw!important;letter-spacing:0}
+#cadre .onglets-livre .btn{font-size:2.8cqw;padding:.5cqw 1.6cqw}
+#cadre #fin .fin-d{gap:1.1cqw}#cadre #fin .fin-g{gap:.7cqw}
+#cadre #fin .fin-g img{height:17cqw}
+#cadre #fin .phrase{padding:.4cqw 1.2cqw}
+#cadre #fin .etoiles{font-size:4.2cqw}
+#cadre #fin .partages{margin-top:0}
+
+#cadre .onglets-collec .code-coin{position:static;font-size:2.8cqw;padding:.5cqw 1.4cqw;background:var(--or);border:.3cqw solid var(--marine)}
+#cadre .col-grille{grid-template-columns:repeat(6,minmax(0,1fr))}
+#cadre .col-a b{overflow-wrap:anywhere;hyphens:auto}
+#cadre .col-a small{white-space:nowrap;letter-spacing:-.02em}
+#cadre #parents .parents-txt .credits{font-size:var(--t-min);opacity:.8;max-width:none}
+
+/* commandes tactiles (25/09, bonnes pratiques des jeux de combat sur téléphone) */
+.zone-joy,.zone-btn{position:fixed;top:30vh;bottom:0;pointer-events:auto;touch-action:none;z-index:0}
+.zone-joy{left:0;width:42vw}.zone-btn{right:0;width:42vw}
+.deux .zone-joy{display:none}.deux #pad .zone-btn{right:50vw;width:22vw}.deux #pad2 .zone-btn{left:50vw;right:auto;width:22vw}
+.pad .gauche,.pad .tbs{position:relative;z-index:1}
+.joy{transition:opacity .15s}
+.tactile.en-combat .joy:not(.pose){opacity:.55}
+.joy.pose{position:fixed;opacity:1;z-index:2}
+.joy.pose .jg{display:none}
+.tb.on{filter:brightness(1.35);scale:.92;box-shadow:0 0 0 calc(.9*var(--u)) rgba(255,248,236,.5),0 0 calc(2.4*var(--u)) rgba(255,248,236,.6)!important}
+.tb[data-k="S"]:not(.super):not(.ctx){background:radial-gradient(closest-side,rgba(74,50,150,.9) 80%,transparent 82% 100%),conic-gradient(#FFC629 calc(var(--jauge,0)*360deg),rgba(255,248,236,.25) 0)}
+
+#cadre #choix .cartes .carte .nom{font-size:2.45cqw!important;letter-spacing:-.01em}
+#cadre #choix #hasard-btn{font-size:3.2cqw;padding:.2cqw 1.1cqw}
+#cadre .arenes,#cadre .arenes.tres,#cadre .arenes.beaucoup,#cadre .arenes.peu{grid-template-columns:repeat(4,19.4cqw);gap:1.4cqw}
+#cadre .legende-titre{font-size:4.2cqw}
+
+#cadre .legende-titre{animation:slamT .5s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes slamT{from{transform:scale(2);opacity:0}}
+
+#cadre .col-grille{grid-template-columns:repeat(4,minmax(0,1fr));gap:1.2cqw}
+#cadre .col-a{flex-direction:row;justify-content:flex-start;gap:1cqw;padding:.6cqw .8cqw;text-align:left}
+#cadre .col-a img{width:7cqw;height:7cqw;flex:none}
+#cadre .col-a b{overflow-wrap:normal;hyphens:manual;text-align:left;display:block}
+#cadre .col-a > span,#cadre .col-a .col-t{display:flex;flex-direction:column;min-width:0}
+#cadre .col-a small{white-space:nowrap}
+
+#cadre .col-grille{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* la vraie réponse : même le texte le plus long tient (duel 02) */
+#cadre #verdict{gap:.9cqw}
+#cadre #verdict .v-question,#cadre .v-arene,#cadre #v-suite1{flex-shrink:0}
+#cadre #verdict.temps1 .v-arene{display:none}
+#cadre #verdict.temps1 .v-carte{margin-top:3cqw} /* (25/09) la carte passe sous le bouton ◀, plus dessous */
+body.en-pause #tuto-bulle,body.en-pause #tuto-passer{visibility:hidden} /* (25/09) la bulle d'astuce ne cache plus le mot PAUSE ; elle revient à la reprise */
+#cadre .v-carte{padding:.8cqw 1.8cqw 1cqw;gap:.5cqw}
+#cadre .v-carte img{height:10cqw}
+#cadre #v-cri{font-size:5cqw}
+#cadre .v-punch{font-size:2.8cqw}
+#cadre #v-suite1{font-size:3.3cqw;padding:.6cqw 3.2cqw}
 </style></head><body>
 
 <div id="cadre">
@@ -690,13 +1086,13 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
   </div>
 
   <section class="ecran" id="titre" hidden>
-    <div class="coin-titre"><button class="btn rond" id="codes-titre" type="button">🔑<small>CODES</small></button><button class="btn rond" id="invite-titre" type="button">📣<small>INVITER</small></button><button class="btn rond" id="parents-titre" type="button">👪<small>PARENTS</small></button></div>
+    <div class="coin-titre"><button class="btn rond" id="parents-titre" type="button">👪<small>PARENTS</small></button></div>
     <img class="logo" src="titre_accueil.webp" alt="C’est qui le plus fort ? L’Arène des Duels">
     <div class="accueil">
       <button class="accueil-jouer" id="livre-titre" type="button"><span class="aj-go R">▶ JOUER</span><span class="aj-duel"><span class="aj-tetes"><img id="aj-a" src="frelon_tete.webp" alt=""><em class="R">VS</em><img id="aj-b" src="abeille_tete.webp" alt=""></span><span class="aj-txt"><small id="aj-sur">L’AVENTURE DU LIVRE · DUEL 01 / 30</small><b class="R" id="aj-q">FRELON OU ABEILLES ?</b></span></span></button>
       <div class="tuiles">
-        <button class="tuile t-combat" id="jouer" type="button"><span class="t-ico">⚔️</span><b class="R">COMBAT</b><small>Ton animal contre l’ordi</small></button>
-        <button class="tuile t-deux" id="adeux-titre" type="button"><span class="t-ico">👥</span><b class="R">À DEUX</b><small>Même écran ou 2 téléphones</small></button>
+        <button class="tuile t-combat" id="jouer" type="button"><span class="t-ico">⚔️</span><b class="R">COMBAT</b><small>Contre l’ordi</small></button>
+        <button class="tuile t-deux" id="adeux-titre" type="button"><span class="t-ico">👥</span><b class="R">À DEUX</b><small>Avec un copain</small></button>
         <button class="tuile t-animaux" id="trophees-titre" type="button"><span class="t-ico t-tetes" id="t-tetes"></span><b class="R">MES ANIMAUX</b><small id="t-nb">4 / 52</small></button>
         <button class="tuile t-jour" id="jour-titre" type="button"><span class="t-ico t-tetes" id="jour-tetes"></span><b class="R">DÉFI DU JOUR</b><small id="jour-txt"></small></button>
       </div>
@@ -704,22 +1100,23 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
     <button class="btn appli-btn R" id="appli-titre" type="button" hidden>📲 SANS LA BARRE D’ADRESSE</button>
   </section>
 
-  <section class="ecran" id="choix" hidden>
+  <section class="ecran menu" id="choix" hidden>
     <div class="ligne">
       <div class="grp" role="group" aria-label="Mode de jeu"><button class="btn" id="m1" type="button" aria-pressed="true">1 JOUEUR</button><button class="btn" id="m2" type="button" aria-pressed="false">2 JOUEURS</button><button class="btn" id="m3" type="button">2 TÉLÉPHONES</button></div>
       <div class="grp" role="group" aria-label="Monde" id="mondes"></div>
     </div>
-    <h2 id="choix-titre" class="R">CHOISIS TON ANIMAL</h2>
+    <h2 id="choix-titre" class="titre-ecran R">CHOISIS TON ANIMAL</h2>
     <div class="cartes-zone" id="cartes-zone"><button class="fleche-cartes g" id="cartes-g" type="button" aria-label="Voir les animaux d’avant" hidden>◀</button><div class="cartes" id="cartes"></div><button class="fleche-cartes d" id="cartes-d" type="button" aria-label="Voir les autres animaux" hidden>▶</button></div>
-    <div class="ligne bas-choix"><button class="btn" id="retour-choix" type="button" hidden>◀ RETOUR</button><span id="detail" class="detail"></span><button class="btn" id="hasard-btn" type="button" hidden>🎲 AU HASARD</button><div class="grp" role="group" aria-label="Niveau de l’ordinateur" id="niveaux"><button class="btn" data-niv="0" type="button" aria-pressed="true">FACILE</button><button class="btn" data-niv="1" type="button" aria-pressed="false">NORMAL</button><button class="btn" data-niv="2" type="button" aria-pressed="false">COSTAUD</button></div><button class="btn" id="tournoi-btn" type="button" hidden>🏆 TOURNOI</button><button class="btn" id="tenue-btn" type="button" hidden>🎨 NORMAL</button><button class="btn" id="comment-jouer" type="button">❓ COMMENT JOUER</button><button class="btn" id="trophees-btn" type="button">TROPHÉES</button></div>
+    <div class="ligne bas-choix"><button class="btn retour" id="retour-choix" type="button" hidden>◀<small>RETOUR</small></button><span id="detail" class="detail"></span><button class="btn" id="hasard-btn" type="button" hidden aria-label="Au hasard">🎲</button><div class="grp" role="group" aria-label="Niveau de l’ordinateur" id="niveaux"><button class="btn" data-niv="0" type="button" aria-pressed="true">FACILE</button><button class="btn" data-niv="1" type="button" aria-pressed="false">NORMAL</button><button class="btn" data-niv="2" type="button" aria-pressed="false">COSTAUD</button></div><button class="btn" id="tournoi-btn" type="button" hidden>🏆 TOURNOI</button><button class="btn aide-coin" id="comment-jouer" type="button" aria-label="Comment jouer">?</button><button class="btn" id="tenue-btn" type="button" hidden>🎨 NORMAL</button><button class="btn" id="trophees-btn" type="button">TROPHÉES</button></div>
     <p class="petit clavier">Clavier : <b>Z Q S D</b> pour bouger · <b>F</b> rapide · <b>G</b> fort · <b>H</b> ★ spécial (2ᵉ joueur : flèches + <b>1 2 3</b> du pavé ou <b>, ; !</b>). Pour te protéger : <b>vers le bas</b> (ou recule). Baisse-toi pour esquiver.</p>
   </section>
 
 
-  <section class="ecran" id="arenes" hidden>
-    <h2 id="arenes-titre" class="R">CHOISIS L’ARÈNE</h2>
-    <div class="arenes" id="arenes-liste"></div>
-    <div class="ligne"><button class="btn" id="arenes-retour" type="button">◀ RETOUR</button></div>
+  <section class="ecran menu" id="arenes" hidden>
+    <h2 id="arenes-titre" class="titre-ecran R">CHOISIS L’ARÈNE</h2>
+    <div class="cartes-zone arenes-zone"><button class="fleche-cartes g" id="arenes-g" type="button" aria-label="Arènes d’avant" hidden>◀</button><div class="arenes" id="arenes-liste"></div><button class="fleche-cartes d" id="arenes-d" type="button" aria-label="Autres arènes" hidden>▶</button></div>
+    <button class="btn go" id="arene-hasard" type="button">🎲 AU HASARD</button>
+    <div class="ligne"><button class="btn retour" id="arenes-retour" type="button">◀<small>RETOUR</small></button></div>
   </section>
 
   <section class="ecran" id="vs" hidden>
@@ -728,22 +1125,28 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
     <span class="vs R">VS</span>
   </section>
 
-  <section class="ecran" id="code" hidden>
-    <h2 class="titre R">🔑 CODE SECRET</h2>
-    <p class="petit">Un copain t’a donné un code ? Tape-le ici ! (Les codes sont des mots cachés dans le livre « C’est qui le plus fort ? »)</p>
-    <input id="code-in" class="code-in" type="text" maxlength="14" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Écris le code secret">
-    <p id="code-msg" class="code-msg" role="status"></p>
-    <div class="ligne"><button class="btn go" id="code-ok" type="button">VALIDER</button><button class="btn god-btn" id="god-btn" type="button" hidden>⚡ GOD MODE : NON</button><button class="btn" id="code-retour" type="button">RETOUR</button></div>
+  <section class="ecran menu" id="code" hidden>
+    <button class="btn retour" id="code-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre titre-ecran R">🔑 CODE SECRET</h2>
+    <div class="panneau">
+      <p class="petit">Un copain t’a donné un code ? Tape-le ici ! Des codes sont cachés dans le livre…</p>
+      <input id="code-in" class="code-in" type="text" maxlength="14" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Écris le code secret">
+      <p id="code-msg" class="code-msg" role="status"></p>
+      <div class="ligne"><button class="btn go" id="code-ok" type="button">VALIDER ▶</button><button class="btn god-btn" id="god-btn" type="button" hidden>⚡ GOD MODE : NON</button></div>
+    </div>
   </section>
 
 
-  <section class="ecran" id="quiz" hidden>
-    <div class="quiz-tete"><div class="quiz-img" id="quiz-img"></div><div><h2 class="R" id="quiz-titre">DÉBLOQUE LE CROCODILE !</h2><p class="petit" id="quiz-intro"></p></div></div>
-    <div class="quiz-pas" id="quiz-pas"></div>
-    <p class="quiz-q" id="quiz-q"></p>
-    <div class="quiz-rep" id="quiz-rep"></div>
-    <p class="code-msg" id="quiz-msg" role="status"></p>
-    <div class="ligne"><button class="btn" id="quiz-retour" type="button">◀ RETOUR</button><button class="btn go" id="quiz-suite" type="button" hidden>RÉESSAYER</button></div>
+  <section class="ecran menu" id="quiz" hidden>
+    <button class="btn retour" id="quiz-retour" type="button">◀<small>RETOUR</small></button>
+    <div class="quiz-tete"><div class="quiz-img" id="quiz-img"></div><div><h2 class="R" id="quiz-titre">LA QUESTION</h2><p class="petit" id="quiz-intro"></p></div></div>
+    <div class="panneau quiz-panneau">
+      <div class="quiz-pas" id="quiz-pas"></div>
+      <p class="quiz-q" id="quiz-q"></p>
+      <div class="quiz-rep" id="quiz-rep"></div>
+      <p class="code-msg" id="quiz-msg" role="status"></p>
+    </div>
+    <div class="ligne"><button class="btn go" id="quiz-suite" type="button" hidden>RÉESSAYER</button></div>
   </section>
 
   <section class="ecran" id="epreuve" hidden>
@@ -753,105 +1156,115 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
       <h2 class="R" id="ep-titre">LE PUMA TE DÉFIE !</h2>
       <ol class="ep-etapes" id="ep-etapes"></ol>
       <p class="ep-txt" id="ep-txt"></p>
-      <div class="ligne"><button class="btn go" id="ep-go" type="button">⚔️ RELEVER LE DÉFI !</button><button class="btn" id="ep-quiz" type="button" hidden>⚔️ LE REBATTRE</button><button class="btn" id="ep-retour" type="button">◀ RETOUR</button></div>
+      <div class="ligne"><button class="btn go" id="ep-go" type="button">⚔️ RELEVER LE DÉFI !</button><button class="btn" id="ep-quiz" type="button" hidden>⚔️ LE REBATTRE</button><button class="btn retour" id="ep-retour" type="button">◀<small>RETOUR</small></button></div>
     </div>
   </section>
 
-  <section class="ecran" id="adeux" hidden>
-    <h2 class="titre R">À DEUX</h2>
+  <section class="ecran menu" id="adeux" hidden>
+    <button class="btn retour" id="adeux-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre titre-ecran R">👥 À DEUX</h2>
     <div class="choix-deux">
-      <button class="btn gros" id="deux-ecran" type="button"><b class="R">SUR CET ÉCRAN</b><small>Chacun ses boutons, sur la même tablette ou le même ordinateur.</small></button>
-      <button class="btn gros" id="deux-tel" type="button"><b class="R">CHACUN SON TÉLÉPHONE</b><small>Deux téléphones sur le même Wi-Fi. Un code à 4 chiffres, et c'est parti !</small></button>
+      <button class="btn gros" id="deux-ecran" type="button"><span class="gros-ico">📱</span><b class="R">SUR CET ÉCRAN</b><small>Chacun ses boutons.</small></button>
+      <button class="btn gros" id="deux-tel" type="button"><span class="gros-ico">📱📱</span><b class="R">2 TÉLÉPHONES</b><small>Même Wi-Fi, un code à 4 chiffres.</small></button>
+      <button class="btn gros" id="invite-adeux" type="button"><span class="gros-ico">📣</span><b class="R">INVITER</b><small>Envoie le jeu à un copain.</small></button>
     </div>
-    <button class="btn" id="adeux-retour" type="button">◀ RETOUR</button>
   </section>
 
-  <section class="ecran" id="enligne" hidden>
-    <h2 class="titre R">CHACUN SON TÉLÉPHONE</h2>
-    <div id="net-accueil" class="ligne">
-      <button class="btn go" id="net-cree" type="button">CRÉER UNE PARTIE</button><button class="btn go" id="net-rejoint" type="button">REJOINDRE</button><button class="btn" id="net-retour" type="button">RETOUR</button>
+  <section class="ecran menu" id="enligne" hidden>
+    <button class="btn retour" id="net-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre titre-ecran R">📱📱 CHACUN SON TÉLÉPHONE</h2>
+    <div class="panneau">
+      <div id="net-accueil" class="choix-deux net-choix">
+        <button class="btn gros" id="net-cree" type="button"><span class="gros-ico">➕</span><b class="R">CRÉER UNE PARTIE</b><small>Tu reçois un code à 4 chiffres : donne-le à ton ami.</small></button>
+        <button class="btn gros" id="net-rejoint" type="button"><span class="gros-ico">🔢</span><b class="R">REJOINDRE</b><small>Ton ami t’a donné son code ? Tape-le.</small></button>
+      </div>
+      <div id="net-hote" hidden><div class="net-code R" id="net-code">····</div><button class="btn" id="net-retour2" type="button">ANNULER</button></div>
+      <div id="net-invite" hidden><input id="net-in" class="code-in" type="text" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="Code à 4 chiffres"><div class="ligne"><button class="btn go" id="net-ok" type="button">REJOINDRE ▶</button><button class="btn" id="net-retour3" type="button">◀ AUTRE CHOIX</button></div></div>
+      <p id="net-msg" class="code-msg" role="status"></p>
+      <p class="petit">Aucun pseudo, aucune discussion : seuls les coups passent d’un téléphone à l’autre.</p>
     </div>
-    <div id="net-hote" hidden><div class="net-code R" id="net-code">····</div><button class="btn" id="net-retour2" type="button">ANNULER</button></div>
-    <div id="net-invite" hidden><input id="net-in" class="code-in" type="text" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="Code à 4 chiffres"><div class="ligne"><button class="btn go" id="net-ok" type="button">REJOINDRE</button><button class="btn" id="net-retour3" type="button">RETOUR</button></div></div>
-    <p id="net-msg" class="code-msg" role="status"></p>
-    <p class="petit">Un joueur crée la partie et donne son code à 4 chiffres, l’autre le tape. Aucun pseudo, aucune discussion : seuls les coups passent d’un téléphone à l’autre.</p>
   </section>
 
-  <section class="ecran" id="trophees" hidden>
-    <h2 class="titre R">📚 MA COLLECTION</h2>
-    <div class="ligne"><button class="btn" id="tab-animaux" type="button" aria-pressed="true">🐾 MES ANIMAUX</button><button class="btn" id="tab-badges" type="button" aria-pressed="false">🏆 TROPHÉES</button><button class="btn" id="tab-cartes" type="button" aria-pressed="false">🃏 CARTES « LE SAVAIS-TU ? »</button></div>
-    <div id="troph-animaux" class="troph-animaux"></div>
-    <div id="troph-badges" class="troph-liste" hidden></div>
-    <div id="troph-cartes" class="troph-cartes" hidden></div>
-    <p class="petit" id="garde-trophees">Astuce : ajoute le jeu à l’écran d’accueil (menu Partager ▸ « Sur l’écran d’accueil ») : il s’ouvre en plein écran et garde tes trophées.</p>
-    <button class="btn go" id="troph-retour" type="button">RETOUR</button>
-    <p class="petit credits">Sons : Kenney.nl et BigSoundBank.com (Joseph Sardin), licence CC0 · Wikimedia Commons (domaine public, CC0).</p>
+  <section class="ecran menu" id="trophees" hidden>
+    <button class="btn retour" id="troph-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre titre-ecran R">📚 MA COLLECTION</h2>
+    <div class="onglets-collec"><button class="btn" id="tab-animaux" type="button" aria-pressed="true">🐾 ANIMAUX</button><button class="btn" id="tab-badges" type="button" aria-pressed="false">🏆 TROPHÉES</button><button class="btn" id="tab-cartes" type="button" aria-pressed="false">🃏 CARTES</button><button class="btn code-coin" id="codes-collec" type="button">🔑 CODE</button></div>
+    <div class="panneau collec-panneau">
+      <div id="troph-animaux" class="troph-animaux"></div>
+      <div id="troph-badges" class="troph-liste" hidden></div>
+      <div id="troph-cartes" class="troph-cartes" hidden></div>
+    </div>
   </section>
 
 
-  <section class="ecran" id="appli" hidden>
-    <h2 id="choix-titre-appli" class="R" style="margin:0;font-size:3.8cqw;color:var(--jaune);text-shadow:.3cqw .3cqw 0 var(--marine)">JOUER EN PLEIN ÉCRAN</h2>
-    <p class="petit">Sur iPhone, le navigateur ne peut pas cacher sa barre d’adresse. La solution : installer le jeu comme une appli. C’est gratuit et ça prend 10 secondes.</p>
+  <section class="ecran menu" id="appli" hidden>
+    <h2 id="choix-titre-appli" class="titre-ecran R">📲 JOUER EN PLEIN ÉCRAN</h2>
+    <div class="panneau">
+    <p class="petit">Installe le jeu comme une appli : plus de barre d’adresse !</p>
     <ol>
       <li><i>1</i><span>Touche le bouton <b>Partager</b> <svg class="partage" viewBox="0 0 22 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16V2M6 7l5-5 5 5"/><path d="M7 11H3v13h16V11h-4"/></svg> du navigateur.</span></li>
-      <li><i>2</i><span>Choisis <b>« Sur l’écran d’accueil »</b> (ou « Ajouter à l’écran d’accueil »). Fais défiler la liste si tu ne le vois pas.</span></li>
-      <li><i>3</i><span>Lance le jeu avec sa <b>nouvelle icône</b> : plus de barre, et tes trophées sont bien gardés.</span></li>
+      <li><i>2</i><span>Choisis <b>« Sur l’écran d’accueil »</b>.</span></li>
+      <li><i>3</i><span>Lance le jeu avec sa <b>nouvelle icône</b>.</span></li>
     </ol>
-    <p class="petit">Attention : l’appli démarre avec sa propre sauvegarde. Les trophées gagnés dans le navigateur y restent.</p>
-    <button class="btn go" id="appli-ok" type="button">J’AI COMPRIS</button>
+    </div>
+    <button class="btn go" id="appli-ok" type="button">J’AI COMPRIS ▶</button>
   </section>
 
-  <section class="ecran" id="livre" hidden>
-    <div class="livre-haut"><h2 class="R">🗺️ L’AVENTURE</h2><div class="livre-score R" id="livre-score"></div></div>
-    <p class="petit">Les 30 duels du livre : parie, bats-toi, découvre la vraie réponse… et gagne les animaux !</p>
-    <div class="onglets-livre" id="livre-onglets" role="group" aria-label="Les 3 manches du livre"></div>
+  <section class="ecran menu" id="livre" hidden>
+    <button class="btn retour" id="livre-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre-ecran R">🗺️ L’AVENTURE</h2>
+    <div class="livre-barre"><div class="livre-score R" id="livre-score"></div><div class="onglets-livre" id="livre-onglets" role="group" aria-label="Les 3 manches du livre"></div></div>
+    <button class="livre-hero" id="livre-hero" type="button" hidden></button>
     <div class="duels" id="duels-liste"></div>
-    <p class="code-msg" id="livre-msg" role="status"></p>
-    <div class="ligne"><button class="btn" id="livre-retour" type="button">◀ RETOUR</button></div>
+    <p class="code-msg livre-msg" id="livre-msg" role="status"></p>
   </section>
 
-  <section class="ecran" id="pari" hidden>
+  <section class="ecran menu" id="pari" hidden>
+    <button class="btn retour" id="pari-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre-ecran R" id="pari-q"></h2>
     <p class="pari-num R" id="pari-num"></p>
-    <h2 class="R" id="pari-q"></h2>
     <div class="pari-corps">
       <button class="fiche" id="pari-a" type="button"></button>
       <div class="pari-milieu">
-        <div class="pari-gigi"><img id="pari-gigi-img" alt="Gigi"><div class="bulle"><b>GIGI PARIE : <span id="pari-gigi-dit"></span></b><span id="pari-gigi-pourquoi"></span></div></div>
         <span class="vs R">VS</span>
+        <p class="pari-titre R" id="pari-titre">QUI GAGNE ?</p>
+        <div class="pari-gigi"><img id="pari-gigi-img" alt="Gigi"><div class="bulle"><b>GIGI :</b><span id="pari-gigi-dit"></span></div></div>
         <button class="btn nul" id="pari-nul" type="button" hidden>MATCH NUL</button>
       </div>
       <button class="fiche" id="pari-b" type="button"></button>
     </div>
-    <p class="pari-titre R" id="pari-titre">TON PARI : QUI GAGNE ?</p>
-    <p class="petit pari-intro" id="pari-intro"></p>
-    <div class="ligne"><button class="btn" id="pari-retour" type="button">◀ RETOUR</button></div>
+    <p class="pari-intro" id="pari-intro" hidden></p><span id="pari-gigi-pourquoi" hidden></span>
   </section>
 
-  <section class="ecran" id="verdict" hidden>
+  <section class="ecran menu" id="verdict" hidden>
+    <button class="btn retour" id="v-menu" type="button" aria-label="Mes duels">◀<small>RETOUR</small></button>
     <p class="v-arene R" id="v-arene"></p>
-    <p class="v-question R" id="v-question">ET DANS LA VRAIE VIE ?</p>
+    <p class="v-question titre-ecran R" id="v-question">ET DANS LA VRAIE VIE ?</p>
     <div class="v-carte" id="v-carte" hidden>
-      <img id="v-img" alt="">
-      <div class="v-txt"><span class="tampon" id="v-tampon"></span><small id="v-titre"></small><h2 class="R" id="v-cri"></h2><p class="v-punch" id="v-punch"></p><p class="v-film" id="v-film"></p></div>
+      <div class="v-haut"><img id="v-img" alt=""><div class="v-txt"><span class="tampon" id="v-tampon"></span><small id="v-titre"></small><h2 class="R" id="v-cri"></h2><p class="v-punch" id="v-punch"></p></div></div>
+      <p class="v-film" id="v-film"></p>
     </div>
+    <button class="btn go" id="v-suite1" type="button" hidden>SUITE ▶</button>
     <div class="v-reste" id="v-reste" hidden>
-      <div class="v-points"><p id="v-toi"></p><div class="v-gigi"><img id="v-gigi-img" alt="Gigi"><p id="v-gigi"></p></div></div>
-      <div class="v-bas"><span class="v-score R" id="v-score"></span><span class="petit" id="v-page"></span></div>
+      <p class="v-pari" id="v-toi"></p>
+      <div class="v-gigi"><img id="v-gigi-img" alt="Gigi"><p id="v-gigi"></p></div>
+      <div class="v-bas"><span class="v-score R" id="v-score"></span><span class="v-page" id="v-page"></span></div>
       <div class="nouveau" id="v-badges"></div>
-      <div class="ligne"><button class="btn go" id="v-suite" type="button">DUEL SUIVANT ▶</button><button class="btn" id="v-rejouer" type="button">REJOUER</button><button class="btn" id="v-defi" type="button">📣 DÉFIER UN COPAIN</button><button class="btn" id="v-menu" type="button">MES DUELS</button></div>
+      <div class="ligne"><button class="btn go" id="v-suite" type="button">DUEL SUIVANT ▶</button><button class="btn" id="v-rejouer" type="button">REJOUER</button></div>
     </div>
   </section>
 
-  <section class="ecran" id="invite" hidden>
-    <h2 class="titre R">INVITE UN COPAIN</h2>
-    <div class="invite-corps"><img src="qr_arene.png" alt="QR code du jeu" class="qr"><div class="invite-txt"><p>Montre ce code à un copain : il le vise avec l’appareil photo d’un téléphone… et il joue tout de suite !</p><p class="petit">Gratuit, sans inscription, sans pub.</p><button class="btn go" id="invite-envoie" type="button">📤 ENVOYER LE JEU</button></div></div>
-    <button class="btn" id="invite-retour" type="button">◀ RETOUR</button>
+  <section class="ecran menu" id="invite" hidden>
+    <button class="btn retour" id="invite-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre titre-ecran R">📣 INVITE UN COPAIN</h2>
+    <div class="panneau invite-corps"><img src="qr_arene.png" alt="QR code du jeu" class="qr"><div class="invite-txt"><p>Montre ce code à un copain : il le vise avec l’appareil photo d’un téléphone… et il joue tout de suite !</p><p class="petit">Gratuit, sans inscription, sans pub.</p><button class="btn go" id="invite-envoie" type="button">📤 ENVOYER LE JEU</button></div></div>
   </section>
 
-  <section class="ecran" id="parents" hidden>
-    <h2 class="titre R">ESPACE PARENTS</h2>
-    <div id="parents-porte" class="porte"><p id="porte-q"></p><div class="ligne"><input id="porte-in" class="code-in" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Réponse"><button class="btn go" id="porte-ok" type="button">OK</button></div></div>
-    <div id="parents-contenu" class="parents-txt" hidden>
+  <section class="ecran menu" id="parents" hidden>
+    <button class="btn retour" id="parents-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre titre-ecran R">👪 ESPACE PARENTS</h2>
+    <div id="parents-porte" class="porte panneau"><p id="porte-q"></p><div class="ligne"><input id="porte-in" class="code-in" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Réponse"><button class="btn go" id="porte-ok" type="button">OK</button></div></div>
+    <div id="parents-contenu" class="parents-txt panneau" hidden>
       <p><b>L’Arène des Duels</b> est le jeu vidéo gratuit du livre <b>« C’est qui le plus fort ? »</b> (Vincent Chevalier, 2026) : 30 duels d’animaux, des paris, et à chaque fois la vraie réponse, vérifiée.</p>
       <p><b>Comment ça marche</b> : on commence avec 4 animaux (lion, tigre, gorille, ours polaire). <b>L’AVENTURE</b> suit les 30 duels du livre, dans l’ordre, en 3 manches : à chaque duel, l’enfant parie, se bat, découvre la vraie réponse, puis répond à une question sur ce qu’il vient de lire. Les animaux du duel rejoignent alors sa collection, jouable en <b>COMBAT LIBRE</b>, à deux ou en ligne. L’ordinateur est facile dans la manche 1, normal dans la 2, costaud dans la 3. Après la finale, 3 légendes se réveillent. Les 10 « champions du livre » (cartes dorées) se débloquent seulement avec un mot à trouver dans le livre imprimé.</p>
       <p><b>Pas de compte, pas de publicité, pas de discussion entre joueurs, pas de vrai prénom</b> : les défis utilisent un « nom de champion » inventé. La progression est enregistrée uniquement sur cet appareil.</p>
@@ -859,21 +1272,24 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
       <p><b>📥 Jouer sans internet</b> (en voiture, en vacances…) : le jeu garde tout seul sur l’appareil ce qui a déjà servi. Pour avoir tous les animaux et toutes les arènes même sans connexion, téléchargez le jeu complet une fois, de préférence en wifi. <button class="btn" id="hl-go" type="button">📥 TOUT TÉLÉCHARGER</button> <span id="hl-etat"></span></p>
       <p><b>Caisses surprises et pièges d’arène</b> (bonus qui tombent pendant les combats, noix de coco, vagues…) : <button class="btn" id="opt-surprises" type="button">OUI</button></p>
       <p><a href="https://editions-chevalier.fr/" target="_blank" rel="noopener">Découvrir le livre sur editions-chevalier.fr ↗</a></p>
+      <p class="credits">Sons : Kenney.nl et BigSoundBank.com (Joseph Sardin), licence CC0 · Wikimedia Commons (domaine public, CC0).</p>
     </div>
-    <button class="btn" id="parents-retour" type="button">◀ RETOUR</button>
   </section>
 
-  <section class="ecran" id="nom" hidden>
-    <h2 class="titre R">TON NOM DE CHAMPION</h2>
-    <p class="petit">Choisis ton nom pour les défis. Jamais ton vrai prénom : c’est plus rigolo et c’est plus sûr !</p>
-    <div class="ligne" id="nom-choix"></div>
-    <div class="ligne"><button class="btn" id="nom-autre" type="button">🎲 D’AUTRES NOMS</button><button class="btn" id="nom-retour" type="button">RETOUR</button></div>
+  <section class="ecran menu" id="nom" hidden>
+    <button class="btn retour" id="nom-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre titre-ecran R">🏅 TON NOM DE CHAMPION</h2>
+    <div class="panneau">
+      <p class="petit">Choisis ton nom pour les défis. Jamais ton vrai prénom : c’est plus rigolo et c’est plus sûr !</p>
+      <div class="ligne" id="nom-choix"></div>
+      <div class="ligne"><button class="btn" id="nom-autre" type="button">🎲 D’AUTRES NOMS</button></div>
+    </div>
   </section>
 
-  <section class="ecran" id="defi" hidden>
-    <h2 class="titre R">⚔️ DÉFI !</h2>
+  <section class="ecran menu" id="defi" hidden>
+    <h2 class="titre titre-ecran R">⚔️ DÉFI !</h2>
     <div class="defi-vs"><img id="defi-g" alt=""><span class="R">VS</span><img id="defi-d" alt=""></div>
-    <p class="defi-txt" id="defi-txt"></p>
+    <p class="defi-txt panneau" id="defi-txt"></p>
     <div class="ligne"><button class="btn go" id="defi-go" type="button">RELEVER LE DÉFI !</button><button class="btn" id="defi-non" type="button">PLUS TARD</button></div>
   </section>
 
@@ -890,7 +1306,7 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
 
   <section class="ecran" id="pause" hidden>
     <h2 class="titre R">PAUSE</h2>
-    <div class="ligne"><button class="btn go" id="reprendre" type="button">REPRENDRE</button><button class="btn" id="quitter" type="button">MENU</button></div>
+    <div class="ligne"><button class="btn go" id="reprendre" type="button">▶ REPRENDRE</button><button class="btn" id="quitter" type="button">🏠 MENU</button></div>
   </section>
 
   <section class="ecran" id="fin" hidden>
@@ -904,12 +1320,13 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
       <div class="nouveau" id="fin-badges"></div>
       <div class="fait"><b id="fait-titre">LE SAVAIS-TU ?</b><span id="fait-txt"></span></div>
       <div class="ligne"><button class="btn go" id="revanche" type="button">REVANCHE !</button><button class="btn" id="menu-btn" type="button">CHANGER D’ANIMAL</button></div>
-      <div class="ligne partages"><button class="btn" id="fin-photo" type="button" hidden>📸 PHOTO DE VICTOIRE</button><button class="btn" id="fin-defi" type="button" hidden>📣 DÉFIER UN COPAIN</button><button class="btn" id="fin-jour" type="button" hidden>⚡ PARTAGER MON DÉFI DU JOUR</button></div>
+      <div class="ligne partages"><button class="btn" id="fin-photo" type="button" hidden style="display:none!important">📸 PHOTO DE VICTOIRE</button><button class="btn" id="fin-defi" type="button" hidden>📣 DÉFIER UN COPAIN</button><button class="btn" id="fin-jour" type="button" hidden>⚡ PARTAGER MON DÉFI DU JOUR</button></div>
     </div>
   </section>
 
 </div>
   <div id="pad" class="pad" aria-hidden="true">
+  <div class="zone-joy"></div><div class="zone-btn"></div>
   <div class="gauche"><div id="joy" class="joy"><div id="knob" class="knob"></div><i class="jg haut" data-sol="▲ SAUTE" data-vol="▲ MONTE"></i><i class="jg bas" data-sol="▼ GARDE" data-vol="▼ DESCENDS"></i></div></div>
   <div class="tbs">
     <div class="tb" data-k="L">A<small>RAPIDE</small></div>
@@ -918,6 +1335,7 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
   </div>
 </div>
 <div id="pad2" class="pad" aria-hidden="true">
+  <div class="zone-btn"></div>
   <div class="gauche"><div class="joy"><div class="knob"></div><i class="jg haut" data-sol="▲ SAUTE" data-vol="▲ MONTE"></i><i class="jg bas" data-sol="▼ GARDE" data-vol="▼ DESCENDS"></i></div></div>
   <div class="tbs">
     <div class="tb" data-k="L">A<small>RAPIDE</small></div>
@@ -929,11 +1347,11 @@ body[data-ecran="livre"] #outils{top:auto;bottom:1cqw}
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790343108"></script>
-<script src="anim.js?v=1790343108"></script>
-<script src="game.js?v=1790343108"></script>
-<script src="net.js?v=1790343108"></script>
-<script src="livre.js?v=1790343108"></script>
-<script src="bonus.js?v=1790343108"></script>
-<script src="surprises.js?v=1790343108"></script>
+<script src="skin.js?v=1790349454"></script>
+<script src="anim.js?v=1790349454"></script>
+<script src="game.js?v=1790349454"></script>
+<script src="net.js?v=1790349454"></script>
+<script src="livre.js?v=1790349454"></script>
+<script src="bonus.js?v=1790349454"></script>
+<script src="surprises.js?v=1790349454"></script>
 </body></html>

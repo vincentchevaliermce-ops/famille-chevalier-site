@@ -405,8 +405,10 @@ const BANDEAUX = [];
 function bandeau(t, gros) {
   let e = document.getElementById('bandeau-troph');
   if (!e) { e = document.createElement('div'); e.id = 'bandeau-troph'; document.body.appendChild(e) }
-  BANDEAUX.push([t, gros]); if (BANDEAUX.length === 1) suivant();
-  function suivant() { const [tx, g] = BANDEAUX[0]; e.textContent = tx; e.className = g ? 'gros' : ''; void e.offsetWidth; e.classList.add('vu'); sfx('badge', .9);
+  BANDEAUX.push([t, gros]); if (BANDEAUX.length === 1) setTimeout(suivant, 0); // (au tick suivant : le verdict a déjà mis son « temps1 »)
+  function suivant() { // (25/09) pendant « ET DANS LA VRAIE VIE ? » (roulement + tampon), le trophée attend SUITE ▶ : il arrive avec TON PARI / GIGI, dont il parle
+    const vd = document.getElementById('verdict'); if (vd && vd.classList.contains('temps1') && G.screen === 'verdict') { setTimeout(suivant, 250); return }
+    const [tx, g] = BANDEAUX[0]; e.textContent = tx; e.className = g ? 'gros' : ''; void e.offsetWidth; e.classList.add('vu'); sfx('badge', .9);
     setTimeout(() => { e.classList.remove('vu'); setTimeout(() => { BANDEAUX.shift(); if (BANDEAUX.length) suivant() }, 420) }, 2300) }
 }
 // statistiques du combat en cours (remises à zéro au début du match)

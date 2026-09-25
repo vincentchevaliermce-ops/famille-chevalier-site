@@ -2119,6 +2119,11 @@ function lire(n) {
   for (const k in m) r[k] = m[k].some(c => KEYS.has(c)) || (G.mode === 1 && n === 0 && SOLO_EXTRA[k].some(c => KEYS.has(c)));
   const T = n === 0 ? TOUCH : TOUCH2;
   if (n === 0 || G.mode === 2) { const j = joyDir(T); for (const k of ['left', 'right', 'up', 'down']) r[k] = r[k] || j[k]; for (const k of ['L', 'H', 'S', 'G']) r[k] = r[k] || T[k]; }
+  // (25/09, « mode simple ») : garder A ou B appuyé enchaîne les coups tout seul (un nouvel appui toutes les 12 images)
+  // + dès que l'animal est de nouveau prêt (fin du coup, fin d'un « aïe ») : on ne reste jamais planté en tenant A (hors ligne : G.f[n] est bien le sien)
+  const M = lire.maintien || (lire.maintien = [{}, {}]), f = !(typeof NET !== 'undefined' && NET.on) && G.f && G.f[n];
+  for (const k of ['L', 'H']) { const s = M[n]; if (r[k]) { if (s[k] == null) s[k] = G.frame; const d = G.frame - s[k];
+    if (d > 14 && d % 12 === 0) r[k] = false; else if (d > 6 && f && f.prev && f.prev[k] && G.phase === 'fight' && neutral(f) && !f.buf) r[k] = false } else s[k] = null }
   return r;
 }
 // joystick tactile : grandes zones gauche/droite, haut/bas seulement si on pousse franchement (évite sauts et accroupis involontaires),
@@ -2545,7 +2550,7 @@ function touche(a, d, m, hb, hu, o) {
   if (G.prout) { sfx('prout', .8); sfx('pop', .5) } else sfx(m.son); vibre(m.dmg >= 10 ? 40 : 18);
   if ((m.dmg >= 10 || m.kd) && lastHit && d.hp > 0 && Math.random() < .55) sfx(d.kind + '_grr', .5); // l'animal touché grogne
   if (m === a.d.moves.SUPER && lastHit) sfx('boum', 1);
-  G.shake = Math.max(G.shake, m.kd ? 16 : m.dmg >= 10 ? 11 : 5); G.stop = m.kd && lastHit ? 10 : m.dmg >= 10 ? 8 : 5;
+  G.shake = Math.max(G.shake, m.kd ? 16 : m.dmg >= 10 ? 11 : 5); G.stop = a.mk === 'SUPER' ? (lastHit ? 24 : 6) : m.kd && lastHit ? 12 : ['H', 'cH'].includes(a.mk) || m.dmg >= 10 ? 10 : spe ? 8 : 6; // (25/09) arrêt sur image gradué : c'est ce qui fait « sentir » le coup
   if (a.kind === 'tigre' && a.mk === 'S' && !o.proj) a.vx = -face * 4;
   if (m.agrippe && a.hit === 1) a.grabD = Math.max(260, Math.abs(d.x - a.x));
   if (m.sale) { d.sale = 150; if (Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 520, mot: hasard(['BEURK !', 'POUAH !', 'ÇA COLLE !']), col: '#B07A3E' }) }
@@ -3328,7 +3333,7 @@ function step() {
   if (G.phase === 'intro' && G.pt >= 180) { G.phase = 'fight'; G.pt = 0; for (const f of G.f) setS(f, 'idle') }
   if (G.phase === 'fight') G.chrono = (G.chrono || 0) + 1;
   if (G.god && G.mode === 1 && !NET.on) for (const f of G.f) if (!f.cpu) f.meter = 100; // GOD MODE : SUPER illimité
-  if (G.tuto) tutoPas();
+  if (G.tuto) tutoPas(); else if (G.astuce && window.astucePas) astucePas();
   const ia = a.cpu ? brain(a, b) : lire(0), ib = b.tuto ? tutoBrain(b, a) : b.cpu ? brain(b, a) : NET.on ? netEntreeDistante() : lire(1);
   update(a, b, ia); update(b, a, ib);
   // ils ne se traversent pas au sol
@@ -3416,7 +3421,7 @@ function endMatch() {
   $('gagnant').textContent = t;
   { const ph = v && PHRASES[v.kind]; $('fin-phrase').hidden = !ph; if (ph) $('fin-phrase').textContent = '« ' + hasard(ph) + ' »' }
   $('fin-etoiles').innerHTML = G.mode === 1 && humain && !G.god ? etoiles(n) : '';
-  $('fin-badges').innerHTML = nv.map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '');
+  $('fin-badges').innerHTML = (nv.length ? `<span>🏆 ${nv.length > 1 ? nv.length + ' NOUVEAUX TROPHÉES !' : 'NOUVEAU TROPHÉE : ' + BADGES.find(x => x[0] === nv[0])[1]}</span>` : '') + (G.finExtra || ''); // (25/09, iPhone : une seule ligne)
   $('fait-titre').textContent = neuf ? `NOUVELLE CARTE ! ${nbCartes()}/${totalCartes()} · LE SAVAIS-TU ?` : fait ? 'LE SAVAIS-TU ?' : '🗺️ L’AVENTURE';
   $('fait-txt').textContent = fait || fin('Gagne les duels du livre dans ▶ L’AVENTURE : leurs animaux rejoignent ton équipe… avec leurs cartes « Le savais-tu ? » !');
   $('fin-img').src = (v || a).kind + '_fin.webp';
@@ -3441,7 +3446,8 @@ function startMatch() {
   for (const f of G.f) if (!f.cpu && !f.distant && !G.tuto) SAVE.joue[f.kind] = (SAVE.joue[f.kind] || 0) + 1; // ⭐ TES PRÉFÉRÉS
   if (G.f.some(f => champion(f.kind))) setTimeout(() => sfx('super', .5), 200); // 📖 l'entrée d'un champion du livre
   G.round = 1; newRound(); show(null);
-  { const moi = G.f[NET.on ? NET.moi : 0], lui = G.f[NET.on ? 1 - NET.moi : 1]; if (moi && !moi.cpu && !G.tuto && (vol2d(moi) || vol2d(lui))) { SAVE.vuVol = SAVE.vuVol || {}; const k = vol2d(moi) ? (moi.d.vole ? 'air' : 'eau') : lui.d.vole ? 'contreAir' : 'contreEau'; if ((SAVE.vuVol[k] || 0) < 2) { SAVE.vuVol[k] = (SAVE.vuVol[k] || 0) + 1; sauve(); astuceVol(k) } } } // 2D : l'astuce, les 2 premières fois (on vole / on nage, ou l'autre vole / nage)
+  G.astuce = null; if (!G.tuto && window.astuceDebut) astuceDebut(); // (25/09) un coup avancé à essayer, pendant les premiers combats
+  { const moi = G.f[NET.on ? NET.moi : 0], lui = G.f[NET.on ? 1 - NET.moi : 1]; if (moi && !moi.cpu && !G.tuto && !G.astuce && (vol2d(moi) || vol2d(lui))) { SAVE.vuVol = SAVE.vuVol || {}; const k = vol2d(moi) ? (moi.d.vole ? 'air' : 'eau') : lui.d.vole ? 'contreAir' : 'contreEau'; if ((SAVE.vuVol[k] || 0) < 2) { SAVE.vuVol[k] = (SAVE.vuVol[k] || 0) + 1; sauve(); astuceVol(k) } } } // 2D : l'astuce, les 2 premières fois (on vole / on nage, ou l'autre vole / nage)
   document.body.classList.toggle('deux', G.mode === 2 && !NET.on);
   for (const T of [TOUCH, TOUCH2]) { T.x = T.y = 0; T.L = T.H = T.S = T.G = false }
 }
@@ -3493,7 +3499,7 @@ function synchroOnglet() { // l'onglet affiché doit correspondre au monde des c
   }
 }
 function CARTES() {
-  if (G.onglet === 'fav') return favoris().concat('hasard');
+  if (G.onglet === 'fav') return favoris(); // (le 🎲 AU HASARD est dans la barre du bas)
   const o = ongletDe(G.onglet), L = LISTE(o.m).filter(k => o.m !== 'terre' || regionDe(k) === o.k);
   const ok = L.filter(debloque), non = L.filter(k => !debloque(k));
   return ok.concat(non.filter(k => !champion(k)), non.filter(champion));
@@ -3504,7 +3510,7 @@ function vaVers(k) { G.monde = mondeDe(k); G.onglet = regionDe(k); selCursor = M
 function menuKey(code) {
   if (G.phase === 'menu' && G.screen === 'titre' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('livre-titre').click(); return } // Entrée : ▶ L'AVENTURE
   if (G.phase === 'menu' && G.screen === 'choix') {
-    const n = nbCartesChoix(), col = n <= 5 ? n : 6;
+    const n = nbCartesChoix(), col = n <= 4 ? n : 4;
     if (['KeyA', 'ArrowLeft'].includes(code)) { selCursor = (selCursor + n - 1) % n; majChoix(); sfx('clic') }
     if (['KeyD', 'ArrowRight'].includes(code)) { selCursor = (selCursor + 1) % n; majChoix(); sfx('clic') }
     if (['KeyW', 'ArrowUp', 'KeyS', 'ArrowDown'].includes(code)) { selCursor = (selCursor + col) % Math.max(col, n); if (selCursor >= n) selCursor = n - 1; majChoix(); sfx('clic') }
@@ -3528,10 +3534,11 @@ function construitCartes() {
   setTimeout(() => { if (window.hlMarqueCartes) hlMarqueCartes() }, 0); // sans internet : les animaux pas encore sur l'appareil sont grisés (☁️)
   synchroOnglet(); majOnglets();
   const box = $('cartes'); box.innerHTML = ''; const L = CARTES(); if (selCursor >= L.length) selCursor = 0;
+  const page = Math.floor(selCursor / PAGE_CARTES), debut = page * PAGE_CARTES; box.dataset.page = page; // (25/09, iPhone : 8 grandes cartes par page)
   box.dataset.monde = G.onglet === 'fav' ? 'fav' : ongletDe(G.onglet).m; box.dataset.onglet = G.onglet; box.classList.toggle('peu', L.length <= 5);
   box.classList.remove('treize', 'trois', 'defile', 'quatre'); box.style.gridTemplateColumns = '';
-  L.forEach((k, i) => {
-    const b = document.createElement('button'); b.type = 'button';
+  L.slice(debut, debut + PAGE_CARTES).forEach((k, j) => {
+    const i = debut + j, b = document.createElement('button'); b.type = 'button'; b.dataset.i = i;
     if (k === 'hasard') { b.className = 'carte hasard'; b.innerHTML = '<span class="img"><b>🎲</b></span><span class="nom">AU HASARD</span><span class="ets">&nbsp;</span>'; b.onclick = () => { selCursor = i; majChoix(); clicCarte('hasard') }; b.onmouseenter = () => { selCursor = i; majChoix() }; box.appendChild(b); return }
     const d = CHARS[k], ok = debloque(k), leg = k === 'trex' || k === 'megalo' || k === 'meganeura', ch = champion(k), bloque = !ok && ((selStage === 1 && !NET.on && G.mode === 2) || NET.on || (G.epreuve && !G.pick[1]));
     b.className = 'carte ' + k + (ok ? '' : ' verrou') + (leg ? ' legende' : '') + (ch ? ' champion' : '') + (bloque ? ' inactif' : '') + (d.nom.length > 12 ? ' long' : '') + (selStage === 1 && G.pick[0] === k && !NET.on ? ' pris1' : ''); b.id = 'c-' + k;
@@ -3544,8 +3551,10 @@ function construitCartes() {
   });
   majChoix(); majFleches();
 }
-// (ancienne grille qui défilait : plus utile, chaque onglet tient sur un écran ; les flèches restent cachées)
-function majFleches() { const g = $('cartes-g'), d = $('cartes-d'); if (g) g.hidden = true; if (d) d.hidden = true }
+// flèches ◀ ▶ : les pages de 8 cartes (25/09, iPhone)
+const PAGE_CARTES = 8;
+function majFleches() { const g = $('cartes-g'), d = $('cartes-d'), n = Math.ceil(nbCartesChoix() / PAGE_CARTES); if (g) g.hidden = n < 2; if (d) d.hidden = n < 2 }
+function pageCartes(s) { const n = nbCartesChoix(), pages = Math.ceil(n / PAGE_CARTES); if (pages < 2) return; const p = (Math.floor(selCursor / PAGE_CARTES) + s + pages) % pages; selCursor = p * PAGE_CARTES; sfx('clic'); construitCartes() }
 // onglets ⭐ PRÉFÉRÉS · 🦁 SAVANE · 🐊 JUNGLES · 🌲 GRAND NORD · 🌊 MER · 🐞 BÊTES
 function majOnglets() {
   const box = $('mondes'); if (!box) return;
@@ -3567,13 +3576,14 @@ function changeMonde(m, distant, onglet) {
   construitCartes();
 }
 function majChoix() {
-  document.querySelectorAll('#cartes .carte').forEach((c, i) => c.classList.toggle('curseur', i === selCursor));
+  if (+($('cartes').dataset.page || 0) !== Math.floor(selCursor / PAGE_CARTES)) { construitCartes(); return } // (le curseur a changé de page)
+  document.querySelectorAll('#cartes .carte').forEach(c => c.classList.toggle('curseur', +c.dataset.i === selCursor));
   const o = ongletDe(G.onglet), lieu = G.onglet === 'fav' ? '⭐ TES PRÉFÉRÉS' : `${o.ico} ${o.titre}`;
-  if (!NET.on) $('choix-titre').textContent = G.epreuve && !G.pick[1] ? `QUI VA AFFRONTER ${CHARS[G.epreuve.k].art} ?` : selStage === 0 ? (G.mode === 2 ? `JOUEUR 1 : CHOISIS TON ANIMAL · ${lieu}` : `CHOISIS TON ANIMAL · ${lieu}`) : G.mode === 2 ? `JOUEUR 2 : À TOI · ${lieu}` : `CHOISIS TON ADVERSAIRE · ${lieu}`;
+  if (!NET.on) $('choix-titre').textContent = G.epreuve && !G.pick[1] ? `QUI VA AFFRONTER ${CHARS[G.epreuve.k].art} ?` : selStage === 0 ? (G.mode === 2 ? 'JOUEUR 1 : TON ANIMAL' : 'CHOISIS TON ANIMAL') : G.mode === 2 ? 'JOUEUR 2 : À TOI !' : 'CHOISIS TON ADVERSAIRE'; // (25/09, M5 : le lieu se lit sur l'onglet allumé)
   const k = CARTES()[selCursor], d = k && CHARS[k], s1 = selStage === 1 && !NET.on;
   $('retour-choix').hidden = !!NET.on; $('hasard-btn').hidden = !!NET.on || !!G.epreuve; $('tournoi-btn').hidden = !(s1 && G.mode === 1 && !G.epreuve); $('trophees-btn').hidden = s1;
   const src = d && !debloque(k) && window.sourceDe ? sourceDe(k) : null, la = d && d.fem ? 'la' : 'le';
-  $('detail').innerHTML = k === 'hasard' ? '🎲 Un animal au hasard, parmi ceux que tu as !' : !d ? '' : !debloque(k) ? (s1 && G.mode === 1 ? `Tu peux ${d.fem ? 'l’affronter' : 'l’affronter'} ! Pour ${la} jouer, ${src && src.t === 'duel' ? `gagne le <b>duel ${src.D.n}</b> de l’aventure.` : champion(k) ? `trouve-${la} dans le livre (page ${pageLivre(k)}).` : 'finis l’aventure.'}`
+  $('detail').innerHTML = ''; if (G.detailComplet) $('detail').innerHTML = k === 'hasard' ? '🎲 Un animal au hasard, parmi ceux que tu as !' : !d ? '' : !debloque(k) ? (s1 && G.mode === 1 ? `Tu peux ${d.fem ? 'l’affronter' : 'l’affronter'} ! Pour ${la} jouer, ${src && src.t === 'duel' ? `gagne le <b>duel ${src.D.n}</b> de l’aventure.` : champion(k) ? `trouve-${la} dans le livre (page ${pageLivre(k)}).` : 'finis l’aventure.'}`
     : champion(k) ? `📖 <b>CHAMPION DU LIVRE</b> : ${d.fem ? 'elle' : 'il'} t’attend <b>page ${pageLivre(k)}</b> du livre.`
     : src && src.t === 'duel' ? `🗺️ Gagne le <b>duel ${src.D.n}</b> de l’aventure (${esc(src.D.q.toLowerCase())}) : ${d.fem ? 'elle' : 'il'} rejoint tes animaux !` : src && src.t === 'legende' ? '★ <b>LÉGENDE</b> : elle se réveille après la finale de l’aventure !' : 'Bientôt dans l’arène !')
     : `<b>${d.nom}</b> · ★ Spécial : <b>${d.moves[d.speAff || 'S'].nom}</b> · Super : <b>${d.moves.SUPER.nom}</b>`;
@@ -3629,17 +3639,24 @@ function ouvreArenes() {
   const box = $('arenes-liste'); box.innerHTML = '';
   $('arenes-titre').textContent = NET.on ? 'TU CHOISIS L’ARÈNE' : 'CHOISIS L’ARÈNE';
   const L = G.arenesListe = arenesDe(mondeDuel(G.pick[0], G.pick[1] || G.pick[0])); box.classList.toggle('peu', L.length <= 2); box.classList.toggle('beaucoup', L.length >= 12 && L.length <= 14); box.classList.toggle('tres', L.length > 14); // les arènes du monde des deux animaux (plus il y en a, plus les vignettes sont petites)
-  [...L, { k: 'hasard', nom: 'AU HASARD' }].forEach((a, i) => {
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'arene' + (a.k === 'hasard' ? ' hasard' : '');
-    if (a.k !== 'hasard') b.style.backgroundImage = `url(mini_${a.k}.webp)`; else b.innerHTML = '<b>🎲</b>';
-    b.innerHTML += `<span>${a.nom}</span>`;
+  L.forEach((a, i) => { // (25/09, iPhone : 8 grandes vignettes par page ; « AU HASARD » est le gros bouton du bas)
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'arene'; b.dataset.i = i;
+    b.style.backgroundImage = `url(mini_${a.k}.webp)`; b.innerHTML = `<span>${a.nom}</span>`;
     b.onclick = () => { selArene = i; majArenes(); prendArene(i) }; b.onmouseenter = () => { selArene = i; majArenes() };
     box.appendChild(b);
   });
-  const i = L.findIndex(x => x.k === G.arene); selArene = i < 0 ? 0 : i; majArenes();
+  $('arene-hasard').onclick = () => { selArene = L.length; prendArene(L.length) };
+  $('arenes-g').onclick = () => pageArenes(-1); $('arenes-d').onclick = () => pageArenes(1);
+  const i = L.findIndex(x => x.k === G.arene); selArene = i < 0 ? 0 : i; G.pageArene = Math.floor(selArene / PAGE_ARENES); majArenes();
   for (const a of L) chargeArene(a.k).catch(() => { });
 }
-function majArenes() { document.querySelectorAll('#arenes-liste .arene').forEach((c, i) => c.classList.toggle('curseur', i === selArene)) }
+const PAGE_ARENES = 8;
+function majArenes() {
+  const L = G.arenesListe || ARENES, pages = Math.ceil(L.length / PAGE_ARENES); if (selArene < L.length) G.pageArene = Math.floor(selArene / PAGE_ARENES);
+  document.querySelectorAll('#arenes-liste .arene').forEach(c => { const i = +c.dataset.i; c.hidden = Math.floor(i / PAGE_ARENES) !== (G.pageArene || 0); c.classList.toggle('curseur', i === selArene) });
+  $('arene-hasard').classList.toggle('curseur', selArene === L.length); $('arenes-g').hidden = $('arenes-d').hidden = pages < 2;
+}
+function pageArenes(s) { const L = G.arenesListe || ARENES, pages = Math.ceil(L.length / PAGE_ARENES); if (pages < 2) return; G.pageArene = ((G.pageArene || 0) + s + pages) % pages; selArene = G.pageArene * PAGE_ARENES; sfx('clic'); majArenes() }
 function prendArene(i) {
   const L = G.arenesListe || ARENES, a = L[i]; G.arene = a ? a.k : L[Math.floor(Math.random() * L.length)].k; G.areneHasard = !a;
   sfx('valide');
@@ -3707,7 +3724,7 @@ function lanceEpreuve(k) {
 // 🃏 les 3 cartes gagnées (ce sont elles qui contiennent les réponses du quiz)
 function ouvreSecrets(k) {
   const z = QUIZ[k]; if (!z) return;
-  sonInit(); G.phase = 'menu'; show('quiz'); $('quiz').classList.add('defi'); $('quiz').classList.remove('or', 'q-duel');
+  sonInit(); G.phase = 'menu'; show('quiz'); $('quiz').classList.add('defi'); $('quiz').classList.remove('or', 'q-duel', 'gagne');
   const qs = melange(z).slice(0, 3), cartes = [...new Set(qs.map(q => q[2]))];
   const vu = SAVE.cartes[k] || (SAVE.cartes[k] = []); for (const c of cartes) if (!vu.includes(c)) vu.push(c); sauve();
   Object.assign(Q, { k, lem: null, qs, cartes, i: 0, file: qs.slice(), reussi: [], bloque: false });
@@ -3781,7 +3798,7 @@ function presque(a, b) { // le bon mot, au pluriel près ou à une petite faute 
 }
 function ouvreLivreEnMain(k, suivante) {
   const L = LIVRE_EN_MAIN[k]; if (!L) return;
-  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz'); $('quiz').classList.remove('defi', 'q-duel'); $('quiz').classList.add('or');
+  sonInit(); sfx('clic'); G.phase = 'menu'; show('quiz'); $('quiz').classList.remove('defi', 'q-duel', 'gagne'); $('quiz').classList.add('or');
   if (!suivante || Q.k !== k || !Q.lem) Object.assign(Q, { k, lem: melange(L), i: 0 }); Q.essais = 0; Q.bloque = false;
   const z = Q.lem[Q.i % Q.lem.length];
   $('quiz-titre').textContent = '📖 CHAMPION DU LIVRE !';
@@ -3821,15 +3838,16 @@ function quizGagne() {
 function ouvreTrophees(retour) {
   G.phase = 'menu'; G.retourTroph = retour; show('trophees');
   $('troph-badges').innerHTML = window.htmlTrophees ? htmlTrophees() : BADGES.map(([id, nom, txt]) => `<div class="badge${SAVE.badges[id] ? ' ok' : ''}"><i>★</i><b>${nom}</b><small>${txt}</small></div>`).join('');
-  $('troph-cartes').innerHTML = ORDRE.map(k => { const vu = SAVE.cartes[k] || [];
-    return `<div class="anim"><h3>${CHARS[k].nom} · ${vu.length}/${FAITS[k].length}</h3>${FAITS[k].map((f, i) => vu.includes(i) ? `<p>★ ${f}</p>` : '<p class="non">??? Gagne contre cet animal pour découvrir cette carte.</p>').join('')}</div>` }).join('');
+  { const ks = ORDRE.filter(k => CHARS[k] && FAITS[k]), vus = ks.filter(k => (SAVE.cartes[k] || []).length), tot = ks.reduce((n, k) => n + FAITS[k].length, 0), eu = ks.reduce((n, k) => n + (SAVE.cartes[k] || []).length, 0);
+    $('troph-cartes').innerHTML = `<p class="cartes-info">🃏 <b>${eu} / ${tot}</b> cartes. Chaque combat gagné t’en donne une sur ton adversaire !</p>` +
+      vus.map(k => { const vu = SAVE.cartes[k]; return `<div class="anim"><h3><img src="${k}_tete.webp" alt="">${CHARS[k].nom}<small>${vu.length} / ${FAITS[k].length}</small></h3>${vu.map(i => `<p>${FAITS[k][i]}</p>`).join('')}</div>` }).join('') }
   // 🐾 MES ANIMAUX : par monde ; un animal à gagner dit où le trouver (duel de l'aventure, livre, légende) ; on touche un animal gagné pour jouer avec lui
   const n2x = n => String(n).padStart(2, '0'), tous = ORDRE.filter(k => CHARS[k]), a = tous.filter(k => SAVE.debloques.includes(k));
-  $('tab-animaux').textContent = `🐾 MES ANIMAUX · ${a.length}/${tous.length}`;
+  $('tab-animaux').textContent = `🐾 ANIMAUX ${a.length}/${tous.length}`;
   $('troph-animaux').innerHTML = Object.keys(MONDES).map(m => { const L = tous.filter(k => mondeDe(k) === m); if (!L.length) return '';
     return `<div class="col-monde"><h3>${MONDES[m].ico} ${MONDES[m].nom}<small>${L.filter(k => SAVE.debloques.includes(k)).length} / ${L.length}</small></h3><div class="col-grille">` + L.map(k => { const ok = SAVE.debloques.includes(k), src = window.sourceDe ? sourceDe(k) : { t: '?' };
       const t = ok ? (etoiles(SAVE.etoiles[k] || 0) || '✔') : src.t === 'duel' ? `🗺️ DUEL ${n2x(src.D.n)}` : src.t === 'livre' ? '📖 LIVRE' : src.t === 'legende' ? '★ LÉGENDE' : '🔒';
-      return `<button class="col-a${ok ? '' : ' non'}${champion(k) ? ' or' : ''}" type="button" data-k="${k}"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>${t}</small></button>` }).join('') + '</div></div>' }).join('');
+      return `<button class="col-a${ok ? '' : ' non'}${champion(k) ? ' or' : ''}" type="button" data-k="${k}"><img src="${k}_tete.webp" alt=""><span class="col-t"><b>${CHARS[k].nom}</b><small>${t}</small></span></button>` }).join('') + '</div></div>' }).join('');
   $('troph-animaux').querySelectorAll('.col-a').forEach(b => b.onclick = () => { const k = b.dataset.k; sfx('clic');
     if (SAVE.debloques.includes(k)) { G.livre = null; G.mode = 1; G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes(); choisir(k) }
     else if (champion(k)) ouvreVitrine(k); else ouvreInfoAnimal(k) });
@@ -3839,9 +3857,9 @@ function ongletTroph(t) { for (const x of ['animaux', 'badges', 'cartes']) { $('
 function initUI() {
   $('jouer').onclick = () => { sonInit(); sfx('valide'); G.livre = null; G.defi = null; G.jour = null; finEpreuve(); G.onglet = 'fav'; $('m1').onclick(); const choix = () => { G.phase = 'menu'; selStage = 0; show('choix'); construitCartes() };
     // 1re fois : le tutoriel complet ; ceux qui avaient fait l'ancien (sans saut ni coups en bas) : seulement le NOUVEAU (4 étapes)
-    if ((SAVE.tuto || 0) < (typeof TUTO_VERSION !== 'undefined' ? TUTO_VERSION : 1) && window.lanceTuto) { const quoi = SAVE.tuto ? 'nouveau' : 'complet'; chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(choix, quoi) }) } else choix() };
+    if (tutoAFaire()) { chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(choix, 'complet') }) } else choix() };
   $('livre-titre').onclick = () => { sonInit(); sfx('valide'); // ▶ JOUER = L'AVENTURE (1re fois : le tutoriel d'abord)
-    if ((SAVE.tuto || 0) < (typeof TUTO_VERSION !== 'undefined' ? TUTO_VERSION : 1) && window.lanceTuto) { const quoi = SAVE.tuto ? 'nouveau' : 'complet'; chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(() => ouvreLivre(), quoi) }) } else ouvreLivre() };
+    if (tutoAFaire()) { chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(() => ouvreLivre(), 'complet') }) } else ouvreLivre() };
   $('livre-retour').onclick = () => { sfx('retour'); G.livre = null; show('titre') };
   $('pari-retour').onclick = () => { sfx('retour'); ouvreLivre() };
   $('v-menu').onclick = () => { sfx('clic'); ouvreLivre() };
@@ -3858,10 +3876,9 @@ function initUI() {
   $('ep-retour').onclick = () => { sfx('retour'); G.phase = 'menu'; show('choix'); construitCartes() };
   $('retour-choix').onclick = () => { sfx('clic'); if (G.epreuve && !G.pick[1]) { const k = G.epreuve.k; finEpreuve(); vaVers(k); construitCartes(); return } if (selStage === 0) { G.phase = 'menu'; show(G.mode === 2 ? 'adeux' : 'titre'); return } selStage = 0; G.tournoi = null; const p0 = G.pick[0]; if (p0 && CHARS[p0]) { G.onglet = regionDe(p0); selCursor = Math.max(0, CARTES().indexOf(p0)) } construitCartes() };
   $('hasard-btn').onclick = () => { sfx('clic'); animalAuHasard() };
-  { const box = $('cartes'), pas = s => { sfx('clic'); box.scrollBy({ left: s * Math.max(200, box.clientWidth * .75), behavior: 'smooth' }) };
-    $('cartes-g').onclick = () => pas(-1); $('cartes-d').onclick = () => pas(1);
-    box.addEventListener('scroll', majFleches, { passive: true }); addEventListener('resize', majFleches);
-    box.addEventListener('wheel', e => { if (!box.classList.contains('defile') || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return; box.scrollLeft += e.deltaY; e.preventDefault() }, { passive: false }); } // la molette fait défiler de côté
+  $('cartes-g').onclick = () => pageCartes(-1); $('cartes-d').onclick = () => pageCartes(1); // (25/09 : pages de 8 cartes)
+  { let x0 = null, glisse = 0; const z = $('cartes-zone'); z.addEventListener('pointerdown', e => { x0 = e.clientX }); z.addEventListener('pointerup', e => { if (x0 != null && Math.abs(e.clientX - x0) > 60) { glisse = performance.now(); pageCartes(e.clientX < x0 ? 1 : -1) } x0 = null });
+    z.addEventListener('click', e => { if (performance.now() - glisse < 350) { e.stopPropagation(); e.preventDefault() } }, true) } // glisser le doigt = page suivante (sans choisir la carte sous le doigt)
   $('tournoi-btn').onclick = () => lanceTournoi();
   $('arenes-retour').onclick = () => { sfx('clic'); if (NET.on) { G.phase = 'menu'; show('choix'); $('choix-titre').textContent = 'EN ATTENTE…'; return } G.phase = 'menu'; show('choix'); if (G.epreuve) { finEpreuve(); G.pick[1] = null } selStage = G.pick[0] && CHARS[G.pick[0]] ? 1 : 0; construitCartes() }; $('trophees-titre').onclick = () => { sonInit(); sfx('clic'); ouvreTrophees('titre') };
   $('troph-retour').onclick = () => { if (G.retourTroph === 'choix') { show('choix'); construitCartes() } else show('titre') };
@@ -3886,18 +3903,34 @@ function initUI() {
     if (!PEUT_PLEIN) { ouvreAppli(); return }
     const el = document.documentElement; try { (document.fullscreenElement || document.webkitFullscreenElement ? (document.exitFullscreen || document.webkitExitFullscreen).call(document) : (el.requestFullscreen || el.webkitRequestFullscreen).call(el))?.catch?.(() => { }) } catch (e) { } try { screen.orientation.lock('landscape').catch(() => { }) } catch (e) { } };
   // commandes tactiles (joueur 1, et joueur 2 en mode 2 joueurs sur la même tablette)
-  for (const [pad, T] of [[$('pad'), TOUCH], [$('pad2'), TOUCH2]]) {
-    const joy = pad.querySelector('.joy'), knob = pad.querySelector('.knob');
-    let jid = null, jc = [0, 0];
-    const jmove = e => { const r = joy.getBoundingClientRect(), rad = r.width / 2; let dx = (e.clientX - jc[0]) / rad, dy = (e.clientY - jc[1]) / rad; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m } T.x = dx; T.y = dy; knob.style.transform = `translate(${dx * rad * .55}px,${dy * rad * .55}px)` };
-    joy.addEventListener('pointerdown', e => { e.preventDefault(); sonInit(); jid = e.pointerId; const r = joy.getBoundingClientRect(); jc = [r.left + r.width / 2, r.top + r.height / 2]; try { joy.setPointerCapture(jid) } catch (_) { } jmove(e) });
-    joy.addEventListener('pointermove', e => { if (e.pointerId === jid) jmove(e) });
-    const jend = e => { if (e.pointerId !== jid) return; jid = null; T.x = T.y = 0; knob.style.transform = '' };
-    joy.addEventListener('pointerup', jend); joy.addEventListener('pointercancel', jend);
+  // (25/09, bonnes pratiques des jeux de combat sur téléphone) :
+  // - joystick FLOTTANT (1 joueur) : il se pose sous le pouce, n'importe où dans le bas de la moitié gauche de l'écran ; petite zone morte au centre ;
+  // - A, B, ★ : un appui dans le coin droit (même à côté d'un bouton) va au bouton le plus proche ; le bouton s'allume sous le doigt.
+  for (const [pad, T, n] of [[$('pad'), TOUCH, 0], [$('pad2'), TOUCH2, 1]]) {
+    const joy = pad.querySelector('.joy'), knob = pad.querySelector('.knob'), zj = pad.querySelector('.zone-joy'), zb = pad.querySelector('.zone-btn');
+    let jid = null, jc = [0, 0], pose = false;
+    const jmove = e => { const rad = joy.offsetWidth / 2 || 50; let dx = (e.clientX - jc[0]) / rad, dy = (e.clientY - jc[1]) / rad; const m = Math.hypot(dx, dy); if (m < .12) dx = dy = 0; else if (m > 1) { dx /= m; dy /= m } T.x = dx; T.y = dy; knob.style.transform = `translate(${dx * rad * .55}px,${dy * rad * .55}px)` };
+    const jstart = (e, el, flotte) => { e.preventDefault(); sonInit(); jid = e.pointerId; pose = flotte;
+      if (flotte) { const rad = joy.offsetWidth / 2 || 50; joy.style.left = (e.clientX - rad) + 'px'; joy.style.top = (e.clientY - rad) + 'px'; joy.classList.add('pose'); jc = [e.clientX, e.clientY] }
+      else { const r = joy.getBoundingClientRect(); jc = [r.left + r.width / 2, r.top + r.height / 2] }
+      try { el.setPointerCapture(jid) } catch (_) { } jmove(e) };
+    const jend = e => { if (e.pointerId !== jid) return; jid = null; T.x = T.y = 0; knob.style.transform = ''; if (pose) { joy.classList.remove('pose'); joy.style.left = joy.style.top = '' } pose = false };
+    joy.addEventListener('pointerdown', e => jstart(e, joy, false));
+    if (zj) zj.addEventListener('pointerdown', e => jstart(e, zj, true));
+    for (const el of [joy, zj]) if (el) { el.addEventListener('pointermove', e => { if (e.pointerId === jid) jmove(e) }); el.addEventListener('pointerup', jend); el.addEventListener('pointercancel', jend) }
+    const appuie = (k, el) => { T[k] = true; el.classList.add('on') }, lache = (k, el) => { T[k] = false; el.classList.remove('on') };
     pad.querySelectorAll('.tb').forEach(el => { const k = el.dataset.k;
-      el.addEventListener('pointerdown', e => { e.preventDefault(); sonInit(); T[k] = true; el.classList.add('on'); try { el.setPointerCapture(e.pointerId) } catch (_) { } });
-      const off = e => { T[k] = false; el.classList.remove('on') }; el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('lostpointercapture', off) });
+      el.addEventListener('pointerdown', e => { e.preventDefault(); sonInit(); appuie(k, el); try { el.setPointerCapture(e.pointerId) } catch (_) { } });
+      const off = () => lache(k, el); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('lostpointercapture', off) });
+    if (zb) { const doigts = new Map();
+      zb.addEventListener('pointerdown', e => { e.preventDefault(); sonInit(); let best = null, bd = 1e9;
+        for (const el of pad.querySelectorAll('.tb')) { const r = el.getBoundingClientRect(), d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)); if (d < bd) { bd = d; best = el } }
+        if (!best || bd > best.offsetWidth * 1.9) return; doigts.set(e.pointerId, best); appuie(best.dataset.k, best); try { zb.setPointerCapture(e.pointerId) } catch (_) { } });
+      const fin = e => { const el = doigts.get(e.pointerId); if (el) { doigts.delete(e.pointerId); if (![...doigts.values()].includes(el)) lache(el.dataset.k, el) } };
+      zb.addEventListener('pointerup', fin); zb.addEventListener('pointercancel', fin) }
   }
+  // Safari (iPhone) : un geste parti du bord de l'écran fait revenir à la page précédente → bloqué pendant le jeu
+  document.addEventListener('touchstart', e => { const t = e.touches[0]; if (t && (t.clientX < 22 || t.clientX > innerWidth - 22)) e.preventDefault() }, { passive: false });
   if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) document.body.classList.add('tactile');
 }
 // boutons tactiles qui s'adaptent (25/09) : A, B et ★ disent ce qu'ils vont faire TOUT DE SUITE
@@ -3922,6 +3955,7 @@ function majBoutons() {
       if (s && ETQ.get(b) !== v) { ETQ.set(b, v); s.textContent = v }
       b.classList.toggle('ctx', !!(actif && e['c' + t])); if (t === 'S') b.classList.toggle('super', !!(actif && f.meter >= 100)) }
     pad.classList.toggle('vol', actif && vol2d(f));
+    { const s = pad.querySelector('.tb[data-k="S"]'); if (s) s.style.setProperty('--jauge', actif ? Math.min(1, f.meter / 100).toFixed(2) : 0) } // l'anneau de la jauge SUPER
     for (const [cl, d] of [['haut', 'up'], ['bas', 'down']]) { const g = pad.querySelector('.jg.' + cl); if (g) g.classList.toggle('on', !!inp[d]) }
   }
 }
