@@ -159,7 +159,7 @@ const DUELS = [
     fiches: [['jusqu’à 30 cm', 'un venin qui paralyse', 'elle chasse la tête en bas', 'elle se dessèche vite'], ['corps de moins de 10 cm', 'de petites dents pointues', 'elle chasse au sonar', 'des ailes en peau très fine']],
     gigi: { pari: 'scolopendre', dit: 'La scolopendre.', pourquoi: 'Plus tu as de pattes, plus tu es fort.', apres: 'Logique de Gigi : 2. Reste du monde : 0.' },
     rep: { g: 'scolopendre', titre: 'LA VRAIE RÉPONSE', cri: 'LA SCOLOPENDRE !', punch: 'Le cauchemar a 42 pattes.', tampon: 'vert', label: 'VU DANS LA NATURE',
-      film: 'La scolopendre s’accroche par l’arrière et laisse pendre son corps dans le vide. D’après les chercheurs, elle saisit au vol une chauve-souris qui passe… et la mord ! Des chercheurs l’ont vue manger des chauves-souris plus lourdes qu’elle !' } },
+      film: 'La scolopendre s’accroche par l’arrière et laisse pendre son corps dans le vide. Elle attrape sans doute au vol une chauve-souris qui passe… et la mord ! Des chercheurs l’ont vue manger des chauves-souris plus lourdes qu’elle !' } },
   { n: 26, lieu: 'AUSTRALIE', q: 'REQUIN-BOULEDOGUE OU CROCODILE MARIN ?', a: 'bouledogue', b: 'croco', noms: ['REQUIN-BOULEDOGUE', 'CROCODILE MARIN'], arene: 'estuaire', p: 59, pv: 60,
     intro: 'Nord de l’Australie. Dans la même rivière boueuse nagent Brutus, un crocodile géant, et un jeune requin-bouledogue bagarreur. Tu te baignes ? Non : tu paries. Qui croque l’autre ?',
     fiches: [['ce jeune : 1,50 m', 'une morsure énorme pour sa taille', 'il cogne, puis il mord', 'une peau sans armure'], ['Brutus : 5,50 m', 'une armure de plaques d’os', 'il bondit de l’eau', 'il lui manque une patte']],
