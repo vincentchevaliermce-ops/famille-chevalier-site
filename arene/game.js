@@ -1930,13 +1930,57 @@ const deMonde = m => ({ terre: 'de la TERRE', mer: 'de la MER', betes: 'des PETI
 const leMonde = m => ({ terre: 'LA TERRE', mer: 'LA MER', betes: 'LES PETITES BÊTES' })[m] || (MONDES[m] ? MONDES[m].nom : '');
 const msgMonde = P => `<span class="quete">🔓 NOUVEAU MONDE : ${MONDES[P.m].ico} ${leMonde(P.m)} ! ${P.depart.filter(x => CHARS[x]).map(x => CHARS[x].nom).join(' + ')} : À TOI !</span>`; // (M8)
 // un monde vient de s'ouvrir : ses animaux offerts rejoignent l'équipe (et ceux qui manquaient aux anciens joueurs)
-function ouvreMondes() { const neufs = [];
+function ouvreMondes(fete) { const neufs = []; // fete : l'écran « NOUVEAU MONDE ! » va suivre (pas de bandeau)
   for (const P of PROGRESSION) { if (!P.depart || !mondeOuvert(P.m)) continue;
     const manque = P.depart.filter(k => CHARS[k] && !SAVE.debloques.includes(k)); if (!manque.length) continue;
     const nouveau = !animauxDe(P.m).some(k => SAVE.debloques.includes(k)); SAVE.debloques.push(...manque); if (nouveau && P.ouvre) neufs.push(P) }
   sauve();
-  for (const P of neufs) { const M = MONDES[P.m]; G.mondeNeuf = P.m; setTimeout(() => { if (window.bandeau) bandeau(`${M.ico} ${M.nom} : UN NOUVEAU MONDE S’OUVRE !`, true); sfx(P.m === 'mer' ? 'plouf' : 'ailes', .9) }, 1200) }
+  for (const P of neufs) { const M = MONDES[P.m]; G.mondeNeuf = P.m; if (!fete) setTimeout(() => { if (window.bandeau) bandeau(`${M.ico} ${M.nom} : UN NOUVEAU MONDE S’OUVRE !`, true); sfx(P.m === 'mer' ? 'plouf' : 'ailes', .9) }, 1200) }
   return neufs }
+// ---------------------------------------------------------------------
+//  (26/09, M8 · choix A de Vincent) L'OBJECTIF TOUJOURS VISIBLE : « 🌊 LA MER : encore 6 animaux ! », sinon le légendaire du monde.
+//  m : le monde qui compte ici (écran de choix, animal qu'on vient de gagner) ; sans m : le prochain monde à ouvrir, sinon le légendaire le plus proche.
+// ---------------------------------------------------------------------
+function objectif(m) {
+  if (m && !mondeOuvert(m)) m = null; // (un monde fermé ne compte pas)
+  const P = PROGRESSION.find(p => p.ouvre && MONDES[p.m] && !mondeOuvert(p.m) && (!m || p.ouvre.m === m));
+  if (P) { const n = Math.min(nbGagnes(P.ouvre.m), P.ouvre.n); return { t: 'monde', m: P.m, de: P.ouvre.m, n, tot: P.ouvre.n, reste: P.ouvre.n - n } }
+  const L = (m ? [m] : Object.keys(MONDES)).filter(x => MONDES[x] && mondeOuvert(x) && CHARS[MONDES[x].legende] && !SAVE.debloques.includes(MONDES[x].legende));
+  if (!L.length) return null;
+  const reste = x => animauxDe(x).length - nbGagnes(x), x = L.sort((a, b) => reste(a) - reste(b))[0];
+  return { t: 'legende', m: x, de: x, k: MONDES[x].legende, n: nbGagnes(x), tot: animauxDe(x).length, reste: reste(x) };
+}
+const animaux = n => n > 1 ? `${n} animaux` : `${n} animal`;
+// la pastille : icône, phrase courte, barre de progression ; precis : « … de la MER » (quand plusieurs mondes sont ouverts et que le contexte ne le dit pas)
+function htmlObjectif(o, precis) {
+  if (!o) return ''; const de = precis && o.de && Object.keys(MONDES).filter(mondeOuvert).length > 1 ? ' ' + deMonde(o.de) : '';
+  const pct = Math.round(100 * o.n / Math.max(1, o.tot)), barre = `<span class="obj-barre"><em style="width:${pct}%"></em></span>`;
+  if (o.t === 'monde') return `<span class="obj"><i>${MONDES[o.m].ico}</i><span class="obj-t"><b>${leMonde(o.m)} : encore ${animaux(o.reste)}${de} !</b>${barre}</span></span>`;
+  const d = CHARS[o.k];
+  if (!o.reste) return `<span class="obj pret"><img src="${o.k}_tete.webp" alt=""><span class="obj-t"><b>★ ${d.art} SE RÉVEILLE !</b>${barre}</span></span>`;
+  return `<span class="obj"><img src="${o.k}_tete.webp" alt=""><span class="obj-t"><b>${d.nom} : encore ${animaux(o.reste)}${de} !</b>${barre}</span></span>`;
+}
+// la ligne de l'écran de victoire : « 🌊 Plus que 5 animaux avant LA MER ! »
+function phraseObjectif(o) {
+  if (!o) return '';
+  if (o.t === 'monde') return `${MONDES[o.m].ico} Plus que ${animaux(o.reste)} avant ${leMonde(o.m)} !`;
+  const d = CHARS[o.k]; return o.reste ? `★ Plus que ${animaux(o.reste)} avant ${d.art} !` : `★ ${d.art} SE RÉVEILLE : VA ${d.fem ? 'L’AFFRONTER' : 'L’AFFRONTER'} !`;
+}
+// plusieurs mondes ouverts d'un coup (rare) : une fête après l'autre
+function feteMondes(L, ensuite) { const [P, ...reste] = L; if (!P) { if (ensuite) ensuite(); return } ceremonieMonde(P, reste.length || ensuite ? () => feteMondes(reste, ensuite) : null) }
+// L'ÉCRAN « NOUVEAU MONDE ! » : le monde, ses animaux offerts, puis on y entre
+function ceremonieMonde(P, ensuite) {
+  const m = P.m, M = MONDES[m], A = arenesDe(m)[0], dep = (P.depart || []).filter(k => CHARS[k]), autres = animauxDe(m).length - dep.length;
+  sonInit(); G.phase = 'menu'; show('monde');
+  const e = $('monde'); e.dataset.monde = m; e.style.backgroundImage = A ? `linear-gradient(rgba(8,31,69,.35),rgba(8,31,69,.8)),url(${A.img})` : '';
+  $('monde-nom').textContent = `${M.ico} ${leMonde(m)}`;
+  $('monde-animaux').innerHTML = dep.map((k, i) => `<span class="monde-a" style="animation-delay:${.5 + .35 * i}s"><img src="${k}_vs.webp" alt=""><b>${CHARS[k].nom}</b><small>À TOI !</small></span>`).join('');
+  const noms = dep.map(k => CHARS[k].art.toLowerCase()).join(' et ');
+  $('monde-txt').textContent = fin(`${noms.charAt(0).toUpperCase() + noms.slice(1)} ${dep.length > 1 ? 'rejoignent' : 'rejoint'} ton équipe !${autres > 0 ? ` ${autres} autres animaux ${deMonde(m)} t’attendent…` : ''}`);
+  const b = $('monde-ok'); b.textContent = `${M.ico} ${m === 'mer' ? 'PLONGER' : 'ENTRER'} ▶`;
+  b.onclick = () => { sfx('valide'); if (ensuite) { ensuite(); return } G.mode = 1; G.livre = null; finEpreuve(); selStage = 0; G.pick = [null, null]; G.monde = m; G.onglet = m; SAVE.onglet = m; if (m === 'mer') SAVE.vuMer = 1; if (m === 'betes') SAVE.vuBetes = 1; sauve(); show('choix'); selCursor = 0; construitCartes() };
+  sfx('super'); setTimeout(() => sfx(m === 'mer' ? 'plouf' : 'ailes', 1), 300); dep.forEach((k, i) => setTimeout(() => sfx(k, .9), 900 + 450 * i)); setTimeout(() => sfx('foule', .5), 700); vibre([80, 50, 160]);
+}
 // comment gagner un animal (écran de choix, fiche, collection)
 function commentGagner(k) { const m = mondeDe(k), M = MONDES[m], d = CHARS[k], il = d.fem ? 'elle' : 'il';
   if (k === M.legende) return { t: 'legende', court: '★ LÉGENDE', txt: `Gagne tous les animaux ${deMonde(m)} : ${il} se réveille… et tu pourras ${d.fem ? 'l’affronter' : 'l’affronter'} !` };
@@ -3577,7 +3621,7 @@ function loop(now) {
 // ---------------------------------------------------------------------
 //  Écrans (menu, choix, VS, fin) et commandes tactiles
 // ---------------------------------------------------------------------
-const ECRANS = ['titre', 'mode', 'choix', 'arenes', 'vs', 'pause', 'fin', 'code', 'trophees', 'enligne', 'appli', 'quiz', 'epreuve', 'adeux', 'livre', 'pari', 'verdict', 'invite', 'parents', 'defi', 'legende', 'tuto', 'nom'];
+const ECRANS = ['titre', 'mode', 'monde', 'choix', 'arenes', 'vs', 'pause', 'fin', 'code', 'trophees', 'enligne', 'appli', 'quiz', 'epreuve', 'adeux', 'livre', 'pari', 'verdict', 'invite', 'parents', 'defi', 'legende', 'tuto', 'nom'];
 function show(id) {
   for (const e of ECRANS) { const el = $(e); if (el) el.hidden = e !== id }
   document.body.classList.toggle('en-combat', !id || id === 'pause'); document.body.classList.toggle('en-pause', id === 'pause'); document.body.classList.toggle('en-menu-titre', id === 'titre'); document.body.classList.toggle('en-menu', !!id && id !== 'pause' && id !== 'titre');
@@ -3609,7 +3653,7 @@ function CARTES() {
   if (G.onglet === 'fav') return favoris(); // (le 🎲 AU HASARD est dans la barre du bas)
   const o = ongletDe(G.onglet), L = LISTE(o.m).filter(k => o.m !== 'terre' || regionDe(k) === o.k);
   const ok = L.filter(debloque), non = L.filter(k => !debloque(k));
-  const leg = o.m && MONDES[o.m].legende, legOk = leg && selStage === 1 && G.mode === 1 && !NET.on && legendePrete(o.m) && !debloque(leg) && (o.m !== 'terre' || regionDe(leg) === o.k); // (M8) le légendaire se réveille
+  const leg = o.m && MONDES[o.m].legende, legOk = leg && selStage === 1 && G.mode === 1 && !NET.on && legendePrete(o.m) && !debloque(leg); // (M8) le légendaire réveillé : en tête de chaque onglet de son monde
   return legOk && !non.includes(leg) ? [leg].concat(ok, non) : ok.concat(non); // (M8) le légendaire réveillé en premier
 }
 const nbCartesChoix = () => CARTES().length;
@@ -3617,6 +3661,7 @@ const nbCartesChoix = () => CARTES().length;
 function vaVers(k) { G.monde = mondeDe(k); G.onglet = regionDe(k); selCursor = Math.max(0, CARTES().indexOf(k)) }
 function menuKey(code) {
   if (G.phase === 'menu' && G.screen === 'titre' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('jouer').click(); return } // Entrée : ▶ JOUER
+  if (G.phase === 'menu' && G.screen === 'monde' && ['Enter', 'Space', 'KeyF', 'KeyJ'].includes(code)) { $('monde-ok').click(); return } // (M8) NOUVEAU MONDE : Entrée
   if (G.phase === 'menu' && G.screen === 'mode') { if (['Enter', 'Space', 'Digit1', 'Numpad1', 'KeyF', 'KeyJ'].includes(code)) $('mode-1').click(); else if (['Digit2', 'Numpad2'].includes(code)) $('mode-2').click(); else if (['Escape', 'Backspace'].includes(code)) $('mode-retour').click(); return } // (M8) 1 ou 2 joueurs au clavier
   if (G.phase === 'menu' && G.screen === 'choix') {
     const n = nbCartesChoix(), col = n <= 4 ? n : 4;
@@ -3653,7 +3698,7 @@ function construitCartes() {
     b.className = 'carte ' + k + (ok ? '' : ' verrou') + (leg ? ' legende' : '') + (ch ? ' champion' : '') + (bloque ? ' inactif' : '') + (d.nom.length > 12 ? ' long' : '') + (selStage === 1 && G.pick[0] === k && !NET.on ? ' pris1' : ''); b.id = 'c-' + k;
     if (selStage === 1 && G.pick[0] === k && !NET.on) b.dataset.tag = G.mode === 2 ? 'J1' : 'TOI';
     // (M8) sous la carte : ses étoiles, « ⚔️ À GAGNER » (on le bat, on répond à une question), « ★ LÉGENDE » ; « 📖 » sur une paire du livre
-    const cg = !ok ? commentGagner(k) : null, ets = ok ? etoiles(SAVE.etoiles[k] || 0) : selStage === 1 && G.mode === 1 && !NET.on ? cg.court : cg.t === 'legende' ? '★ LÉGENDE' : '🔒';
+    const cg = !ok ? commentGagner(k) : null, ets = ok ? etoiles(SAVE.etoiles[k] || 0) : G.mode === 1 && !NET.on ? cg.court : cg.t === 'legende' ? '★ LÉGENDE' : '🔒'; // (M8) à 1 joueur : « ⚔️ À GAGNER » aussi sur TON ANIMAL
     const D = selStage === 1 && !NET.on && G.mode === 1 && G.pick[0] && window.duelEntre ? duelEntre(G.pick[0], k) : null; if (D) { b.classList.add('livre'); b.dataset.livre = SAVE.livre[D.n] ? '📖 ✔' : '📖 DU LIVRE' }
     b.innerHTML = `<span class="img"><img src="${k}_corps.webp" alt=""></span><span class="nom">${d.nom}</span><span class="ets${ok ? '' : ' quiz'}">${ets}</span>`;
     b.onclick = () => { selCursor = i; majChoix(); clicCarte(k) };
@@ -3694,6 +3739,7 @@ function majChoix() {
   const o = ongletDe(G.onglet), lieu = G.onglet === 'fav' ? '⭐ TES PRÉFÉRÉS' : `${o.ico} ${o.titre}`;
   if (!NET.on) $('choix-titre').textContent = G.epreuve && !G.pick[1] ? `QUI VA AFFRONTER ${CHARS[G.epreuve.k].art} ?` : selStage === 0 ? (G.mode === 2 ? 'JOUEUR 1 : TON ANIMAL' : 'TON ANIMAL') : G.mode === 2 ? 'JOUEUR 2 : TON ANIMAL' : 'CONTRE QUI ?'; // (M8 : les mots de Vincent)
   const k = CARTES()[selCursor], d = k && CHARS[k], s1 = selStage === 1 && !NET.on;
+  { const ob = $('objectif'); if (ob) { const h = G.mode === 1 && !NET.on && !G.epreuve ? htmlObjectif(objectif(G.monde) || objectif()) : ''; /* l'objectif du monde où l'on joue */ ob.innerHTML = h; ob.hidden = !h } } // (M8) l'objectif, toujours visible
   $('retour-choix').hidden = !!NET.on; $('hasard-btn').hidden = !!NET.on || !!G.epreuve; $('tournoi-btn').hidden = !(s1 && G.mode === 1 && !G.epreuve); $('trophees-btn').hidden = s1;
   $('detail').innerHTML = ''; if (G.detailComplet) $('detail').innerHTML = k === 'hasard' ? '🎲 Un animal au hasard, parmi ceux que tu as !' : !d ? '' : !debloque(k) ? esc(fin(commentGagner(k).txt))
     : `<b>${d.nom}</b> · ★ Spécial : <b>${d.moves[d.speAff || 'S'].nom}</b> · Super : <b>${d.moves.SUPER.nom}</b>`;
@@ -3946,16 +3992,16 @@ function verifieMot() {
 }
 function quizGagne() {
   const k = Q.k, nv = [], ch = champion(k), d = CHARS[k];
-  if (!SAVE.debloques.includes(k)) SAVE.debloques.push(k); SAVE.quiz[k] = Date.now(); finEpreuve(); const mondes = ouvreMondes(); // (M8)
+  if (!SAVE.debloques.includes(k)) SAVE.debloques.push(k); SAVE.quiz[k] = Date.now(); finEpreuve(); const mondes = ouvreMondes(true); // (M8)
   badge(ch ? 'livre' : 'secret', nv); sauve();
   $('quiz-pas').innerHTML = '<i class="ok"></i>';
   $('quiz-img').classList.remove('ombre'); $('quiz-titre').textContent = ch ? '📖 CHAMPION DU LIVRE DÉBLOQUÉ !' : '🎉 GAGNÉ !';
   $('quiz-intro').innerHTML = fin(ch ? 'Bravo, lecteur ! Ta carte est dorée pour toujours.' : `Tu ${d.fem ? 'l’as battue' : 'l’as battu'}, tu connais ses secrets : ${d.fem ? 'elle est' : 'il est'} à toi !`);
   $('quiz-q').textContent = `${d.art} REJOINT L’ARÈNE !`;
-  $('quiz-rep').innerHTML = ''; $('quiz-msg').innerHTML = mondes.map(msgMonde).join('') + (nv.length ? 'NOUVEAU TROPHÉE : ' + nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ') : '') + (window.codeAOffrir ? codeAOffrir(k) : '');
+  $('quiz-rep').innerHTML = ''; $('quiz-msg').innerHTML = (mondes.length ? '<span class="quete">🔓 UN NOUVEAU MONDE S’OUVRE…</span>' : `<span class="quete obj-gain">${phraseObjectif(objectif(mondeDe(k)))}</span>`) + (nv.length ? 'NOUVEAU TROPHÉE : ' + nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ') : '') + (window.codeAOffrir ? codeAOffrir(k) : '');
   sfx('badge'); setTimeout(() => sfx('super'), 350); setTimeout(() => sfx(k, 1), 900);
-  const s = $('quiz-suite'); s.hidden = false; s.textContent = `JOUER AVEC ${d.fem ? 'ELLE' : 'LUI'} ▶`;
-  s.onclick = () => { sfx('valide'); G.phase = 'menu'; selStage = 0; G.livre = null; show('choix'); vaVers(k); construitCartes(); choisir(k) };
+  const s = $('quiz-suite'); s.hidden = false; s.textContent = mondes.length ? `🎉 DÉCOUVRIR ▶` : `JOUER AVEC ${d.fem ? 'ELLE' : 'LUI'} ▶`;
+  s.onclick = mondes.length ? () => { sfx('valide'); feteMondes(mondes) } : () => { sfx('valide'); G.phase = 'menu'; selStage = 0; G.livre = null; show('choix'); vaVers(k); construitCartes(); choisir(k) };
 }
 // --- trophées
 function ouvreTrophees(retour) {

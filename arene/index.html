@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790380764"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790401081"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1125,6 +1125,34 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
 .fiche.inactif{filter:grayscale(.8);opacity:.6}
 /* la liste des duels : la légende de chaque monde */
 #cadre .duel.legende-carte .num{white-space:nowrap}
+
+/* ===== (26/09, M8 · choix A de Vincent) L'OBJECTIF TOUJOURS VISIBLE, et la fête d'un NOUVEAU MONDE ===== */
+.obj{display:inline-flex;align-items:center;gap:.9cqw;white-space:nowrap;text-align:left}
+.obj i{font-style:normal;font-size:3.2cqw;line-height:1}
+.obj img{width:4.6cqw;height:4.6cqw;flex:none;border-radius:50%;background:#F7C41F;border:.22cqw solid var(--creme);object-fit:cover;box-sizing:border-box;filter:grayscale(1) brightness(.55)} /* le légendaire, dans l'ombre tant qu'il dort */
+.obj.pret img{filter:none;animation:battre .9s ease-in-out infinite alternate}
+.obj-t{display:flex;flex-direction:column;gap:.35cqw;align-items:stretch}
+.obj-t b{font:900 var(--t-min)/1.1 Rubik,"Arial Black",sans-serif;color:var(--creme);letter-spacing:.01em}
+.obj-barre{display:block;height:1.1cqw;border-radius:1cqw;background:rgba(255,248,236,.22);overflow:hidden;box-shadow:inset 0 0 0 .15cqw rgba(255,248,236,.25)}
+.obj-barre em{display:block;height:100%;min-width:1.1cqw;background:linear-gradient(90deg,#FFC629,#7BD35A);border-radius:1cqw;transition:width .6s}
+#cadre #choix .bas-choix .objectif{display:flex;align-items:center;padding:0 .8cqw 0 .4cqw}
+#cadre #choix .bas-choix .objectif[hidden]{display:none}
+#cadre .aa-obj{display:block;margin-top:.45cqw}
+#cadre .aa-obj[hidden]{display:none}
+#cadre .accueil-animaux .aa-t b small{font:900 var(--t-min) Rubik,"Arial Black",sans-serif;color:var(--jaune);margin-left:.6cqw}
+#cadre .aa-obj .obj i{font-size:2.6cqw}#cadre .aa-obj .obj img{width:3.8cqw;height:3.8cqw}
+#cadre #quiz .code-msg .obj-gain{background:#2FA85B!important;color:#fff!important}
+/* l'écran « NOUVEAU MONDE ! » (fond : la 1re arène du monde) */
+#monde{background-color:#0B2A5B;background-size:cover;background-position:center;gap:1.1cqw}
+#cadre .monde-titre{margin:0;font:900 6.2cqw/1 Rubik,"Arial Black",sans-serif;color:var(--jaune);letter-spacing:.02em;text-shadow:.3cqw .3cqw 0 var(--marine),-.2cqw -.2cqw 0 var(--marine),.2cqw -.2cqw 0 var(--marine),-.2cqw .2cqw 0 var(--marine),.5cqw .6cqw 0 #7A4FC8;animation:slamT .5s cubic-bezier(.2,1.5,.4,1) both}
+#cadre .monde-nom{margin:0;font-size:4.2cqw;color:var(--creme);background:var(--marine);border:.35cqw solid var(--creme);border-radius:1.6cqw;padding:.3cqw 2.2cqw .5cqw;box-shadow:.35cqw .45cqw 0 rgba(0,0,0,.35);animation:pop .5s .25s both}
+#cadre .monde-animaux{display:flex;gap:5cqw;align-items:flex-end;justify-content:center}
+#cadre .monde-a{display:flex;flex-direction:column;align-items:center;gap:.25cqw;animation:pop .6s both}
+#cadre .monde-a img{height:14cqw;filter:drop-shadow(0 0 1.4cqw rgba(255,198,41,.9))}
+#cadre .monde-a b{font:900 3cqw/1 Rubik,"Arial Black",sans-serif;color:var(--creme);text-shadow:.2cqw .2cqw 0 var(--marine),-.15cqw -.15cqw 0 var(--marine)}
+#cadre .monde-a small{font:900 var(--t-min)/1.2 Rubik,"Arial Black",sans-serif;color:var(--marine);background:var(--jaune);border:.22cqw solid var(--marine);border-radius:1cqw;padding:.05cqw .9cqw}
+#cadre #monde .petit{font-size:var(--t-corps);max-width:82cqw;line-height:1.3;color:var(--creme);background:rgba(8,31,69,.82);padding:.5cqw 1.6cqw;border-radius:1.2cqw;margin:0}
+#cadre #monde .btn.go{font-size:3.8cqw;padding:.7cqw 3.6cqw;animation:battre 1s 1.4s ease-in-out infinite alternate}
 </style></head><body>
 
 <div id="cadre">
@@ -1144,7 +1172,7 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
     <img class="logo" src="titre_accueil.webp" alt="C’est qui le plus fort ? L’Arène des Duels">
     <div class="accueil m8"><!-- (26/09, M8) « hyper simple » : ▶ JOUER, et la collection -->
       <button class="accueil-jouer" id="jouer" type="button"><span class="aj-go R">▶ JOUER</span></button>
-      <button class="accueil-animaux" id="trophees-titre" type="button"><span class="t-tetes" id="t-tetes"></span><span class="aa-t"><b class="R">MES ANIMAUX</b><small id="t-nb">4 / 52</small></span></button>
+      <button class="accueil-animaux" id="trophees-titre" type="button"><span class="t-tetes" id="t-tetes"></span><span class="aa-t"><b class="R">MES ANIMAUX <small id="t-nb">4 / 52</small></b><span class="aa-obj" id="obj-accueil" hidden></span></span></button>
     </div>
     <button class="btn appli-btn R" id="appli-titre" type="button" hidden>📲 SANS LA BARRE D’ADRESSE</button>
   </section>
@@ -1156,7 +1184,7 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
     </div>
     <h2 id="choix-titre" class="titre-ecran R">CHOISIS TON ANIMAL</h2>
     <div class="cartes-zone" id="cartes-zone"><button class="fleche-cartes g" id="cartes-g" type="button" aria-label="Voir les animaux d’avant" hidden>◀</button><div class="cartes" id="cartes"></div><button class="fleche-cartes d" id="cartes-d" type="button" aria-label="Voir les autres animaux" hidden>▶</button></div>
-    <div class="ligne bas-choix"><button class="btn retour" id="retour-choix" type="button" hidden>◀<small>RETOUR</small></button><span id="detail" class="detail"></span><button class="btn" id="hasard-btn" type="button" hidden aria-label="Au hasard">🎲</button><div class="grp" role="group" aria-label="Niveau de l’ordinateur" id="niveaux"><button class="btn" data-niv="0" type="button" aria-pressed="true">FACILE</button><button class="btn" data-niv="1" type="button" aria-pressed="false">NORMAL</button><button class="btn" data-niv="2" type="button" aria-pressed="false">COSTAUD</button></div><button class="btn" id="tournoi-btn" type="button" hidden>🏆 TOURNOI</button><button class="btn aide-coin" id="comment-jouer" type="button" aria-label="Comment jouer">?</button><button class="btn" id="tenue-btn" type="button" hidden>🎨 NORMAL</button><button class="btn" id="trophees-btn" type="button">TROPHÉES</button></div>
+    <div class="ligne bas-choix"><button class="btn retour" id="retour-choix" type="button" hidden>◀<small>RETOUR</small></button><span id="detail" class="detail"></span><button class="btn" id="hasard-btn" type="button" hidden aria-label="Au hasard">🎲</button><span class="objectif" id="objectif" hidden></span><div class="grp" role="group" aria-label="Niveau de l’ordinateur" id="niveaux"><button class="btn" data-niv="0" type="button" aria-pressed="true">FACILE</button><button class="btn" data-niv="1" type="button" aria-pressed="false">NORMAL</button><button class="btn" data-niv="2" type="button" aria-pressed="false">COSTAUD</button></div><button class="btn" id="tournoi-btn" type="button" hidden>🏆 TOURNOI</button><button class="btn aide-coin" id="comment-jouer" type="button" aria-label="Comment jouer">?</button><button class="btn" id="tenue-btn" type="button" hidden>🎨 NORMAL</button><button class="btn" id="trophees-btn" type="button">TROPHÉES</button></div>
     <p class="petit clavier">Clavier : <b>Z Q S D</b> pour bouger · <b>F</b> rapide · <b>G</b> fort · <b>H</b> ★ spécial (2ᵉ joueur : flèches + <b>1 2 3</b> du pavé ou <b>, ; !</b>). Pour te protéger : <b>vers le bas</b> (ou recule). Baisse-toi pour esquiver.</p>
   </section>
 
@@ -1361,6 +1389,14 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
     <button class="btn go" id="legende-ok" type="button">JOUER AVEC LUI ▶</button>
   </section>
 
+  <section class="ecran" id="monde" hidden><!-- (26/09, M8 · choix A) la fête d'un nouveau monde -->
+    <p class="monde-titre R">NOUVEAU MONDE !</p>
+    <h2 class="monde-nom R" id="monde-nom">🌊 LA MER</h2>
+    <div class="monde-animaux" id="monde-animaux"></div>
+    <p class="petit" id="monde-txt"></p>
+    <button class="btn go" id="monde-ok" type="button">🌊 PLONGER ▶</button>
+  </section>
+
   <div id="tuto-bulle" class="tuto-bulle" hidden></div>
   <button class="btn tuto-passer" id="tuto-passer" type="button" hidden>PASSER ▶▶</button>
   <div id="bulle-info" class="bulle-info" hidden></div>
@@ -1408,11 +1444,11 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790380764"></script>
-<script src="anim.js?v=1790380764"></script>
-<script src="game.js?v=1790380764"></script>
-<script src="net.js?v=1790380764"></script>
-<script src="livre.js?v=1790380764"></script>
-<script src="bonus.js?v=1790380764"></script>
-<script src="surprises.js?v=1790380764"></script>
+<script src="skin.js?v=1790401081"></script>
+<script src="anim.js?v=1790401081"></script>
+<script src="game.js?v=1790401081"></script>
+<script src="net.js?v=1790401081"></script>
+<script src="livre.js?v=1790401081"></script>
+<script src="bonus.js?v=1790401081"></script>
+<script src="surprises.js?v=1790401081"></script>
 </body></html>

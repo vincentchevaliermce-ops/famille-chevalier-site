@@ -482,7 +482,7 @@ function duelGagne(D) {
   for (const k of nouveaux) { SAVE.debloques.push(k); SAVE.quiz[k] = Date.now() }
   if (nouveaux.length) badge('secret', nv);
   if (DUELS.filter(duelPret).every(fini)) badge('lecteur', nv);
-  const mondes = window.ouvreMondes ? ouvreMondes() : []; // (M8) 10 animaux de la TERRE → LA MER s'ouvre…
+  const mondes = window.ouvreMondes ? ouvreMondes(true) : []; // (M8) 10 animaux de la TERRE → LA MER s'ouvre… (puis l'écran « NOUVEAU MONDE ! »)
   sauve(); finEpreuve(); G.quest = { D, fini: true }; G.retourQuiz = libre ? 'libre' : 'livre'; $('quiz').classList.add('gagne');
   const suivant = prochainDuel();
   $('quiz-titre').textContent = libre ? '🎉 DUEL DU LIVRE GAGNÉ !' : `🎉 DUEL ${n2(D.n)} GAGNÉ !`; $('quiz').classList.remove('relis');
@@ -491,11 +491,13 @@ function duelGagne(D) {
   const deja = [...new Set([D.a, D.b])].filter(k => pret(k) && !nouveaux.includes(k));
   $('quiz-q').innerHTML = `<span class="gains">${nouveaux.map(k => `<span class="gain${champion(k) ? ' or' : ''}"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>NOUVEAU !</small></span>`).join('')}${deja.map(k => `<span class="gain deja"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>✔ DÉJÀ À TOI</small></span>`).join('')}</span>`;
   $('quiz-rep').innerHTML = '';
-  $('quiz-msg').innerHTML = mondes.map(msgMonde).join('') +
+  const ob = window.objectif && nouveaux.length ? phraseObjectif(objectif(mondeDe(nouveaux[0]))) : '';
+  $('quiz-msg').innerHTML = (mondes.length ? '<span class="quete">🔓 UN NOUVEAU MONDE S’OUVRE…</span>' : ob ? `<span class="quete obj-gain">${ob}</span>` : '') +
     (nv.length ? `<span>NOUVEAU TROPHÉE : ${nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ')}</span>` : '') + (window.codeAOffrir ? nouveaux.map(codeAOffrir).join('') : '');
   sfx('badge'); setTimeout(() => sfx('super'), 350); nouveaux.forEach((k, i) => setTimeout(() => sfx(k, 1), 800 + i * 700));
   const s = $('quiz-suite'); s.hidden = false;
-  if (libre) { const k = nouveaux.find(x => x !== moi) || nouveaux[0];
+  if (mondes.length) { s.textContent = '🎉 DÉCOUVRIR ▶'; s.onclick = () => { sfx('valide'); G.quest = null; G.livre = null; G.retourQuiz = null; feteMondes(mondes) } }
+  else if (libre) { const k = nouveaux.find(x => x !== moi) || nouveaux[0];
     if (k) { s.textContent = `JOUER AVEC ${CHARS[k].fem ? 'ELLE' : 'LUI'} ▶`; s.onclick = () => { sfx('valide'); G.quest = null; G.livre = null; G.retourQuiz = null; G.mode = 1; G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes(); choisir(k) } }
     else { s.textContent = 'CONTINUER ▶'; s.onclick = () => { sfx('valide'); G.quest = null; G.retourQuiz = null; autreCombat() } } }
   else if (suivant) { s.textContent = `DUEL ${n2(suivant.n)} ▶`; s.onclick = () => { sfx('valide'); G.quest = null; ouvrePari(suivant) } }
@@ -503,8 +505,9 @@ function duelGagne(D) {
 }
 // --- l'accueil (M8) : la tuile MES ANIMAUX montre les derniers animaux gagnés et le compte
 function majAccueil() {
-  const tous = ORDRE.filter(pret), a = tous.filter(k => SAVE.debloques.includes(k)), t = $('t-tetes'), n = $('t-nb');
+  const tous = ORDRE.filter(pret), a = tous.filter(k => SAVE.debloques.includes(k)), t = $('t-tetes'), n = $('t-nb'), o = $('obj-accueil');
   if (n) n.textContent = `${a.length} / ${tous.length}`;
+  if (o && window.objectif) { const h = htmlObjectif(objectif(G.monde) || objectif()); o.innerHTML = h; o.hidden = !h } // (le monde où l'on joue) // (M8) le prochain objectif
   if (t) t.innerHTML = a.slice(-3).map(k => `<img src="${k}_tete.webp" alt="">`).join('');
 }
 function acclameMenu() { sfx('foule', .5) }
