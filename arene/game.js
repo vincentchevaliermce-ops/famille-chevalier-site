@@ -1972,7 +1972,7 @@ function feteMondes(L, ensuite) { const [P, ...reste] = L; if (!P) { if (ensuite
 function ceremonieMonde(P, ensuite) {
   const m = P.m, M = MONDES[m], A = arenesDe(m)[0], dep = (P.depart || []).filter(k => CHARS[k]), autres = animauxDe(m).length - dep.length;
   sonInit(); G.phase = 'menu'; show('monde');
-  const e = $('monde'); e.dataset.monde = m; e.style.backgroundImage = A ? `linear-gradient(rgba(8,31,69,.35),rgba(8,31,69,.8)),url(${A.img})` : '';
+  const e = $('monde'); e.dataset.monde = m; e.style.backgroundImage = A ? `linear-gradient(rgba(8,31,69,.35),rgba(8,31,69,.8)),url(${A.img})` : ''; if (A) document.body.style.setProperty('--fond-monde', `url(${A.img})`);
   $('monde-nom').textContent = `${M.ico} ${leMonde(m)}`;
   $('monde-animaux').innerHTML = dep.map((k, i) => `<span class="monde-a" style="animation-delay:${.5 + .35 * i}s"><img src="${k}_vs.webp" alt=""><b>${CHARS[k].nom}</b><small>À TOI !</small></span>`).join('');
   const noms = dep.map(k => CHARS[k].art.toLowerCase()).join(' et ');
@@ -2014,11 +2014,20 @@ const SON = { ctx: null, on: true, master: null, noise: null, mus: null, next: 0
 // On passe la session audio en mode « lecture » et on joue en boucle un son muet dans une balise audio (astuce connue),
 // ce qui laisse passer la musique et les bruitages ; le bouton SON du jeu permet toujours de couper.
 const SILENCE = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
-function debloqueSon() {
-  try { if (navigator.audioSession) navigator.audioSession.type = 'playback' } catch (e) { }
-  try { if (!SON.tag) { SON.tag = new Audio(SILENCE); SON.tag.loop = true; SON.tag.setAttribute('playsinline', ''); } if (SON.tag.paused) SON.tag.play().catch(() => { }) } catch (e) { }
-  sonInit();
+// (26/09, demande de Vincent : « jouer et continuer à écouter ma musique sur Apple Music ») :
+// ♪ SON : la musique du jeu (session « lecture » : elle remplace celle de l'appareil, et marche même en mode silencieux) ;
+// ♪ SANS MUSIQUE et ♪ MUET : session « ambiante » → la musique de l'appareil (Apple Music, Spotify…) continue, les bruitages du jeu s'y mêlent
+// (sur iPhone, ils suivent alors le bouton silencieux, comme dans les jeux du téléphone). Choix gardé : aux parties suivantes, rien n'est coupé.
+const avecMusiqueAppareil = () => (typeof SAVE !== 'undefined' && (SAVE.son || 0) >= 1);
+function sessionAudio() {
+  const amb = avecMusiqueAppareil();
+  try { if (navigator.audioSession) navigator.audioSession.type = amb ? 'ambient' : 'playback' } catch (e) { }
+  try {
+    if (amb) { if (SON.tag && !SON.tag.paused) SON.tag.pause() }
+    else { if (!SON.tag) { SON.tag = new Audio(SILENCE); SON.tag.loop = true; SON.tag.setAttribute('playsinline', '') } if (SON.tag.paused) SON.tag.play().catch(() => { }) }
+  } catch (e) { }
 }
+function debloqueSon() { sessionAudio(); sonInit() }
 for (const ev of ['touchend', 'click', 'keydown']) addEventListener(ev, debloqueSon, { passive: true });
 function sonInit() {
   if (SON.ctx) { if (SON.ctx.state !== 'running') SON.ctx.resume().catch?.(() => { }); chargeSons(); return }
@@ -2643,7 +2652,7 @@ function touche(a, d, m, hb, hu, o) {
   const aideK = a.cpu && G.mode === 1 ? 1 - .12 * G.aide : 1;
   // dos tourné (hippo qui mitraille, ratel qui pschitte…) : les fesses à l'air prennent plus cher
   const fesses = d.state === 'atk' && d.move && d.move.dos && d.ph === 'act';
-  const bonus = (o.fin ? 1.15 : 1) * (a.fort && spe ? 1.2 : 1) * (m.aa && d.h > (vol2d(a) ? a.h + 40 : 0) ? 1.25 : 1) * (a.arme && m.charge ? 1 + .35 * a.arme : 1) * (fesses ? 1.3 : 1) * (a.d.force || 1) * (a.d.forceMer && estMer() ? a.d.forceMer : 1) * forceDuel(a); // forceMer : le crocodile, invité de la MER, y tape moins fort
+  const bonus = (o.fin ? 1.15 : 1) * (a.fort && spe ? 1.2 : 1) * (m.aa && d.h > (vol2d(a) ? a.h + 40 : 0) ? 1.25 : 1) * (a.arme && m.charge ? 1 + .35 * a.arme : 1) * (fesses ? 1.3 : 1) * (a.d.force || 1) * (a.d.forceMer && estMer() ? a.d.forceMer : 1) * forceDuel(a) * forcePaire(a, d); // forceMer : le crocodile, invité de la MER, y tape moins fort
   if (fesses && Math.random() < .5) addFx({ k: 'mot', x: d.x, y: FLOOR - 560, mot: hasard(['FESSES À L’AIR !', 'PAF, LES FESSES !']), col: '#FF7AB6' });
   // points faibles du livre : le puma fuit devant une meute (attaques en bande) · le cobra, « serré, il est en danger » · l'alligator « jeune, il se fait avaler » (rétréci) · la girafe : « si elle tombe, c'est fini »
   const faible = (m.clan && d.d.meute ? d.d.meute : 1) * (o.prise ? (d.d.fragilePrise || 1) * (d.d.petitFragile && d.boost && d.boost.k === 'mini' ? d.d.petitFragile : 1) : 1) * (d.d.chute && m.kd && o.last ? d.d.chute : 1) * (d.d.carapace && m.casse && !o.proj ? d.d.carapace : 1) * (d.d.chaud && m.chaleur ? d.d.chaud : 1) * (d.d.ailesFines && ailesTouchees(d, m) ? d.d.ailesFines : 1) * (d.repereT > G.frame && d.repereBy === a && !m.repere ? 1.25 : 1) * (d.d.proieDuCiel && (duCiel(a) || m.air) ? d.d.proieDuCiel : 1) * (d.d.ecrase && (m.air || (duCiel(a) && m.kd)) ? d.d.ecrase : 1) * (m.fouille && (d.state === 'crouch' || (d.state === 'atk' && d.move && (d.move.camoufle || d.move.aplat))) ? m.fouille : 1);
@@ -2896,6 +2905,56 @@ function choixSpe(f, dist) {
 // (M6, 25/09) « que tous les duels soient égaux » : dans un Duel du livre, un petit coup de pouce (D.force, livre.js) équilibre la paire
 // là où les deux animaux, bien réglés contre tous les autres, ne font pas jeu égal entre eux (mesuré : outils/duel_force.py). Ailleurs : 1.
 function forceDuel(f) { const L = G.livre, D = L && L.D; return D && D.force && G.mode === 1 && G.pick.includes(D.a) && G.pick.includes(D.b) ? D.force[f.kind] || 1 : 1 }
+// (26/09, M8 · choix A de Vincent) COMBATS LIBRES À ÉGALITÉ : dans quelques paires, un animal gagnait presque toujours (« pierre-feuille-ciseaux »).
+// Pour ces paires seulement, un coup de pouce invisible : { plus faible : rapport r } → il tape × √r, et le plus fort × 1/√r.
+// Mesuré par outils/paires.py (ordi contre ordi, NORMAL, arènes neutres). Pas pendant un Duel du livre (il a le sien : D.force), jamais contre un légendaire.
+const PAIRES = { // (mesures du 26/09 : outils/paires.py, paires_verif.py, paires_etape2.py, paires_point.py ; voir docs_projet/JEU_ARENE_DES_DUELS_V15.md § 9)
+  // TERRE : 127 paires
+  'alligator|autruche': { alligator: 1.103 }, 'alligator|hippo': { hippo: 1.109 }, 'anaconda|buffle': { buffle: 1.104 }, 'anaconda|caiman': { caiman: 1.064 },
+  'anaconda|cobra': { cobra: 1.287 }, 'anaconda|girafe': { anaconda: 1.124 }, 'anaconda|lion': { lion: 1.099 }, 'anaconda|loup': { loup: 1.094 }, 'autruche|gorille': { autruche: 1.14 },
+  'autruche|hyene': { hyene: 1.14 }, 'autruche|jaguar': { jaguar: 1.099 }, 'autruche|komodo': { komodo: 1.099 }, 'autruche|oursnoir': { oursnoir: 1.125 },
+  'autruche|porcepic': { autruche: 1.133 }, 'autruche|tigre': { tigre: 1.109 }, 'buffle|grizzly': { grizzly: 1.091 }, 'buffle|hyene': { hyene: 1.071 },
+  'buffle|mangouste': { buffle: 1.094 }, 'buffle|python': { buffle: 1.144 }, 'buffle|ratel': { ratel: 1.099 }, 'caiman|cobra': { caiman: 1.124 }, 'caiman|croco': { croco: 1.059 },
+  'caiman|leopard': { caiman: 1.052 }, 'caiman|ours': { ours: 1.141 }, 'cobra|grizzly': { grizzly: 1.3 }, 'cobra|hippo': { hippo: 1.114 }, 'cobra|leopard': { cobra: 1.109 },
+  'cobra|mangouste': { mangouste: 1.351 }, 'cobra|morse': { morse: 1.201 }, 'cobra|porcepic': { porcepic: 1.161 }, 'cobra|python': { cobra: 1.181 }, 'croco|gorille': { gorille: 1.14 },
+  'croco|grizzly': { grizzly: 1.157 }, 'croco|lionne': { lionne: 1.104 }, 'croco|ratel': { ratel: 1.129 }, 'girafe|glouton': { girafe: 1.136 }, 'girafe|grizzly': { grizzly: 1.342 },
+  'girafe|guepard': { girafe: 1.229 }, 'girafe|hyene': { hyene: 1.152 }, 'girafe|jaguar': { girafe: 1.234 }, 'girafe|komodo': { komodo: 1.085 }, 'girafe|lionne': { lionne: 1.083 },
+  'girafe|mangouste': { girafe: 1.083 }, 'girafe|puma': { puma: 1.119 }, 'girafe|ratel': { girafe: 1.08 }, 'girafe|tigre': { girafe: 1.13 }, 'glouton|gorille': { glouton: 1.135 },
+  'glouton|hippo': { hippo: 1.126 }, 'glouton|lion': { glouton: 1.112 }, 'glouton|mangouste': { glouton: 1.044 }, 'glouton|oursnoir': { oursnoir: 1.109 },
+  'glouton|porcepic': { glouton: 1.217 }, 'gorille|grizzly': { grizzly: 1.109 }, 'gorille|komodo': { gorille: 1.109 }, 'gorille|leopard': { gorille: 1.094 },
+  'gorille|lion': { gorille: 1.127 }, 'gorille|mangouste': { mangouste: 1.169 }, 'gorille|ours': { ours: 1.163 }, 'gorille|porcepic': { porcepic: 1.294 }, 'gorille|ratel': { ratel: 1.152 },
+  'grizzly|hippo': { grizzly: 1.186 }, 'grizzly|leopard': { leopard: 1.063 }, 'grizzly|lion': { grizzly: 1.1 }, 'grizzly|loup': { grizzly: 1.201 },
+  'grizzly|mangouste': { mangouste: 1.126 }, 'grizzly|oursnoir': { grizzly: 1.116 }, 'grizzly|porcepic': { porcepic: 1.224 }, 'grizzly|python': { grizzly: 1.117 },
+  'grizzly|ratel': { ratel: 1.203 }, 'guepard|hyene': { hyene: 1.14 }, 'guepard|jaguar': { jaguar: 1.116 }, 'guepard|lionne': { lionne: 1.146 }, 'guepard|loup': { loup: 1.086 },
+  'guepard|morse': { guepard: 1.094 }, 'guepard|oursnoir': { oursnoir: 1.109 }, 'guepard|porcepic': { guepard: 1.232 }, 'guepard|puma': { puma: 1.109 }, 'guepard|python': { python: 1.06 },
+  'hippo|hyene': { hyene: 1.094 }, 'hippo|jaguar': { jaguar: 1.126 }, 'hippo|leopard': { leopard: 1.109 }, 'hippo|lion': { lion: 1.088 }, 'hippo|loup': { hippo: 1.19 },
+  'hippo|mangouste': { hippo: 1.225 }, 'hippo|oursnoir': { hippo: 1.104 }, 'hippo|python': { hippo: 1.19 }, 'hippo|ratel': { ratel: 1.198 }, 'hyene|mangouste': { mangouste: 1.09 },
+  'hyene|oursnoir': { hyene: 1.099 }, 'hyene|porcepic': { porcepic: 1.141 }, 'jaguar|leopard': { jaguar: 1.119 }, 'jaguar|mangouste': { jaguar: 1.152 },
+  'jaguar|porcepic': { jaguar: 1.145 }, 'jaguar|ratel': { jaguar: 1.109 }, 'komodo|mangouste': { mangouste: 1.301 }, 'komodo|morse': { morse: 1.186 },
+  'komodo|porcepic': { porcepic: 1.163 }, 'komodo|python': { python: 1.099 }, 'komodo|ratel': { ratel: 1.141 }, 'komodo|tigre': { komodo: 1.119 }, 'leopard|lionne': { lionne: 1.089 },
+  'leopard|loup': { loup: 1.208 }, 'leopard|ours': { leopard: 1.099 }, 'leopard|porcepic': { leopard: 1.152 }, 'lionne|mangouste': { lionne: 1.223 }, 'lionne|porcepic': { lionne: 1.099 },
+  'lionne|ratel': { lionne: 1.093 }, 'lion|loup': { loup: 1.066 }, 'lion|ours': { ours: 1.076 }, 'lion|porcepic': { porcepic: 1.132 }, 'loup|ours': { ours: 1.109 },
+  'loup|oursnoir': { loup: 1.114 }, 'loup|porcepic': { loup: 1.132 }, 'mangouste|oursnoir': { oursnoir: 1.099 }, 'mangouste|porcepic': { mangouste: 1.114 },
+  'mangouste|puma': { puma: 1.094 }, 'mangouste|python': { mangouste: 1.092 }, 'mangouste|ratel': { mangouste: 1.094 }, 'oursnoir|porcepic': { oursnoir: 1.176 },
+  'oursnoir|ratel': { oursnoir: 1.099 }, 'ours|porcepic': { porcepic: 1.148 }, 'ours|ratel': { ratel: 1.186 }, 'ours|tigre': { ours: 1.1 }, 'porcepic|python': { porcepic: 1.211 },
+  'porcepic|ratel': { ratel: 1.135 }, 'puma|ratel': { puma: 1.099 }, 'ratel|tigre': { ratel: 1.16 },
+  // MER : 15 paires
+  'aiguillat|baleine': { baleine: 1.163 }, 'aiguillat|pieuvre': { aiguillat: 1.104 }, 'baleine|bouledogue': { baleine: 1.255 }, 'baleine|crabe': { baleine: 1.13 },
+  'baleine|orque': { orque: 1.239 }, 'baleine|pieuvre': { pieuvre: 1.3 }, 'baleine|requin': { baleine: 1.119 }, 'bouledogue|crabe': { bouledogue: 1.111 },
+  'bouledogue|orque': { orque: 1.178 }, 'crabe|espadon': { espadon: 1.06 }, 'crabe|orque': { crabe: 1.266 }, 'crabe|pieuvre': { crabe: 1.146 }, 'crevette|orque': { crevette: 1.114 },
+  'espadon|orque': { orque: 1.117 }, 'pieuvre|requinbleu': { requinbleu: 1.06 },
+  // PETITES BÊTES : 13 paires
+  'abeille|colibri': { abeille: 1.212 }, 'abeille|frelon': { frelon: 1.237 }, 'abeille|mante': { abeille: 1.123 }, 'abeille|mygale': { abeille: 1.06 },
+  'chauvesouris|colibri': { chauvesouris: 1.172 }, 'chauvesouris|scolopendre': { scolopendre: 1.094 }, 'colibri|serpentbrun': { colibri: 1.099 }, 'colibri|veuve': { colibri: 1.109 },
+  'frelon|scolopendre': { scolopendre: 1.099 }, 'frelon|veuve': { veuve: 1.152 }, 'guepe|scolopendre': { scolopendre: 1.125 }, 'guepe|veuve': { veuve: 1.117 },
+  'mante|veuve': { mante: 1.13 },
+};
+const enDuelLivre = () => { const L = G.livre, D = L && L.D; return !!D && G.mode === 1 && G.pick.includes(D.a) && G.pick.includes(D.b) };
+function forcePaire(a, d) {
+  if (!d || !a || a.kind === d.kind || enDuelLivre()) return 1;
+  const P = PAIRES[a.kind < d.kind ? a.kind + '|' + d.kind : d.kind + '|' + a.kind]; if (!P) return 1;
+  return Math.sqrt(P[a.kind] ? P[a.kind] : P[d.kind] ? 1 / P[d.kind] : 1);
+}
 function porteeIA(f, o) {
   // (M6, 25/09) la TERRE aussi : l'ordi attaque à la vraie portée de ses coups (avant : autruche, cobra, python, guépard, hyène, T. rex… tapaient dans le vide) — forces refaites (regle2.py)
   const tape = k => { const m = f.d.moves[k]; return m && m.box ? m.box[1] * f.d.K + (m.lunge ? m.lunge * m.act * .6 : 0) : 0 };
@@ -3585,7 +3644,7 @@ function endMatch() {
   show('fin');
 }
 function startMatch() {
-  const [p1, p2] = G.pick;
+  const [p1, p2] = G.pick; fondEcran();
   G.pisteCombat = (G.nbMatchs = (G.nbMatchs || 0) + 1) % 2 ? 'combat1' : 'combat2'; // une musique de combat sur deux
   G.chrono = 0;
   G.f = [Fighter(p1, 0, false), Fighter(p2, 1, G.mode === 1)];
@@ -3827,7 +3886,9 @@ function prendArene(i) {
   if (G.livre && G.livre.libre && !G.livre.pari && window.pariPuisCombat) { pariPuisCombat(); return } // (M8) « qui gagne dans la vraie vie ? »
   vs();
 }
-function vs() {
+// (26/09) les bords de l'écran (téléphone plus large que le jeu) : le décor de l'arène, flouté (voir #fond-ecran)
+function fondEcran() { try { const a = ARENES.find(x => x.k === G.arene) || ARENES[0]; document.body.style.setProperty('--fond-arene', `url(${a.img})`) } catch (e) { } }
+function vs() { fondEcran();
   // (M8) 1 joueur : difficulté automatique (sauf défi du jour et défi d'un copain, qui ont la leur)
   G.nivAuto = G.mode === 1 && !NET.on && !G.jour && !G.defi ? nivAuto(G.pick[0], G.pick[1]) : null; if (G.nivAuto != null) G.niv = G.nivAuto >= 1.9 ? 2 : G.nivAuto >= .9 ? 1 : 0;
   G.phase = 'vs'; show('vs');
@@ -4059,13 +4120,15 @@ function initUI() {
   $('menu-btn').onclick = () => { sfx('clic'); autreCombat() }; $('quitter').onclick = toMenu; $('reprendre').onclick = pause; $('pause-btn').onclick = () => { if (['fight', 'intro'].includes(G.phase)) pause() }; // (M8) AUTRE COMBAT
   // bouton SON : musique + bruitages → bruitages seuls → muet (choix gardé sur l'appareil)
   const majSon = () => { const m = SAVE.son || 0; SON.on = m < 2; SON.musOff = m === 1; $('son-btn').textContent = ['♪ SON', '♪ SANS MUSIQUE', '♪ MUET'][m]; if (SON.master) SON.master.gain.value = SON.on ? .8 : 0 };
-  $('son-btn').onclick = () => { SAVE.son = ((SAVE.son || 0) + 1) % 3; sauve(); majSon(); sonInit() }; majSon();
+  $('son-btn').onclick = () => { SAVE.son = ((SAVE.son || 0) + 1) % 3; sauve(); majSon(); sessionAudio(); sonInit();
+    if (SAVE.son === 1 && window.bandeau) bandeau('🎧 TA MUSIQUE PEUT CONTINUER !') }; majSon(); // (26/09) Apple Music, Spotify…
   // plein écran : possible sur Android, iPad et ordinateur ; sur iPhone, seul le mode « appli » (écran d'accueil) enlève la barre d'adresse
   const APPLI = matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || navigator.standalone;
   const PEUT_PLEIN = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
   if (APPLI) $('plein').hidden = true;
-  else if (!PEUT_PLEIN && /iPhone|iPod|iPad|Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 0) $('appli-titre').hidden = false;
-  const ouvreAppli = () => { sfx('clic'); G.retourAppli = G.screen; G.avantAppli = G.phase; if (['fight', 'intro'].includes(G.phase)) { G.before = G.phase; G.phase = 'pause' } show('appli') };
+  // (26/09) iPhone dans Safari : pas de vrai plein écran pour un site ; « ⛶ PLEIN ÉCRAN » explique l'écran d'accueil (il clignote jusqu'à la 1re lecture)
+  else if (!PEUT_PLEIN && /iPhone|iPod|iPad|Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 0 && !SAVE.vuAppli) $('plein').classList.add('appel');
+  const ouvreAppli = () => { sfx('clic'); $('plein').classList.remove('appel'); if (!SAVE.vuAppli) { SAVE.vuAppli = 1; sauve() } G.retourAppli = G.screen; G.avantAppli = G.phase; if (['fight', 'intro'].includes(G.phase)) { G.before = G.phase; G.phase = 'pause' } show('appli') };
   $('appli-titre').onclick = ouvreAppli;
   $('appli-ok').onclick = () => { sfx('clic'); if (G.phase === 'pause' && G.avantAppli !== 'pause') { G.phase = G.before; show(null) } else show(G.retourAppli || 'titre') };
   $('plein').onclick = () => {

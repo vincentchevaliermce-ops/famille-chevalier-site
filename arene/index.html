@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790401081"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790412287"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1153,8 +1153,24 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
 #cadre .monde-a small{font:900 var(--t-min)/1.2 Rubik,"Arial Black",sans-serif;color:var(--marine);background:var(--jaune);border:.22cqw solid var(--marine);border-radius:1cqw;padding:.05cqw .9cqw}
 #cadre #monde .petit{font-size:var(--t-corps);max-width:82cqw;line-height:1.3;color:var(--creme);background:rgba(8,31,69,.82);padding:.5cqw 1.6cqw;border-radius:1.2cqw;margin:0}
 #cadre #monde .btn.go{font-size:3.8cqw;padding:.7cqw 3.6cqw;animation:battre 1s 1.4s ease-in-out infinite alternate}
+
+/* ===== (26/09) PLEIN ÉCRAN sur téléphone et tablette (« pourquoi ce n'est pas en full screen ? ») =====
+   le jeu prend toute la hauteur de l'écran (plus de marges), sans coins arrondis ; les bords restants (écran plus large que le jeu)
+   montrent le décor de l'écran en cours, flouté : l'accueil, les menus, l'arène du combat, le nouveau monde. */
+#fond-ecran{position:fixed;inset:-6%;z-index:0;background:#081F45 url(fond_menu.webp) center/cover no-repeat;filter:blur(14px) brightness(.62) saturate(1.15);pointer-events:none}
+#cadre{z-index:1}
+body[data-ecran="titre"] #fond-ecran{background-image:url(titre_duel.webp)}
+body[data-ecran="combat"] #fond-ecran,body[data-ecran="vs"] #fond-ecran,body[data-ecran="pause"] #fond-ecran,body[data-ecran="fin"] #fond-ecran,body[data-ecran="tuto"] #fond-ecran{background-image:var(--fond-arene,url(fond_menu.webp))}
+body[data-ecran="monde"] #fond-ecran{background-image:var(--fond-monde,url(fond_menu.webp))}
+body[data-ecran="legende"] #fond-ecran,body[data-ecran="epreuve"] #fond-ecran,body[data-ecran="parents"] #fond-ecran,body[data-ecran="invite"] #fond-ecran,body[data-ecran="nom"] #fond-ecran,body[data-ecran="defi"] #fond-ecran{background-image:none;background-color:#0d2b63}
+@media (pointer:coarse){
+  body{padding:0}
+  #cadre{width:min(100vw,calc(100vh*16/9),calc(100dvh*16/9));border-radius:0;box-shadow:none}
+}
+#plein.appel{animation:battre .8s ease-in-out infinite alternate;box-shadow:0 0 0 .4cqw var(--jaune)!important}
 </style></head><body>
 
+<div id="fond-ecran" aria-hidden="true"></div>
 <div id="cadre">
   <canvas id="bg" width="1920" height="1080"></canvas>
   <canvas id="gl" width="1920" height="1080"></canvas>
@@ -1288,7 +1304,7 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
     <div class="panneau">
     <p class="petit">Installe le jeu comme une appli : plus de barre d’adresse !</p>
     <ol>
-      <li><i>1</i><span>Touche le bouton <b>Partager</b> <svg class="partage" viewBox="0 0 22 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16V2M6 7l5-5 5 5"/><path d="M7 11H3v13h16V11h-4"/></svg> du navigateur.</span></li>
+      <li><i>1</i><span>Dans Safari, touche <b>Partager</b> <svg class="partage" viewBox="0 0 22 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16V2M6 7l5-5 5 5"/><path d="M7 11H3v13h16V11h-4"/></svg> du navigateur.</span></li>
       <li><i>2</i><span>Choisis <b>« Sur l’écran d’accueil »</b>.</span></li>
       <li><i>3</i><span>Lance le jeu avec sa <b>nouvelle icône</b>.</span></li>
     </ol>
@@ -1357,6 +1373,7 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
       <p><b>Pas de compte, pas de publicité, pas de discussion entre joueurs, pas de vrai prénom</b> : les défis utilisent un « nom de champion » inventé. La progression est enregistrée uniquement sur cet appareil.</p>
       <p>Seul le mode « chacun son téléphone » passe par un service de mise en relation (PeerJS) pour relier les deux appareils le temps d’une partie : seuls les gestes du jeu circulent, rien n’est conservé.</p>
       <p><b>📥 Jouer sans internet</b> (en voiture, en vacances…) : le jeu garde tout seul sur l’appareil ce qui a déjà servi. Pour avoir tous les animaux et toutes les arènes même sans connexion, téléchargez le jeu complet une fois, de préférence en wifi. <button class="btn" id="hl-go" type="button">📥 TOUT TÉLÉCHARGER</button> <span id="hl-etat"></span></p>
+      <p><b>🎧 Écouter sa propre musique en jouant</b> (Apple Music, Spotify…) : touchez <b>♪ SON</b> sur l’accueil jusqu’à <b>♪ SANS MUSIQUE</b>. Le jeu garde ses bruitages et laisse votre musique continuer (sur iPhone, les bruitages suivent alors le bouton silencieux). Ce choix est gardé pour les parties suivantes.</p>
       <p><b>Caisses surprises et pièges d’arène</b> (bonus qui tombent pendant les combats, noix de coco, vagues…) : <button class="btn" id="opt-surprises" type="button">OUI</button></p>
       <p><b>Effets réduits</b> (moins de secousses, de flashs et d’animations ; conseillé aux enfants sensibles à la lumière) : <button class="btn" id="opt-calme" type="button">NON</button></p>
       <p id="opt-vibre-ligne"><b>Vibrations</b> (téléphones Android : un petit « tac » à chaque coup) : <button class="btn" id="opt-vibre" type="button">OUI</button></p>
@@ -1444,11 +1461,11 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790401081"></script>
-<script src="anim.js?v=1790401081"></script>
-<script src="game.js?v=1790401081"></script>
-<script src="net.js?v=1790401081"></script>
-<script src="livre.js?v=1790401081"></script>
-<script src="bonus.js?v=1790401081"></script>
-<script src="surprises.js?v=1790401081"></script>
+<script src="skin.js?v=1790412287"></script>
+<script src="anim.js?v=1790412287"></script>
+<script src="game.js?v=1790412287"></script>
+<script src="net.js?v=1790412287"></script>
+<script src="livre.js?v=1790412287"></script>
+<script src="bonus.js?v=1790412287"></script>
+<script src="surprises.js?v=1790412287"></script>
 </body></html>
