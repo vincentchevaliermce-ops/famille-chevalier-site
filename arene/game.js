@@ -6,6 +6,11 @@ const NV = '#0B2A5B', OR = '#FF5A1F', BL = '#1160D8', JA = '#FFC629', PA = '#FFF
 const $ = id => document.getElementById(id);
 const bgC = $('bg'), glC = $('gl'), fxC = $('fx');
 const bg = bgC.getContext('2d'), fx = fxC.getContext('2d');
+// (26/09, choix A de Vincent : le VRAI plein écran) sur un écran plus large que 16/9 (iPhone à l'horizontale, fenêtre large…),
+// l'arène occupe toute la largeur : le canevas passe de 1 920 à CW px de large et le décor s'agrandit (VK = CW / 1 920).
+// Les murs du combat, la hauteur et la taille des animaux ne changent pas (même jeu sur tous les écrans : même équilibre,
+// même combat en ligne) ; l'interface du combat reste dans la zone 16/9 du centre, décalée de OX px.
+let CW = 1920, OX = 0, VK = 1, AY = FLOOR; // AY : point fixe (hauteur) du décor agrandi, voir ajusteScene()
 
 // ---------------------------------------------------------------------
 //  Données des combattants (boîtes en px image, x vers l'adversaire, y vers le haut négatif, 0 = sol)
@@ -2828,11 +2833,11 @@ const FOULE = { bits: [] };
 function acclame(force) {
   sfx('foule', force); const cols = [JA, OR, CY, PA, '#7BD35A', '#FF7AB6']; if (FOULE.bits.length > 400) FOULE.bits.splice(0, FOULE.bits.length - 400);
   const mer = estMer(); // sous la mer, pas de confettis : une gerbe de bulles qui monte
-  for (let i = 0; i < 40 * force; i++) FOULE.bits.push(mer ? { bulle: true, x: Math.random() * W, y: H + 20 + Math.random() * 260, vx: (Math.random() - .5) * 2, vy: -(3 + Math.random() * 4), r: 0, vr: 0, s: 6 + Math.random() * 14 }
-    : { x: Math.random() * W, y: -40 - Math.random() * 300, vx: (Math.random() - .5) * 4, vy: 3 + Math.random() * 5, r: Math.random() * TAU, vr: (Math.random() - .5) * .3, c: cols[i % cols.length], s: 10 + Math.random() * 14 });
+  for (let i = 0; i < 40 * force; i++) FOULE.bits.push(mer ? { bulle: true, x: Math.random() * CW, y: H + 20 + Math.random() * 260, vx: (Math.random() - .5) * 2, vy: -(3 + Math.random() * 4), r: 0, vr: 0, s: 6 + Math.random() * 14 }
+    : { x: Math.random() * CW, y: -40 - Math.random() * 300, vx: (Math.random() - .5) * 4, vy: 3 + Math.random() * 5, r: Math.random() * TAU, vr: (Math.random() - .5) * .3, c: cols[i % cols.length], s: 10 + Math.random() * 14 });
 }
 function dessineFoule(c) {
-  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.setTransform(1, 0, 0, 1, 0, 0); // (les confettis tombent sur toute la largeur de l'écran : 0 → CW)
   for (const b of FOULE.bits) { b.x += b.vx + Math.sin(b.y * .02) * 1.2; b.y += b.vy; b.r += b.vr;
     if (b.bulle) { c.lineWidth = 3; c.strokeStyle = 'rgba(235,250,255,.9)'; c.fillStyle = 'rgba(210,240,255,.22)'; c.beginPath(); c.arc(b.x, b.y, b.s, 0, TAU); c.fill(); c.stroke(); c.fillStyle = 'rgba(255,255,255,.8)'; c.beginPath(); c.arc(b.x - b.s * .35, b.y - b.s * .35, b.s * .28, 0, TAU); c.fill(); continue }
     c.save(); c.translate(b.x, b.y); c.rotate(b.r); c.fillStyle = b.c; c.fillRect(-b.s / 2, -b.s / 4, b.s, b.s / 2); c.restore() }
@@ -3109,11 +3114,11 @@ function updateCam() {
   let z = cl(1900 / (d + 1050), 1, 1.16); if (G.f.some(f => f.h > 90 && !f.cache && !f.ciel)) z = 1; // 2D : en vol, on voit tout le ciel
   if (G.freeze > 0 && G.superBy) { z = 1.3; mid = G.superBy.x + G.superBy.face * 120 }
   cam.z += (z - cam.z) * .12;
-  const half = 960 / cam.z; let cx = cl(mid, half, W - half);
+  const half = CW / 2 / cam.z; let cx = cl(mid, 960 - 960 * VK + half, 960 + 960 * VK - half); // (écran large : on voit plus de décor sur les côtés)
   cam.cx += (cx - cam.cx) * .15; cam.cy = FLOOR - 410 / cam.z - (G.freeze > 0 ? 80 : 0) / cam.z;
   const s = G.shake * (calme() ? .25 : 1); cam.ox = (Math.random() - .5) * s * 1.4; cam.oy = (Math.random() - .5) * s; // (effets réduits : l'écran tremble 4 fois moins)
 }
-function worldT(c) { c.setTransform(1, 0, 0, 1, 0, 0); c.translate(W / 2 + cam.ox, H / 2 + cam.oy); c.scale(cam.z, cam.z); c.translate(-cam.cx, -cam.cy) }
+function worldT(c) { c.setTransform(1, 0, 0, 1, 0, 0); c.translate(CW / 2 + cam.ox, H / 2 + cam.oy); c.scale(cam.z, cam.z); c.translate(-cam.cx, -cam.cy) }
 
 // ---------------------------------------------------------------------
 //  Interface de combat
@@ -3121,9 +3126,9 @@ function worldT(c) { c.setTransform(1, 0, 0, 1, 0, 0); c.translate(W / 2 + cam.o
 function rr(c, x, y, w, h, r) { c.beginPath(); c.roundRect(x, y, w, h, r) }
 // (M7, 25/09) lisible sur téléphone : le canevas fait 1 920 px de large, le cadre ~576 px sur un iPhone (× 0,3) → les petits textes du haut
 // (nom, TOI / ORDI, SUPER, MANCHE) ne descendent plus sous 12 à 14 px réels ; sur tablette et ordinateur, rien ne change.
-const hudPx = (px, mini) => Math.max(px, mini * W / Math.max(300, fxC.clientWidth || W));
+const hudPx = (px, mini) => Math.max(px, mini * CW / Math.max(300, fxC.clientWidth || CW));
 function hud(c) {
-  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.setTransform(1, 0, 0, 1, OX, 0); // (écran large : la barre de vie reste dans la zone 16/9 du centre)
   for (const f of G.f) {
     const s = f.side, x0 = s ? 1080 : 140, w = 700, y = 52, h = 44;
     f.shown += (f.hp - f.shown) * .35; if (f.trail > f.shown) f.trail -= Math.max(.2, (f.trail - f.shown) * .035); else f.trail = f.shown;
@@ -3163,13 +3168,13 @@ function hud(c) {
   for (const e of FX) if (e.k === 'combo') { const u = G.time - e.t0; if (u < 1) txt(c, e.n + ' COUPS !', e.side ? 1620 : 300, 250, 60, JA, { out: 14, sc: back(P(u, 0, .15)), rot: e.side ? .05 : -.05 }) }
 }
 function annonce(c) {
-  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.setTransform(1, 0, 0, 1, OX, 0); // (les bandeaux, eux, vont d'un bord à l'autre de l'écran : -OX → CW)
   const ph = G.phase, k = G.pt;
   const big = (s, col, t0, size = 200, y = 470) => { const u = back(P(k, t0, t0 + 12)); if (u > 0) txt(c, s, 960, y, size, col, { out: 32, sh: 16, sc: u, rot: -.03 }) };
   if (ph === 'intro') {
     // 📖 un champion du livre entre dans l'arène (1re manche)
-    if (G.round === 1 && k < 70) { const ch = G.f.filter(f => champion(f.kind)); if (ch.length) { const a = Math.min(1, P(k, 2, 12), 1 - P(k, 58, 68)); c.globalAlpha = a; c.fillStyle = 'rgba(58,30,0,.6)'; c.fillRect(0, 262, W, 136); txt(c, ch.length === 2 ? '★ DEUX CHAMPIONS DU LIVRE ★' : `★ ${ch[0].d.art} : CHAMPION DU LIVRE ★`, 960, 332, ch.length === 2 || ch[0].d.art.length > 12 ? 56 : 66, '#FFD84A', { out: 14, sc: back(P(k, 2, 14)) }); c.globalAlpha = 1 } }
-    if (k > 70 && k < 150) { c.fillStyle = 'rgba(11,42,91,.55)'; c.fillRect(0, 370, W, 200 * eo(P(k, 70, 80))); big(G.round === 3 ? 'MANCHE DÉCISIVE' : 'MANCHE ' + G.round, PA, 72, G.round === 3 ? 150 : 190) }
+    if (G.round === 1 && k < 70) { const ch = G.f.filter(f => champion(f.kind)); if (ch.length) { const a = Math.min(1, P(k, 2, 12), 1 - P(k, 58, 68)); c.globalAlpha = a; c.fillStyle = 'rgba(58,30,0,.6)'; c.fillRect(-OX, 262, CW, 136); txt(c, ch.length === 2 ? '★ DEUX CHAMPIONS DU LIVRE ★' : `★ ${ch[0].d.art} : CHAMPION DU LIVRE ★`, 960, 332, ch.length === 2 || ch[0].d.art.length > 12 ? 56 : 66, '#FFD84A', { out: 14, sc: back(P(k, 2, 14)) }); c.globalAlpha = 1 } }
+    if (k > 70 && k < 150) { c.fillStyle = 'rgba(11,42,91,.55)'; c.fillRect(-OX, 370, CW, 200 * eo(P(k, 70, 80))); big(G.round === 3 ? 'MANCHE DÉCISIVE' : 'MANCHE ' + G.round, PA, 72, G.round === 3 ? 150 : 190) }
     if (k >= 150) big('BAGARRE !', JA, 150, 230);
     // une astuce différente à chaque manche : se protéger, le SUPER, le combo final
     if (G.round <= 3 && k > 20 && k < 175 && !G.f[0].cpu) { const a = Math.min(1, P(k, 20, 32), 1 - P(k, 165, 175)); c.globalAlpha = a;
@@ -3195,60 +3200,63 @@ function annonce(c) {
 // ambiance animée des nouvelles arènes : étoiles et lucioles (savane de nuit), mouettes (plage d'Alaska), neige (forêt russe), braises et lave (volcan)
 const AMB = {};
 const hasardN = (n, f) => Array.from({ length: n }, f);
+// (écran large) les étoiles, bulles, flocons… couvrent toute la largeur visible : de -OX à W + OX (LW px)
+const LW = () => W + 2 * OX, auHasardX = () => Math.random() * LW() - OX;
 function ambianceFond(c, t) {
   if (estMer()) ambianceMerFond(c, t);
-  if (G.arene === 'nuit') { const E = AMB.etoiles || (AMB.etoiles = hasardN(48, () => [Math.random() * W, Math.random() * H * .36, 1.2 + Math.random() * 2.4, Math.random() * TAU]));
+  if (G.arene === 'nuit') { const E = AMB.etoiles || (AMB.etoiles = hasardN(48, () => [auHasardX(), Math.random() * H * .36, 1.2 + Math.random() * 2.4, Math.random() * TAU]));
     c.fillStyle = '#FFF7D6'; for (const [x, y, r, p] of E) { c.globalAlpha = .3 + .7 * Math.abs(Math.sin(t * 1.3 + p)); c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill() } c.globalAlpha = 1 }
-  if (G.arene === 'volcan') { const g = c.createLinearGradient(0, H * .6, 0, H + 20); g.addColorStop(0, 'rgba(255,90,20,0)'); g.addColorStop(1, `rgba(255,110,30,${.18 + .1 * Math.sin(t * 2.2)})`); c.fillStyle = g; c.fillRect(-60, H * .6, W + 120, H * .42) }
+  if (G.arene === 'volcan') { const g = c.createLinearGradient(0, H * .6, 0, H + 20); g.addColorStop(0, 'rgba(255,90,20,0)'); g.addColorStop(1, `rgba(255,110,30,${.18 + .1 * Math.sin(t * 2.2)})`); c.fillStyle = g; c.fillRect(-60 - OX, H * .6, LW() + 120, H * .42) }
 }
 function ambianceMerFond(c, t) { // rayons de soleil qui ondulent depuis la surface, et un banc de poissons au loin
   c.save(); c.globalCompositeOperation = 'lighter';
-  for (let i = 0; i < 6; i++) { const x = (i + .5) * W / 6 + Math.sin(t * .35 + i * 1.7) * 90, w = 80 + 40 * Math.sin(t * .5 + i), a = .045 + .03 * Math.sin(t * .8 + i * 2.1);
+  for (let i = 0; i < 6; i++) { const x = (i + .5) * LW() / 6 - OX + Math.sin(t * .35 + i * 1.7) * 90, w = 80 + 40 * Math.sin(t * .5 + i), a = .045 + .03 * Math.sin(t * .8 + i * 2.1);
     const g = c.createLinearGradient(0, 0, 0, H * .95); g.addColorStop(0, `rgba(210,245,255,${a * 1.8})`); g.addColorStop(1, 'rgba(210,245,255,0)');
     c.fillStyle = g; c.beginPath(); c.moveTo(x - w * .4, -30); c.lineTo(x + w * .4, -30); c.lineTo(x + w * 1.3 + 160, H * .95); c.lineTo(x - w * .3 + 160, H * .95); c.closePath(); c.fill() }
   c.restore();
-  const B = AMB.banc || (AMB.banc = hasardN(9, (_, i) => [i * 38 + Math.random() * 30, (Math.random() - .5) * 60, .8 + Math.random() * .4])), cyc = 38, u = (t % cyc) / cyc, x0 = -300 + u * (W + 900), y0 = H * .3 + Math.sin(t * .4) * 40;
+  const B = AMB.banc || (AMB.banc = hasardN(9, (_, i) => [i * 38 + Math.random() * 30, (Math.random() - .5) * 60, .8 + Math.random() * .4])), cyc = 38, u = (t % cyc) / cyc, x0 = -300 - OX + u * (LW() + 900), y0 = H * .3 + Math.sin(t * .4) * 40;
   c.save(); c.globalAlpha = .35; for (const [dx, dy, s] of B) poisson(c, x0 - dx * 2, y0 + dy + Math.sin(t * 3 + dx) * 6, 0, .28 * s); c.restore();
 }
 function ambianceMer(c, t) { // bulles qui montent et petites particules qui flottent
-  const B = AMB.bulles || (AMB.bulles = hasardN(24, () => [Math.random() * W, Math.random() * H, 3 + Math.random() * 7, .5 + Math.random() * 1.3, Math.random() * TAU]));
+  const B = AMB.bulles || (AMB.bulles = hasardN(Math.round(24 * VK), () => [auHasardX(), Math.random() * H, 3 + Math.random() * 7, .5 + Math.random() * 1.3, Math.random() * TAU]));
   c.save(); c.lineWidth = 2.5;
-  for (const b of B) { b[1] -= b[3]; b[0] += Math.sin(t * 2 + b[4]) * .6; if (b[1] < -20) { b[1] = H + 20; b[0] = Math.random() * W }
+  for (const b of B) { b[1] -= b[3]; b[0] += Math.sin(t * 2 + b[4]) * .6; if (b[1] < -20) { b[1] = H + 20; b[0] = auHasardX() }
     c.strokeStyle = 'rgba(235,250,255,.7)'; c.fillStyle = 'rgba(220,245,255,.16)'; c.beginPath(); c.arc(b[0], b[1], b[2], 0, TAU); c.fill(); c.stroke();
     c.fillStyle = 'rgba(255,255,255,.7)'; c.beginPath(); c.arc(b[0] - b[2] * .35, b[1] - b[2] * .35, b[2] * .28, 0, TAU); c.fill() }
-  const Q = AMB.plancton || (AMB.plancton = hasardN(40, () => [Math.random() * W, Math.random() * H, 1 + Math.random() * 2.2, Math.random() * TAU]));
-  c.fillStyle = 'rgba(240,250,230,.5)'; for (const q of Q) { const x = (q[0] + t * 9) % W, y = q[1] + Math.sin(t * .8 + q[3]) * 14; c.beginPath(); c.arc(x, y, q[2], 0, TAU); c.fill() }
+  const Q = AMB.plancton || (AMB.plancton = hasardN(Math.round(40 * VK), () => [auHasardX(), Math.random() * H, 1 + Math.random() * 2.2, Math.random() * TAU]));
+  c.fillStyle = 'rgba(240,250,230,.5)'; for (const q of Q) { const x = (q[0] + OX + t * 9) % LW() - OX, y = q[1] + Math.sin(t * .8 + q[3]) * 14; c.beginPath(); c.arc(x, y, q[2], 0, TAU); c.fill() }
   c.restore();
 }
 function ambiance(c, t) {
   if (estMer()) ambianceMer(c, t);
-  if (G.arene === 'abysses') { const P = AMB.lumieres || (AMB.lumieres = hasardN(46, () => [Math.random() * W, Math.random() * H, 1.5 + Math.random() * 3.5, Math.random() * TAU, Math.random() < .3]));
-    for (const q of P) { q[1] -= .25; q[0] += Math.sin(t * .6 + q[3]) * .4; if (q[1] < -10) { q[1] = H + 10; q[0] = Math.random() * W } const a = .35 + .65 * Math.abs(Math.sin(t * 1.3 + q[3]));
+  if (G.arene === 'abysses') { const P = AMB.lumieres || (AMB.lumieres = hasardN(Math.round(46 * VK), () => [auHasardX(), Math.random() * H, 1.5 + Math.random() * 3.5, Math.random() * TAU, Math.random() < .3]));
+    for (const q of P) { q[1] -= .25; q[0] += Math.sin(t * .6 + q[3]) * .4; if (q[1] < -10) { q[1] = H + 10; q[0] = auHasardX() } const a = .35 + .65 * Math.abs(Math.sin(t * 1.3 + q[3]));
       c.fillStyle = q[4] ? `rgba(120,255,230,${a * .25})` : `rgba(140,190,255,${a * .22})`; c.beginPath(); c.arc(q[0], q[1], q[2] * 4, 0, TAU); c.fill(); c.fillStyle = q[4] ? `rgba(160,255,235,${a})` : `rgba(190,215,255,${a})`; c.beginPath(); c.arc(q[0], q[1], q[2], 0, TAU); c.fill() } }
-  if (G.arene === 'lune') { const E = AMB.etoiles || (AMB.etoiles = hasardN(60, () => [Math.random() * W, Math.random() * H * .45, 1 + Math.random() * 2.2, Math.random() * TAU]));
+  if (G.arene === 'lune') { const E = AMB.etoiles || (AMB.etoiles = hasardN(Math.round(60 * VK), () => [auHasardX(), Math.random() * H * .45, 1 + Math.random() * 2.2, Math.random() * TAU]));
     for (const e of E) { const a = .3 + .7 * Math.abs(Math.sin(t * 1.7 + e[3])); c.fillStyle = `rgba(255,255,240,${a})`; c.beginPath(); c.arc(e[0], e[1], e[2], 0, TAU); c.fill() } }
   if (G.arene === 'prehisto') for (let i = 0; i < 2; i++) { // des reptiles volants passent au loin
-    const s = .9 - i * .25, x = W + 300 - ((t * (60 + i * 25) + i * 900) % (W + 700)), y = H * (.12 + .08 * i) + Math.sin(t * 1.2 + i) * 18, ail = Math.sin(t * 4 + i * 2) * 26 * s;
+    const s = .9 - i * .25, x = W + OX + 300 - ((t * (60 + i * 25) + i * 900) % (LW() + 700)), y = H * (.12 + .08 * i) + Math.sin(t * 1.2 + i) * 18, ail = Math.sin(t * 4 + i * 2) * 26 * s;
     c.fillStyle = 'rgba(60,40,50,.75)'; c.beginPath(); c.moveTo(x - 70 * s, y - ail); c.lineTo(x - 10 * s, y - 6 * s); c.lineTo(x + 34 * s, y - 14 * s); c.lineTo(x + 10 * s, y + 4 * s); c.lineTo(x + 70 * s, y - ail); c.lineTo(x, y + 10 * s); c.closePath(); c.fill() }
-  if (G.arene === 'foret') { const F = AMB.flocons || (AMB.flocons = hasardN(70, () => [Math.random() * W, Math.random() * H, 2 + Math.random() * 4, .6 + Math.random() * 1.5, Math.random() * TAU]));
-    c.fillStyle = 'rgba(255,255,255,.85)'; for (const f of F) { f[1] += f[3]; f[0] += Math.sin(t * 1.5 + f[4]) * .6; if (f[1] > H + 10) { f[1] = -10; f[0] = Math.random() * W } c.beginPath(); c.arc(f[0], f[1], f[2], 0, TAU); c.fill() } }
-  if (G.arene === 'volcan') { const B = AMB.braises || (AMB.braises = hasardN(38, () => [Math.random() * W, H * (.45 + Math.random() * .55), 2 + Math.random() * 3.5, .8 + Math.random() * 1.8, Math.random() * TAU]));
-    for (const b of B) { b[1] -= b[3]; b[0] += Math.sin(t * 2 + b[4]) * .8; if (b[1] < H * .08) { b[1] = H * (.85 + Math.random() * .2); b[0] = Math.random() * W }
+  if (G.arene === 'foret') { const F = AMB.flocons || (AMB.flocons = hasardN(Math.round(70 * VK), () => [auHasardX(), Math.random() * H, 2 + Math.random() * 4, .6 + Math.random() * 1.5, Math.random() * TAU]));
+    c.fillStyle = 'rgba(255,255,255,.85)'; for (const f of F) { f[1] += f[3]; f[0] += Math.sin(t * 1.5 + f[4]) * .6; if (f[1] > H + 10) { f[1] = -10; f[0] = auHasardX() } c.beginPath(); c.arc(f[0], f[1], f[2], 0, TAU); c.fill() } }
+  if (G.arene === 'volcan') { const B = AMB.braises || (AMB.braises = hasardN(Math.round(38 * VK), () => [auHasardX(), H * (.45 + Math.random() * .55), 2 + Math.random() * 3.5, .8 + Math.random() * 1.8, Math.random() * TAU]));
+    for (const b of B) { b[1] -= b[3]; b[0] += Math.sin(t * 2 + b[4]) * .8; if (b[1] < H * .08) { b[1] = H * (.85 + Math.random() * .2); b[0] = auHasardX() }
       c.fillStyle = `rgba(255,${140 + (Math.sin(t * 9 + b[4]) * 60 | 0)},40,${.55 + .4 * Math.sin(t * 7 + b[4])})`; c.beginPath(); c.arc(b[0], b[1], b[2], 0, TAU); c.fill() } }
-  if (G.arene === 'nuit') { const L = AMB.lucioles || (AMB.lucioles = hasardN(16, () => [Math.random() * W, H * (.42 + Math.random() * .4), Math.random() * TAU]));
+  if (G.arene === 'nuit') { const L = AMB.lucioles || (AMB.lucioles = hasardN(Math.round(16 * VK), () => [auHasardX(), H * (.42 + Math.random() * .4), Math.random() * TAU]));
     for (const l of L) { const x = l[0] + Math.sin(t * .7 + l[2]) * 70, y = l[1] + Math.cos(t * .9 + l[2]) * 34, a = .25 + .75 * Math.abs(Math.sin(t * 2.4 + l[2]));
       c.fillStyle = `rgba(226,255,120,${a * .22})`; c.beginPath(); c.arc(x, y, 13, 0, TAU); c.fill(); c.fillStyle = `rgba(236,255,150,${a})`; c.beginPath(); c.arc(x, y, 4, 0, TAU); c.fill() } }
   if (G.arene === 'plage') for (let i = 0; i < 3; i++) { // des mouettes passent dans le ciel
-    const s = 1 - i * .18, x = ((t * (70 - i * 12) + i * 760) % (W + 700)) - 350, y = H * (.1 + .07 * i) + Math.sin(t * 1.8 + i) * 14, ail = Math.sin(t * 7 + i * 2) * 12 * s;
+    const s = 1 - i * .18, x = ((t * (70 - i * 12) + i * 760) % (LW() + 700)) - 350 - OX, y = H * (.1 + .07 * i) + Math.sin(t * 1.8 + i) * 14, ail = Math.sin(t * 7 + i * 2) * 12 * s;
     c.strokeStyle = 'rgba(255,255,255,.92)'; c.lineWidth = 5 * s; c.lineCap = 'round'; c.beginPath(); c.moveTo(x - 30 * s, y - ail); c.quadraticCurveTo(x - 13 * s, y - 12 * s, x, y); c.quadraticCurveTo(x + 13 * s, y - 12 * s, x + 30 * s, y - ail); c.stroke() }
 }
 function render() {
   const t = G.time;
   // décor
-  bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = '#1a1030'; bg.fillRect(0, 0, W, H);
-  worldT(bg); if (G.bgImg) bg.drawImage(G.bgImg, -40, -20, W + 80, H + 40);
+  bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = '#1a1030'; bg.fillRect(0, 0, CW, H);
+  // (écran large) le décor s'agrandit (× VK) autour du point (960, AY) pour couvrir toute la largeur (sur un écran 16/9 : comme avant)
+  worldT(bg); if (G.bgImg) bg.drawImage(G.bgImg, 960 - 1000 * VK, AY - (20 + AY) * VK, 2000 * VK, 1120 * VK);
   ambianceFond(bg, t);
-  if (G.phase === 'menu' || !G.f.length) { Skin.clear(); fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, W, H); return }
+  if (G.phase === 'menu' || !G.f.length) { Skin.clear(); fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, CW, H); return }
   // flaque « portable » du crocodile (hors de la rivière) et ronds dans l'eau
   dessineFlaques(bg);
   if (window.dessineSurprises) dessineSurprises(bg);
@@ -3262,29 +3270,29 @@ function render() {
   for (const f of G.f) { if (f.cache) continue; const k = cl(1 - f.h / 600, .35, 1); bg.fillStyle = 'rgba(40,15,5,.35)'; bg.beginPath(); bg.ellipse(f.x, FLOOR + 6, 220 * f.d.K / .44 * k, 26 * k, 0, 0, TAU); bg.fill() }
   if (G.freeze > 0 && G.superBy) {
     const f = G.superBy, u = P(34 - G.freeze, 0, 8);
-    bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = `rgba(4,10,30,${.62 * u})`; bg.fillRect(0, 0, W, H);
+    bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = `rgba(4,10,30,${.62 * u})`; bg.fillRect(0, 0, CW, H);
     worldT(bg); bg.save(); bg.globalAlpha = .45 * u; bg.translate(f.x, FLOOR - 220); bg.rotate(t * 2);
     for (let i = 0; i < 16; i++) { bg.rotate(TAU / 16); bg.fillStyle = i % 2 ? JA : f.d.col; bg.beginPath(); bg.moveTo(0, 0); bg.lineTo(1400, -60); bg.lineTo(1400, 60); bg.closePath(); bg.fill() } bg.restore();
   }
   // léopard : l'ombre de la nuit (le décor s'assombrit pendant son SUPER)
   const ombre = G.f.find(f => f.state === 'atk' && f.move && f.move.ombre && f.ph !== 'rec');
-  if (ombre) { const k = ombre.ph === 'st' ? P(ombre.t, 0, ombre.move.st) : 1; bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = `rgba(3,6,28,${.72 * k})`; bg.fillRect(0, 0, W, H); worldT(bg) }
+  if (ombre) { const k = ombre.ph === 'st' ? P(ombre.t, 0, ombre.move.st) : 1; bg.setTransform(1, 0, 0, 1, 0, 0); bg.fillStyle = `rgba(3,6,28,${.72 * k})`; bg.fillRect(0, 0, CW, H); worldT(bg) }
   // personnages : celui qui attaque passe devant
   Skin.clear();
   const [a, b] = G.f, order = (b.state === 'atk' && a.state !== 'atk') ? [a, b] : [b, a];
   for (const f of order) {
     if (f.cache && !(f.ciel && f.state === 'atk' && f.move && f.move.plafond)) continue; // la scolopendre pendue au plafond reste visible
     if (!f.pose) poseOf(f);
-    const view = Skin.viewMatrix(f.R, f.x, FLOOR - f.h, f.d.K, f.flipV ? -f.face : f.face, cam, W, H);
+    const view = Skin.viewMatrix(f.R, f.x, FLOOR - f.h, f.d.K, f.flipV ? -f.face : f.face, cam, CW, H);
     if (f.ghost && f.ghost.k > 0) Skin.draw(f.R, f.ghost.M, view, { only: f.ghost.only || undefined, show: { roar: f.ghost.roar }, alpha: .45 * f.ghost.k / 4, tint: f.tint || [0, 0, 0, 0] });
-    if (f.trace && f.trace.length && f.state === 'atk') for (let i = f.trace.length - 1; i >= 2; i -= 3) { const [x, h] = f.trace[i]; Skin.draw(f.R, f.M, Skin.viewMatrix(f.R, x, FLOOR - h, f.d.K, f.face, cam, W, H), { only: f.spr || undefined, alpha: .42 - i * .035, tint: f.tint || [0, 0, 0, 0] }) }
+    if (f.trace && f.trace.length && f.state === 'atk') for (let i = f.trace.length - 1; i >= 2; i -= 3) { const [x, h] = f.trace[i]; Skin.draw(f.R, f.M, Skin.viewMatrix(f.R, x, FLOOR - h, f.d.K, f.face, cam, CW, H), { only: f.spr || undefined, alpha: .42 - i * .035, tint: f.tint || [0, 0, 0, 0] }) }
     const teinte = f.poison ? (f.poison.genre === 'blesse' ? [1, .45, .4, .22 + .12 * Math.sin(G.time * 8)] : f.poison.genre === 'gratte' ? [1, .85, .45, .22 + .12 * Math.sin(G.time * 10)] : f.poison.genre === 'fil' ? [1, 1, 1, .3 + .1 * Math.sin(G.time * 6)] : [.45, 1, .35, .28 + .14 * Math.sin(G.time * 8)]) : f.sale > 0 ? [.8, .52, .25, .42 * Math.min(1, f.sale / 40)] : (window.teinteTenue && teinteTenue(f)) || f.tint || [0, 0, 0, 0];
     const camo = f.state === 'atk' && f.move && f.move.camoufle && f.ph !== 'rec' && !f.contre, herbe = camo && f.move.camoufle === 'herbe';
     const noir = f.state === 'atk' && f.move && f.move.noir && f.ph !== 'rec', esprit = f.state === 'atk' && f.move && f.move.esprit && f.ph !== 'rec';
     Skin.draw(f.R, f.M, view, { only: f.spr || undefined, show: { roar: f.roar }, flash: esprit ? .42 + .06 * Math.sin(t * 9) : f.flash > 0 ? .12 * f.flash / 4 * (calme() ? .4 : 1) : 0, tint: herbe ? [.55, .9, .35, .8] : camo ? [.93, .82, .6, .85] : noir ? [.16, .14, .2, .9] : esprit ? [1.1, 1.1, 1.15, .75] : teinte, alpha: camo ? .3 + .08 * Math.sin(t * 6) : f === ombre && ombre.ph === 'act' ? .5 + .15 * Math.sin(t * 25) : 1 });
   }
   // effets et interface
-  fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, W, H);
+  fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, CW, H);
   worldT(fx);
   for (const f of G.f) if (f.state === 'ko' || (f.state === 'down' && f.t < 50)) dizzy(fx, f, t);
   dessineDetails(fx, t);
@@ -3452,9 +3460,9 @@ function dessineFlaques(c) {
 function eau(c, t) {
   const y0 = FLOOR - 34, gr = c.createLinearGradient(0, y0, 0, H + 60);
   gr.addColorStop(0, 'rgba(140,205,225,0)'); gr.addColorStop(.1, 'rgba(140,205,225,.5)'); gr.addColorStop(1, 'rgba(70,140,170,.62)');
-  c.fillStyle = gr; c.fillRect(-300, y0, W + 600, H - y0 + 120);
+  c.fillStyle = gr; c.fillRect(-300 - OX, y0, LW() + 600, H - y0 + 120);
   c.save(); c.strokeStyle = 'rgba(255,255,255,.5)'; c.lineWidth = 4; c.lineCap = 'round';
-  for (let i = 0; i < 16; i++) { const x = ((i * 167 + t * 38 * (1 + i % 3 * .3)) % (W + 400)) - 200, y = y0 + 16 + (i % 4) * 24 + Math.sin(t * 2 + i) * 4, l = 40 + (i % 3) * 32;
+  for (let i = 0; i < 16; i++) { const x = ((i * 167 + t * 38 * (1 + i % 3 * .3)) % (LW() + 400)) - 200 - OX, y = y0 + 16 + (i % 4) * 24 + Math.sin(t * 2 + i) * 4, l = 40 + (i % 3) * 32;
     c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + l / 2, y - 7, x + l, y); c.stroke() }
   for (const f of G.f) { if (f.h > 40 || f.cache) continue; const w = 220 * f.d.K / .44 * (1 + .07 * Math.sin(t * 5 + f.side * 2)); c.strokeStyle = 'rgba(255,255,255,.6)'; c.lineWidth = 5; c.beginPath(); c.ellipse(f.x, FLOOR - 6, w, 17, 0, 0, TAU); c.stroke() }
   c.restore();
@@ -4097,11 +4105,24 @@ function initUI() {
   if (APPLI) $('plein').hidden = true;
   // (26/09) iPhone dans Safari : pas de vrai plein écran pour un site ; « ⛶ PLEIN ÉCRAN » explique l'écran d'accueil (il clignote jusqu'à la 1re lecture)
   else if (!PEUT_PLEIN && /iPhone|iPod|iPad|Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 0 && !SAVE.vuAppli) $('plein').classList.add('appel');
-  const ouvreAppli = () => { sfx('clic'); $('plein').classList.remove('appel'); if (!SAVE.vuAppli) { SAVE.vuAppli = 1; sauve() } G.retourAppli = G.screen; G.avantAppli = G.phase; if (['fight', 'intro'].includes(G.phase)) { G.before = G.phase; G.phase = 'pause' } show('appli') };
-  $('appli-titre').onclick = ouvreAppli;
+  // (26/09) INSTALLER LE JEU, expliqué selon l'appareil : iPhone / iPad (Partager → Sur l'écran d'accueil), Android (⋮ → Installer l'appli),
+  // le vrai bouton « Installer » quand le navigateur le propose (Android, Chrome, Edge), ordinateur, ou « c'est déjà fait » (appli ouverte)
+  const IOS = /iPhone|iPod|iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1), ANDROID = /Android/i.test(navigator.userAgent);
+  const ouvreAppli = depuis => { sfx('clic'); $('plein').classList.remove('appel'); if (!SAVE.vuAppli) { SAVE.vuAppli = 1; sauve() } G.retourAppli = G.screen; G.avantAppli = G.phase; if (['fight', 'intro'].includes(G.phase)) { G.before = G.phase; G.phase = 'pause' }
+    const cas = APPLI ? 'deja' : INSTALLE ? 'bouton' : IOS ? 'ios' : ANDROID ? 'android' : 'ordi';
+    $('choix-titre-appli').textContent = depuis === 'partage' || cas === 'ordi' || cas === 'deja' ? '📲 INSTALLER LE JEU' : '📲 JOUER EN PLEIN ÉCRAN';
+    $('appli-intro').hidden = cas === 'ordi' || cas === 'deja'; $('appli-ios').hidden = cas !== 'ios'; $('appli-android').hidden = cas !== 'android';
+    $('appli-installe').hidden = cas !== 'bouton'; $('appli-ordi').hidden = cas !== 'ordi'; $('appli-deja').hidden = cas !== 'deja';
+    $('appli-ok').textContent = cas === 'bouton' ? '◀ PAS MAINTENANT' : 'J’AI COMPRIS ▶'; $('appli-ok').classList.toggle('go', cas !== 'bouton'); show('appli') };
+  window.ouvreAppli = ouvreAppli; // (bonus.js : l'écran PARTAGE LE JEU et l'espace parents)
+  $('appli-titre').onclick = () => ouvreAppli('plein');
+  $('appli-installe').onclick = async () => { const e = INSTALLE; if (!e) return; sfx('clic');
+    try { await e.prompt(); const r = await e.userChoice; INSTALLE = null; if (r && r.outcome === 'accepted' && window.bandeau) bandeau('📲 LE JEU EST INSTALLÉ !') } catch (x) { }
+    $('appli-ok').click() };
+  if (APPLI) for (const id of ['invite-installe', 'par-installe']) { const el = $(id); if (el) el.hidden = true } // (déjà dans l'appli)
   $('appli-ok').onclick = () => { sfx('clic'); if (G.phase === 'pause' && G.avantAppli !== 'pause') { G.phase = G.before; show(null) } else show(G.retourAppli || 'titre') };
   $('plein').onclick = () => {
-    if (!PEUT_PLEIN) { ouvreAppli(); return }
+    if (!PEUT_PLEIN) { ouvreAppli('plein'); return }
     const el = document.documentElement; try { (document.fullscreenElement || document.webkitFullscreenElement ? (document.exitFullscreen || document.webkitExitFullscreen).call(document) : (el.requestFullscreen || el.webkitRequestFullscreen).call(el))?.catch?.(() => { }) } catch (e) { } try { screen.orientation.lock('landscape').catch(() => { }) } catch (e) { } };
   // commandes tactiles (joueur 1, et joueur 2 en mode 2 joueurs sur la même tablette)
   // (25/09, bonnes pratiques des jeux de combat sur téléphone) :
@@ -4165,8 +4186,33 @@ setInterval(majBoutons, 90);
 // ---------------------------------------------------------------------
 //  Démarrage
 // ---------------------------------------------------------------------
-function majU() { const c = $('cadre'); if (c) document.documentElement.style.setProperty('--u', (c.getBoundingClientRect().width / 100).toFixed(2) + 'px') }
+// (26/09) l'invitation « Installer l'appli » du navigateur (Android, Chrome, Edge) : gardée pour le bouton 📲 INSTALLER LE JEU
+// (sans le petit bandeau automatique du navigateur, qui pourrait surgir en plein combat)
+let INSTALLE = null;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); INSTALLE = e });
+addEventListener('appinstalled', () => { INSTALLE = null });
+// (26/09, choix A de Vincent : le VRAI plein écran) écran plus large que 16/9 (même règle que la page : min-aspect-ratio 16/9) :
+// le cadre 16/9 de l'interface prend toute la hauteur, et l'arène (canevas) comme le fond de chaque écran débordent de --bord px
+// de chaque côté, jusqu'aux bords de l'écran (iPhone dans Safari, avec sa barre : 2,5 fois la hauteur). Au-delà de 2,7 fois la hauteur
+// (écran d'ordinateur très large), les bords restent flous.
+// Le décor, agrandi × VK, garde son sol sous les pattes quand l'écran est à peine plus large ; sinon, ce sol recule d'au plus 100 px
+// dans l'image (les pattes restent sur le sol peint) pour garder le haut du ciel : la lune, la Terre, le soleil, la mangeoire…
+const LARGE = (() => { try { return matchMedia('(min-aspect-ratio: 16/9)') } catch (e) { return { matches: false } } })(), AMAX = 2.7;
+function ajusteScene() {
+  const c = $('cadre'); if (!c) return; const r = c.getBoundingClientRect(); if (!r.width || !r.height) return;
+  const vw = document.documentElement.clientWidth || innerWidth;
+  const bord = LARGE.matches ? Math.max(0, Math.min((vw - r.width) / 2, (r.height * AMAX - r.width) / 2)) : 0;
+  document.documentElement.style.setProperty('--bord', bord.toFixed(2) + 'px');
+  const cw = 2 * Math.round(960 * (r.width + 2 * bord) / r.width); // (pair : OX entier)
+  if (cw === CW) return;
+  CW = cw; OX = (CW - 1920) / 2; VK = CW / 1920; bgC.width = glC.width = fxC.width = CW; FOULE.bits = [];
+  { const s = 1 - 1 / VK; AY = s > 1e-6 ? Math.max(0, FLOOR - Math.min(100, FLOOR * s) / s) : FLOOR }
+  for (const k in AMB) if (k !== 'banc') delete AMB[k]; // (les étoiles, bulles… se replacent sur la nouvelle largeur)
+  if (G.phase !== 'menu' && G.f.length) try { render() } catch (e) { } // (pas d'image vide pendant la rotation)
+}
+function majU() { const c = $('cadre'); if (c) document.documentElement.style.setProperty('--u', (c.getBoundingClientRect().width / 100).toFixed(2) + 'px'); ajusteScene() }
 addEventListener('resize', majU); addEventListener('orientationchange', () => setTimeout(majU, 350)); try { new ResizeObserver(majU).observe($('cadre')) } catch (e) { } majU();
+try { LARGE.addEventListener('change', majU); if (window.visualViewport) visualViewport.addEventListener('resize', majU) } catch (e) { }
 (async () => {
   initUI();
   const ok = Skin.init(glC);

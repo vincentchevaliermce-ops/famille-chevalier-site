@@ -347,6 +347,9 @@ function initBonus() {
   on('codes-titre', ouvreCodes); on('codes-collec', () => { G.retourCode = 'trophees'; ouvreCodes() }); on('code-ok', valideCodeSecret); on('code-retour', () => { sfx('retour'); const r = G.retourCode; G.retourCode = null; if (r === 'trophees') ouvreTrophees(); else show('titre') });
   on('god-btn', basculeGod);
   on('invite-titre', invite); on('invite-adeux', invite); on('invite-envoie', envoieJeu); on('invite-retour', () => { sfx('retour'); show(G.retourInvite || 'titre') });
+  // (26/09) « où sont passées les infos pour partager le jeu, l'envoyer, l'installer ? » : 📤 PARTAGER sur l'accueil et dans l'espace parents
+  on('partage-titre', invite); on('par-partage', invite);
+  const installe = () => { if (window.ouvreAppli) ouvreAppli('partage') }; on('invite-installe', installe); on('par-installe', installe);
   on('parents-titre', ouvreParents); on('porte-ok', valideParents); on('hl-go', hlTelecharge); hlEnregistre(); on('parents-retour', () => { sfx('retour'); show(G.retourParents || 'titre') });
   on('jour-titre', lanceJour); on('fin-jour', partageJour);
   on('fin-photo', photoVictoire); on('fin-defi', partageDefi); on('v-defi', () => { partageDefi() });

@@ -268,9 +268,9 @@ function dessineSurprisesDevant(c) { // (devant les animaux)
     if ((p.k === 'chute' || p.k === 'trou') && p.t < 70 && Math.floor(p.t / 8) % 2) { const [sx, sy] = versEcran(c, p.x, FLOOR - 330); c.save(); c.setTransform(1, 0, 0, 1, 0, 0); txt(c, '!', sx, Math.max(230, sy), 110, '#FF5A3C', { out: 14 }); c.restore() }
     if (p.k === 'chute') { if (p.t >= 58 && p.t < 70) { const u = (p.t - 58) / 12; dessineObjet(c, P.obj, p.x, FLOOR - 1100 + u * 1040, 1.2) } else if (p.t >= 70) { const u = (p.t - 70) / 60; c.save(); c.globalAlpha = 1 - u; dessineObjet(c, P.obj, p.x + p.dir * u * 260, FLOOR - 60 - Math.sin(u * Math.PI) * 180, 1.2); c.restore() } }
     if (p.k === 'vent' && p.t > 50 && p.t < 170) { c.save(); c.globalAlpha = Math.min(1, (p.t - 50) / 15, (170 - p.t) / 15) * .85; c.lineCap = 'round';
-      for (let i = 0; i < 9; i++) { const y = FLOOR - 60 - i * 95, x0 = ((p.t * 26 * p.dir + i * 210) % 2400 + 2400) % 2400 - 240; for (const [col, lw] of [['rgba(40,25,10,.45)', 16], ['#FFFBEF', 8]]) { c.strokeStyle = col; c.lineWidth = lw; c.beginPath(); c.moveTo(x0, y); c.quadraticCurveTo(x0 + p.dir * 90, y - 30, x0 + p.dir * 200, y); c.stroke() } }
-      c.fillStyle = P.col || '#E8C27A'; for (let i = 0; i < 26; i++) { const x = ((p.t * 30 * p.dir + i * 97) % 2100 + 2100) % 2100 - 90, y = FLOOR - 30 - ((i * 53) % 700); c.beginPath(); c.arc(x, y, 7 + i % 4 * 3, 0, TAU); c.fill() }
-      if (P.vague) { c.globalAlpha = .5; c.fillStyle = '#BFE9FF'; c.beginPath(); c.moveTo(0, FLOOR); for (let x = 0; x <= 1920; x += 40) c.lineTo(x, FLOOR - 70 - Math.sin(x * .01 + p.t * .3) * 30); c.lineTo(1920, FLOOR + 80); c.lineTo(0, FLOOR + 80); c.fill() } c.restore() }
+      for (let i = 0; i < 9; i++) { const y = FLOOR - 60 - i * 95, L = 2400 + 2 * OX, x0 = ((p.t * 26 * p.dir + i * 210) % L + L) % L - 240 - OX; /* (écran large : le vent traverse toute la largeur) */ for (const [col, lw] of [['rgba(40,25,10,.45)', 16], ['#FFFBEF', 8]]) { c.strokeStyle = col; c.lineWidth = lw; c.beginPath(); c.moveTo(x0, y); c.quadraticCurveTo(x0 + p.dir * 90, y - 30, x0 + p.dir * 200, y); c.stroke() } }
+      c.fillStyle = P.col || '#E8C27A'; for (let i = 0; i < 26; i++) { const L = 2100 + 2 * OX, x = ((p.t * 30 * p.dir + i * 97 * VK) % L + L) % L - 90 - OX, y = FLOOR - 30 - ((i * 53) % 700); c.beginPath(); c.arc(x, y, 7 + i % 4 * 3, 0, TAU); c.fill() }
+      if (P.vague) { c.globalAlpha = .5; c.fillStyle = '#BFE9FF'; c.beginPath(); c.moveTo(-OX, FLOOR); for (let x = -OX; x <= 1920 + OX + 40; x += 40) c.lineTo(x, FLOOR - 70 - Math.sin(x * .01 + p.t * .3) * 30); c.lineTo(1960 + OX, FLOOR + 80); c.lineTo(-OX, FLOOR + 80); c.fill() } c.restore() }
     if (p.k === 'trou' && p.t >= 70 && p.t < 140) { const u = Math.min(1, (p.t - 70) / 12), v = p.t > 110 ? (140 - p.t) / 30 : 1;
       c.save(); c.globalAlpha = v;
       if (P.obj === 'phoque') dessinePhoque(c, p.x, FLOOR, u);
@@ -297,10 +297,10 @@ function dessineSurprisesDevant(c) { // (devant les animaux)
     const [ix, iy] = versEcran(c, f.x, FLOOR - f.h - 640 * f.d.K / .44); c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.font = '60px sans-serif'; c.textAlign = 'center'; c.fillText(BONUS[b.k].ico, ix, Math.max(215, iy) - 8 * Math.sin(t * 5)); c.restore() }
   // bandeau du bonus qui vient d'être pris
   const a = G.bonusAff; if (a) { const u = (t - a.t0) / 2.2; if (u > 1) G.bonusAff = null; else { const k = Math.min(1, u * 6), s = 1 + .25 * Math.sin(Math.min(1, u * 4) * Math.PI);
-    const [sx] = versEcran(c, a.x, 0), x = Math.max(430, Math.min(W - 430, sx));
+    const [sx] = versEcran(c, a.x, 0), x = Math.max(430, Math.min(CW - 430, sx));
     c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = Math.min(1, (1 - u) * 4); c.translate(x, 330 - 30 * k); c.scale(s, s); c.font = '120px sans-serif'; c.textAlign = 'center'; c.fillText(a.ico, 0, 0); c.restore();
     c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = Math.min(1, (1 - u) * 4); txt(c, a.nom, x, 420 - 30 * k, 62, a.col, { out: 14 }); c.restore() } }
-  if (G.flashEcran > 0) { G.flashEcran--; c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = `rgba(255,255,230,${G.flashEcran / 14})`; c.fillRect(0, 0, W, H); c.restore() }
+  if (G.flashEcran > 0) { G.flashEcran--; c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = `rgba(255,255,230,${G.flashEcran / 14})`; c.fillRect(0, 0, CW, H); c.restore() }
 }
 // ---------------------------------------------------------------------
 //  TROPHÉES (les anciens badges + beaucoup de nouveaux, rangés par famille ; certains sont secrets)

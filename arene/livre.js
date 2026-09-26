@@ -202,7 +202,7 @@ const QUESTIONS = {
   1: ['Comment les abeilles battent-elles le frelon ?', ['elles l’enferment dans une boule qui chauffe', 'elles le piquent toutes en même temps', 'elles le chassent loin de la ruche']],
   2: ['Quel morceau du requin l’orque préfère-t-elle ?', ['le foie', 'le cœur', 'le cerveau']],
   3: ['Combien le tigre pèse-t-il de plus que le lion ?', ['environ 30 kg', 'environ 5 kg', 'environ 300 kg']],
-  4: ['Comment le porc-épic se défend-il contre le léopard ?', ['il fonce à reculons, piquants dressés', 'il saute très haut', 'il se cache sous l’eau']],
+  4: ['Comment le porc-épic se défend-il contre le léopard ?', ['il fonce à reculons', 'il saute très haut', 'il se cache sous l’eau']], // (26/09) sans « , piquants dressés » : la bonne réponse ne se devine plus à sa longueur
   5: ['Où grimpe le crocodile pour s’échapper ?', ['sur le dos des hippopotames', 'sur un tronc d’arbre', 'sur un gros rocher']],
   6: ['Le grizzly fait filer tous les ours polaires… sauf combien ?', ['sauf un', 'sauf dix', 'sauf cinq']],
   7: ['Où le serpent mord-il le jaguar ?', ['au museau', 'au ventre', 'au cou']],
