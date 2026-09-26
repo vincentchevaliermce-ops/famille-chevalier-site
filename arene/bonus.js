@@ -23,11 +23,11 @@ function valideCodeSecret() {
   if (!v) return;
   if (v === CODE_GOD) {
     SAVE.codes.god = 1; G.god = true; sauve(); sonInit(); sfx('super'); sfx('tigre', .8); vibre([60, 40, 90]);
-    msg('⚡ GOD MODE ACTIVÉ ! Invincible, SUPER illimité, et tous les animaux de l’aventure pour tes combats (pas les champions du livre ni les légendes).'); majGodBtn(); return;
+    msg('⚡ GOD MODE ACTIVÉ ! Invincible, SUPER illimité, et presque tous les animaux pour tes combats (pas les champions du livre ni les légendes).'); majGodBtn(); return;
   }
   if (v === 'PROUT') { G.prout = !G.prout; sfx('prout', 1); msg(G.prout ? 'MODE PROUT activé pour ta partie. Tu es prévenu…' : 'Mode prout désactivé. Ouf.'); return }
   const k = CODES_ANIMAUX[v] || (typeof CODES !== 'undefined' && CODES[v]);
-  if (!k) { sfx('erreur'); msg('Ce code ne marche pas… Gagne des animaux dans L’AVENTURE pour recevoir leur code, ou demande à un copain !'); return }
+  if (!k) { sfx('erreur'); msg('Ce code ne marche pas… Gagne des animaux à 1 JOUEUR pour recevoir leur code, ou demande à un copain !'); return }
   if (!pret(k)) { msg(`Bien trouvé ! Cet animal arrive bientôt dans l’arène : garde ton code !`); return }
   if (debloqueVrai(k)) { msg(`Tu as déjà ${CHARS[k].art} !`); return }
   SAVE.debloques.push(k); const nv = []; badge('secret', nv); sauve(); sonInit(); sfx('super'); sfx(k, 1);
@@ -204,7 +204,7 @@ async function hlEnregistre() {
 //  en plein combat ou au milieu d'un duel du livre, il attend le retour à un menu. Jamais pendant un match en ligne.
 // ---------------------------------------------------------------------
 const MAJ = { attend: false, dernier: 0 };
-const MAJ_ECRANS = ['titre', 'livre', 'choix', 'arenes', 'trophees', 'adeux', 'parents', 'code', 'invite', 'appli', 'nom'];
+const MAJ_ECRANS = ['titre', 'mode', 'livre', 'choix', 'arenes', 'trophees', 'adeux', 'parents', 'code', 'invite', 'appli', 'nom'];
 async function verifieMaj(force) {
   const v = hlVersion(); if (!v || MAJ.attend || !navigator.onLine || (window.NET && NET.on)) return;
   if (!force && Date.now() - MAJ.dernier < 60000) return; MAJ.dernier = Date.now();
@@ -363,6 +363,6 @@ function initBonus() {
 // au chargement : lien de défi reçu, lien « défi du jour »
 function lienRecu() {
   const d = lisDefi(); if (d) { ouvreDefiRecu(d); return true }
-  if (/#jour/.test(location.hash)) { G.phase = 'menu'; show('titre'); setTimeout(() => { const b = $('jour-titre'); if (b) b.classList.add('appel') }, 300) }
+  if (/#jour/.test(location.hash)) { G.phase = 'menu'; if (typeof tutoAFaire === 'function' && !tutoAFaire()) { ouvreTrophees('titre'); setTimeout(() => { const b = $('jour-titre'); if (b) b.classList.add('appel') }, 300) } else show('titre') } // (M8 : le ⚡ défi du jour est dans MES ANIMAUX)
   return false;
 }

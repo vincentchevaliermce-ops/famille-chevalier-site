@@ -1,9 +1,11 @@
 // =====================================================================
-//  L'AVENTURE (25/09, architecture validée par Vincent : « 1A 2A 3A ») — le jeu suit le livre « C'est qui le plus fort ? » :
-//  les 30 duels, dans l'ordre, en 3 manches de 10 (boss aux duels 10, 20, 30 ; l'ordi monte en pente douce de FACILE à COSTAUD : nivDuel).
-//  1. tu paries (contre Gigi), 2. tu te bats avec ton champion, 3. tu découvres la vraie réponse,
-//  4. une question sur ce que tu viens de lire → les animaux du duel rejoignent ta collection (les champions du livre :
-//     avec le livre en main). Après la finale : les 3 LÉGENDES. Un nouveau tome = un nouveau tableau DUELS, même moule.
+//  LES DUELS DU LIVRE « C'est qui le plus fort ? » (tome 1 : 30 duels, 3 manches de 10, boss aux duels 10, 20, 30).
+//  (26/09, M8 : architecture « hyper simple » voulue par Vincent) — plus d'aventure à suivre dans l'ordre :
+//  • à 1 JOUEUR, quand tu choisis une paire du livre (lion contre tigre…), tu paries d'abord « DANS LA VRAIE VIE, QUI GAGNE ? »,
+//    tu te bats, puis tu découvres la VRAIE RÉPONSE et tu réponds à UNE question : l'animal battu rejoint ton équipe ;
+//  • la liste des 30 duels (MES ANIMAUX → 📖 DUELS) : un duel se joue dès que tu as l'un de ses deux animaux (et que son monde est ouvert) ;
+//  • les 3 LÉGENDES se réveillent quand leur monde est complet (voir PROGRESSION dans game.js).
+//  Un nouveau tome = de nouvelles lignes dans DUELS (numéros 31, 32…), SOMMAIRE et QUESTIONS, même moule.
 //  Textes repris MOT POUR MOT du livre imprimé (TEXTE_IMPRIME_V19, 25/09) : page du duel (p) et page de la réponse (pv).
 //  Contrôle : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md
 // =====================================================================
@@ -189,7 +191,7 @@ const DUELS = [
     rep: { g: 'tigre', titre: 'NOTRE VERDICT', cri: 'LE TIGRE !', punch: 'Crocs 2, biceps 1 !', tampon: 'violet', label: 'DUEL IMAGINÉ',
       film: 'Round 1, l’embuscade : tigre. Round 2, la charge : gorille. Round 3, le chasseur : tigre. Le tigre tue pour vivre. Le gorille, lui, gagne ses disputes en faisant peur.' } },
 ];
-const LIVRE_TOTAL = 30; // duels dans le livre
+const LIVRE_TOTAL = DUELS.length; // duels du livre (tome 1 : 30 ; un tome 2 ajoute ses duels à DUELS : 31, 32…)
 // le nom court de chaque duel, MOT POUR MOT comme dans le sommaire du livre (page 4) : écrit sur sa carte
 const SOMMAIRE = ['Frelon / Abeilles', 'Orque / Requin', 'Lion / Tigre', 'Léopard / Porc-épic', 'Hippo / Crocodile', 'Ours polaire / Grizzly', 'Jaguar / Anaconda', 'Lion / Ratel', 'Pieuvre / Requin', 'Dragon / Buffle',
   'Puma / Loup', 'Mygale / Guêpe', 'Ours polaire / Morse', 'Mangouste / Cobra', 'Jaguar / Caïman', 'Guépard / Autruche', 'Espadon / Requin', 'Hyène / Lion', 'Ours noir / Glouton', 'Python / Alligator',
@@ -228,30 +230,31 @@ const QUESTIONS = {
   29: ['Que fait le venin de la veuve noire au serpent ?', ['il le paralyse', 'il l’endort', 'il le rend aveugle']],
   30: ['Comment le gorille gagne-t-il ses disputes ?', ['en faisant peur', 'en mordant très fort', 'en courant très vite']],
 };
-const LEGENDES_LIVRE = [{ k: 'trex', m: 'terre', arene: 'prehisto' }, { k: 'meganeura', m: 'betes', arene: 'jardin' }, { k: 'megalo', m: 'mer', arene: 'abysses' }]; // les bonus après la finale
+const LEGENDES_LIVRE = [{ k: 'trex', m: 'terre', arene: 'prehisto' }, { k: 'meganeura', m: 'betes', arene: 'jardin' }, { k: 'megalo', m: 'mer', arene: 'abysses' }]; // (M8) chacune se réveille quand son monde est complet
 SAVE.livre = SAVE.livre || {};
 const pret = k => !!CHARS[k] && ORDRE.includes(k);
 const duelPret = D => pret(D.a) && pret(D.b);
 const fait = D => !!SAVE.livre[D.n]; // le pari est compté (une seule fois, comme dans le livre)
 const fini = D => { const r = SAVE.livre[D.n]; return !!r && r.ok !== false }; // duel GAGNÉ : combat gagné + question réussie (les duels joués avant le 25/09 comptent)
 const estLeg = k => LEGENDES_LIVRE.some(x => x.k === k);
-const gagnesDuel = D => [...new Set([D.a, D.b])].filter(k => pret(k) && !champion(k) && !estLeg(k)); // ce que le duel fait gagner
-const championsDuel = D => [...new Set([D.a, D.b])].filter(k => pret(k) && champion(k));
-// d'où vient un animal (écran de choix, collection) : les 4 de départ, un duel de l'aventure, le livre (champions), les légendes
+// (M8) ce qu'un duel du livre fait gagner : ses animaux qu'on n'a pas encore (d'habitude : l'adversaire qu'on vient de battre)
+const gainsDuel = D => [...new Set([D.a, D.b])].filter(k => pret(k) && !estLeg(k) && !SAVE.debloques.includes(k));
+// (M8) la paire du livre entre deux animaux, dans un sens ou dans l'autre (écran « CONTRE QUI ? » : ruban 📖 et pari)
+function duelEntre(a, b) { return DUELS.find(D => duelPret(D) && ((D.a === a && D.b === b) || (D.a === b && D.b === a))) || null }
+// d'où vient un animal (collection) : les 4 de départ, un duel du livre, le livre (champions), les légendes
 function sourceDe(k) {
   if (DE_BASE.includes(k)) return { t: 'base' };
   if (champion(k)) return { t: 'livre', D: DUELS.find(x => x.a === k || x.b === k) };
   if (estLeg(k)) return { t: 'legende' };
   const D = DUELS.find(x => x.a === k || x.b === k); return D ? { t: 'duel', D } : { t: '?' };
 }
-// un duel s'ouvre quand le précédent (disponible) est fait ; la finale attend tous les autres
+// (M8) un duel se joue quand ses mondes sont ouverts et qu'on a déjà l'un de ses deux animaux : on se bat avec lui
 function duelOuvert(D) {
-  if (G.god) return duelPret(D);
-  if (!duelPret(D)) return false;
-  const dispo = DUELS.filter(duelPret);
-  if (D.n === 30) return dispo.filter(x => x.n !== 30).every(fini) || fait(D);
-  const i = dispo.indexOf(D); return i <= 0 || fini(dispo[i - 1]) || fait(D);
+  if (!duelPret(D)) return false; if (G.god || fait(D)) return true;
+  return [D.a, D.b].every(k => mondeOuvert(mondeDe(k))) && [D.a, D.b].some(k => SAVE.debloques.includes(k));
 }
+const mondeFermeDuel = D => [D.a, D.b].map(mondeDe).find(m => !mondeOuvert(m)) || null;
+const combattants = D => { const l = [...new Set([D.a, D.b])].filter(debloque); return l.length ? l : [D.a, D.b] }; // on se bat avec un animal à soi (anciennes sauvegardes : n'importe lequel)
 function scoreLivre() {
   let toi = 0, gigi = 0, etoiles = 0;
   for (const D of DUELS) { const r = SAVE.livre[D.n]; if (!r) continue; if (r.bon) { toi++; if (D.boss) etoiles++ } if (D.gigi.pari === D.rep.g) gigi++ }
@@ -261,19 +264,19 @@ const nomDuel = (D, k) => D.noms[k === D.a ? 0 : 1];
 // --- écran 1 : la liste des duels, en 3 MANCHES comme dans le livre (10 duels par onglet : tout tient sur l'écran d'un téléphone)
 const manche = D => Math.ceil(D.n / 10);
 const prochainDuel = () => DUELS.find(x => !fini(x) && duelOuvert(x));
-const legendesOuvertes = () => DUELS.every(fini);
+const legendesPretes = () => LEGENDES_LIVRE.filter(x => pret(x.k) && !SAVE.debloques.includes(x.k) && legendePrete(x.m));
 const n2 = n => String(n).padStart(2, '0');
 let mancheLivre = 0; // l'onglet affiché
 function ouvreLivre() {
   const dePari = G.screen === 'pari' && G.livre && G.livre.D; // retour d'un pari : on revient sur sa manche
-  sonInit(); G.phase = 'menu'; G.livre = null; G.quest = null; show('livre');
-  const s = scoreLivre(), suivant = prochainDuel(), legAttend = legendesOuvertes() && LEGENDES_LIVRE.some(x => pret(x.k) && !SAVE.debloques.includes(x.k));
+  sonInit(); G.phase = 'menu'; G.livre = null; G.quest = null; finEpreuve(); show('livre');
+  const s = scoreLivre(), suivant = prochainDuel(), legAttend = legendesPretes().length > 0;
   $('livre-score').innerHTML = `<span>TOI <b>${s.toi}</b></span><img src="gigi/duel_03_recto.svg" alt=""><span>GIGI <b>${s.gigi}</b></span>` + (s.etoiles ? `<span class="boss-et">${'★'.repeat(s.etoiles)}</span>` : '');
   $('livre-msg').textContent = '';
   heroLivre(suivant, legAttend);
-  ongletLivre(dePari ? manche(dePari) : suivant ? manche(suivant) : legAttend ? 4 : mancheLivre || 1);
+  ongletLivre(dePari ? manche(dePari) : mancheLivre || (suivant ? manche(suivant) : legAttend ? 4 : 1));
 }
-// (25/09, M5) la grande carte orange : le prochain duel, en un geste (comme ▶ JOUER sur l'accueil)
+// (25/09, M5) la grande carte orange : le prochain duel à jouer, en un geste
 function heroLivre(suivant, legAttend) {
   const h = $('livre-hero'); if (!h) return;
   if (suivant) {
@@ -284,59 +287,63 @@ function heroLivre(suivant, legAttend) {
       `<span class="lh-txt"><small>📖 page ${suivant.p}</small><b class="R">${na.toUpperCase()} OU ${nb.toUpperCase()} ?</b>${etat ? `<i>${etat}</i>` : ''}</span></span>`;
     h.onclick = () => { sfx('valide'); if (r && !fini(suivant) && r.combat) ouvreQuestion(suivant); else ouvrePari(suivant) };
   } else if (legAttend) {
-    const L = LEGENDES_LIVRE.filter(x => pret(x.k) && !SAVE.debloques.includes(x.k));
+    const L = legendesPretes(), M = MONDES[L[0].m];
     h.className = 'livre-hero leg'; h.hidden = false;
-    h.innerHTML = `<span class="lh-go R">★<small>BONUS</small></span><span class="lh-corps"><span class="lh-tetes">${L.slice(0, 2).map(x => `<img src="${x.k}_tete.webp" alt="">`).join('<em>·</em>')}</span><span class="lh-txt"><small>Les 30 duels sont gagnés !</small><b class="R">LES LÉGENDES SE RÉVEILLENT !</b><i>★ VIENS LES AFFRONTER</i></span></span>`;
-    h.onclick = () => { sfx('valide'); ongletLivre(4) };
+    h.innerHTML = `<span class="lh-go R">★<small>LÉGENDE</small></span><span class="lh-corps"><span class="lh-tetes">${L.slice(0, 2).map(x => `<img src="${x.k}_tete.webp" alt="">`).join('<em>·</em>')}</span><span class="lh-txt"><small>${M.ico} ${M.nom} : tous gagnés !</small><b class="R">UNE LÉGENDE SE RÉVEILLE !</b><i>★ VIENS L’AFFRONTER</i></span></span>`;
+    h.onclick = () => { sfx('valide'); lanceLegende(L[0]) };
   } else h.hidden = true;
 }
 function ongletLivre(m) {
-  mancheLivre = m; const suivant = prochainDuel(), ong = $('livre-onglets'), legOk = legendesOuvertes();
-  ong.innerHTML = [1, 2, 3].map(k => {
-    const L = DUELS.filter(D => manche(D) === k), f = L.filter(fini).length, ouverte = f || L.some(duelOuvert);
-    return `<button class="btn R" type="button" data-manche="${k}" aria-pressed="${k === m}">MANCHE ${k}${!ouverte ? '<small>🔒</small>' : f === L.length ? '<small>✔</small>' : ''}</button>`;
-  }).join('') + `<button class="btn R leg" type="button" data-manche="4" aria-pressed="${m === 4}">★ LÉGENDES${!legOk ? '<small>🔒</small>' : ''}</button>`;
+  mancheLivre = m; const suivant = prochainDuel(), ong = $('livre-onglets');
+  ong.innerHTML = [...new Set(DUELS.map(manche))].map(k => { // (M8) une manche = 10 duels (tome 2 : manches 4, 5, 6…)
+    const L = DUELS.filter(D => manche(D) === k), f = L.filter(fini).length;
+    return `<button class="btn R" type="button" data-manche="${k}" aria-pressed="${k === m}">MANCHE ${k}${f === L.length ? '<small>✔</small>' : ''}</button>`;
+  }).join('') + `<button class="btn R leg" type="button" data-manche="4" aria-pressed="${m === 4}">★ LÉGENDES${LEGENDES_LIVRE.every(x => SAVE.debloques.includes(x.k)) ? '<small>✔</small>' : ''}</button>`;
   ong.querySelectorAll('button').forEach(b => b.onclick = () => { const k = +b.dataset.manche; if (k !== mancheLivre) { sfx('clic'); ongletLivre(k) } });
   const box = $('duels-liste'); box.innerHTML = ''; box.classList.toggle('legendes', m === 4);
-  if (m === 4) { carteslegendes(box, legOk); return }
+  if (m === 4) { carteslegendes(box); return }
   for (const D of DUELS.filter(D => manche(D) === m)) {
-    const b = document.createElement('button'); b.type = 'button'; b.dataset.n = D.n; const ok = duelOuvert(D), r = SAVE.livre[D.n], gagne = fini(D), enCours = !!r && !gagne;
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.n = D.n; const ok = duelOuvert(D), r = SAVE.livre[D.n], gagne = fini(D), enCours = !!r && !gagne, mf = !ok && duelPret(D) ? mondeFermeDuel(D) : null;
     b.className = 'duel' + (D.boss ? ' boss' : '') + (ok ? '' : ' ferme') + (gagne ? ' joue' : '') + (enCours ? ' encours' : '') + (!duelPret(D) ? ' bientot' : '') + (D === suivant ? ' suivant' : '');
     const tete = k => pret(k) ? `<img src="${k}_tete.webp" alt="">` : '<i>?</i>';
     const [na, nb] = (SOMMAIRE[D.n - 1] || D.noms.join(' / ')).split(' / ');
-    const etat = !duelPret(D) ? 'BIENTÔT' : !ok ? (D.n === 30 ? '🔒 APRÈS LES AUTRES' : '🔒') : gagne ? '✔ GAGNÉ' + (r && r.etoiles ? ' · ' + '★'.repeat(r.etoiles) : '') : enCours ? (r.combat ? '❓ LA QUESTION !' : '⚔️ À GAGNER !') : D.boss ? 'DUEL DE BOSS !' : 'À TOI DE PARIER !';
+    const etat = !duelPret(D) ? 'BIENTÔT' : !ok ? (mf ? '🔒 ' + MONDES[mf].nom : '🔒 À GAGNER') : gagne ? '✔ GAGNÉ' : enCours ? (r.combat ? '❓ LA QUESTION !' : '⚔️ À GAGNER !') : D.boss ? 'DUEL DE BOSS !' : 'À TOI DE PARIER !';
     const ic = !duelPret(D) ? '…' : !ok ? '🔒' : gagne ? '✔' : enCours ? (r.combat ? '❓' : '⚔️') : '▶';
     const ets = gagne ? `<span class="ets">${etoiles3(Math.min(3, (r && r.etoiles) || 0))}</span>` : ''; // (26/09) ★★☆ sous le duel gagné
     b.title = `Duel ${n2(D.n)} : ${na} ou ${nb} ? — ${etat}`;
     b.innerHTML = `<span class="md"><span class="num R">${n2(D.n)}</span>${D.boss ? '<span class="boss-tag R">BOSS</span>' : ''}${tete(D.a)}${tete(D.b)}${gagne ? ets : `<span class="ic">${ic}</span>`}</span>` +
       `<span class="q R"><span><b>${na}</b>&nbsp;<i>/</i> <b>${nb}</b></span></span><span class="etat">${etat}</span>`;
     b.onclick = () => {
-      if (!ok) { sfx('erreur'); if (!duelPret(D)) montreMsg('livre-msg', 'Cet animal arrive bientôt dans l’arène !'); else montreMsg('livre-msg', D.n === 30 ? 'La grande finale ? Interdit d’y aller avant d’avoir gagné les autres !' : 'Gagne d’abord le duel d’avant !'); return }
+      if (!ok) { // (M8) fermé : son monde n'est pas ouvert, ou on n'a encore aucun de ses deux animaux → la fiche de l'un d'eux (« ⚔️ L'AFFRONTER »)
+        if (!duelPret(D)) { sfx('erreur'); montreMsg('livre-msg', 'Cet animal arrive bientôt dans l’arène !'); return }
+        if (mf) { const P = PROGRESSION.find(p => p.m === mf), M = MONDES[mf]; sfx('erreur'); montreMsg('livre-msg', `🔒 ${M.ico} ${M.nom} s’ouvre quand tu as ${P.ouvre.n} animaux ${deMonde(P.ouvre.m)} : tu en as ${nbGagnes(P.ouvre.m)} !`); return }
+        ouvreInfoAnimal([D.a, D.b].find(k => !SAVE.debloques.includes(k))); return
+      }
       sfx('valide'); if (enCours && r.combat) ouvreQuestion(D); else ouvrePari(D);
     };
     box.appendChild(b);
   }
 }
-// ★ LÉGENDES : après la finale, les 3 géants hors du livre se réveillent (on les affronte avec un animal de leur monde)
-function carteslegendes(box, legOk) {
+// ★ LÉGENDES : les 3 géants hors du livre ; chacun se réveille quand tous les animaux de son monde sont gagnés
+function carteslegendes(box) {
   for (const L of LEGENDES_LIVRE) {
-    const k = L.k, d = CHARS[k]; if (!d) continue; const a = SAVE.debloques.includes(k), b = document.createElement('button'); b.type = 'button'; b.dataset.leg = k;
-    b.className = 'duel legende-carte' + (legOk ? '' : ' ferme') + (a ? ' joue' : '') + (legOk && !a ? ' suivant' : '');
-    b.innerHTML = `<span class="md"><span class="num R">${MONDES[L.m].ico} ${MONDES[L.m].nom}</span><img src="${k}_tete.webp" alt=""><span class="ic">${a ? '✔' : legOk ? '★' : '🔒'}</span></span><span class="q R"><span><b>${d.nom}</b></span></span>` +
-      `<span class="etat">${!legOk ? '🔒 APRÈS LA FINALE' : a ? '✔ À TOI' : d.fem ? '★ RÉVEILLE-LA !' : '★ RÉVEILLE-LE !'}</span>`;
+    const k = L.k, d = CHARS[k]; if (!d) continue; const M = MONDES[L.m], a = SAVE.debloques.includes(k), pr = legendePrete(L.m), nb = nbGagnes(L.m), tot = animauxDe(L.m).length, b = document.createElement('button'); b.type = 'button'; b.dataset.leg = k;
+    b.className = 'duel legende-carte' + (a || pr ? '' : ' ferme') + (a ? ' joue' : '') + (pr && !a ? ' suivant' : '');
+    b.innerHTML = `<span class="md"><span class="num R">${M.ico} ${M.nom}</span><img src="${k}_tete.webp" alt=""><span class="ic">${a ? '✔' : pr ? '★' : '🔒'}</span></span><span class="q R"><span><b>${d.nom}</b></span></span>` +
+      `<span class="etat">${a ? '✔ À TOI' : pr ? (d.fem ? '★ RÉVEILLE-LA !' : '★ RÉVEILLE-LE !') : !mondeOuvert(L.m) ? '🔒 ' + M.nom : `🔒 ${nb} / ${tot}`}</span>`;
     b.onclick = () => {
-      if (!legOk) { sfx('erreur'); montreMsg('livre-msg', 'Les légendes dorment encore… Gagne d’abord les 30 duels !'); return }
-      if (a) { sfx('valide'); G.livre = null; G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes(); return }
+      if (a) { sfx('valide'); G.livre = null; G.mode = 1; G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes(); choisir(k); return }
+      if (!pr) { sfx('erreur'); montreMsg('livre-msg', `${d.art} dort encore… Gagne tous les animaux ${deMonde(L.m)} : tu en as ${nb} sur ${tot} !`); return }
       sfx('valide'); lanceLegende(L);
     };
     box.appendChild(b);
   }
 }
-function lanceLegende(L) { G.niv = 2; selStage = 0; G.pick = [null, null]; G.tournoi = null; if (window.lanceEpreuve) lanceEpreuve(L.k) } // (on choisit son animal du même monde, puis l'arène : comme un défi ; ordi COSTAUD)
+function lanceLegende(L) { selStage = 0; G.pick = [null, null]; G.tournoi = null; G.livre = null; if (window.lanceEpreuve) lanceEpreuve(L.k) } // (on choisit son animal du même monde, puis l'arène ; l'ordi est COSTAUD : nivAuto)
 function montreMsg(id, t) { const e = $(id); e.textContent = t; e.classList.remove('secoue'); void e.offsetWidth; e.classList.add('secoue') }
 // --- écran 2 : le pari (comme la page de gauche du livre)
 function ouvrePari(D, rejoue) {
-  G.phase = 'menu'; show('pari'); G.livre = { D, rejoue: !!rejoue || fait(D), pari: null, choixCombat: false };
+  G.phase = 'menu'; show('pari'); $('pari').classList.remove('libre'); G.livre = { D, rejoue: !!rejoue || fait(D), pari: null, choixCombat: false };
   $('pari-num').textContent = `DUEL ${String(D.n).padStart(2, '0')} / ${LIVRE_TOTAL}` + (D.boss ? ' · BOSS !' : '');
   { const [na, nb] = (SOMMAIRE[D.n - 1] || D.noms.join(' / ')).split(' / '); $('pari-q').textContent = `${na} OU ${nb} ?`.toUpperCase() } // (25/09 : les noms courts du sommaire, lisibles sur iPhone)
   $('pari-gigi-img').src = `gigi/duel_${String(D.n).padStart(2, '0')}_recto.svg`;
@@ -353,44 +360,59 @@ function ouvrePari(D, rejoue) {
   $('pari-nul').hidden = !D.boss; $('pari-nul').onclick = () => choisitPari('nul');
   const r = SAVE.livre[D.n];
   $('pari-titre').textContent = rejoue || r ? `TON PARI : ${r ? (r.pari === 'nul' ? 'MATCH NUL' : nomDuel(D, r.pari)) : '?'}` : 'QUI GAGNE ?';
-  if (r) { $('pari-nul').hidden = true; G.livre.choixCombat = true; $('pari-gigi-dit').closest('.pari-gigi').hidden = true } // (rejouer : on choisit juste avec qui se battre)
+  if (r) { $('pari-nul').hidden = true; G.livre.choixCombat = true; $('pari-gigi-dit').closest('.pari-gigi').hidden = true; montreCombattants(D) } // (rejouer : on choisit juste avec qui se battre)
   // (M7) pendant que l'enfant lit et parie, les deux animaux et l'arène se chargent : sur un téléphone, le combat part tout de suite
   setTimeout(() => { try { chargeAnimal(D.a).catch(() => { }); chargeAnimal(D.b).catch(() => { }); chargeArene(D.arene).catch(() => { }) } catch (e) { } }, 250);
 }
+// (M8) « se battre avec » : seulement un animal qu'on a (l'autre fiche dit « 🔒 À GAGNER »)
+function montreCombattants(D) {
+  const l = combattants(D);
+  for (const [i, k] of [[0, D.a], [1, D.b]]) { const el = $(i ? 'pari-b' : 'pari-a'), g = el.querySelector('.fiche-go'); el.classList.toggle('inactif', !l.includes(k)); if (g) g.textContent = l.includes(k) ? 'JE ME BATS ▶' : '🔒 À GAGNER' }
+}
+// (M8) 1 JOUEUR, une paire du livre choisie sur l'écran « CONTRE QUI ? » : « DANS LA VRAIE VIE, QUI GAGNE ? », puis le combat avec son animal
+function pariPuisCombat() {
+  const L = G.livre, pick = G.pick.slice(), arene = G.arene, hasard = G.areneHasard;
+  ouvrePari(L.D); Object.assign(G.livre, { libre: true, moi: L.moi, noms: L.noms, pick, arene, hasard, choixCombat: false });
+  $('pari').classList.add('libre'); $('pari-q').textContent = 'DANS LA VRAIE VIE, QUI GAGNE ?';
+  $('pari-titre').textContent = L.D.boss ? '📖 DUEL DE BOSS DU LIVRE !' : '📖 UN DUEL DU LIVRE !';
+}
 function choisitPari(k) {
   const L = G.livre, D = L.D; sonInit();
+  if (L.libre) { if (L.pari) return; L.pari = k; sfx('valide'); G.pick = L.pick.slice(); G.arene = L.arene; G.areneHasard = !!L.hasard; sfx(L.moi, .8); vs(); return } // (le combat choisi avant le pari)
   if (!L.choixCombat) {
-    L.pari = k; sfx('valide');
-    if (k === 'nul') { L.choixCombat = true; $('pari-nul').hidden = true; $('pari-titre').textContent = 'TON PARI : MATCH NUL'; $('pari-gigi-dit').closest('.pari-gigi').hidden = true; document.querySelectorAll('#pari .fiche-go').forEach(e => e.textContent = 'JE ME BATS ▶'); return }
-    lanceDuelLivre(k); return
+    L.pari = k; sfx('valide'); const l = combattants(D);
+    if (k !== 'nul' && l.includes(k)) { lanceDuelLivre(k); return } // on a parié sur un animal à soi : on se bat avec lui
+    if (l.length === 1) { lanceDuelLivre(l[0]); return } // sinon, avec celui qu'on a
+    L.choixCombat = true; $('pari-nul').hidden = true; $('pari-titre').textContent = `TON PARI : ${k === 'nul' ? 'MATCH NUL' : nomDuel(D, k)}`; $('pari-gigi-dit').closest('.pari-gigi').hidden = true; montreCombattants(D); return
   }
-  if (k === 'nul') return;
+  if (k === 'nul' || !combattants(D).includes(k)) { sfx('erreur'); return }
   sfx('valide'); lanceDuelLivre(k);
 }
-// (M6, 25/09) difficulté de l'ordi dans un duel : de 0 (FACILE) au duel 1 à 2 (COSTAUD) au duel 30, en pente douce ; les boss (10, 20, 30) +0,12
-// (mesuré avec outils/enfant_session.py : un enfant qui tape partout gagne chaque duel en 3 essais au plus, grâce à l'aide qui suit les manches perdues)
+// (M6, 25/09) l'ancienne pente de difficulté de l'aventure (0 → 2), gardée pour les outils de mesure ; depuis M8, c'est nivAuto (game.js)
 const nivDuel = D => Math.min(2, Math.round((2 * (D.n - 1) / 29 + (D.boss ? .12 : 0)) * 100) / 100);
 function lanceDuelLivre(k) {
   const L = G.livre, D = L.D, adv = k === D.a ? D.b : D.a;
-  L.moi = k; G.mode = 1; G.tournoi = null; G.pick = [k, adv]; G.arene = D.arene; G.areneHasard = false; G.niv = Math.min(2, manche(D) - 1); // ordi FACILE (manche 1), NORMAL (2), COSTAUD (3)
-  G.nivDuel = nivDuel(D); // (M6) …et, pour l'ordi, une pente douce : duel 1 FACILE → duel 30 COSTAUD, les boss un cran au-dessus
+  finEpreuve(); G.defi = null; G.jour = null;
+  L.moi = k; G.mode = 1; G.tournoi = null; G.pick = [k, adv]; G.arene = D.arene; G.areneHasard = false; G.niv = Math.min(2, manche(D) - 1);
   L.noms = [nomDuel(D, k), nomDuel(D, adv)];
   sfx(k, .8); vs();
 }
+// REVANCHE : le même combat (même animal, même adversaire)
+function revancheLivre() { const L = G.livre; if (!L) return; L.rejoue = true; if (L.libre) { G.pick = L.pick.slice(); G.arene = L.arene; vs() } else lanceDuelLivre(L.moi) }
 // --- écran 3 : la vraie réponse (comme la page de droite du livre)
-// (26/09) ★★☆ : les étoiles gagnées ET celles qui manquent (elles donnent envie de rejouer) ; total de l'aventure
+// (26/09) ★★☆ : les étoiles gagnées ET celles qui manquent (elles donnent envie de rejouer)
 const etoiles3 = n => `<span class="et3">${'<em class="e1">★</em>'.repeat(n)}${'<em class="e0">★</em>'.repeat(3 - n)}</span>`; // (em : ni i ni b, déjà stylés dans les médaillons)
-const etoilesAventure = () => DUELS.reduce((t, x) => t + ((SAVE.livre[x.n] || {}).etoiles || 0), 0);
+const etoilesLivre = () => DUELS.reduce((t, x) => t + ((SAVE.livre[x.n] || {}).etoiles || 0), 0);
 function verdictLivre(v, etoilesCombat, nv) {
-  const L = G.livre, D = L.D, R = D.rep, deja = SAVE.livre[D.n];
+  const L = G.livre, D = L.D, R = D.rep, deja = SAVE.livre[D.n], libre = !!L.libre;
   const gagneArene = v && !v.cpu;
   // le pari ne compte qu'une fois (le premier), comme dans le livre
   let r = deja; const avant = deja ? deja.etoiles || 0 : 0;
   if (!deja) { r = SAVE.livre[D.n] = { pari: L.pari, bon: L.pari === R.g, etoiles: gagneArene ? etoilesCombat : 0, date: Date.now(), ok: false } }
   if (gagneArene) r.combat = 1; // 2A : combat gagné… il reste la question
-  // (26/09) ★ le meilleur score d'étoiles est gardé à chaque victoire (avant, seul le 1er essai comptait : un duel perdu puis gagné restait à 0 étoile)
+  // (26/09) ★ le meilleur score d'étoiles est gardé à chaque victoire
   if (gagneArene) r.etoiles = Math.max(r.etoiles || 0, etoilesCombat);
-  const record = gagneArene && !!deja && r.etoiles > avant && avant > 0, totEt = etoilesAventure();
+  const record = gagneArene && !!deja && r.etoiles > avant && avant > 0, totEt = etoilesLivre();
   if (window.trophee) { // trophées du livre
     if (!deja) { if (r.bon) { trophee('pari1', true); if (Object.values(SAVE.livre).filter(x => x.bon).length >= 5) trophee('pari5', true) } if (L.pari === D.gigi.pari) trophee('gigi', true) }
     if (DUELS.every(x => SAVE.livre[x.n])) trophee('duels', true);
@@ -416,12 +438,13 @@ function verdictLivre(v, etoilesCombat, nv) {
   $('v-page').textContent = `📖 La suite : page ${D.pv} du livre`;
   $('v-badges').innerHTML = (nv || []).map(id => `<span>NOUVEAU TROPHÉE : ${BADGES.find(x => x[0] === id)[1]}</span>`).join('') + (G.finExtra || '') +
     (gagneArene && r.etoiles < 3 && !(nv && nv.length) && !G.finExtra ? `<span class="et-astuce">Pour ${etoiles3(3)} : aucune manche perdue, et une sans être touché !</span>` : ''); // (26/09) une raison de rejouer
-  // la suite : duel déjà gagné → DUEL SUIVANT ; combat gagné → LA QUESTION ; combat perdu → REVANCHE (avec l'animal de son choix)
-  const suivant = prochainDuel(), gagne = fini(D), noms = gagnesDuel(D).concat(championsDuel(D)).filter(k => !SAVE.debloques.includes(k)).map(k => CHARS[k].art);
-  $('v-rejouer').hidden = !gagne;
-  if (gagne) { $('v-suite').textContent = suivant ? 'DUEL SUIVANT ▶' : 'MES DUELS ▶'; $('v-suite').onclick = () => { sfx('valide'); suivant ? ouvrePari(suivant) : ouvreLivre() } }
+  // la suite : combat gagné → LA QUESTION ; combat perdu → REVANCHE ; duel déjà gagné → DUEL SUIVANT (liste) ou CONTINUER (combat libre)
+  const suivant = prochainDuel(), gagne = fini(D), noms = gainsDuel(D).map(k => CHARS[k].art);
+  $('v-rejouer').hidden = !gagne || libre;
+  if (gagne) { if (libre) { $('v-suite').textContent = 'CONTINUER ▶'; $('v-suite').onclick = () => { sfx('valide'); autreCombat() } }
+    else { $('v-suite').textContent = suivant ? 'DUEL SUIVANT ▶' : 'MES DUELS ▶'; $('v-suite').onclick = () => { sfx('valide'); suivant ? ouvrePari(suivant) : ouvreLivre() } } }
   else if (gagneArene) { $('v-suite').textContent = '❓ LA QUESTION ▶'; $('v-suite').onclick = () => { sfx('valide'); ouvreQuestion(D) } }
-  else { $('v-suite').textContent = '⚔️ REVANCHE ▶'; $('v-suite').onclick = () => { sfx('valide'); ouvrePari(D, true) };
+  else { $('v-suite').textContent = '⚔️ REVANCHE ▶'; $('v-suite').onclick = () => { sfx('valide'); revancheLivre() };
     $('v-badges').innerHTML += `<span class="defi-res">⚔️ Gagne le combat${noms.length ? ' pour gagner ' + noms.join(' et ') : ''} !</span>` }
   $('v-rejouer').onclick = () => { sfx('clic'); ouvrePari(D, true) };
   // suspense : « ET DANS LA VRAIE VIE ? »… roulement… tampon !
@@ -435,9 +458,9 @@ function verdictLivre(v, etoilesCombat, nv) {
 // --- écran 4 : LA QUESTION (2A) — une seule, sur la vraie réponse qu'on vient de lire. Raté ? On relit, on réessaie.
 function ouvreQuestion(D, relis) {
   const z = QUESTIONS[D.n]; if (!z) { duelGagne(D); return }
-  sonInit(); G.phase = 'menu'; show('quiz'); const qz = $('quiz'); qz.classList.remove('defi', 'or', 'gagne', 'relis'); qz.classList.add('q-duel'); G.quest = { D, bloque: false }; G.retourQuiz = 'livre';
+  sonInit(); G.phase = 'menu'; show('quiz'); const qz = $('quiz'); qz.classList.remove('defi', 'or', 'gagne', 'relis'); qz.classList.add('q-duel'); G.quest = { D, bloque: false }; G.retourQuiz = G.livre && G.livre.libre && G.livre.D === D ? 'libre' : 'livre';
   $('quiz-titre').textContent = `❓ LA QUESTION`;
-  $('quiz-intro').innerHTML = fin(relis ? 'Réessaie !' : 'Réponds juste : les animaux sont à toi !');
+  $('quiz-intro').innerHTML = fin(relis ? 'Réessaie !' : gainsDuel(D).length ? 'Réponds juste : ' + (gainsDuel(D).length > 1 ? 'ils sont à toi !' : `${CHARS[gainsDuel(D)[0]].fem ? 'elle est' : 'il est'} à toi !`) : 'Réponds juste : le duel est gagné !');
   $('quiz-img').style.backgroundImage = `url(${D.rep.g === 'nul' ? D.a : D.rep.g}_corps.webp)`; $('quiz-img').classList.remove('ombre');
   $('quiz-pas').innerHTML = ''; $('quiz-q').textContent = fin(z[0]); $('quiz-msg').textContent = ''; $('quiz-suite').hidden = true;
   const box = $('quiz-rep'); box.innerHTML = '';
@@ -451,39 +474,37 @@ function repondQuestion(b, juste) {
   $('quiz-msg').innerHTML = `Pas tout à fait… Relis bien : <span class="carte-rappel">${esc(fin(D.rep.film))}</span>`;
   const s = $('quiz-suite'); s.hidden = false; s.textContent = 'RÉESSAYER ▶'; s.onclick = () => { sfx('clic'); ouvreQuestion(D, true) };
 }
-// --- écran 5 : DUEL GAGNÉ ! les animaux rejoignent la collection (les champions du livre : « 📖 J'AI LE LIVRE »)
+// --- écran 5 : DUEL GAGNÉ ! l'animal battu rejoint l'équipe (M8 : les champions du livre aussi) ; un monde peut s'ouvrir
 function duelGagne(D) {
-  const r = SAVE.livre[D.n] || (SAVE.livre[D.n] = { pari: null, bon: false, etoiles: 0, date: Date.now() }); const premier = r.ok === false; r.ok = true; r.combat = 1;
-  const nv = [], nouveaux = gagnesDuel(D).filter(k => !SAVE.debloques.includes(k)), champs = championsDuel(D).filter(k => !SAVE.debloques.includes(k));
-  for (const k of nouveaux) SAVE.debloques.push(k);
+  const libre = !!(G.livre && G.livre.libre && G.livre.D === D), moi = G.livre && G.livre.moi;
+  const r = SAVE.livre[D.n] || (SAVE.livre[D.n] = { pari: null, bon: false, etoiles: 0, date: Date.now() }); r.ok = true; r.combat = 1;
+  const nv = [], nouveaux = gainsDuel(D);
+  for (const k of nouveaux) { SAVE.debloques.push(k); SAVE.quiz[k] = Date.now() }
   if (nouveaux.length) badge('secret', nv);
   if (DUELS.filter(duelPret).every(fini)) badge('lecteur', nv);
-  sauve(); G.quest = { D, fini: true }; G.retourQuiz = 'livre'; $('quiz').classList.add('gagne');
-  const suivant = prochainDuel(), mancheFinie = premier && D.n % 10 === 0;
-  $('quiz-titre').textContent = `🎉 DUEL ${n2(D.n)} GAGNÉ !`; $('quiz').classList.remove('relis');
-  $('quiz-intro').innerHTML = fin(nouveaux.length ? `${nouveaux.length > 1 ? 'Ils sont' : (CHARS[nouveaux[0]].fem ? 'Elle est' : 'Il est')} à toi !` : champs.length ? 'Un champion du livre t’attend…' : 'Bravo !');
+  const mondes = window.ouvreMondes ? ouvreMondes() : []; // (M8) 10 animaux de la TERRE → LA MER s'ouvre…
+  sauve(); finEpreuve(); G.quest = { D, fini: true }; G.retourQuiz = libre ? 'libre' : 'livre'; $('quiz').classList.add('gagne');
+  const suivant = prochainDuel();
+  $('quiz-titre').textContent = libre ? '🎉 DUEL DU LIVRE GAGNÉ !' : `🎉 DUEL ${n2(D.n)} GAGNÉ !`; $('quiz').classList.remove('relis');
+  $('quiz-intro').innerHTML = fin(nouveaux.length ? `${nouveaux.length > 1 ? 'Ils sont' : (CHARS[nouveaux[0]].fem ? 'Elle est' : 'Il est')} à toi !` : 'Bravo !');
   $('quiz-pas').innerHTML = '';
-  const deja = [...new Set([D.a, D.b])].filter(k => pret(k) && !nouveaux.includes(k) && !champs.includes(k));
-  $('quiz-q').innerHTML = `<span class="gains">${nouveaux.map(k => `<span class="gain"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>NOUVEAU !</small></span>`).join('')}${champs.map(k => `<span class="gain or"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>📖 AVEC LE LIVRE</small></span>`).join('')}${deja.map(k => `<span class="gain deja"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>✔ DÉJÀ À TOI</small></span>`).join('')}</span>`;
-  $('quiz-rep').innerHTML = ''; for (const k of champs) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn or'; b.textContent = `📖 J’AI LE LIVRE : ${CHARS[k].nom}`; b.onclick = () => { sfx('valide'); ouvreLivreEnMain(k) }; $('quiz-rep').appendChild(b) }
-  $('quiz-msg').innerHTML = (mancheFinie ? `<span class="quete">${D.n === 30 ? '★ LES LÉGENDES SE RÉVEILLENT ! (onglet ★ LÉGENDES)' : `🔓 MANCHE ${manche(D) + 1} OUVERTE ! L’ordi devient plus fort.`}</span>` : '') +
+  const deja = [...new Set([D.a, D.b])].filter(k => pret(k) && !nouveaux.includes(k));
+  $('quiz-q').innerHTML = `<span class="gains">${nouveaux.map(k => `<span class="gain${champion(k) ? ' or' : ''}"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>NOUVEAU !</small></span>`).join('')}${deja.map(k => `<span class="gain deja"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>✔ DÉJÀ À TOI</small></span>`).join('')}</span>`;
+  $('quiz-rep').innerHTML = '';
+  $('quiz-msg').innerHTML = mondes.map(msgMonde).join('') +
     (nv.length ? `<span>NOUVEAU TROPHÉE : ${nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ')}</span>` : '') + (window.codeAOffrir ? nouveaux.map(codeAOffrir).join('') : '');
   sfx('badge'); setTimeout(() => sfx('super'), 350); nouveaux.forEach((k, i) => setTimeout(() => sfx(k, 1), 800 + i * 700));
   const s = $('quiz-suite'); s.hidden = false;
-  if (suivant) { s.textContent = `DUEL ${n2(suivant.n)} ▶`; s.onclick = () => { sfx('valide'); G.quest = null; ouvrePari(suivant) } }
-  else { s.textContent = 'L’AVENTURE ▶'; s.onclick = () => { sfx('valide'); ouvreLivre() } }
+  if (libre) { const k = nouveaux.find(x => x !== moi) || nouveaux[0];
+    if (k) { s.textContent = `JOUER AVEC ${CHARS[k].fem ? 'ELLE' : 'LUI'} ▶`; s.onclick = () => { sfx('valide'); G.quest = null; G.livre = null; G.retourQuiz = null; G.mode = 1; G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes(); choisir(k) } }
+    else { s.textContent = 'CONTINUER ▶'; s.onclick = () => { sfx('valide'); G.quest = null; G.retourQuiz = null; autreCombat() } } }
+  else if (suivant) { s.textContent = `DUEL ${n2(suivant.n)} ▶`; s.onclick = () => { sfx('valide'); G.quest = null; ouvrePari(suivant) } }
+  else { s.textContent = 'MES DUELS ▶'; s.onclick = () => { sfx('valide'); ouvreLivre() } }
 }
-// --- l'accueil (25/09) : la grande carte ▶ JOUER montre le prochain duel de l'aventure ; la tuile MES ANIMAUX, la collection
+// --- l'accueil (M8) : la tuile MES ANIMAUX montre les derniers animaux gagnés et le compte
 function majAccueil() {
-  const suivant = prochainDuel(), fin = !suivant && DUELS.every(fini), leg = fin && LEGENDES_LIVRE.find(x => pret(x.k) && !SAVE.debloques.includes(x.k));
-  const im = (id, k) => { const e = $(id); if (e) { e.src = k + '_tete.webp'; e.hidden = !k } }, tx = (id, t) => { const e = $(id); if (e) e.textContent = t };
-  if (suivant) { const [na, nb] = (SOMMAIRE[suivant.n - 1] || suivant.noms.join(' / ')).split(' / '), r = SAVE.livre[suivant.n];
-    im('aj-a', suivant.a); im('aj-b', suivant.b); tx('aj-sur', `Duel ${n2(suivant.n)} / ${LIVRE_TOTAL}${suivant.boss ? ' · BOSS !' : ''}`); tx('aj-q', `${na} ou ${nb} ?`.toUpperCase());
-    majAccueil.pre = [suivant.a, suivant.b].map(k => { const i = new Image(); i.src = k + '_corps.webp'; return i }) } // (M7) les grandes images du pari, prêtes avant qu'on touche ▶ JOUER
-  else if (leg) { const autre = LEGENDES_LIVRE.find(x => x !== leg) || leg; im('aj-a', leg.k); im('aj-b', autre.k); tx('aj-sur', 'Bonus'); tx('aj-q', '★ LES LÉGENDES T’ATTENDENT !') }
-  else { im('aj-a', 'tigre'); im('aj-b', 'gorille'); tx('aj-sur', 'Les 30 duels'); tx('aj-q', fin ? 'TOUT EST GAGNÉ ! REJOUE…' : 'LES 30 DUELS DU LIVRE') }
-  const tous = ORDRE.filter(pret), a = tous.filter(k => SAVE.debloques.includes(k)), t = $('t-tetes');
-  tx('t-nb', `${a.length} / ${tous.length}`);
+  const tous = ORDRE.filter(pret), a = tous.filter(k => SAVE.debloques.includes(k)), t = $('t-tetes'), n = $('t-nb');
+  if (n) n.textContent = `${a.length} / ${tous.length}`;
   if (t) t.innerHTML = a.slice(-3).map(k => `<img src="${k}_tete.webp" alt="">`).join('');
 }
 function acclameMenu() { sfx('foule', .5) }
@@ -491,3 +512,5 @@ function acclameMenu() { sfx('foule', .5) }
 function finaleFaite() { if (window.revelerCodeGod) revelerCodeGod() }
 // (26/09) un duel gagné vaut au moins ★ : avant le correctif des étoiles, un duel perdu puis gagné restait à 0 étoile
 try { let m = 0; for (const D of DUELS) { const r = SAVE.livre[D.n]; if (r && fini(D) && !(r.etoiles >= 1)) { r.etoiles = 1; m++ } } if (m) sauve() } catch (e) { }
+// (M8) les mondes : un ancien joueur qui a déjà 10 animaux de la TERRE trouve LA MER ouverte (avec l'orque et le requin), etc.
+try { ouvreMondes() } catch (e) { }

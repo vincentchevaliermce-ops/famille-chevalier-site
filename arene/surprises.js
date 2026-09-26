@@ -342,8 +342,8 @@ const NOUVEAUX_TROPHEES = [
   ['pari5', 'PLUS MALIN QUE GIGI', 'Trouve la vraie réponse de 5 Duels du livre.', 'livre'],
   ['duels', 'TOUS LES DUELS', 'Joue tous les Duels du livre.', 'livre'],
   ['boss', 'CHASSEUR DE BOSS', 'Gagne les 3 Duels de boss du livre.', 'livre'],
-  ['etoiles30', 'TRENTE ÉTOILES', 'Gagne 30 étoiles dans L’AVENTURE.', 'livre'], // (26/09) des raisons de rejouer les duels
-  ['etoiles90', 'TOUTES LES ÉTOILES !', 'Gagne les 3 étoiles des 30 duels de L’AVENTURE.', 'livre'],
+  ['etoiles30', 'TRENTE ÉTOILES', 'Gagne 30 étoiles dans les duels du livre.', 'livre'], // (26/09) des raisons de rejouer les duels
+  ['etoiles90', 'TOUTES LES ÉTOILES !', 'Gagne les 3 étoiles des 30 duels du livre.', 'livre'],
   ['cartes50', 'CINQUANTE CARTES', 'Gagne 50 cartes « Le savais-tu ? ».', 'livre'],
   ['jour', 'DÉFI DU JOUR', 'Réussis un défi du jour.', 'amis'],
   ['jour5', 'FIDÈLE AU POSTE', 'Réussis 5 défis du jour.', 'amis'],
@@ -495,6 +495,13 @@ function htmlTrophees() {
   if (v) v.onclick = () => { SAVE.opt = SAVE.opt || {}; SAVE.opt.vibre = SAVE.opt.vibre === false; sauve(); sfx('clic'); maj(); vibre(30) };
   if (lv && !('vibrate' in navigator)) lv.hidden = true; // (iPhone : Safari ne sait pas faire vibrer)
   if (MQ_CALME && MQ_CALME.addEventListener) MQ_CALME.addEventListener('change', maj);
+  maj();
+})();
+// (26/09, M8) DIFFICULTÉ à 1 joueur (espace parents) : AUTOMATIQUE (conseillé : nivAuto, game.js), ou fixée pour tous les combats
+(function () {
+  const b = document.getElementById('opt-niveau'); if (!b) return;
+  const NOMS = ['FACILE', 'NORMAL', 'COSTAUD'], maj = () => { const n = (SAVE.opt || {}).niveau; b.textContent = n === 0 || n === 1 || n === 2 ? NOMS[n] : 'AUTOMATIQUE ✔'; b.setAttribute('aria-pressed', n == null) };
+  b.onclick = () => { SAVE.opt = SAVE.opt || {}; const n = SAVE.opt.niveau; if (n == null) SAVE.opt.niveau = 0; else if (n < 2) SAVE.opt.niveau = n + 1; else delete SAVE.opt.niveau; sauve(); sfx('clic'); maj() };
   maj();
 })();
 // ---------------------------------------------------------------------

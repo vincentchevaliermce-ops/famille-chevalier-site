@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790376719"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="description" content="C’est qui le plus fort ? — L’Arène des Duels, le jeu vidéo du livre : choisis ton animal et défie tes copains. Gratuit, sans inscription, sans publicité."><meta property="og:title" content="C’est qui le plus fort ? — L’Arène des Duels"><meta property="og:description" content="Le jeu vidéo du livre : choisis ton animal et défie tes copains ! Gratuit, sans inscription, sans pub."><meta property="og:type" content="website"><meta property="og:url" content="https://editions-chevalier.fr/arene/"><meta property="og:image" content="https://editions-chevalier.fr/arene/partage_cqpf.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="version-jeu" content="1790380764"><title>C'est qui le plus fort ? — L'Arène des Duels, le jeu vidéo du livre</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1081,6 +1081,50 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
 #cadre #v-cri{font-size:5cqw}
 #cadre .v-punch{font-size:2.8cqw}
 #cadre #v-suite1{font-size:3.3cqw;padding:.6cqw 3.2cqw}
+
+/* ===== (26/09, M8) « HYPER SIMPLE » : ▶ JOUER → 1 JOUEUR / 2 JOUEURS → TON ANIMAL → CONTRE QUI ? → L'ARÈNE ===== */
+/* l'accueil : une grande action, et la collection */
+#cadre #titre .accueil.m8{bottom:2.4cqw;gap:1.6cqw}
+#cadre .accueil.m8 .accueil-jouer{border-width:.55cqw;border-radius:2.4cqw}
+#cadre .accueil.m8 .aj-go{font-size:6.6cqw;padding:1cqw 6cqw 1.2cqw 5.4cqw}
+.accueil-animaux{display:flex;align-items:center;gap:1.4cqw;padding:.6cqw 2cqw .6cqw 1.6cqw;border:.38cqw solid var(--creme);border-radius:1.8cqw;background:rgba(11,42,91,.95);color:var(--creme);box-shadow:.35cqw .45cqw 0 rgba(11,42,91,.6);cursor:pointer;font:inherit}
+.accueil-animaux:active{transform:translateY(.25cqw)}
+.accueil-animaux .t-tetes{display:flex;padding-left:.6cqw}
+#cadre .accueil-animaux .t-tetes img{width:5.6cqw;height:5.6cqw;margin:0 -.6cqw}
+.accueil-animaux .aa-t{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05}
+#cadre .accueil-animaux .aa-t b{font-size:3.3cqw;letter-spacing:.02em}
+#cadre .accueil-animaux .aa-t small{font:900 var(--t-min) Rubik,"Arial Black",sans-serif;color:var(--jaune)}
+/* combien de joueurs ? */
+#cadre #mode .mode-choix{gap:3cqw}
+#cadre #mode .btn.gros{width:36cqw;padding:2.6cqw 1.6cqw 2.8cqw}
+#cadre #mode .btn.gros .gros-ico{font-size:8.4cqw}
+#cadre #mode .btn.gros b{font-size:4.6cqw}
+/* l'écran de choix : la difficulté est automatique (espace parents), plus de tournoi ; les mondes fermés ont un cadenas */
+#cadre #choix #niveaux,#cadre #choix #tournoi-btn{display:none!important}
+#cadre #choix #mondes .btn.ferme{filter:grayscale(.85);opacity:.6}
+#cadre #choix #mondes .btn.ferme::after{content:"🔒";position:absolute;right:-.5cqw;bottom:-.6cqw;font-size:2.3cqw;line-height:1;filter:none}
+/* « TON ANIMAL » : un animal pas encore gagné se voit en gris, avec un cadenas */
+#cadre #choix .cartes .carte.verrou .img img{filter:grayscale(1) brightness(.8)!important;opacity:.85}
+#cadre #choix .cartes .carte.verrou .img::after{content:"🔒"!important;position:absolute;top:.4cqw;right:.5cqw;font-size:2.6cqw!important;text-shadow:none!important;line-height:1;z-index:3}
+#cadre #choix .cartes .carte.verrou .nom{color:#cfd9ee}
+#cadre #choix .cartes .carte.verrou{transform:scale(.94)}
+/* « CONTRE QUI ? » : les adversaires à gagner en couleur (on voit qui on va affronter) */
+#cadre #choix .cartes.adv .carte.verrou{transform:none}
+#cadre #choix .cartes.adv .carte.verrou .img img{filter:none!important;opacity:1}
+#cadre #choix .cartes.adv .carte.verrou .img::after{content:none!important}
+#cadre #choix .cartes.adv .carte.verrou .nom{color:var(--creme)}
+#cadre #choix .cartes .carte .ets.quiz{color:#FFD24A}
+#cadre #choix .cartes .carte .ets:not(.quiz){color:rgba(255,248,236,.34)}#cadre #choix .cartes .carte .ets b{color:var(--jaune)} /* (M8) ★ gagnées en or, les autres pâles */
+/* une paire du livre : un ruban « 📖 DU LIVRE » en haut de la carte */
+#cadre #choix .cartes .carte.livre{position:relative;border-color:#FFF3C4;box-shadow:0 0 0 .3cqw #EC5A2C,.3cqw .4cqw 0 rgba(11,42,91,.6)}
+#cadre #choix .cartes .carte.livre::after{content:attr(data-livre);position:absolute;top:0;left:0;right:0;z-index:4;text-align:center;background:#FFF3C4;color:var(--marine);border-bottom:.25cqw solid var(--marine);font:900 var(--t-min)/1.25 Rubik,"Arial Black",sans-serif;letter-spacing:.02em;white-space:nowrap}
+#cadre #choix .cartes .carte.livre.curseur{box-shadow:0 0 0 .5cqw var(--jaune),.3cqw .4cqw 0 rgba(11,42,91,.6)}
+/* le pari d'une paire du livre, pendant un combat choisi : la grande question en titre */
+#cadre #pari.libre .pari-num{display:none}
+#cadre #pari.libre #pari-q{font-size:3.7cqw}
+.fiche.inactif{filter:grayscale(.8);opacity:.6}
+/* la liste des duels : la légende de chaque monde */
+#cadre .duel.legende-carte .num{white-space:nowrap}
 </style></head><body>
 
 <div id="cadre">
@@ -1098,14 +1142,9 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
   <section class="ecran" id="titre" hidden>
     <div class="coin-titre"><button class="btn rond" id="parents-titre" type="button">👪<small>PARENTS</small></button></div>
     <img class="logo" src="titre_accueil.webp" alt="C’est qui le plus fort ? L’Arène des Duels">
-    <div class="accueil">
-      <button class="accueil-jouer" id="livre-titre" type="button"><span class="aj-go R">▶ JOUER</span><span class="aj-duel"><span class="aj-tetes"><img id="aj-a" src="frelon_tete.webp" alt=""><em class="R">VS</em><img id="aj-b" src="abeille_tete.webp" alt=""></span><span class="aj-txt"><small id="aj-sur">L’AVENTURE DU LIVRE · DUEL 01 / 30</small><b class="R" id="aj-q">FRELON OU ABEILLES ?</b></span></span></button>
-      <div class="tuiles">
-        <button class="tuile t-combat" id="jouer" type="button"><span class="t-ico">⚔️</span><b class="R">COMBAT</b><small>Contre l’ordi</small></button>
-        <button class="tuile t-deux" id="adeux-titre" type="button"><span class="t-ico">👥</span><b class="R">À DEUX</b><small>Avec un copain</small></button>
-        <button class="tuile t-animaux" id="trophees-titre" type="button"><span class="t-ico t-tetes" id="t-tetes"></span><b class="R">MES ANIMAUX</b><small id="t-nb">4 / 52</small></button>
-        <button class="tuile t-jour" id="jour-titre" type="button"><span class="t-ico t-tetes" id="jour-tetes"></span><b class="R">DÉFI DU JOUR</b><small id="jour-txt"></small></button>
-      </div>
+    <div class="accueil m8"><!-- (26/09, M8) « hyper simple » : ▶ JOUER, et la collection -->
+      <button class="accueil-jouer" id="jouer" type="button"><span class="aj-go R">▶ JOUER</span></button>
+      <button class="accueil-animaux" id="trophees-titre" type="button"><span class="t-tetes" id="t-tetes"></span><span class="aa-t"><b class="R">MES ANIMAUX</b><small id="t-nb">4 / 52</small></span></button>
     </div>
     <button class="btn appli-btn R" id="appli-titre" type="button" hidden>📲 SANS LA BARRE D’ADRESSE</button>
   </section>
@@ -1170,9 +1209,18 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
     </div>
   </section>
 
+  <section class="ecran menu" id="mode" hidden><!-- (26/09, M8) -->
+    <button class="btn retour" id="mode-retour" type="button">◀<small>RETOUR</small></button>
+    <h2 class="titre titre-ecran R">COMBIEN DE JOUEURS ?</h2>
+    <div class="choix-deux mode-choix">
+      <button class="btn gros" id="mode-1" type="button"><span class="gros-ico">👤</span><b class="R">1 JOUEUR</b><small>Contre l’ordi : gagne des animaux !</small></button>
+      <button class="btn gros" id="mode-2" type="button"><span class="gros-ico">👥</span><b class="R">2 JOUEURS</b><small>Avec un copain.</small></button>
+    </div>
+  </section>
+
   <section class="ecran menu" id="adeux" hidden>
     <button class="btn retour" id="adeux-retour" type="button">◀<small>RETOUR</small></button>
-    <h2 class="titre titre-ecran R">👥 À DEUX</h2>
+    <h2 class="titre titre-ecran R">👥 2 JOUEURS</h2>
     <div class="choix-deux">
       <button class="btn gros" id="deux-ecran" type="button"><span class="gros-ico">📱</span><b class="R">SUR CET ÉCRAN</b><small>Chacun ses boutons.</small></button>
       <button class="btn gros" id="deux-tel" type="button"><span class="gros-ico">📱📱</span><b class="R">2 TÉLÉPHONES</b><small>Même Wi-Fi, un code à 4 chiffres.</small></button>
@@ -1198,7 +1246,7 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
   <section class="ecran menu" id="trophees" hidden>
     <button class="btn retour" id="troph-retour" type="button">◀<small>RETOUR</small></button>
     <h2 class="titre titre-ecran R">📚 MA COLLECTION</h2>
-    <div class="onglets-collec"><button class="btn" id="tab-animaux" type="button" aria-pressed="true">🐾 ANIMAUX</button><button class="btn" id="tab-badges" type="button" aria-pressed="false">🏆 TROPHÉES</button><button class="btn" id="tab-cartes" type="button" aria-pressed="false">🃏 CARTES</button><button class="btn code-coin" id="codes-collec" type="button">🔑 CODE</button></div>
+    <div class="onglets-collec"><button class="btn" id="tab-animaux" type="button" aria-pressed="true">🐾 ANIMAUX</button><button class="btn" id="tab-duels" type="button" aria-pressed="false">📖 DUELS</button><button class="btn" id="tab-badges" type="button" aria-pressed="false">🏆 TROPHÉES</button><button class="btn" id="tab-cartes" type="button" aria-pressed="false">🃏 CARTES</button><button class="btn code-coin" id="jour-titre" type="button" aria-label="Défi du jour">⚡</button><button class="btn code-coin" id="codes-collec" type="button" aria-label="Code">🔑</button></div>
     <div class="panneau collec-panneau">
       <div id="troph-animaux" class="troph-animaux"></div>
       <div id="troph-badges" class="troph-liste" hidden></div>
@@ -1222,7 +1270,7 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
 
   <section class="ecran menu" id="livre" hidden>
     <button class="btn retour" id="livre-retour" type="button">◀<small>RETOUR</small></button>
-    <h2 class="titre-ecran R">🗺️ L’AVENTURE</h2>
+    <h2 class="titre-ecran R">📖 DUELS DU LIVRE</h2>
     <div class="livre-barre"><div class="livre-score R" id="livre-score"></div><div class="onglets-livre" id="livre-onglets" role="group" aria-label="Les 3 manches du livre"></div></div>
     <button class="livre-hero" id="livre-hero" type="button" hidden></button>
     <div class="duels" id="duels-liste"></div>
@@ -1276,7 +1324,8 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
     <div id="parents-porte" class="porte panneau"><p id="porte-q"></p><div class="ligne"><input id="porte-in" class="code-in" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Réponse"><button class="btn go" id="porte-ok" type="button">OK</button></div></div>
     <div id="parents-contenu" class="parents-txt panneau" hidden>
       <p><b>L’Arène des Duels</b> est le jeu vidéo gratuit du livre <b>« C’est qui le plus fort ? »</b> (Vincent Chevalier, 2026) : 30 duels d’animaux, des paris, et à chaque fois la vraie réponse, vérifiée.</p>
-      <p><b>Comment ça marche</b> : on commence avec 4 animaux (lion, tigre, gorille, ours polaire). <b>L’AVENTURE</b> suit les 30 duels du livre, dans l’ordre, en 3 manches : à chaque duel, l’enfant parie, se bat, découvre la vraie réponse, puis répond à une question sur ce qu’il vient de lire. Les animaux du duel rejoignent alors sa collection, jouable en <b>COMBAT LIBRE</b>, à deux ou en ligne. L’ordinateur est facile dans la manche 1, normal dans la 2, costaud dans la 3. Après la finale, 3 légendes se réveillent. Les 10 « champions du livre » (cartes dorées) se débloquent seulement avec un mot à trouver dans le livre imprimé.</p>
+      <p><b>Comment ça marche</b> : ▶ JOUER, 1 ou 2 joueurs, puis on choisit son animal, son adversaire et l’arène. On commence avec 4 animaux de la Terre (lion, tigre, gorille, ours polaire). À 1 joueur, on gagne un nouvel animal en le battant, puis en répondant à une question sur sa carte « Le savais-tu ? ». Quand l’enfant choisit l’une des 30 paires du livre (lion contre tigre…), il parie d’abord « dans la vraie vie, qui gagne ? », se bat, puis découvre la vraie réponse, vérifiée, et répond à une question dessus. Les mondes s’ouvrent peu à peu : la Mer (avec 10 animaux de la Terre), puis les Petites Bêtes (avec 5 animaux de la Mer) ; un monde complet réveille son animal légendaire. Les 10 « champions du livre » (cartes dorées) se gagnent aussi avec un mot à trouver dans le livre imprimé. Les 30 duels, dans l’ordre du livre, sont aussi dans MES ANIMAUX → 📖 DUELS.</p>
+      <p><b>Difficulté à 1 joueur</b> (automatique : l’ordinateur devient plus fort à mesure que l’équipe grandit, et ralentit quand l’enfant perd une manche) : <button class="btn" id="opt-niveau" type="button">AUTOMATIQUE ✔</button></p>
       <p><b>Pas de compte, pas de publicité, pas de discussion entre joueurs, pas de vrai prénom</b> : les défis utilisent un « nom de champion » inventé. La progression est enregistrée uniquement sur cet appareil.</p>
       <p>Seul le mode « chacun son téléphone » passe par un service de mise en relation (PeerJS) pour relier les deux appareils le temps d’une partie : seuls les gestes du jeu circulent, rien n’est conservé.</p>
       <p><b>📥 Jouer sans internet</b> (en voiture, en vacances…) : le jeu garde tout seul sur l’appareil ce qui a déjà servi. Pour avoir tous les animaux et toutes les arènes même sans connexion, téléchargez le jeu complet une fois, de préférence en wifi. <button class="btn" id="hl-go" type="button">📥 TOUT TÉLÉCHARGER</button> <span id="hl-etat"></span></p>
@@ -1331,7 +1380,7 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
     <div class="fin-d">
       <div class="nouveau" id="fin-badges"></div>
       <div class="fait"><b id="fait-titre">LE SAVAIS-TU ?</b><span id="fait-txt"></span></div>
-      <div class="ligne"><button class="btn go" id="revanche" type="button">REVANCHE !</button><button class="btn" id="menu-btn" type="button">CHANGER D’ANIMAL</button></div>
+      <div class="ligne"><button class="btn go" id="revanche" type="button">REVANCHE !</button><button class="btn" id="menu-btn" type="button">AUTRE COMBAT</button></div>
       <div class="ligne partages"><button class="btn" id="fin-photo" type="button" hidden style="display:none!important">📸 PHOTO DE VICTOIRE</button><button class="btn" id="fin-defi" type="button" hidden>📣 DÉFIER UN COPAIN</button><button class="btn" id="fin-jour" type="button" hidden>⚡ PARTAGER MON DÉFI DU JOUR</button></div>
     </div>
   </section>
@@ -1359,11 +1408,11 @@ body.calme *,body.calme *::before,body.calme *::after{animation-duration:.01ms!i
   <svg class="tourne-tel" viewBox="0 0 120 120" aria-hidden="true"><rect x="38" y="14" width="44" height="92" rx="9" fill="#0B2A5B" stroke="#FFF8EC" stroke-width="6"/><rect x="45" y="26" width="30" height="64" rx="3" fill="#FFC629"/><circle cx="60" cy="98" r="3.5" fill="#FFF8EC"/></svg>
   <b>Tourne ton téléphone</b>Le jeu se joue à l’horizontale.</div>
 
-<script src="skin.js?v=1790376719"></script>
-<script src="anim.js?v=1790376719"></script>
-<script src="game.js?v=1790376719"></script>
-<script src="net.js?v=1790376719"></script>
-<script src="livre.js?v=1790376719"></script>
-<script src="bonus.js?v=1790376719"></script>
-<script src="surprises.js?v=1790376719"></script>
+<script src="skin.js?v=1790380764"></script>
+<script src="anim.js?v=1790380764"></script>
+<script src="game.js?v=1790380764"></script>
+<script src="net.js?v=1790380764"></script>
+<script src="livre.js?v=1790380764"></script>
+<script src="bonus.js?v=1790380764"></script>
+<script src="surprises.js?v=1790380764"></script>
 </body></html>
