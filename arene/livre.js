@@ -307,8 +307,9 @@ function ongletLivre(m) {
     b.className = 'duel' + (D.boss ? ' boss' : '') + (ok ? '' : ' ferme') + (gagne ? ' joue' : '') + (enCours ? ' encours' : '') + (!duelPret(D) ? ' bientot' : '') + (D === suivant ? ' suivant' : '');
     const tete = k => pret(k) ? `<img src="${k}_tete.webp" alt="">` : '<i>?</i>';
     const [na, nb] = (SOMMAIRE[D.n - 1] || D.noms.join(' / ')).split(' / ');
-    const etat = !duelPret(D) ? 'BIENTÔT' : !ok ? (mf ? '🔒 ' + MONDES[mf].nom : '🔒 À GAGNER') : gagne ? '✔ GAGNÉ' : enCours ? (r.combat ? '❓ LA QUESTION !' : '⚔️ À GAGNER !') : D.boss ? 'DUEL DE BOSS !' : 'À TOI DE PARIER !';
-    const ic = !duelPret(D) ? '…' : !ok ? '🔒' : gagne ? '✔' : enCours ? (r.combat ? '❓' : '⚔️') : '▶';
+    const livreSeul = !ok && !mf && [D.a, D.b].every(k => champion(k)); // (V20b, « 2A ») deux champions du livre (duel 7, jaguar contre anaconda) : il s'ouvre seulement avec le livre
+    const etat = !duelPret(D) ? 'BIENTÔT' : !ok ? (mf ? '🔒 ' + MONDES[mf].nom : livreSeul ? '📖 AVEC LE LIVRE' : '🔒 À GAGNER') : gagne ? '✔ GAGNÉ' : enCours ? (r.combat ? '❓ LA QUESTION !' : '⚔️ À GAGNER !') : D.boss ? 'DUEL DE BOSS !' : 'À TOI DE PARIER !';
+    const ic = !duelPret(D) ? '…' : !ok ? (livreSeul ? '📖' : '🔒') : gagne ? '✔' : enCours ? (r.combat ? '❓' : '⚔️') : '▶';
     const ets = gagne ? `<span class="ets">${etoiles3(Math.min(3, (r && r.etoiles) || 0))}</span>` : ''; // (26/09) ★★☆ sous le duel gagné
     b.title = `Duel ${n2(D.n)} : ${na} ou ${nb} ? — ${etat}`;
     b.innerHTML = `<span class="md"><span class="num R">${n2(D.n)}</span>${D.boss ? '<span class="boss-tag R">BOSS</span>' : ''}${tete(D.a)}${tete(D.b)}${gagne ? ets : `<span class="ic">${ic}</span>`}</span>` +
