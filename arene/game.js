@@ -759,7 +759,7 @@ const CHARS = {
 
 
   // ===================== MER =====================
-  // --- REQUIN-BOULEDOGUE (« livre en main », duel 26, p. 59) : une morsure record pour sa taille, il cogne, puis il mord, le requin de rivière.
+  // --- REQUIN-BOULEDOGUE (« livre en main », duel 26, p. 59) : une morsure énorme pour sa taille, il cogne, puis il mord, le requin de rivière.
   //     Point faible (livre) : « une peau sans armure » → il prend plus cher (peau 1.25).
   bouledogue: {
     nom: 'REQUIN-BOULEDOGUE', art: 'LE REQUIN-BOULEDOGUE', monde: 'mer', nage: true, peau: 1.25, force: 0.812, spr: true, hPose: ['garde', 'coup'], col: '#6B7480', clair: '#EEF1F4', fond: '#7D93A8', K: .46, hp: 104, walk: 6.6, back: 5, dash: 19, jumpV: 18, jumpX: 8, grav: .62, etour: 46,
@@ -1091,7 +1091,7 @@ const PHRASES = {
   tigre: ['Rayé jusqu’à la peau… et champion !', 'Un bond de 10 mètres, et hop !', 'Miaou. Enfin… ROAAAR !'],
   gorille: ['Mains en coupe, s’il vous plaît !', 'Tam-tam ! Et maintenant, je chante en mangeant.', 'On m’entend taper à 1 km !'],
   lion: ['20 heures de sieste par jour… et je t’ai quand même battu !', 'On m’entend rugir à 8 km !', 'Le roi, c’est moi. Enfin… aujourd’hui.'],
-  ours: ['Mes poils sont des pailles : je flotte et je gagne !', 'Blanc ? Non : transparent. Et champion !', '687 km à la nage : ça muscle !'],
+  ours: ['Mes poils sont des pailles : bien au chaud, je gagne !', 'Blanc ? Non : transparent. Et champion !', '687 km à la nage : ça muscle !'],
   croco: ['Clac-clac ! Une mâchoire d’acier !', 'Tu m’as vu venir ? Non ? Normal.', 'Une flaque, et hop : surprise !'],
   hippo: ['Trois tonnes de mauvaise humeur !', 'Le ventilateur à crottes, ça ne rate jamais !', 'Plus grande bouche = plus fort. Logique !'],
   ratel: ['Je ne gagne pas : je dégoûte !', '13 kilos de rage !', 'Pschiit ! Ça pue, hein ?'],
@@ -1263,7 +1263,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Sur Internet, des vidéos montrent le ratel, une sorte de blaireau d’Afrique, tenir tête à des lions. 13 kilos de rage contre 190 !', // p. 19
     'La peau du ratel, épaisse et trop grande pour lui, résiste aux morsures de chien. Si on l’attrape, il se retourne dans sa peau… et mord !', // p. 19
     '5 heures après une morsure de vipère au visage, un ratel chassait de nouveau des serpents !', // p. 20
-    'Dans une ruche, le ratel mange le miel… et les larves, les bébés des abeilles ! Les piqûres ? Il s’en moque !', // p. 20
+    'Dans une ruche, le ratel mange le miel… et les larves, les bébés des abeilles ! Les piqûres ? Sa peau épaisse encaisse !', // p. 20
     'Le coup spécial du ratel : la bombe puante !', // ≈ p. 19
   ],
   grizzly: [
@@ -1302,14 +1302,14 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'La morsure du crocodile marin est la plus forte jamais mesurée. Un croco de 6 m mordrait presque comme un T. rex !', // p. 59
   ],
   komodo: [
-    'Voici le plus gros lézard du monde : trois mètres de long.', // p. 23
+    'Voici le plus gros lézard du monde : jusqu’à trois mètres de long.', // p. 23
     'Le dragon « goûte » l’air avec sa langue fourchue : il repère un animal mort jusqu’à 4 km !', // p. 23
     '24 kg de pâtes en un repas : ce que tu avalerais si tu mangeais comme un dragon de Komodo !', // p. 24
     'Les jeunes dragons de Komodo vivent perchés dans les arbres. Pourquoi ? Les dragons adultes mangent les petits !', // ≈ p. 24
     '« Le dragon tue avec les microbes de sa bouche. » Pas vraiment : son venin… et la mare sale !', // p. 24
   ],
   leopard: [
-    'Le léopard grimpe à 15 m dans un arbre avec, dans la gueule, une proie plus lourde que lui.', // p. 11
+    'Le léopard grimpe jusqu’à 15 m dans un arbre avec, dans la gueule, une proie plus lourde que lui.', // p. 11
     'En Inde, des léopards vivent dans un parc au milieu de Mumbai, l’une des villes les plus peuplées du monde !', // p. 26
     'Les taches du jaguar sont des anneaux noirs, souvent avec un point au milieu. Celles du léopard sont vides. Pratique pour ne pas les confondre !', // p. 26
     'La panthère noire n’existe pas ! C’est un jaguar, ou un léopard, au pelage tout noir ! Et sous le soleil, on voit encore ses taches.', // p. 35
@@ -1360,7 +1360,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
   ],
   aiguillat: [
     'Un aiguillat peut vivre presque 70 ans !', // p. 21
-    'L’aiguillat chasse en bande, parfois par milliers… et adore les pieuvres.', // ≈ p. 21
+    'L’aiguillat chasse en bande, parfois par milliers… et croque même des pieuvres !', // ≈ p. 21
     'La femelle aiguillat porte ses petits pendant près de deux ans. À peu près autant qu’une maman éléphant !', // p. 25
     'L’aiguillat : un requin d’un mètre, moins de 10 kg, avec deux épines à venin !', // ≈ p. 21
     'Le coup spécial de l’aiguillat : il se plie et pique !', // ≈ p. 21
@@ -1406,7 +1406,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'Le coup spécial du caïman : il plonge pour se cacher !', // ≈ p. 35
     'Le point faible du caïman : lent quand il est à terre !', // ≈ p. 35
     'Encore dans l’œuf, les bébés caïmans appellent leur mère en couinant. Elle ouvre le nid et les aide à sortir.', // p. 36
-    '10 millions de caïmans vivent dans le Pantanal, au Brésil.', // ≈ p. 36
+    '10 millions de caïmans vivraient dans le Pantanal, au Brésil.', // ≈ p. 36
     'Le caïman noir vit en Amazonie et dépasse parfois 5 m !', // ≈ p. 36
   ],
   puma: [
@@ -1475,7 +1475,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'La langue de la girafe mesure 46 cm et elle est presque noire. Sans doute pour ne pas attraper de coup de soleil !', // ≈ p. 52
   ],
   bouledogue: [
-    'Ce jeune requin-bouledogue : 1,50 m, et une morsure record pour sa taille !', // ≈ p. 59
+    'Ce jeune requin-bouledogue : 1,50 m, et une morsure énorme pour sa taille !', // ≈ p. 59
     'Le coup spécial du requin-bouledogue : il cogne, puis il mord !', // ≈ p. 59
     'Le point faible du requin-bouledogue : une peau sans armure !', // ≈ p. 59
     'Le requin-bouledogue remonte les fleuves !', // p. 59
@@ -1484,7 +1484,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'La baleine bleue : jusqu’à 150 tonnes, et un corps de 30 m !', // ≈ p. 61
     'Le coup spécial de la baleine bleue : elle file à 32 km/h !', // ≈ p. 61
     'Le point faible de la baleine bleue : pas une seule dent !', // ≈ p. 61
-    'Le chant de la baleine bleue s’entend plus loin que de Paris à Madrid !', // p. 62
+    'Le chant de la baleine bleue peut porter plus loin que de Paris à Madrid !', // ≈ p. 62
     'Le souffle de la baleine bleue peut monter à 9 m !', // ≈ p. 62
   ],
   crabe: [
@@ -1497,7 +1497,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
     'La crevette-mante : environ 10 cm, et deux massues à ressort !', // ≈ p. 49
     'Le coup spécial de la crevette-mante : elle casse les coquilles !', // ≈ p. 49
     'Le point faible de la crevette-mante : molle quand elle mue !', // ≈ p. 49
-    'Ses massues se déplient comme un ressort : elles partent à 80 km/h !', // p. 50
+    'Ses massues se déplient comme un ressort : elles filent jusqu’à 80 km/h !', // p. 50
     'Elle a 12 sortes de détecteurs de couleurs, toi 3. Pourtant, tu vois mieux les couleurs qu’elle !', // p. 50
   ],
   frelon: [
@@ -1572,7 +1572,7 @@ const FAITS = { // cartes « LE SAVAIS-TU ? » : phrases du livre imprimé V19, 
 //  « Le savais-tu ? » (des phrases du livre) → 3 questions dont la réponse est DANS ces cartes → l'animal est à lui.
 //  Format : [question, [bonne réponse, faux, faux], numéro de la carte FAITS qui contient la réponse]
 //  Règles : la bonne réponse se lit dans la carte, les deux autres non ; pas de piège ; jamais un passage « livre en main ».
-//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md (section 2).
+//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V20_74P.md (section 2).
 // ---------------------------------------------------------------------
 const QUIZ = {
   // 🦁 SAVANE
@@ -1633,7 +1633,7 @@ const QUIZ = {
   ],
   // 🐊 JUNGLES & MARAIS
   komodo: [
-    ['Combien mesure le dragon de Komodo, le plus gros lézard du monde ?', ['trois mètres de long', 'trente centimètres', '30 mètres de long'], 0],
+    ['Le dragon de Komodo mesure jusqu’à… ?', ['trois mètres de long', 'trente centimètres', '30 mètres de long'], 0],
     ['Avec quoi le dragon de Komodo « goûte »-t-il l’air ?', ['sa langue fourchue', 'sa queue', 'ses griffes'], 1],
     ['Si tu mangeais comme un dragon de Komodo, tu avalerais en un repas… ?', ['24 kg de pâtes', '24 grammes de pâtes', '24 tonnes de pâtes'], 2],
     ['Où vivent les jeunes dragons de Komodo ?', ['perchés dans les arbres', 'dans des terriers', 'au fond de l’eau'], 3],
@@ -1650,7 +1650,7 @@ const QUIZ = {
     ['Quel est le coup spécial du caïman ?', ['il plonge pour se cacher', 'il saute dans les arbres', 'il crache de l’eau'], 1],
     ['Quel est le point faible du caïman ?', ['lent quand il est à terre', 'lent quand il nage', 'il n’a pas de dents'], 2],
     ['Encore dans l’œuf, comment les bébés caïmans appellent-ils leur mère ?', ['en couinant', 'en tapant du pied', 'en chantant'], 3],
-    ['Combien de caïmans vivent dans le Pantanal, au Brésil ?', ['10 millions', '10 000', '100'], 4],
+    ['Combien de caïmans vivraient dans le Pantanal, au Brésil ?', ['10 millions', '10 000', '100'], 4],
     ['Le caïman noir vit en Amazonie. Il dépasse parfois… ?', ['5 m', '50 cm', '20 m'], 5],
   ],
   python: [
@@ -1716,7 +1716,7 @@ const QUIZ = {
   ],
   aiguillat: [
     ['Combien d’années un aiguillat peut-il vivre ?', ['presque 70 ans', '7 ans', '700 ans'], 0],
-    ['Qu’adore manger l’aiguillat ?', ['les pieuvres', 'les algues', 'les baleines'], 1],
+    ['L’aiguillat chasse en bande… et croque même… ?', ['des pieuvres', 'des algues', 'des baleines'], 1],
     ['Combien de temps la femelle aiguillat porte-t-elle ses petits ?', ['près de deux ans', 'près de deux jours', 'deux semaines'], 2],
     ['Quelle arme a l’aiguillat ?', ['deux épines à venin', 'une corne sur la tête', 'des pinces'], 3],
     ['Quel est le coup spécial de l’aiguillat ?', ['il se plie et pique', 'il tourne en rond', 'il fait des bulles'], 4],
@@ -1729,7 +1729,7 @@ const QUIZ = {
     ['Quel requin mange vraiment de l’espadon ?', ['le mako', 'le requin-baleine', 'l’aiguillat'], 4],
   ],
   bouledogue: [
-    ['Comment est la morsure du jeune requin-bouledogue ?', ['record pour sa taille', 'toute petite', 'sans dents'], 0],
+    ['Comment est la morsure du jeune requin-bouledogue ?', ['énorme pour sa taille', 'toute petite', 'sans dents'], 0],
     ['Quel est le coup spécial du requin-bouledogue ?', ['il cogne, puis il mord', 'il tourne, puis il fuit', 'il se cache dans le sable'], 1],
     ['Quel est le point faible du requin-bouledogue ?', ['une peau sans armure', 'une queue trop courte', 'il a peur du noir'], 2],
     ['Où peut aller le requin-bouledogue ?', ['il remonte les fleuves', 'il grimpe sur la plage', 'il nage sous la banquise'], 3],
@@ -1744,7 +1744,7 @@ const QUIZ = {
     ['Quelles armes a la crevette-mante ?', ['deux massues à ressort', 'deux épées', 'huit bras à ventouses'], 0],
     ['Quel est le coup spécial de la crevette-mante ?', ['elle casse les coquilles', 'elle crache du venin', 'elle se cache dans le sable'], 1],
     ['Quel est le point faible de la crevette-mante ?', ['molle quand elle mue', 'molle quand elle dort', 'elle a peur des crabes'], 2],
-    ['À quelle vitesse partent ses massues ?', ['80 km/h', '8 km/h', '800 km/h'], 3],
+    ['Jusqu’à quelle vitesse filent ses massues ?', ['80 km/h', '8 km/h', '800 km/h'], 3],
     ['Elle a 12 sortes de détecteurs de couleurs, toi 3. Qui voit le mieux les couleurs ?', ['toi', 'la crevette-mante', 'aucun des deux'], 4],
   ],
   // 🐞 PETITES BÊTES
@@ -1785,48 +1785,8 @@ const QUIZ = {
     ['Quel est le point faible de la veuve noire ?', ['on l’écrase d’un doigt', 'on la noie d’une goutte', 'elle a peur du noir'], 2],
     ['Comment les jeunes veuves noires voyagent-elles ?', ['sur de longs fils de soie', 'sur le dos de leur maman', 'sur les ailes des oiseaux'], 3],
   ],
-  // 📖 LES CHAMPIONS DU LIVRE (26/09, M8) : ils se gagnent aussi en combat (1 carte, 1 question) ; le livre reste un raccourci (« 📖 J'AI LE LIVRE »).
-  // Les cartes choisies ne donnent aucun des mots à trouver dans le livre (LIVRE_EN_MAIN) : contrôle verif/sync_livre.py.
-  guepard: [
-    ['En moins de trois secondes, le guépard passe de l’arrêt à… ?', ['70 km/h', '20 km/h', '200 km/h'], 0],
-    ['Qu’est-ce que le guépard ne sait pas faire ?', ['rugir', 'ronronner', 'miauler'], 1],
-  ],
-  leopard: [
-    ['Le léopard grimpe dans un arbre avec, dans la gueule… ?', ['une proie plus lourde que lui', 'ses petits', 'un nid d’oiseau'], 0],
-    ['Comment sont les taches du léopard ?', ['vides', 'rayées', 'en forme de cœur'], 2],
-  ],
-  jaguar: [
-    ['La morsure du jaguar est… ?', ['perce-carapace', 'empoisonnée', 'électrique'], 0],
-    ['Le jaguar est le… plus grand félin du monde ?', ['3e', '1er', '10e'], 3],
-  ],
-  anaconda: [
-    ['Sous l’eau, l’anaconda peut rester sans respirer environ… ?', ['10 minutes', '10 secondes', '10 heures'], 5],
-    ['Une femelle anaconda a eu des bébés… ?', ['sans aucun papa', 'dans un arbre', 'en plein hiver'], 3],
-  ],
-  loup: [
-    ['Vers 2 semaines, de quelle couleur sont les yeux des louveteaux ?', ['tout bleus', 'tout rouges', 'tout noirs'], 3],
-    ['Quel est le record de Yellowstone ?', ['37 loups', '3 loups', '370 loups'], 4],
-  ],
-  glouton: [
-    ['En 90 minutes, en pleine montagne, un glouton a grimpé… ?', ['1 500 m', '15 m', '150 km'], 3],
-    ['Grâce à ses larges pattes, le glouton court sur la neige… ?', ['sans s’enfoncer', 'à reculons', 'en glissant sur le ventre'], 4],
-  ],
-  baleine: [
-    ['Le chant de la baleine bleue s’entend plus loin que… ?', ['de Paris à Madrid', 'd’un bout à l’autre d’une piscine', 'de ta chambre à la cuisine'], 3],
-    ['Le souffle de la baleine bleue peut monter à… ?', ['9 m', '90 cm', '900 m'], 4],
-  ],
-  pieuvre: [
-    ['Combien de cœurs a la pieuvre ?', ['trois', 'un seul', 'huit'], 0],
-    ['Une maman pieuvre garde ses œufs pendant six mois… ?', ['sans jamais manger', 'sans jamais dormir', 'en chantant'], 2],
-  ],
-  scolopendre: [
-    ['Des chercheurs ont vu une scolopendre manger… ?', ['des chauves-souris', 'des serpents géants', 'des cailloux'], 3],
-    ['Que fait le venin de la scolopendre géante ?', ['il paralyse', 'il endort', 'il rend aveugle'], 0],
-  ],
-  mante: [
-    ['Quand la mante se marie, que devient le plus souvent son mari ?', ['il repart vivant', 'il est dévoré', 'il devient tout vert'], 3],
-    ['Les pattes de la mante sont des pièges… ?', ['à piquants', 'à ressort', 'à colle'], 0],
-  ],
+  // 📖 LES 10 CHAMPIONS DU LIVRE n'ont PAS de questions ici (V20, 26/09, choix « 2A » de Vincent) : seul le mot du livre les débloque (LIVRE_EN_MAIN).
+  // Leurs 20 questions de combat (M8) sont dans l'historique git (commit 8657aff).
 };
 // ---------------------------------------------------------------------
 //  LIVRE EN MAIN (24/09, idée de Vincent) : ces animaux se débloquent SEULEMENT avec le livre sous les yeux.
@@ -1837,7 +1797,7 @@ const QUIZ = {
 //  Règles : pages de fiches (recto) ou pages bonus, jamais une page de réponse ; jamais un mot que le jeu affiche ailleurs ;
 //  majuscules, accents et une petite faute acceptés ; en cas d'erreur, on ne montre jamais la réponse.
 //  Pas de code à offrir pour ces animaux, et le GOD MODE ne les ouvre pas : c'est le livre qui les débloque.
-//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V19_74P.md
+//  Vérification automatique : python3 verif/sync_livre.py TEXTE_IMPRIME_V20_74P.md
 // ---------------------------------------------------------------------
 const LIVRE_EN_MAIN = { // p : page · ou : où chercher · q : la question · r : le mot à écrire · x : le passage du livre qui le contient (le jeu ne doit jamais l'afficher)
   guepard: [
@@ -1906,15 +1866,15 @@ const BADGES = [
   ['toutes', 'GRAND SAVANT', 'Gagne toutes les cartes « Le savais-tu ? ».'],
 ];
 // DÉBLOCAGE (25/09, demandé par Vincent) : 8 animaux tout de suite (les duels 1, 2, 3 et 30 du livre, au moins un par onglet),
-// 31 à gagner au DÉFI (on bat l'animal, on gagne 3 cartes, on réussit 3 questions : QUIZ), 10 CHAMPIONS DU LIVRE (LIVRE_EN_MAIN),
+// 31 à gagner au DÉFI (on bat l'animal, on gagne 3 cartes, on réussit 3 questions : QUIZ), 10 CHAMPIONS DU LIVRE (LIVRE_EN_MAIN, SEULEMENT avec le livre : V20),
 // et les 3 légendaires (quête du GOD MODE, bonus.js).
 const DE_BASE = ['lion', 'tigre', 'gorille', 'ours']; // 4 animaux de la TERRE au départ (Vincent, 25 et 26/09) ; les anciens joueurs gardent tout
 // ---------------------------------------------------------------------
 //  ARCHITECTURE (26/09, M8, demandée par Vincent : « hyper simple : jouer, 1 joueur 2 joueurs, animal, contre qui, arène »,
 //  « une architecture qui puisse grandir avec le tome 2, 3… ») :
 //  • ▶ JOUER → 1 JOUEUR / 2 JOUEURS → TON ANIMAL → CONTRE QUI ? → L'ARÈNE → combat ;
-//  • on GAGNE un animal en le battant, puis en répondant à une question sur sa carte « Le savais-tu ? » ;
-//  • les MONDES s'ouvrent l'un après l'autre, avec leurs animaux offerts ; un monde complet réveille son LÉGENDAIRE ;
+//  • on GAGNE un animal en le battant, puis en répondant à une question sur sa carte « Le savais-tu ? » (sauf les 10 champions du livre : seulement avec le livre, V20) ;
+//  • les MONDES s'ouvrent l'un après l'autre, avec leurs animaux offerts ; un monde complet (sans compter les champions du livre) réveille son LÉGENDAIRE ;
 //  • une paire du livre (lion contre tigre…) : on parie « qui gagne dans la vraie vie ? », puis la vraie réponse du livre ;
 //  • un nouveau tome : ses animaux dans CHARS / ORDRE (avec leur monde), ses duels dans livre.js ; un nouveau monde : une ligne ci-dessous.
 // ---------------------------------------------------------------------
@@ -1925,7 +1885,10 @@ const PROGRESSION = [
 ];
 const animauxDe = m => ORDRE.filter(k => CHARS[k] && mondeDe(k) === m && k !== MONDES[m].legende);
 const nbGagnes = m => animauxDe(m).filter(k => SAVE.debloques.includes(k)).length;
-const legendePrete = m => !!MONDES[m] && animauxDe(m).every(k => SAVE.debloques.includes(k));
+// (V20, choix « 2A » de Vincent) les champions du livre ne se gagnent qu'avec le livre : ils ne comptent pas pour réveiller le légendaire
+const pourLegende = m => animauxDe(m).filter(k => !LIVRE_EN_MAIN[k]);
+const nbPourLegende = m => pourLegende(m).filter(k => SAVE.debloques.includes(k)).length;
+const legendePrete = m => !!MONDES[m] && pourLegende(m).every(k => SAVE.debloques.includes(k));
 const deMonde = m => ({ terre: 'de la TERRE', mer: 'de la MER', betes: 'des PETITES BÊTES' })[m] || (MONDES[m] ? 'du monde ' + MONDES[m].nom : '');
 const leMonde = m => ({ terre: 'LA TERRE', mer: 'LA MER', betes: 'LES PETITES BÊTES' })[m] || (MONDES[m] ? MONDES[m].nom : '');
 const msgMonde = P => `<span class="quete">🔓 NOUVEAU MONDE : ${MONDES[P.m].ico} ${leMonde(P.m)} ! ${P.depart.filter(x => CHARS[x]).map(x => CHARS[x].nom).join(' + ')} : À TOI !</span>`; // (M8)
@@ -1947,8 +1910,8 @@ function objectif(m) {
   if (P) { const n = Math.min(nbGagnes(P.ouvre.m), P.ouvre.n); return { t: 'monde', m: P.m, de: P.ouvre.m, n, tot: P.ouvre.n, reste: P.ouvre.n - n } }
   const L = (m ? [m] : Object.keys(MONDES)).filter(x => MONDES[x] && mondeOuvert(x) && CHARS[MONDES[x].legende] && !SAVE.debloques.includes(MONDES[x].legende));
   if (!L.length) return null;
-  const reste = x => animauxDe(x).length - nbGagnes(x), x = L.sort((a, b) => reste(a) - reste(b))[0];
-  return { t: 'legende', m: x, de: x, k: MONDES[x].legende, n: nbGagnes(x), tot: animauxDe(x).length, reste: reste(x) };
+  const reste = x => pourLegende(x).length - nbPourLegende(x), x = L.sort((a, b) => reste(a) - reste(b))[0]; // (V20) sans les champions du livre
+  return { t: 'legende', m: x, de: x, k: MONDES[x].legende, n: nbPourLegende(x), tot: pourLegende(x).length, reste: reste(x) };
 }
 const animaux = n => n > 1 ? `${n} animaux` : `${n} animal`;
 // la pastille : icône, phrase courte, barre de progression ; precis : « … de la MER » (quand plusieurs mondes sont ouverts et que le contexte ne le dit pas)
@@ -1983,8 +1946,9 @@ function ceremonieMonde(P, ensuite) {
 }
 // comment gagner un animal (écran de choix, fiche, collection)
 function commentGagner(k) { const m = mondeDe(k), M = MONDES[m], d = CHARS[k], il = d.fem ? 'elle' : 'il';
-  if (k === M.legende) return { t: 'legende', court: '★ LÉGENDE', txt: `Gagne tous les animaux ${deMonde(m)} : ${il} se réveille… et tu pourras ${d.fem ? 'l’affronter' : 'l’affronter'} !` };
+  if (k === M.legende) return { t: 'legende', court: '★ LÉGENDE', txt: `Gagne tous les animaux ${deMonde(m)} (sauf les champions du livre) : ${il} se réveille… et tu pourras l’affronter !` };
   if (!mondeOuvert(m)) { const P = PROGRESSION.find(p => p.m === m); return { t: 'monde', court: '🔒 ' + M.nom, txt: `${M.ico} ${M.nom} s’ouvre quand tu as ${P.ouvre.n} animaux ${deMonde(P.ouvre.m)} (tu en as ${nbGagnes(P.ouvre.m)}).` } }
+  if (LIVRE_EN_MAIN[k]) return { t: 'livre', court: '📖 AVEC LE LIVRE', txt: `${d.fem ? 'Elle' : 'Il'} se gagne seulement avec le livre « C’est qui le plus fort ? » : trouve le mot page ${pageLivre(k)} ! Tu peux quand même l’affronter.` }; // (V20, « 2A »)
   return { t: 'combat', court: '⚔️ À GAGNER', txt: `Bats-${d.fem ? 'la' : 'le'}, puis réponds à une question sur ${d.fem ? 'elle' : 'lui'} : ${il} rejoint ton équipe !` } }
 // (26/09, M8) difficulté automatique (1 joueur) : elle monte avec ton équipe dans ce monde (0,15 → 1,7), le légendaire est COSTAUD ;
 // l'aide la baisse quand tu perds une manche. Les parents peuvent la fixer (SAVE.opt.niveau : 0, 1, 2).
@@ -3637,6 +3601,10 @@ function endMatch() {
   const orFin = !!(v && champion(v.kind) && (NET.on ? !v.distant : !v.cpu)); $('fin').classList.toggle('or', orFin); if (orFin) $('fin-badges').innerHTML = '<span class="champ-or">📖 CHAMPION DU LIVRE !</span>' + $('fin-badges').innerHTML;
   $('revanche').textContent = suite ? 'ADVERSAIRE SUIVANT ▶' : G.mode === 1 && G.tournoi && humain ? 'NOUVEAU TOURNOI' : NET.on ? 'REJOUER' : 'REVANCHE !';
   if (ep && legEp) { $('fait-titre').textContent = humain ? '★ LÉGENDE RÉVEILLÉE !' : 'PRESQUE !'; $('fait-txt').textContent = fin(humain ? `${CHARS[ep].art} rejoint tes animaux, pour toujours !` : `${CHARS[ep].art} est costaud… Retente ta chance !`); $('revanche').textContent = humain ? '★ LA CÉRÉMONIE ▶' : '⚔️ REVANCHE !' }
+  else if (ep && LIVRE_EN_MAIN[ep]) { const d = CHARS[ep]; // (V20, « 2A ») un champion du livre : seulement avec le livre
+    $('fait-titre').textContent = humain ? '📖 UN CHAMPION DU LIVRE !' : 'PRESQUE !';
+    $('fait-txt').textContent = fin(humain ? `Bravo ! Pour ${d.fem ? 'la' : 'le'} gagner, trouve le mot dans le livre, page ${pageLivre(ep)} !` : `Retente ta chance contre ${leNom(ep)} : l’ordi va un peu moins vite après une défaite !`);
+    $('revanche').textContent = humain ? '📖 J’AI LE LIVRE ▶' : '⚔️ REVANCHE !' }
   else if (ep) { const d = CHARS[ep];
     $('fait-titre').textContent = humain ? '🃏 UNE CARTE, UNE QUESTION…' : 'PRESQUE !';
     $('fait-txt').textContent = fin(humain ? `Lis sa carte « Le savais-tu ? », puis réponds à une question : ${d.fem ? 'elle' : 'il'} sera à toi !` : `Retente ta chance contre ${leNom(ep)} : l’ordi va un peu moins vite après une défaite !`);
@@ -3953,6 +3921,7 @@ function lanceEpreuve(k) {
 }
 // 🃏 les 3 cartes gagnées (ce sont elles qui contiennent les réponses du quiz)
 function ouvreSecrets(k) {
+  if (LIVRE_EN_MAIN[k] && !SAVE.debloques.includes(k)) { G.retourQuiz = null; ouvreLivreEnMain(k); return } // (V20, « 2A ») un champion du livre : seulement avec le livre
   const z = QUIZ[k];
   sonInit(); G.phase = 'menu'; show('quiz'); $('quiz').classList.add('defi'); $('quiz').classList.remove('or', 'q-duel', 'gagne');
   if (!z || !FAITS[k]) { Object.assign(Q, { k, lem: null }); $('quiz-img').style.backgroundImage = `url(${k}_corps.webp)`; quizGagne(); return } // (M8) pas de question pour lui : il est à toi tout de suite
@@ -4009,13 +3978,13 @@ function ouvreVitrine(k) {
 }
 // 🗺️ un animal à gagner (25/09) : sa fiche (ses coups spéciaux, son SUPER) et son duel de l'aventure (« ▶ Y ALLER »)
 function ouvreInfoAnimal(k) { // (M8) la fiche d'un animal à gagner : ses coups, et comment le gagner (« ⚔️ L'AFFRONTER »)
-  const d = CHARS[k], m = d.moves, cg = commentGagner(k), battu = cg.t === 'combat' && !!SAVE.defis[k] && !!QUIZ[k]; if (G.screen !== 'epreuve') G.retourInfo = G.screen; sonInit(); sfx('clic'); setTimeout(() => sfx(k, .9), 250); G.phase = 'menu'; show('epreuve');
+  const d = CHARS[k], m = d.moves, cg = commentGagner(k), battu = cg.t === 'combat' && !!SAVE.defis[k] && !!QUIZ[k], livre = cg.t === 'livre'; if (G.screen !== 'epreuve') G.retourInfo = G.screen; sonInit(); sfx('clic'); setTimeout(() => sfx(k, .9), 250); G.phase = 'menu'; show('epreuve');
   $('epreuve').classList.remove('or', 'battu'); $('epreuve').classList.toggle('or', champion(k)); $('ep-img').src = k + '_vs.webp';
-  $('ep-sur').textContent = cg.court; $('ep-titre').textContent = d.art;
+  $('ep-sur').textContent = livre ? '📖 CHAMPION DU LIVRE' : cg.court; $('ep-titre').textContent = d.art;
   $('ep-etapes').innerHTML = ['S', 'SF', 'SD'].filter(x => m[x] && m[x].nom).map(x => `<li><i>★</i>${esc(m[x].nom)}</li>`).join('') + `<li class="super"><i>⚡</i>SUPER : ${esc(m.SUPER.nom)}</li>`;
   $('ep-txt').innerHTML = fin(battu ? `Tu ${d.fem ? 'l’as battue' : 'l’as battu'} ! Lis sa carte « Le savais-tu ? » et réponds à la question : ${d.fem ? 'elle' : 'il'} sera à toi !` : cg.txt);
-  const go = $('ep-go'), qz = $('ep-quiz'); go.hidden = cg.t !== 'combat'; go.textContent = battu ? '🃏 SA CARTE ▶' : '⚔️ L’AFFRONTER'; go.onclick = () => { if (battu) { sfx('valide'); ouvreSecrets(k); return } selStage = 0; G.pick = [null, null]; lanceEpreuve(k) };
-  qz.hidden = !champion(k) || cg.t !== 'combat'; qz.textContent = '📖 J’AI LE LIVRE'; qz.onclick = () => { sfx('valide'); ouvreLivreEnMain(k) }; // (les champions du livre : aussi avec un mot du livre)
+  const go = $('ep-go'), qz = $('ep-quiz'); go.hidden = cg.t !== 'combat' && !livre; go.textContent = livre ? '📖 J’AI LE LIVRE !' : battu ? '🃏 SA CARTE ▶' : '⚔️ L’AFFRONTER'; go.onclick = () => { if (livre) { sfx('valide'); G.retourQuiz = null; ouvreLivreEnMain(k); return } if (battu) { sfx('valide'); ouvreSecrets(k); return } selStage = 0; G.pick = [null, null]; lanceEpreuve(k) };
+  qz.hidden = !livre; qz.textContent = '⚔️ L’AFFRONTER'; qz.onclick = () => { selStage = 0; G.pick = [null, null]; lanceEpreuve(k) }; // (V20, « 2A ») un champion du livre : le livre d'abord, le combat pour le plaisir
 }
 // --- LIVRE EN MAIN : un mot à écrire, trouvé dans le livre
 const normMot = v => String(v).toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
@@ -4116,7 +4085,7 @@ function initUI() {
   $('net-cree').onclick = () => { sfx('clic'); netCree() }; $('net-rejoint').onclick = () => { sfx('clic'); netEcran('invite'); netStatut(''); setTimeout(() => $('net-in').focus(), 50) };
   $('net-ok').onclick = () => { sfx('clic'); netRejoint() }; $('net-retour').onclick = () => { netFerme(); sfx('retour'); show('adeux') }; for (const id of ['net-retour2', 'net-retour3']) $(id).onclick = () => { netFerme(); sfx('retour'); netEcran('accueil'); netStatut('') };
   $('tab-animaux').onclick = () => ongletTroph('animaux'); $('tab-duels').onclick = () => { sfx('clic'); ouvreLivre() }; $('tab-badges').onclick = () => ongletTroph('badges'); $('tab-cartes').onclick = () => ongletTroph('cartes'); // (M8) 📖 DUELS : les 30 duels du livre
-  $('revanche').onclick = () => { sonInit(); if (G.epreuve && typeof estLegendaire === 'function' && estLegendaire(G.epreuve.k) && SAVE.debloques.includes(G.epreuve.k)) { const k = G.epreuve.k; finEpreuve(); ceremonieLegendaire(k); return } if (G.apresEpreuve) { const k = G.apresEpreuve; G.apresEpreuve = null; ouvreSecrets(k); return } G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const L = arenesDe(mondeDuel(G.pick[0], G.pick[1])), j = L.findIndex(x => x.k === G.arene); G.arene = L[(j + 1) % L.length].k } vs() };
+  $('revanche').onclick = () => { sonInit(); if (G.epreuve && typeof estLegendaire === 'function' && estLegendaire(G.epreuve.k) && SAVE.debloques.includes(G.epreuve.k)) { const k = G.epreuve.k; finEpreuve(); ceremonieLegendaire(k); return } if (G.apresEpreuve) { const k = G.apresEpreuve; G.apresEpreuve = null; if (LIVRE_EN_MAIN[k]) { G.retourQuiz = null; ouvreLivreEnMain(k) } else ouvreSecrets(k); return } G.livre = null; if (NET.on) { envoie({ t: 'rejoue' }); recoit({ t: 'rejoue' }); return } G.f.forEach(f => f.wins = 0); if (G.mode === 1 && G.tournoi) { G.pick[1] = G.tournoi.liste[G.tournoi.i]; const L = arenesDe(mondeDuel(G.pick[0], G.pick[1])), j = L.findIndex(x => x.k === G.arene); G.arene = L[(j + 1) % L.length].k } vs() };
   $('menu-btn').onclick = () => { sfx('clic'); autreCombat() }; $('quitter').onclick = toMenu; $('reprendre').onclick = pause; $('pause-btn').onclick = () => { if (['fight', 'intro'].includes(G.phase)) pause() }; // (M8) AUTRE COMBAT
   // bouton SON : musique + bruitages → bruitages seuls → muet (choix gardé sur l'appareil)
   const majSon = () => { const m = SAVE.son || 0; SON.on = m < 2; SON.musOff = m === 1; $('son-btn').textContent = ['♪ SON', '♪ SANS MUSIQUE', '♪ MUET'][m]; if (SON.master) SON.master.gain.value = SON.on ? .8 : 0 };
