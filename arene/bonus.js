@@ -64,7 +64,7 @@ function apresMatch(v, n, nv) {
   G.dernier = null; G.dernierJour = !!G.jour; G.finExtra = ''; // G.finExtra : messages ajoutés sous le résultat (écran de fin ou verdict du livre)
   if (!G.f.length) return;
   const [a, b] = G.f, moi = a, adv = b, gagne = v === a && !a.cpu;
-  G.dernier = { moi: moi.kind, adv: adv.kind, arene: G.arene, niv: G.niv, gagne, etoiles: gagne ? n : 0, temps: Math.max(1, Math.round((G.chrono || 0) / 60)), god: !!G.god };
+  G.dernier = { moi: moi.kind, adv: adv.kind, arene: G.arene, niv: G.niv, gagne, etoiles: gagne ? n : 0, temps: Math.max(1, Math.round((G.chrono || 0) / 60)), god: !!G.god, solo: G.mode === 1 && !NET.on };
   // (25/09 : la quête du légendaire en GOD MODE est retirée — les LÉGENDES se réveillent après la finale de L'AVENTURE)
   // défi d'un copain : on compare
   if (G.defi && G.defi.enCours && G.mode === 1) { G.defi.enCours = false; const d = G.defi, moiRes = G.dernier;
@@ -134,13 +134,11 @@ function invite() {
   sfx('clic'); G.retourInvite = G.screen || 'titre'; show('invite');
 }
 function envoieJeu() { partage('C’est qui le plus fort ? — L’Arène des Duels', '🐯🦍 Viens jouer à « C’est qui le plus fort ? — L’Arène des Duels », le jeu vidéo du livre. Gratuit, sans inscription, sans pub :', PUBLIC) }
-// photo de victoire (1080 × 1080) : le gagnant, les étoiles, le QR du jeu
+// photo à partager (1080 × 1080) : le titre du livre, un animal, un bandeau, le QR du jeu. Sans prénom (seulement le surnom tiré au sort), sans photo réelle ; rien n'est envoyé.
 const charge1 = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src });
-async function photoVictoire() {
-  const r = G.dernier; if (!r) return; sfx('clic');
+async function fabriquePhoto({ animal, texte, etoiles, tetes }) {
   const c = document.createElement('canvas'); c.width = c.height = 1080; const x = c.getContext('2d');
-  const gagnant = r.gagne ? r.moi : r.adv;
-  let img, qr, logo; try { [img, qr, logo] = await Promise.all([charge1(gagnant + '_fin.webp'), charge1('qr_arene.png'), charge1('titre_cqpf.webp')]) } catch (e) { montreBulle('Oups, la photo n’a pas pu se faire.'); return }
+  let img, qr, logo, tt = []; try { [img, qr, logo, ...tt] = await Promise.all([charge1(animal + '_fin.webp'), charge1('qr_arene.png'), charge1('titre_cqpf.webp'), ...(tetes || []).map(k => charge1(k + '_tete.webp'))]) } catch (e) { return null }
   // fond : rayons jaune/orange comme la couverture
   x.fillStyle = '#FFC629'; x.fillRect(0, 0, 1080, 1080);
   x.save(); x.translate(540, 620); for (let i = 0; i < 24; i++) { x.rotate(Math.PI / 12); x.fillStyle = i % 2 ? '#FF8A4C' : '#FFB13B'; x.beginPath(); x.moveTo(0, 0); x.lineTo(1200, -120); x.lineTo(1200, 120); x.closePath(); x.fill() } x.restore();
@@ -148,15 +146,43 @@ async function photoVictoire() {
   const h = 510, w = h * img.width / img.height; x.drawImage(img, 540 - w / 2, 382, w, h);
   const bandeau = (t, y, s, fond = '#0B2A5B', coul = '#FFF8EC') => { x.font = `900 ${s}px Rubik, "Arial Black", sans-serif`; const tw = x.measureText(t).width; x.fillStyle = fond; x.beginPath(); x.roundRect(540 - tw / 2 - 30, y - s * .8, tw + 60, s * 1.3, 24); x.fill(); x.fillStyle = coul; x.textAlign = 'center'; x.fillText(t, 540, y + s * .15) };
   bandeau('L’ARÈNE DES DUELS · LE JEU VIDÉO DU LIVRE', 349, 28, '#0B2A5B', '#FFC629'); // …puis le nom du jeu
-  bandeau(r.gagne ? `${CHARS[r.moi].nom} GAGNE !` : `${CHARS[r.adv].nom} GAGNE…`, 880, 64);
-  if (r.gagne) { x.font = '900 70px Rubik, sans-serif'; x.textAlign = 'center'; x.fillStyle = '#0B2A5B'; x.fillText('★'.repeat(r.etoiles) + '☆'.repeat(3 - r.etoiles), 540, 975) }
-  if (SAVE.nom) { x.font = '900 36px Rubik, sans-serif'; x.fillStyle = '#0B2A5B'; x.textAlign = 'left'; x.fillText('CHAMPION : ' + SAVE.nom, 40, 1050) }
+  { // (27/09, n° 30) le bandeau du bas ne passe plus sous le QR code (« HIPPOPOTAME GAGNE ! », « MON ÉQUIPE : 12 ANIMAUX ») : décalé à gauche, puis resserré s'il le faut
+    let t = 64; x.font = `900 ${t}px Rubik, "Arial Black", sans-serif`; let tw = x.measureText(texte).width; if (tw > 780) { t = Math.floor(t * 780 / tw); x.font = `900 ${t}px Rubik, "Arial Black", sans-serif`; tw = x.measureText(texte).width }
+    const cx = tw <= 580 ? 540 : Math.max(20 + tw / 2 + 30, 860 - tw / 2 - 30);
+    x.fillStyle = '#0B2A5B'; x.beginPath(); x.roundRect(cx - tw / 2 - 30, 880 - t * .8, tw + 60, t * 1.3, 24); x.fill(); x.fillStyle = '#FFF8EC'; x.textAlign = 'center'; x.fillText(texte, cx, 880 + t * .15) }
+  if (etoiles != null) { x.font = '900 70px Rubik, sans-serif'; x.textAlign = 'center'; x.fillStyle = '#0B2A5B'; x.fillText('★'.repeat(etoiles) + '☆'.repeat(3 - etoiles), 540, 975) }
+  // (27/09, n° 30) l'équipe : les têtes des derniers animaux gagnés, en ronds, à gauche du QR
+  tt.forEach((t, i) => { const r = 40, cx = 70 + i * 92, cy = 968; x.save(); x.beginPath(); x.arc(cx, cy, r + 5, 0, 2 * Math.PI); x.fillStyle = '#0B2A5B'; x.fill(); x.beginPath(); x.arc(cx, cy, r, 0, 2 * Math.PI); x.fillStyle = '#FFF8EC'; x.fill(); x.clip(); const k = Math.max(2 * r / t.width, 2 * r / t.height); x.drawImage(t, cx - t.width * k / 2, cy - t.height * k / 2, t.width * k, t.height * k); x.restore() });
+  x.font = '900 24px Rubik, sans-serif'; const uw = x.measureText('editions-chevalier.fr/arene').width;
+  if (SAVE.nom) { const t = 'CHAMPION : ' + SAVE.nom, place = 870 - uw - 30 - 40; let f = 36; x.font = `900 ${f}px Rubik, sans-serif`; const w = x.measureText(t).width; if (w > place) { f = Math.max(18, Math.floor(f * place / w)); x.font = `900 ${f}px Rubik, sans-serif` } // (27/09, n° 30) un long surnom ne passe plus sur l'adresse
+    x.fillStyle = '#0B2A5B'; x.textAlign = 'left'; x.fillText(t, 40, 1050) }
   x.fillStyle = '#fff'; x.fillRect(880, 880, 180, 180); x.drawImage(qr, 885, 885, 170, 170);
   x.font = '900 24px Rubik, sans-serif'; x.fillStyle = '#0B2A5B'; x.textAlign = 'right'; x.fillText('editions-chevalier.fr/arene', 870, 1050);
-  const blob = await new Promise(ok => c.toBlob(ok, 'image/png'));
-  const fichier = new File([blob], 'victoire-arene-des-duels.png', { type: 'image/png' });
-  const res = await partage('Ma victoire dans C’est qui le plus fort ? — L’Arène des Duels', `${r.gagne ? '🏆 ' + CHARS[r.moi].nom + ' GAGNE !' : 'Revanche demain !'} « C’est qui le plus fort ? — L’Arène des Duels », le jeu vidéo du livre :`, PUBLIC, fichier);
+  return await new Promise(ok => c.toBlob(ok, 'image/png'));
+}
+async function envoiePhoto(blob, titre, texte, nom) {
+  const fichier = new File([blob], nom, { type: 'image/png' });
+  const res = await partage(titre, texte, PUBLIC, fichier);
   if (res === 'montre' || res === 'copie') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fichier.name; document.body.appendChild(a); a.click(); a.remove(); montreBulle('La photo est enregistrée !') }
+  return res;
+}
+// photo de victoire (le bouton de l'écran de fin reste caché depuis la V4 ; « 📸 MA PHOTO » la reprend quand la dernière partie à 1 joueur est gagnée)
+async function photoVictoire() {
+  const r = G.dernier; if (!r) return; sfx('clic');
+  const gagnant = r.gagne ? r.moi : r.adv;
+  const b = await fabriquePhoto({ animal: gagnant, texte: r.gagne ? `${CHARS[r.moi].nom} GAGNE !` : `${CHARS[r.adv].nom} GAGNE…`, etoiles: r.gagne ? r.etoiles : null });
+  if (!b) { montreBulle('Oups, la photo n’a pas pu se faire.'); return }
+  return envoiePhoto(b, 'Ma victoire dans C’est qui le plus fort ? — L’Arène des Duels', `${r.gagne ? '🏆 ' + CHARS[r.moi].nom + ' GAGNE !' : 'Revanche demain !'} « C’est qui le plus fort ? — L’Arène des Duels », le jeu vidéo du livre :`, 'victoire-arene-des-duels.png');
+}
+// (27/09, n° 30, lot 1 du lancement) 📸 MA PHOTO dans MES ANIMAUX : la dernière victoire à 1 joueur ; sinon « MON ÉQUIPE » (le dernier animal gagné et les têtes des autres)
+async function maPhoto() {
+  const r = G.dernier; if (r && r.gagne && r.solo) return photoVictoire();
+  sfx('clic');
+  const eq = [...SAVE.debloques].reverse().filter((k, i, L) => CHARS[k] && L.indexOf(k) === i); // (le plus récent d'abord)
+  if (!eq.length) return;
+  const b = await fabriquePhoto({ animal: eq[0], texte: `MON ÉQUIPE : ${eq.length} ANIMAU${eq.length > 1 ? 'X' : ''}`, tetes: eq.slice(1, 9) });
+  if (!b) { montreBulle('Oups, la photo n’a pas pu se faire.'); return }
+  return envoiePhoto(b, 'Mon équipe dans C’est qui le plus fort ? — L’Arène des Duels', `🐾 Mon équipe : ${eq.length} animaux dans « C’est qui le plus fort ? — L’Arène des Duels », le jeu vidéo du livre :`, 'mon-equipe-arene-des-duels.png');
 }
 // ---------------------------------------------------------------------
 //  Défi du jour : le même pour tous les enfants, change chaque jour
@@ -364,9 +390,11 @@ function initBonus() {
   const j = defiDuJour(), jt = $('jour-tetes'), jx = $('jour-txt'); if (jt) jt.innerHTML = `<img src="${j.a}_tete.webp" alt=""><em>VS</em><img src="${j.b}_tete.webp" alt="">`; if (jx) jx.textContent = 'Chaque jour !'; if (false) jx.textContent = `${CHARS[j.a].nom} contre ${CHARS[j.b].nom}`;
   majGodBtn();
 }
+// (27/09, n° 30) lien « défi du jour » (#jour, celui des stories) : MES ANIMAUX, l'éclair ⚡ qui bat et un bandeau qui dit quoi toucher
+function jourAppel() { G.jourApresTuto = false; ouvreTrophees('titre'); setTimeout(() => { const b = $('jour-titre'); if (b) b.classList.add('appel'); if (window.bandeau) bandeau('⚡ LE DÉFI DU JOUR : TOUCHE L’ÉCLAIR !') }, 300) }
 // au chargement : lien de défi reçu, lien « défi du jour »
 function lienRecu() {
   const d = lisDefi(); if (d) { ouvreDefiRecu(d); return true }
-  if (/#jour/.test(location.hash)) { G.phase = 'menu'; if (typeof tutoAFaire === 'function' && !tutoAFaire()) { ouvreTrophees('titre'); setTimeout(() => { const b = $('jour-titre'); if (b) b.classList.add('appel') }, 300) } else show('titre') } // (M8 : le ⚡ défi du jour est dans MES ANIMAUX)
+  if (/#jour/.test(location.hash)) { G.phase = 'menu'; if (typeof tutoAFaire === 'function' && !tutoAFaire()) jourAppel(); else { G.jourApresTuto = true; show('titre') } } // (M8 : le ⚡ défi du jour est dans MES ANIMAUX ; 27/09, n° 30 : un nouveau joueur y arrive après le tutoriel)
   return false;
 }

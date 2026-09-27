@@ -4202,13 +4202,14 @@ function ouvreTrophees(retour) {
   // 🐾 MES ANIMAUX : par monde ; un animal à gagner dit où le trouver (duel de l'aventure, livre, légende) ; on touche un animal gagné pour jouer avec lui
   const n2x = n => String(n).padStart(2, '0'), tous = ORDRE.filter(k => CHARS[k]), a = tous.filter(k => SAVE.debloques.includes(k));
   $('tab-animaux').textContent = `🐾 ANIMAUX ${a.length}/${tous.length}`;
-  $('troph-animaux').innerHTML = Object.keys(MONDES).map(m => { const L = tous.filter(k => mondeDe(k) === m); if (!L.length) return '';
-    return `<div class="col-monde"><h3>${MONDES[m].ico} ${MONDES[m].nom}<small>${L.filter(k => SAVE.debloques.includes(k)).length} / ${L.length}</small></h3><div class="col-grille">` + L.map(k => { const ok = SAVE.debloques.includes(k), src = window.sourceDe ? sourceDe(k) : { t: '?' };
+  $('troph-animaux').innerHTML = Object.keys(MONDES).map((m, im) => { const L = tous.filter(k => mondeDe(k) === m); if (!L.length) return '';
+    return `<div class="col-monde"><h3>${MONDES[m].ico} ${MONDES[m].nom}<small>${L.filter(k => SAVE.debloques.includes(k)).length} / ${L.length}</small>${im === 0 && window.maPhoto ? '<button class="btn photo-btn" id="photo-collec" type="button">📸 MA PHOTO</button>' : ''}</h3><div class="col-grille">` + L.map(k => { const ok = SAVE.debloques.includes(k), src = window.sourceDe ? sourceDe(k) : { t: '?' };
       const t = ok ? (etoiles(SAVE.etoiles[k] || 0) || '✔') : commentGagner(k).court; // (M8)
       return `<button class="col-a${ok ? '' : ' non'}${champion(k) ? ' or' : ''}" type="button" data-k="${k}"><img src="${k}_tete.webp" alt=""><span class="col-t"><b>${CHARS[k].nom}</b><small>${t}</small></span></button>` }).join('') + '</div></div>' }).join('');
   $('troph-animaux').querySelectorAll('.col-a').forEach(b => b.onclick = () => { const k = b.dataset.k; sfx('clic');
     if (SAVE.debloques.includes(k)) { G.livre = null; G.mode = 1; G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes(); choisir(k) }
     else ouvreInfoAnimal(k) });
+  { const pb = $('photo-collec'); if (pb) pb.onclick = () => maPhoto() } // (27/09, n° 30) 📸 MA PHOTO
   ongletTroph('animaux');
 }
 function ongletTroph(t) { for (const x of ['animaux', 'badges', 'cartes']) { $('troph-' + x).hidden = t !== x; $('tab-' + x).setAttribute('aria-pressed', t === x) } }
@@ -4216,7 +4217,7 @@ function initUI() {
   // (26/09, M8) ▶ JOUER → COMBIEN DE JOUEURS ? (1re fois : le tutoriel d'abord)
   const ouvreMode = () => { G.phase = 'menu'; show('mode') };
   $('jouer').onclick = () => { sonInit(); sfx('valide'); G.livre = null; G.defi = null; G.jour = null; finEpreuve();
-    if (tutoAFaire()) { chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(ouvreMode, 'complet') }) } else ouvreMode() };
+    if (tutoAFaire()) { chargeAnimal('tigre').then(() => chargeAnimal('gorille')).then(() => { show(null); lanceTuto(G.jourApresTuto && window.jourAppel ? jourAppel : ouvreMode, 'complet') }) } else ouvreMode() };
   $('mode-retour').onclick = () => { sfx('retour'); show('titre') };
   $('mode-1').onclick = () => { sonInit(); sfx('valide'); G.livre = null; G.defi = null; G.jour = null; finEpreuve(); G.onglet = 'fav'; $('m1').onclick(); G.phase = 'menu'; selStage = 0; selCursor = 0; show('choix'); construitCartes() };
   $('mode-2').onclick = () => { sonInit(); sfx('clic'); G.phase = 'menu'; show('adeux') };
