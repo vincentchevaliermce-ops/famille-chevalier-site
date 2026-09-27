@@ -3189,8 +3189,12 @@ function drawFx(c) {
 }
 function comic(c, word, x, y, u, size = 1, alpha = 1, col = PA) {
   const s = back(P(u, 0, .16)) * size; if (s <= 0) return;
-  c.save(); c.globalAlpha = Math.max(0, alpha); c.translate(x, y); c.rotate(-.1); c.scale(s, s);
-  c.font = '900 92px Rubik, "Arial Black", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  c.save(); c.font = '900 92px Rubik, "Arial Black", sans-serif';
+  // (27/09) le mot reste entier à l'écran : « TOUTE LA TROUPE ARRIVE ! », posé sur une lionne au bord droit, était coupé (relevé des clips V4)
+  const demi = (c.measureText(word).width / 2 + 16) * size * 1.1, z = cam.z || 1, bg = cam.cx - (CW / 2 + cam.ox) / z + 20 / z, bd = cam.cx + (CW / 2 - cam.ox) / z - 20 / z;
+  if (bd - bg > 2 * demi) x = cl(x, bg + demi, bd - demi);
+  c.globalAlpha = Math.max(0, alpha); c.translate(x, y); c.rotate(-.1); c.scale(s, s);
+  c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
   c.lineWidth = 22; c.strokeStyle = NV; c.strokeText(word, 6, 8); c.strokeText(word, 0, 0); c.fillStyle = col; c.fillText(word, 0, 0); c.restore();
 }
 
