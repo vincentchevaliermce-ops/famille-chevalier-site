@@ -119,6 +119,19 @@ svg text{font-family:var(--sans);font-size:11px;fill:var(--ink-3)}
 
   <section class="g2">
     <div class="carte">
+      <h2>D’où viennent les visites</h2>
+      <p class="note">Depuis le début du suivi. Un lien avec ?s=… (ex. ?s=x) est reconnu tel quel.</p>
+      <div id="l-provenance" class="liste"></div>
+    </div>
+    <div class="carte">
+      <h2>Appareils</h2>
+      <p class="note">Ouvertures du jeu par type d’appareil, depuis le début.</p>
+      <div id="l-appareils" class="liste"></div>
+    </div>
+  </section>
+
+  <section class="g2">
+    <div class="carte">
       <h2>Comment on joue</h2>
       <p class="note">Parties par mode, depuis le début du suivi.</p>
       <div id="l-modes" class="liste"></div>
@@ -130,7 +143,7 @@ svg text{font-family:var(--sans);font-size:11px;fill:var(--ink-3)}
     </div>
   </section>
 
-  <section class="g3">
+  <section class="g2">
     <div class="carte">
       <h2>Le bouche-à-oreille</h2>
       <p class="note">Depuis le début du suivi.</p>
@@ -140,11 +153,6 @@ svg text{font-family:var(--sans);font-size:11px;fill:var(--ink-3)}
       <h2>Parents et livre</h2>
       <p class="note">Depuis le début du suivi.</p>
       <div id="c-parents" class="chiffres"></div>
-    </div>
-    <div class="carte">
-      <h2>Appareils</h2>
-      <p class="note">Ouvertures du jeu par type d’appareil.</p>
-      <div id="l-appareils" class="liste"></div>
     </div>
   </section>
 
@@ -179,6 +187,7 @@ svg text{font-family:var(--sans);font-size:11px;fill:var(--ink-3)}
   var NOMS = {"tigre":"Tigre","gorille":"Gorille","grizzly":"Grizzly","hyene":"Hyène","buffle":"Buffle","morse":"Morse","trex":"T. rex","lion":"Lion","ours":"Ours polaire","croco":"Crocodile","hippo":"Hippopotame","ratel":"Ratel","komodo":"Komodo","leopard":"Léopard","porcepic":"Porc-épic","guepard":"Guépard","autruche":"Autruche","orque":"Orque","requin":"Requin blanc","pieuvre":"Pieuvre","aiguillat":"Aiguillat","espadon":"Espadon","requinbleu":"Requin bleu","megalo":"Mégalodon","jaguar":"Jaguar","anaconda":"Anaconda","caiman":"Caïman","puma":"Puma","loup":"Loup","mangouste":"Mangouste","cobra":"Cobra","oursnoir":"Ours noir","glouton":"Glouton","python":"Python","alligator":"Alligator","lionne":"Lionne","girafe":"Girafe","bouledogue":"Requin-bouledogue","baleine":"Baleine bleue","crabe":"Crabe","crevette":"Crevette-mante","frelon":"Frelon géant","abeille":"Abeilles","mygale":"Mygale","guepe":"Guêpe géante","scolopendre":"Scolopendre géante","chauvesouris":"Chauve-souris","mante":"Mante religieuse","colibri":"Colibri","serpentbrun":"Jeune serpent brun","veuve":"Veuve noire","meganeura":"Méganeura"};
   var DUELS = ["Frelon géant ou abeilles japonaises","Orque ou grand requin blanc","Lion ou tigre","Léopard ou porc-épic","Hippopotame ou crocodile du Nil","Ours polaire ou grizzly","Jaguar ou anaconda","Lion ou ratel","Pieuvre géante ou requin","Dragon de Komodo ou buffle","Puma ou loup","Mygale ou guêpe géante","Ours polaire ou morse","Mangouste ou cobra","Jaguar ou caïman","Guépard ou autruche","Espadon ou requin bleu","Hyène ou lion","Ours noir ou glouton","Python ou alligator","Crabe ou crevette-mante","Girafe ou lionnes","Cobra royal ou python","Ourse brune ou tigre de Sibérie","Scolopendre géante ou chauve-souris","Requin-bouledogue ou crocodile marin","Baleine bleue ou orques","Mante religieuse ou colibri","Jeune serpent brun ou veuve noire","Tigre ou gorille"];
   var MODES = {"1d":"Pour gagner un animal","1j":"Combat libre","1l":"Duel du livre","1q":"Défi du jour","1c":"Défi d’un copain","2e":"À deux, même écran","2t":"À deux, deux téléphones"};
+  var PROV = {x: 'X (Twitter)', 'x-en': 'X, fil en anglais', ig: 'Instagram (lien de la bio)', instagram: 'Instagram', tt: 'TikTok (lien de la bio)', tiktok: 'TikTok', fb: 'Facebook (publication)', facebook: 'Facebook', yt: 'YouTube (lien)', youtube: 'YouTube', mail: 'E-mails', recherche: 'Moteurs de recherche', site: 'Site editions-chevalier.fr', direct: 'Accès direct (QR code, adresse tapée, applis)', autre: 'Autres sites', test: 'Tests'};
   var APPAREILS = {tel:"Téléphone",tablette:"Tablette",ordi:"Ordinateur",autre:"Autre"};
   var LIVRE = {guepard:1,leopard:1,jaguar:1,anaconda:1,loup:1,glouton:1,baleine:1,pieuvre:1,scolopendre:1,mante:1};
 
@@ -251,7 +260,8 @@ svg text{font-family:var(--sans);font-size:11px;fill:var(--ink-3)}
     var l0 = lundi(new Date()), l1 = new Date(l0); l1.setDate(l1.getDate() - 7);
     var semA = 0, semB = 0;
     tous.forEach(function (j) { var d = dateDe(j.date); if (d >= l0) semA += j.semaine || 0; else if (d >= l1) semB += j.semaine || 0 });
-    var t = '';
+    var t = '', vis = somme(cur, 'arrivee');
+    t += tuile('Visites', nf.format(vis), 'pages du jeu ouvertes sur ' + N + ' jours (chaque visite compte)', prec ? evo(vis, somme(prec, 'arrivee')) : '');
     t += tuile('Joueurs par jour', nf1.format(ouv / nbJ), 'en moyenne sur ' + nbJ + ' jour' + (nbJ > 1 ? 's' : '') + ' · aujourd’hui ' + nf.format(auj.ouverture || 0), prec ? evo(ouv, somme(prec, 'ouverture')) : '');
     t += tuile('Joueurs cette semaine', nf.format(semA), 'appareils différents depuis lundi · semaine d’avant ' + nf.format(semB));
     t += tuile('Nouveaux joueurs', nf.format(somme(cur, 'nouveau')), 'premier lancement sur ' + N + ' jours', prec ? evo(somme(cur, 'nouveau'), somme(prec, 'nouveau')) : '');
@@ -281,6 +291,8 @@ svg text{font-family:var(--sans);font-size:11px;fill:var(--ink-3)}
     liste($('l-gagnes'), Object.keys(g).map(function (k) { return {l: (NOMS[k] || k) + (LIVRE[k] ? ' ★' : ''), n: g[k], c: LIVRE[k] ? '#B8452E' : ''} }).sort(function (a, b) { return b.n - a.n }).slice(0, 12), 'Aucun animal gagné pour l’instant.');
     var du = d.duel || {};
     liste($('l-duels'), Object.keys(du).map(function (k) { return {l: k + '. ' + (DUELS[+k - 1] || '?'), n: du[k]} }).sort(function (a, b) { return b.n - a.n }).slice(0, 12), 'Aucun duel du livre joué pour l’instant.');
+    var ar = d.arrivee || {};
+    liste($('l-provenance'), Object.keys(ar).map(function (k) { return {l: PROV[k] || ('Lien ?s=' + k), n: ar[k]} }).sort(function (a, b) { return b.n - a.n }), 'Pas encore de visite comptée.');
     var pl = r.plateformes || {};
     liste($('l-appareils'), Object.keys(APPAREILS).map(function (k) { return {l: APPAREILS[k], n: pl[k] || 0} }));
     var T = r.totaux || {}, pa = d.partage || {}, de = d.defi || {}, ins = d.installe || {};

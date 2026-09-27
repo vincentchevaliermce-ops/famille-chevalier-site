@@ -16,11 +16,15 @@
 //     pas encore, une seule fois par appareil (ensuite : « Tu as déjà … »).
 //  Le fichier observe (SAVE.debloques, écrans, boutons) et enveloppe deux fonctions globales, startMatch() et
 //  apresMatch(), sans changer ce qu'elles font.
-//  Événements : ouverture[:app] (1 fois par jour et par appareil) · semaine (1 fois par semaine) · nouveau (1er lancement)
+//  Événements : arrivee:<provenance> (chaque visite) · ouverture[:app] (1 fois par jour et par appareil)
+//    · semaine (1 fois par semaine) · nouveau (1er lancement)
 //    · partie:<mode>:<animal> · fin:<v|d|n|x> · gagne:<animal> · livre:<animal> · legende:<animal> · monde:<monde>
 //    · duel:<n> · tuto · photo · defi:<envoye|recu> · partage:<accueil|parents|invite> · installe[:fait] · parents · bonus[:code]
 //  Modes : 1j combat libre · 1d pour gagner un animal · 1l duel du livre · 1q défi du jour · 1c défi d'un copain
 //          · 2e à deux, même écran · 2t à deux, deux téléphones          fin : v gagné · d perdu · n nul · x à deux
+//  Provenance d'une visite : le paramètre ?s= du lien s'il existe (ex. ?s=x pour le fil X, ?s=ig pour Instagram),
+//    sinon le type de site d'où l'on vient (x, instagram, facebook, tiktok, youtube, recherche, mail, site, autre)
+//    ou « direct » (QR code, adresse tapée, appli). Jamais l'adresse exacte de la page d'origine.
 //  Serveur : action=jeu (compteurs) et action=email&book=Arene (bonus) du script « Envoi-Livre-Gratuit-Chevalier ».
 // =====================================================================
 (function () {
@@ -230,6 +234,21 @@
     var a = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
     return t.getUTCFullYear() + '-' + Math.ceil(((t - a) / 864e5 + 1) / 7);
   }
+  function provenance() {
+    var s = (location.search.match(/[?&](?:s|utm_source)=([A-Za-z0-9_-]{1,24})/) || [])[1];
+    if (s) return s.toLowerCase();
+    var h = ''; try { h = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : '' } catch (e) { }
+    if (!h) return 'direct';
+    if (/(^|\.)editions-chevalier\.fr$/.test(h)) return 'site';
+    if (/(^|\.)(t\.co|x\.com|twitter\.com)$/.test(h)) return 'x';
+    if (/instagram\./.test(h)) return 'instagram';
+    if (/(^|\.)(facebook\.com|fb\.com|fb\.me|messenger\.com)$/.test(h)) return 'facebook';
+    if (/tiktok\./.test(h)) return 'tiktok';
+    if (/(^|\.)(youtube\.com|youtu\.be)$/.test(h)) return 'youtube';
+    if (/(^|\.)(mail\.google\.com|outlook\.[a-z.]+|live\.com|mail\.yahoo\.com|orange\.fr|free\.fr|sfr\.fr|laposte\.net|proton\.me|icloud\.com)$/.test(h)) return 'mail';
+    if (/(^|\.)(google\.[a-z.]+|bing\.com|qwant\.com|duckduckgo\.com|ecosia\.org|search\.yahoo\.com|search\.brave\.com|lilo\.org)$/.test(h)) return 'recherche';
+    return 'autre';
+  }
   function horsAppli() {
     try { return !(navigator.standalone === true || (window.matchMedia && (matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches))) } catch (e) { return true }
   }
@@ -240,6 +259,7 @@
     enveloppe('startMatch', partie, null);
     enveloppe('apresMatch', finMatch, function () { setTimeout(verifieGains, 3000) });
     var maintenant = new Date(), jour = jourCle(maintenant), sem = semaineCle(maintenant);
+    ev('arrivee', provenance()); // chaque visite, avec sa provenance
     if (ls.get('suivi-jour') !== jour) { ls.set('suivi-jour', jour); ev('ouverture', horsAppli() ? '' : 'app') }
     if (ls.get('suivi-semaine') !== sem) { ls.set('suivi-semaine', sem); ev('semaine') }
     var ne = +ls.get('suivi-ne') || 0;
