@@ -249,8 +249,11 @@
     if (/(^|\.)(google\.[a-z.]+|bing\.com|qwant\.com|duckduckgo\.com|ecosia\.org|search\.yahoo\.com|search\.brave\.com|lilo\.org)$/.test(h)) return 'recherche';
     return 'autre';
   }
-  function horsAppli() {
-    try { return !(navigator.standalone === true || (window.matchMedia && (matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches))) } catch (e) { return true }
+  function horsAppli() { // jeu installé (icône) : standalone, ou plein écran sur un appareil tactile (un navigateur d'ordinateur en plein écran n'est pas une appli)
+    try {
+      if (navigator.standalone === true || matchMedia('(display-mode: standalone)').matches) return false;
+      return !(matchMedia('(display-mode: fullscreen)').matches && matchMedia('(pointer: coarse)').matches);
+    } catch (e) { return true }
   }
 
   function demarre() {
@@ -259,7 +262,8 @@
     enveloppe('startMatch', partie, null);
     enveloppe('apresMatch', finMatch, function () { setTimeout(verifieGains, 3000) });
     var maintenant = new Date(), jour = jourCle(maintenant), sem = semaineCle(maintenant);
-    ev('arrivee', provenance()); // chaque visite, avec sa provenance
+    var nav = null; try { nav = performance.getEntriesByType('navigation')[0] } catch (e) { }
+    if (!nav || nav.type !== 'reload') ev('arrivee', provenance()); // chaque visite (pas les rechargements), avec sa provenance
     if (ls.get('suivi-jour') !== jour) { ls.set('suivi-jour', jour); ev('ouverture', horsAppli() ? '' : 'app') }
     if (ls.get('suivi-semaine') !== sem) { ls.set('suivi-semaine', sem); ev('semaine') }
     var ne = +ls.get('suivi-ne') || 0;
