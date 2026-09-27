@@ -5,5 +5,6 @@ Disallow: /livre-offert/
 Disallow: /ancien.html
 Disallow: /livres/
 Disallow: /go/
+Disallow: /suivi-arene/
 
 Sitemap: https://editions-chevalier.fr/sitemap.xml
