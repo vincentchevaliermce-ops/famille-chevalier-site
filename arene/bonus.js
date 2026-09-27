@@ -30,8 +30,9 @@ function valideCodeSecret() {
   if (!k) { sfx('erreur'); msg('Ce code ne marche pas… Gagne des animaux à 1 JOUEUR pour recevoir leur code, ou demande à un copain !'); return }
   if (!pret(k)) { msg(`Bien trouvé ! Cet animal arrive bientôt dans l’arène : garde ton code !`); return }
   if (debloqueVrai(k)) { msg(`Tu as déjà ${CHARS[k].art} !`); return }
-  SAVE.debloques.push(k); const nv = []; badge('secret', nv); sauve(); sonInit(); sfx('super'); sfx(k, 1);
-  msg(`BRAVO ! ${CHARS[k].art} rejoint l’arène !`);
+  const avAr = arenesOuvertes(); SAVE.debloques.push(k); const nv = []; badge('secret', nv); sauve(); sonInit(); sfx('super'); sfx(k, 1);
+  const arN = arenesOuvertes().filter(x => !avAr.includes(x)); // (27/09) chaque animal gagné ouvre une arène
+  msg(`BRAVO ! ${CHARS[k].art} rejoint l’arène !${arN.length ? ` 🔓 NOUVELLE ARÈNE : ${nomArene(arN[0])} !` : ''}`);
   setTimeout(() => { if (G.screen === 'code') { G.phase = 'menu'; show('choix'); selStage = 0; vaVers(k); construitCartes() } }, 1500);
 }
 // ---------------------------------------------------------------------
@@ -107,7 +108,7 @@ function lisDefi() {
   const p = m[1].split('.'); if (p.length < 7) return null;
   const [moi, adv, arene, niv, temps, etoiles] = p, nom = decodeURIComponent(p.slice(6).join('.')).slice(0, 24);
   if (!CHARS[moi] || !CHARS[adv] || !memeMonde(moi, adv)) return null; // un animal n'affronte que son monde (le crocodile nage aussi en mer)
-  const L = arenesDe(mondeDuel(moi, adv));
+  const L = arenesDe(mondeDuel(moi, adv), true); // (27/09) le défi d'un copain : son arène, même si elle n'est pas encore ouverte ici
   return { moi, adv, arene: L.some(a => a.k === arene) ? arene : L[0].k, niv: Math.max(0, Math.min(2, +niv || 0)), temps: +temps || 99, etoiles: Math.max(0, Math.min(3, +etoiles || 0)), nom: nom.replace(/[<>&"]/g, '') };
 }
 async function partage(titre, texte, url, fichier) {
@@ -167,7 +168,7 @@ function defiDuJour() {
   // un jour sur cinq, le défi se passe dans la MER (s'il y a au moins deux animaux marins) ; même pour tous les enfants
   const x = r(), monde = ORDRE.filter(k => mondeDe(k) === 'mer').length >= 2 && x < .2 ? 'mer' : mondeOuvert('betes') && x >= .2 && x < .35 ? 'betes' : 'terre'; // (et parfois chez les PETITES BÊTES)
   const l = ORDRE.filter(k => !estLegendaire(k) && mondeDe(k) === monde); const a = l[Math.floor(r() * l.length)]; let b = l[Math.floor(r() * l.length)]; if (b === a) b = l[(l.indexOf(a) + 1) % l.length];
-  const A = arenesDe(monde), arene = A[Math.floor(r() * A.length)].k;
+  const A = arenesDe(monde, true), arene = A[Math.floor(r() * A.length)].k; // (27/09) le même pour tous : toutes les arènes du monde, ouvertes ou non
   return { date, a, b, arene, niv: 1 };
 }
 function lanceJour() {

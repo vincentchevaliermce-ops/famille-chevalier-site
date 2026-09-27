@@ -57,7 +57,7 @@ function nouvelleCaisse() {
   // un peu plus souvent près de celui qui est en difficulté (sans que ce soit sûr)
   const vers = Math.random() < .6 ? (fa < fb ? a : b) : (Math.random() < .5 ? a : b);
   const x = Math.max(STAGE_L + 220, Math.min(STAGE_R - 220, vers.x + (Math.random() - .5) * 700));
-  G.caisse = { x, y: FLOOR - 1250, vy: 0, t: 0, life: 560, mer: estMer(), pose: false, k: tireBonus() };
+  G.caisse = { x, y: FLOOR - 1250, vy: 0, t: 0, life: 560, mer: sousEau(), pose: false, k: tireBonus() }; // (sous l'eau, même dans le bocal : une grosse bulle)
   sfx('sifflet', .5);
 }
 function prendCaisse(f) {
@@ -138,6 +138,10 @@ const PIEGES = {
   epave: { k: 'repas', obj: 'tresor', mot: 'UNE PIÈCE D’OR !' }, // le premier qui l'attrape remplit sa jauge SUPER
   lune: { k: 'chute', obj: 'meteorite', mot: 'MÉTÉORITE !', dmg: 7 },
   prehisto: { k: 'chute', obj: 'oeuf', mot: 'UN ŒUF TOMBE DU NID !', dmg: 5 },
+  // (27/09) les 3 arènes rigolotes
+  mars: { k: 'vent', mot: 'TEMPÊTE DE POUSSIÈRE ROUGE !', col: '#E8875A' },
+  bocal: { k: 'trou', obj: 'bulles', mot: 'BLOUB ! LA POMPE À BULLES !', dmg: 4 },
+  espace: { k: 'vent', mot: 'UNE FUSÉE PASSE !', col: '#FFE08A' },
 };
 function nouveauPiege() {
   const P = PIEGES[G.arene]; if (!P) return;

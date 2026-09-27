@@ -446,7 +446,7 @@ function verdictLivre(v, etoilesCombat, nv) {
     else { $('v-suite').textContent = suivant ? 'DUEL SUIVANT ▶' : 'MES DUELS ▶'; $('v-suite').onclick = () => { sfx('valide'); suivant ? ouvrePari(suivant) : ouvreLivre() } } }
   else if (gagneArene) { $('v-suite').textContent = '❓ LA QUESTION ▶'; $('v-suite').onclick = () => { sfx('valide'); ouvreQuestion(D) } }
   else { $('v-suite').textContent = '⚔️ REVANCHE ▶'; $('v-suite').onclick = () => { sfx('valide'); revancheLivre() };
-    $('v-badges').innerHTML += `<span class="defi-res">⚔️ Gagne le combat${noms.length ? ' pour gagner ' + noms.join(' et ') : ''} !</span>` }
+    $('v-badges').innerHTML += `<span class="defi-res">⚔️ Gagne le combat${noms.length ? ' : première étape pour gagner ' + noms.join(' et ') : ''} !</span>` }
   $('v-rejouer').onclick = () => { sfx('clic'); ouvrePari(D, true) };
   // suspense : « ET DANS LA VRAIE VIE ? »… roulement… tampon !
   $('v-reste').hidden = true; sfx('tam', .6);
@@ -461,7 +461,7 @@ function ouvreQuestion(D, relis) {
   const z = QUESTIONS[D.n]; if (!z) { duelGagne(D); return }
   sonInit(); G.phase = 'menu'; show('quiz'); const qz = $('quiz'); qz.classList.remove('defi', 'or', 'gagne', 'relis'); qz.classList.add('q-duel'); G.quest = { D, bloque: false }; G.retourQuiz = G.livre && G.livre.libre && G.livre.D === D ? 'libre' : 'livre';
   $('quiz-titre').textContent = `❓ LA QUESTION`;
-  $('quiz-intro').innerHTML = fin(relis ? 'Réessaie !' : gainsDuel(D).length ? 'Réponds juste : ' + (gainsDuel(D).length > 1 ? 'ils sont à toi !' : `${CHARS[gainsDuel(D)[0]].fem ? 'elle est' : 'il est'} à toi !`) : 'Réponds juste : le duel est gagné !');
+  $('quiz-intro').innerHTML = fin(relis ? 'Réessaie !' : 'Réponds juste : le duel est gagné !'); // (27/09 : l'animal battu se gagne ensuite avec 3 questions du livre)
   $('quiz-img').style.backgroundImage = `url(${D.rep.g === 'nul' ? D.a : D.rep.g}_corps.webp)`; $('quiz-img').classList.remove('ombre');
   $('quiz-pas').innerHTML = ''; $('quiz-q').textContent = fin(z[0]); $('quiz-msg').textContent = ''; $('quiz-suite').hidden = true;
   const box = $('quiz-rep'); box.innerHTML = '';
@@ -475,30 +475,31 @@ function repondQuestion(b, juste) {
   $('quiz-msg').innerHTML = `Pas tout à fait… Relis bien : <span class="carte-rappel">${esc(fin(D.rep.film))}</span>`;
   const s = $('quiz-suite'); s.hidden = false; s.textContent = 'RÉESSAYER ▶'; s.onclick = () => { sfx('clic'); ouvreQuestion(D, true) };
 }
-// --- écran 5 : DUEL GAGNÉ ! l'animal battu rejoint l'équipe (V20, « 2A » : sauf un champion du livre, qui ne se gagne qu'avec le livre) ; un monde peut s'ouvrir
+// --- écran 5 : DUEL GAGNÉ ! l'animal battu attend ses 3 questions du livre (27/09) ; un champion du livre, son mot à trouver (V20, « 2A »)
 function duelGagne(D) {
   const libre = !!(G.livre && G.livre.libre && G.livre.D === D), moi = G.livre && G.livre.moi;
   const r = SAVE.livre[D.n] || (SAVE.livre[D.n] = { pari: null, bon: false, etoiles: 0, date: Date.now() }); r.ok = true; r.combat = 1;
   const nv = [], nouveaux = gainsDuel(D);
-  for (const k of nouveaux) { SAVE.debloques.push(k); SAVE.quiz[k] = Date.now() }
-  if (nouveaux.length) badge('secret', nv);
+  // (27/09, « livre obligatoire ») l'animal battu ne rejoint pas l'équipe tout de suite : comme partout, il faut encore 3 questions dont les réponses sont dans le livre
+  for (const k of nouveaux) if (!SAVE.defis[k] || typeof SAVE.defis[k] !== 'object') SAVE.defis[k] = { t: Date.now() };
   if (DUELS.filter(duelPret).every(fini)) badge('lecteur', nv);
   const mondes = window.ouvreMondes ? ouvreMondes(true) : []; // (M8) 10 animaux de la TERRE → LA MER s'ouvre… (puis l'écran « NOUVEAU MONDE ! »)
   sauve(); finEpreuve(); G.quest = { D, fini: true }; G.retourQuiz = libre ? 'libre' : 'livre'; $('quiz').classList.add('gagne');
   const suivant = prochainDuel();
   $('quiz-titre').textContent = libre ? '🎉 DUEL DU LIVRE GAGNÉ !' : `🎉 DUEL ${n2(D.n)} GAGNÉ !`; $('quiz').classList.remove('relis');
   const auLivre = [...new Set([D.a, D.b])].filter(k => pret(k) && champion(k) && !SAVE.debloques.includes(k)); // (V20, « 2A ») il attend le livre
-  $('quiz-intro').innerHTML = fin(nouveaux.length ? `${nouveaux.length > 1 ? 'Ils sont' : (CHARS[nouveaux[0]].fem ? 'Elle est' : 'Il est')} à toi !` : auLivre.length ? `Bravo ! ${CHARS[auLivre[0]].art} se gagne avec le livre : trouve le mot page ${pageLivre(auLivre[0])} !` : 'Bravo !');
+  $('quiz-intro').innerHTML = fin(nouveaux.length ? `Pour gagner ${leNom(nouveaux[0])} : 3 questions, les réponses sont dans le livre !` : auLivre.length ? `Bravo ! ${CHARS[auLivre[0]].art} se gagne avec le livre : trouve le mot page ${pageLivre(auLivre[0])} !` : 'Bravo !');
   $('quiz-pas').innerHTML = '';
   const deja = [...new Set([D.a, D.b])].filter(k => pret(k) && !nouveaux.includes(k) && SAVE.debloques.includes(k));
-  $('quiz-q').innerHTML = `<span class="gains">${nouveaux.map(k => `<span class="gain${champion(k) ? ' or' : ''}"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>NOUVEAU !</small></span>`).join('')}${deja.map(k => `<span class="gain deja"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>✔ DÉJÀ À TOI</small></span>`).join('')}${auLivre.map(k => `<span class="gain or"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>📖 PAGE ${pageLivre(k)}</small></span>`).join('')}</span>`;
+  $('quiz-q').innerHTML = `<span class="gains">${nouveaux.map(k => `<span class="gain"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>⚔️ BATTU !</small></span>`).join('')}${deja.map(k => `<span class="gain deja"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>✔ DÉJÀ À TOI</small></span>`).join('')}${auLivre.map(k => `<span class="gain or"><img src="${k}_tete.webp" alt=""><b>${CHARS[k].nom}</b><small>📖 PAGE ${pageLivre(k)}</small></span>`).join('')}</span>`;
   $('quiz-rep').innerHTML = '';
-  const ob = window.objectif && nouveaux.length ? phraseObjectif(objectif(mondeDe(nouveaux[0]))) : '';
+  const ob = '';
   $('quiz-msg').innerHTML = (mondes.length ? '<span class="quete">🔓 UN NOUVEAU MONDE S’OUVRE…</span>' : ob ? `<span class="quete obj-gain">${ob}</span>` : '') +
-    (nv.length ? `<span>NOUVEAU TROPHÉE : ${nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ')}</span>` : '') + (window.codeAOffrir ? nouveaux.map(codeAOffrir).join('') : '');
+    (nv.length ? `<span>NOUVEAU TROPHÉE : ${nv.map(id => BADGES.find(x => x[0] === id)[1]).join(' · ')}</span>` : ''); // (27/09 : le code à offrir arrive avec l'animal, après les 3 questions)
   sfx('badge'); setTimeout(() => sfx('super'), 350); nouveaux.forEach((k, i) => setTimeout(() => sfx(k, 1), 800 + i * 700));
   const s = $('quiz-suite'); s.hidden = false;
-  if (mondes.length) { s.textContent = '🎉 DÉCOUVRIR ▶'; s.onclick = () => { sfx('valide'); G.quest = null; G.livre = null; G.retourQuiz = null; feteMondes(mondes) } }
+  if (nouveaux.length) { s.textContent = '📖 LES 3 QUESTIONS ▶'; s.onclick = () => { sfx('valide'); G.quest = null; G.retourQuiz = null; ouvreSecrets(nouveaux[0]) } }
+  else if (mondes.length) { s.textContent = '🎉 DÉCOUVRIR ▶'; s.onclick = () => { sfx('valide'); G.quest = null; G.livre = null; G.retourQuiz = null; feteMondes(mondes) } }
   else if (libre) { const k = nouveaux.find(x => x !== moi) || nouveaux[0];
     if (k) { s.textContent = `JOUER AVEC ${CHARS[k].fem ? 'ELLE' : 'LUI'} ▶`; s.onclick = () => { sfx('valide'); G.quest = null; G.livre = null; G.retourQuiz = null; G.mode = 1; G.phase = 'menu'; selStage = 0; show('choix'); vaVers(k); construitCartes(); choisir(k) } }
     else { s.textContent = 'CONTINUER ▶'; s.onclick = () => { sfx('valide'); G.quest = null; G.retourQuiz = null; autreCombat() } } }
