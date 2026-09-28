@@ -19,7 +19,7 @@
 //  Événements : arrivee:<provenance> (chaque visite) · ouverture[:app] (1 fois par jour et par appareil)
 //    · semaine (1 fois par semaine) · nouveau (1er lancement)
 //    · partie:<mode>:<animal> · fin:<v|d|n|x> · gagne:<animal> · livre:<animal> · legende:<animal> · monde:<monde>
-//    · duel:<n> · tuto · photo · defi:<envoye|recu> · partage:<accueil|parents|invite> · installe[:fait] · parents · bonus[:code]
+//    · duel:<n> · tuto · photo (#fin-photo ou #photo-collec) · defi:<envoye|recu> · partage:<accueil|parents|invite> · installe[:fait] · parents · bonus[:code]
 //  Modes : 1j combat libre · 1d pour gagner un animal · 1l duel du livre · 1q défi du jour · 1c défi d'un copain
 //          · 2e à deux, même écran · 2t à deux, deux téléphones          fin : v gagné · d perdu · n nul · x à deux
 //  Provenance d'une visite : le paramètre ?s= du lien s'il existe (ex. ?s=x pour le fil X, ?s=ig pour Instagram),
@@ -280,7 +280,7 @@
     // boutons observés (sans rien changer à ce qu'ils font)
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest ? e.target : null; if (!t) return;
-      if (t.closest('#fin-photo')) ev('photo');
+      if (t.closest('#fin-photo, #photo-collec')) ev('photo'); // (27/09) #photo-collec = bouton 📸 MA PHOTO de MES ANIMAUX ; #fin-photo est caché
       else if (t.closest('#fin-defi')) ev('defi', 'envoye');
       else if (t.closest('#partage-titre')) ev('partage', 'accueil');
       else if (t.closest('#par-partage')) ev('partage', 'parents');
