@@ -226,3 +226,8 @@ footer a:hover{color:var(--ink)}
 .avis-note{padding:44px 0 80px}
 .avis-note p{font-size:.9rem;color:var(--ink-3);max-width:62ch;margin-bottom:8px}
 @media(max-width:700px){.avis-hero{padding:38px 0 30px}.avis-books{padding:40px 0 0}.avis-books .cat-grid{gap:30px 16px}.avis-books .book .btn{font-size:.82rem;padding:10px 12px}.avis-note{padding:34px 0 58px}}
+/* Signature avec photo, haut de page (02/10/2026) */
+.hero-byline{display:inline-flex;align-items:center;gap:12px;margin-top:22px;color:var(--ink-2);font-size:.95rem;line-height:1.35;text-decoration:none}
+.hero-byline img{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px var(--paper),0 4px 12px rgba(28,31,42,.18)}
+.hero-byline b{color:var(--ink);font-weight:600}
+.hero-byline:hover b{text-decoration:underline;text-underline-offset:3px}

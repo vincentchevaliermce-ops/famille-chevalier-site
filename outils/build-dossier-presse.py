@@ -202,7 +202,7 @@ def build_html():
       <p>Deux plumes, deux générations, une seule ambition&nbsp;: que l’enfant demande la suite.</p>
     </div>
     <figure class="portrait">
-      <img src="../images/image-17.jpg" alt="Michèle et Vincent Chevalier">
+      <img src="../images/auteurs-michele-vincent-chevalier.jpg" alt="Michèle et Vincent Chevalier">
       <figcaption>Michèle et Vincent Chevalier</figcaption>
     </figure>
   </div>
