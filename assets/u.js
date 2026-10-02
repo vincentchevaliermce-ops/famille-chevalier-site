@@ -6,6 +6,13 @@
    3. Sur /go/, le clic d'un email est noté puis le lecteur est redirigé aussitôt.
    4. Chaque page vue est comptée : la page et le type de provenance (moteur de
       recherche, réseau social, email, accès direct...), sans aucun identifiant.
+      Provenance « autre » : le nom du site d'origine (domaine seul, jamais
+      l'adresse exacte de la page).
+   5. Rien n'est compté hors de editions-chevalier.fr, depuis un navigateur piloté
+      (robots, tests automatiques) ni sur un appareil où le comptage est coupé :
+      ?moi=1 le coupe sur l'appareil, ?moi=0 le rétablit (repère « suivi-non »,
+      le même que « Compter cet appareil : NON » dans l'espace parents du jeu).
+      Pour tester l'envoi : localStorage « suivi-test » = « 1 ».
    Aucun cookie. */
 (function () {
     'use strict';
@@ -31,6 +38,7 @@
     function ecrire(cle, v) { try { window.sessionStorage.setItem(cle, v); } catch (e) {} }
 
     function signaler(type, jeton, asin, page) {
+        if (!compter) return;
         var url = ENDPOINT + '?action=clic&t=' + encodeURIComponent(type) +
             '&u=' + encodeURIComponent(jeton || '') +
             '&a=' + encodeURIComponent(asin || '') +
@@ -66,6 +74,47 @@
 
     var qs;
     try { qs = new URLSearchParams(window.location.search); } catch (e) { return; }
+
+    /* 5. Appareil exclu du comptage, robots, copies hors du site. */
+    function lireLocal(cle) { try { return window.localStorage.getItem(cle); } catch (e) { return null; } }
+    function annoncer(texte) {
+        function montrer() {
+            var d = document.createElement('div');
+            d.setAttribute('role', 'status');
+            d.textContent = texte;
+            d.style.cssText = 'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483647;' +
+                'max-width:90vw;padding:10px 16px;border-radius:8px;background:#1c1f2a;color:#fff;' +
+                'font:14px/1.4 system-ui,-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.25)';
+            document.body.appendChild(d);
+            window.setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 6000);
+        }
+        if (document.body) montrer(); else document.addEventListener('DOMContentLoaded', montrer);
+    }
+    function nettoyerAdresse() {
+        var reste = qs.toString();
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, '',
+                window.location.pathname + (reste ? '?' + reste : '') + window.location.hash);
+        }
+    }
+    var moi = qs.get('moi');
+    if (moi === '1' || moi === '0') {
+        try {
+            if (moi === '1') window.localStorage.setItem('suivi-non', '1');
+            else window.localStorage.removeItem('suivi-non');
+        } catch (e) {}
+        qs.delete('moi');
+        annoncer(moi === '1' ? 'Compteur coupé sur cet appareil : vos visites ne sont plus comptées.'
+            : 'Compteur rétabli sur cet appareil : vos visites sont de nouveau comptées.');
+    }
+    var ROBOT = /(googlebot|bingbot|adsbot|applebot|yandex|baiduspider|duckduckbot|facebookexternalhit|bingpreview|headlesschrome|lighthouse|pagespeed|google-inspectiontool|crawler|spider|slurp)/i;
+    var compter = (function () {
+        if (lireLocal('suivi-non') === '1') return false;
+        if (lireLocal('suivi-test') === '1') return true;
+        if (!/(^|\.)editions-chevalier\.fr$/.test(window.location.hostname)) return false;
+        try { if (window.navigator.webdriver) return false; } catch (e) {}
+        return !ROBOT.test(window.navigator.userAgent || '');
+    })();
     var jeton = (qs.get('u') || '').toLowerCase();
     if (!RE_JETON.test(jeton)) jeton = '';
     var depuisEmail = !!jeton;
@@ -105,17 +154,16 @@
             signaler('visite', jeton, '', window.location.pathname);
         }
         qs.delete('u');
-        var reste = qs.toString();
-        if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, '',
-                window.location.pathname + (reste ? '?' + reste : '') + window.location.hash);
-        }
+        nettoyerAdresse();
     } else {
         jeton = lire('fc_u') || '';
         if (!RE_JETON.test(jeton)) jeton = '';
+        if (moi === '1' || moi === '0') nettoyerAdresse();
     }
 
-    /* 4. Page vue : la page et le type de provenance, rien d'autre. */
+    /* 4. Page vue : la page et le type de provenance, rien d'autre
+          (pour « autre », le nom du site d'origine, sans le chemin). */
+    var origine = '';
     function provenance() {
         if (depuisEmail) return 'email';
         var src = (qs.get('src') || '').toLowerCase();
@@ -131,11 +179,15 @@
         if (/(^|\.)(facebook\.com|fb\.com|fb\.me)$/.test(hote)) return 'facebook';
         if (/(^|\.)pinterest\./.test(hote)) return 'pinterest';
         if (/(^|\.)amazon\./.test(hote)) return 'amazon';
+        origine = hote.replace(/^www\./, '').slice(0, 60);
         return 'autre';
     }
     function signalerVue() {
-        var url = ENDPOINT + '?action=vue&s=' + encodeURIComponent(provenance()) +
-            '&p=' + encodeURIComponent(window.location.pathname);
+        if (!compter) return;
+        var s = provenance();
+        var url = ENDPOINT + '?action=vue&s=' + encodeURIComponent(s) +
+            '&p=' + encodeURIComponent(window.location.pathname) +
+            (s === 'autre' && origine ? '&o=' + encodeURIComponent(origine) : '');
         try { window.fetch(url, { mode: 'no-cors', keepalive: true }); } catch (e) {}
     }
     if (document.prerendering) {
