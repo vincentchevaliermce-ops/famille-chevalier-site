@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page introuvable — Famille Chevalier</title>
     <meta name="robots" content="noindex">
+    <meta name="referrer" content="no-referrer"><!-- l’arrivée qui suit une 404 compte comme une arrivée, pas comme une navigation interne -->
     <link rel="icon" href="/favicon.ico">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +19,10 @@
         .lost p{color:var(--ink-2);font-size:1.08rem;max-width:52ch}
         .lost .links{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:32px}
     </style>
+    <script>
+        /* Adresse tapée depuis un livre avec des majuscules (« /Offert/Rose ») : même adresse en minuscules. */
+        (function () { var p = location.pathname, b = p.toLowerCase(); if (b !== p) location.replace(b + location.search + location.hash); })();
+    </script>
 </head>
 <body>
 <header class="site-header">

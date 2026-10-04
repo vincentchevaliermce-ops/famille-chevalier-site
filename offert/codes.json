@@ -1,0 +1,110 @@
+[
+ {
+  "code": "rose",
+  "titre": "Rose, la petite licorne qui ne brillait pas",
+  "adresse": "editions-chevalier.fr/offert/rose",
+  "qr": "https://editions-chevalier.fr/offert/rose/"
+ },
+ {
+  "code": "girafe",
+  "titre": "Pour toujours dans mon cœur, Petite girafe",
+  "adresse": "editions-chevalier.fr/offert/girafe",
+  "qr": "https://editions-chevalier.fr/offert/girafe/"
+ },
+ {
+  "code": "frisson",
+  "titre": "Frisson, le petit manchot qui n’aimait pas le froid",
+  "adresse": "editions-chevalier.fr/offert/frisson",
+  "qr": "https://editions-chevalier.fr/offert/frisson/"
+ },
+ {
+  "code": "animaux",
+  "titre": "Mon Livre Animé des Animaux Rigolos",
+  "adresse": "editions-chevalier.fr/offert/animaux",
+  "qr": "https://editions-chevalier.fr/offert/animaux/"
+ },
+ {
+  "code": "histoire",
+  "titre": "Une histoire… et au lit !",
+  "adresse": "editions-chevalier.fr/offert/histoire",
+  "qr": "https://editions-chevalier.fr/offert/histoire/"
+ },
+ {
+  "code": "encyclopedie",
+  "titre": "100 Pourquoi : Ma Première Encyclopédie",
+  "adresse": "editions-chevalier.fr/offert/encyclopedie",
+  "qr": "https://editions-chevalier.fr/offert/encyclopedie/"
+ },
+ {
+  "code": "dinosaures",
+  "titre": "100 Pourquoi des Dinosaures",
+  "adresse": "editions-chevalier.fr/offert/dinosaures",
+  "qr": "https://editions-chevalier.fr/offert/dinosaures/"
+ },
+ {
+  "code": "gaspard1",
+  "titre": "Gaspard, tome 1 : Voyageur du temps",
+  "adresse": "editions-chevalier.fr/offert/gaspard1",
+  "qr": "https://editions-chevalier.fr/offert/gaspard1/"
+ },
+ {
+  "code": "gaspard2",
+  "titre": "Gaspard, tome 2 : La Légende du Bison Blanc",
+  "adresse": "editions-chevalier.fr/offert/gaspard2",
+  "qr": "https://editions-chevalier.fr/offert/gaspard2/"
+ },
+ {
+  "code": "gaspard3",
+  "titre": "Gaspard, tome 3 : Au-delà de l’océan",
+  "adresse": "editions-chevalier.fr/offert/gaspard3",
+  "qr": "https://editions-chevalier.fr/offert/gaspard3/"
+ },
+ {
+  "code": "gaspard4",
+  "titre": "Gaspard, tome 4 : Les Graines de la Liberté",
+  "adresse": "editions-chevalier.fr/offert/gaspard4",
+  "qr": "https://editions-chevalier.fr/offert/gaspard4/"
+ },
+ {
+  "code": "gaspard5",
+  "titre": "Gaspard, tome 5 : Le Secret de la Montre Magique",
+  "adresse": "editions-chevalier.fr/offert/gaspard5",
+  "qr": "https://editions-chevalier.fr/offert/gaspard5/"
+ },
+ {
+  "code": "erreurs",
+  "titre": "50 Erreurs Géniales qui ont changé le monde",
+  "adresse": "editions-chevalier.fr/offert/erreurs",
+  "qr": "https://editions-chevalier.fr/offert/erreurs/"
+ },
+ {
+  "code": "survie",
+  "titre": "Le Guide de survie des enfants débrouillards",
+  "adresse": "editions-chevalier.fr/offert/survie",
+  "qr": "https://editions-chevalier.fr/offert/survie/"
+ },
+ {
+  "code": "incroyapedia",
+  "titre": "Incroyapédia, 60 super-pouvoirs réels",
+  "adresse": "editions-chevalier.fr/offert/incroyapedia",
+  "qr": "https://editions-chevalier.fr/offert/incroyapedia/"
+ },
+ {
+  "code": "leo",
+  "titre": "Léo et la loi de Murphy",
+  "adresse": "editions-chevalier.fr/offert/leo",
+  "qr": "https://editions-chevalier.fr/offert/leo/"
+ },
+ {
+  "code": "betes",
+  "titre": "Les métiers secrets des petites bêtes du jardin",
+  "adresse": "editions-chevalier.fr/offert/betes",
+  "qr": "https://editions-chevalier.fr/offert/betes/"
+ },
+ {
+  "code": "plusfort",
+  "titre": "C’est qui le plus fort ? 30 duels d’animaux",
+  "adresse": "editions-chevalier.fr/offert/plusfort",
+  "qr": "https://editions-chevalier.fr/offert/plusfort/"
+ }
+]
