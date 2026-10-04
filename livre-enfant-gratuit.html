@@ -401,8 +401,8 @@
         "Une histoire et au lit": "livres/Une-histoire-et-au-lit.pdf",
         "100 Pourquoi Ma Premiere Encyclopedie": "livres/100-Pourquoi-Ma-Premiere-Encyclopedie.pdf",
         "100 Pourquoi des Dinosaures": "livres/100-Pourquoi-des-Dinosaures.pdf",
-        "Gaspard - Voyageur du temps": "livres/Gaspard-Voyageur-du-temps.pdf",
-        "Gaspard - La Legende du Bison Blanc": "livres/Gaspard-La-Legende-du-Bison-Blanc.pdf",
+        "Gaspard - Voyageur du temps": "livres/Gaspard-Voyageur-du-temps.pdf?v=t1-v28",
+        "Gaspard - La Legende du Bison Blanc": "livres/Gaspard-La-Legende-du-Bison-Blanc.pdf?v=t2-v27",
         "Gaspard - Au-dela de l'ocean": "livres/Gaspard-Au-dela-de-l-ocean.pdf",
         "Gaspard - Les Graines de la Liberte": "livres/Gaspard-Les-Graines-de-la-Liberte.pdf",
         "Gaspard - Le Secret de la Montre Magique": "livres/Gaspard-Le-Secret-de-la-Montre-Magique.pdf",
@@ -450,6 +450,7 @@
     try {
         var seenPdf = localStorage.getItem('fc_book_pdf');
         var seenTitle = localStorage.getItem('fc_book_title');
+        seenPdf = DIRECT_PDF[seenTitle] || seenPdf;
         if (seenPdf) {
             var back = document.createElement('div');
             back.className = 'gift-back';
@@ -475,7 +476,7 @@
         if(!consent.checked){ consent.focus(); consent.reportValidity(); return; }
         var already = null; try { already = localStorage.getItem(OFFRE_2 ? 'fc_book_offre2' : 'fc_book_claimed'); } catch(e){}
         if(already){
-            var usedPdf = null; try { usedPdf = localStorage.getItem('fc_book_pdf'); } catch(e){}
+            var usedPdf = null; try { usedPdf = DIRECT_PDF[localStorage.getItem('fc_book_title')] || localStorage.getItem('fc_book_pdf'); } catch(e){}
             form.style.display = 'none';
             if(usedPdf){ var rl = document.getElementById('freeBookAlreadyLink'); rl.href = usedPdf; rl.style.display = 'inline-flex';
                 var dl = document.getElementById('freeBookAlreadyDl'); dl.href = usedPdf; dl.style.display = 'inline-flex'; }

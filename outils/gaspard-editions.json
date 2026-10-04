@@ -1,0 +1,22 @@
+{
+  "Gaspard-Voyageur-du-temps.pdf": {
+    "version": "T1 V28",
+    "pages": 80,
+    "source_web_sha256": "eaa36b5188a1db4bdec87467fbf1ab903b12da4b4312ad7354030e0be2962d1a",
+    "preview_source_pages": [
+      14,
+      21,
+      47
+    ]
+  },
+  "Gaspard-La-Legende-du-Bison-Blanc.pdf": {
+    "version": "T2 V27",
+    "pages": 76,
+    "source_web_sha256": "8c23e307a9a1efb1fef370e026319b1bd0ec5ce1142581522bbfce2248a6d86f",
+    "preview_source_pages": [
+      10,
+      25,
+      43
+    ]
+  }
+}

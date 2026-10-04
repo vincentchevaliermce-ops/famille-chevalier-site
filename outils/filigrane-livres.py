@@ -11,7 +11,7 @@ Les originaux sont conservés dans livres/_originaux/ (ignoré par git) :
 le script lit toujours l'original, jamais un fichier déjà marqué, donc on peut
 le relancer sans empiler les mentions.
 """
-import io, os, re, sys, html, shutil
+import io, os, re, sys, html, shutil, json, hashlib
 from pypdf import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
@@ -54,6 +54,17 @@ def calque(largeur, hauteur, premiere):
 
 def traiter(nom, titre):
     src = os.path.join(ORIG, nom)
+    # Prevent a later watermark run from restoring the superseded Gaspard editions.
+    manifest_path = os.path.join(RACINE, 'outils', 'gaspard-editions.json')
+    if os.path.isfile(manifest_path):
+        with open(manifest_path, encoding='utf-8') as manifest_file:
+            edition = json.load(manifest_file).get(nom)
+        if edition:
+            with open(src, 'rb') as source_file:
+                actual_sha = hashlib.sha256(source_file.read()).hexdigest()
+            if actual_sha != edition['source_web_sha256']:
+                print('  ! %s : source obsolete ; conserver le PDF publie (%s).' % (nom, edition['version']))
+                return os.path.getsize(os.path.join(DEST, nom))
     reader = PdfReader(src)
     writer = PdfWriter()
     for i, page in enumerate(reader.pages):
