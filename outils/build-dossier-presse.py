@@ -16,7 +16,7 @@ import glob, html, json, os, re, subprocess, sys, datetime
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_HTML = os.path.join(RACINE, 'outils', 'dossier-presse.html')
 OUT_PDF = os.path.join(RACINE, 'presse', 'dossier-de-presse-famille-chevalier.pdf')
-CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+CHROME = os.environ.get('CHROME_PATH', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
 SITE = 'https://editions-chevalier.fr/'
 CONTACT = 'contact@editions-chevalier.fr'
 MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre']
@@ -87,7 +87,13 @@ def lire_livres():
         r = livre.get('aggregateRating', {}) or {}
         o = livre.get('offers', {}) or {}
         img = re.search(r'<img src="\.\./(images/[^"]+\.jpg)"', s)
-        age = re.search(r'(\d+-\d+ ans)', s)
+        age = re.search(r'<b>(\d+-\d+ ans)</b>\s*âge de lecture', s) or re.search(r'(\d+-\d+ ans)', s)
+        # Depuis le 04/10/2026, la note Amazon n'est plus dans les données structurées (règle Google :
+        # pas de notes reprises d'un autre site). On la lit dans le bloc visible « 4,5/5 · 288 avis Amazon.fr ».
+        if not r:
+            m = re.search(r'<b>(\d),(\d)<span[^>]*>/5</span></b>\s*([\d\s\u00a0\u202f]+) avis Amazon', s)
+            if m:
+                r = {'ratingValue': m.group(1) + '.' + m.group(2), 'reviewCount': re.sub(r'\D', '', m.group(3))}
         data[slug] = dict(
             slug=slug, nom=livre['name'], pages=int(livre['numberOfPages']),
             isbn=livre.get('isbn', ''), date=livre.get('datePublished', ''),

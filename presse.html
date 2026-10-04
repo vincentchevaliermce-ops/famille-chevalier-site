@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presse, écoles et bibliothèques · Famille Chevalier</title>
-    <meta name="description" content="Dossier de presse, kit visuels, exemplaires d'évaluation et commandes groupées : tout ce qu'il faut aux journalistes, enseignants, bibliothécaires et libraires pour travailler avec Famille Chevalier.">
+    <meta name="description" content="Dossier de presse, kit visuels, exemplaires d’évaluation et commandes groupées : tout pour les journalistes, enseignants, bibliothécaires et libraires.">
+    <meta name="robots" content="max-image-preview:large">
     <link rel="canonical" href="https://editions-chevalier.fr/presse.html">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Famille Chevalier">
     <meta property="og:title" content="Presse, écoles et bibliothèques · Famille Chevalier">
     <meta property="og:description" content="Dossier de presse, kit visuels, exemplaires d'évaluation et commandes groupées.">
     <meta property="og:image" content="https://editions-chevalier.fr/og-image.jpg">
@@ -16,13 +18,13 @@
     <meta name="twitter:title" content="Presse, écoles et bibliothèques · Famille Chevalier">
     <meta name="twitter:description" content="Dossier de presse, kit visuels, exemplaires d'évaluation et commandes groupées.">
     <meta name="twitter:image" content="https://editions-chevalier.fr/og-image.jpg">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="theme-color" content="#1C1F2A">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/site.css">
+    <link rel="preload" href="assets/fonts/inter-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/fraunces-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="assets/site.css?v=20261004">
     <script src="assets/u.js" defer></script>
     <style>
     .intro{padding:72px 0 56px;border-bottom:1px solid var(--line)}
@@ -72,10 +74,10 @@
         <nav class="nav" id="nav">
             <a href="./#nouveautes">Nouveautés</a>
             <a href="./#catalogue">Catalogue</a>
-            <a href="./#auteurs">Les auteurs</a>
+            <a href="auteurs.html">Les auteurs</a>
             <a href="./#avis">Avis</a>
             <a href="./#questions">Questions</a>
-            <a href="./#offert" class="nav-cta">Un livre offert</a>
+            <a href="livre-enfant-gratuit.html" class="nav-cta">Un livre offert</a>
         </nav>
         <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
@@ -166,17 +168,21 @@
                 <p>Des livres illustrés pour les enfants de 3 à 12 ans, écrits en famille et lus dans plus de quinze pays.</p>
             </div>
             <div>
-                <h4>Le site</h4>
+                <h2 class="foot-h">Le site</h2>
                 <ul>
                     <li><a href="./#nouveautes">Nouveautés</a></li>
                     <li><a href="./#catalogue">Catalogue</a></li>
-                    <li><a href="./#auteurs">Les auteurs</a></li>
-                    <li><a href="./#offert">Un livre offert</a></li>
-                    <li><a href="./presse.html">Presse &amp; écoles</a></li>
+                    <li><a href="livres-3-5-ans.html">Livres 3-5 ans</a></li>
+                    <li><a href="livres-6-8-ans.html">Livres 6-8 ans</a></li>
+                    <li><a href="livres-9-12-ans.html">Livres 9-12 ans</a></li>
+                    <li><a href="serie/gaspard-10-ans.html">Série Gaspard, 10 ans</a></li>
+                    <li><a href="auteurs.html">Les auteurs</a></li>
+                    <li><a href="livre-enfant-gratuit.html">Un livre offert</a></li>
+                    <li><a href="presse.html">Presse &amp; écoles</a></li>
                 </ul>
             </div>
             <div>
-                <h4>Nous suivre</h4>
+                <h2 class="foot-h">Nous suivre</h2>
                 <ul>
                     <li><a href="https://www.amazon.fr/stores/author/B0CJ6VJG76" target="_blank" rel="noopener noreferrer">Boutique Amazon</a></li>
                     <li><a href="https://www.instagram.com/vincent___chevalier/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
@@ -186,7 +192,7 @@
                 </ul>
             </div>
             <div>
-                <h4>Nouvelles parutions</h4>
+                <h2 class="foot-h">Nouvelles parutions</h2>
                 <p>Quelques lettres par an : nos parutions et nos grands rendez-vous.</p>
                 <form class="newsletter" id="newsletterForm">
                     <input type="email" placeholder="Votre email" required aria-label="Votre email">
