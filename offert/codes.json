@@ -106,5 +106,11 @@
   "titre": "C’est qui le plus fort ? 30 duels d’animaux",
   "adresse": "editions-chevalier.fr/offert/plusfort",
   "qr": "https://editions-chevalier.fr/offert/plusfort/"
+ },
+ {
+  "code": "titanic",
+  "titre": "Piégé dans le Titanic",
+  "adresse": "editions-chevalier.fr/offert/titanic",
+  "qr": "https://editions-chevalier.fr/offert/titanic/"
  }
 ]
