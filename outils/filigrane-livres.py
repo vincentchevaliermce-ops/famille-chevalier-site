@@ -36,7 +36,7 @@ def titres():
     libelle = {html.unescape(v): html.unescape(t).strip()
                for v, t in re.findall(r'<option value="([^"]+)"[^>]*>([^<]+)</option>', s)}
     out = {}
-    for cle, chemin in re.findall(r'"([^"]+)":\s*"livres/([^"]+\.pdf)"', s):
+    for cle, chemin in re.findall(r'"([^"]+)":\s*"livres/([^"?]+\.pdf)(?:\?[^"]*)?"', s):   # accepte ?v=… (cache)
         cle = html.unescape(cle)
         titre = libelle.get(cle, cle)
         out[chemin] = re.sub(r'\s*\([^)]*\)$', '', titre)   # « … (BD, dès 8 ans) » -> « … »

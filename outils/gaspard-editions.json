@@ -1,8 +1,8 @@
 {
   "Gaspard-Voyageur-du-temps.pdf": {
-    "version": "T1 V28",
+    "version": "T1 V34 couvertures série V09 (24/10/2026)",
     "pages": 80,
-    "source_web_sha256": "eaa36b5188a1db4bdec87467fbf1ab903b12da4b4312ad7354030e0be2962d1a",
+    "source_web_sha256": "9ca85f8b1268bb1b500722355f3bf8fc0801f32227b017e60375355dbdb23803",
     "preview_source_pages": [
       14,
       21,
@@ -10,13 +10,43 @@
     ]
   },
   "Gaspard-La-Legende-du-Bison-Blanc.pdf": {
-    "version": "T2 V27",
-    "pages": 76,
-    "source_web_sha256": "8c23e307a9a1efb1fef370e026319b1bd0ec5ce1142581522bbfce2248a6d86f",
+    "version": "T2 V31 couvertures série V09 (24/10/2026)",
+    "pages": 74,
+    "source_web_sha256": "e857c96669a81856f9bf13c4464a59a090a2b4fa63c1fdc6704e91e162d9b3ac",
+    "preview_source_pages": [
+      9,
+      44,
+      59
+    ]
+  },
+  "Gaspard-Au-dela-de-l-ocean.pdf": {
+    "version": "T3 V51 couvertures série V09 (24/10/2026)",
+    "pages": 80,
+    "source_web_sha256": "afc3802355b319c435f7ec52b453c773a7de885ade5a2f198d0f5ea6fc685923",
+    "preview_source_pages": [
+      14,
+      33,
+      65
+    ]
+  },
+  "Gaspard-Les-Graines-de-la-Liberte.pdf": {
+    "version": "T4 V15 R11 couvertures série V09 (24/10/2026)",
+    "pages": 88,
+    "source_web_sha256": "a08c65630936dd5add65b38f59d4bfd6327a162be987127907374121645b1109",
     "preview_source_pages": [
       10,
-      25,
-      43
+      35,
+      72
+    ]
+  },
+  "Gaspard-Le-Secret-de-la-Montre-Magique.pdf": {
+    "version": "T5 R15 V21 couvertures série V09 (24/10/2026)",
+    "pages": 91,
+    "source_web_sha256": "6dc08f3f4bf4d2a627c6f8130a38a525610f250763a0eb4ef7caaca7bc3d899c",
+    "preview_source_pages": [
+      14,
+      51,
+      78
     ]
   }
 }
