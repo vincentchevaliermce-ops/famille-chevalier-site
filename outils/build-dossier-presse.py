@@ -40,6 +40,8 @@ LIVRES = [
     ('50-erreurs-geniales',                     'Documentaire',              '7'),
     ('incroyapedia',                            'Encyclopédie',              '7'),
     ('leo-et-la-loi-de-murphy',                 'BD humour',                 '7'),
+    ('c-est-qui-le-plus-fort',                  'Livre-jeu',                 '7'),
+    ('piege-dans-le-titanic',                   'Livre-jeu · Tu choisis',    '7'),
 ]
 
 # Titres courts pour les grilles (le titre complet reste dans le JSON-LD)
@@ -54,6 +56,8 @@ COURT = {
 
 # Pitches de la page « Parutions 2026 »
 PITCHES_2026 = {
+ 'piege-dans-le-titanic': "14 avril 1912, 23 h 40. Le lecteur devient Louis, 10 ans, à bord du Titanic avec sa famille et Moustique, son chien. Il observe les illustrations, repère les indices et choisit son chemin : dix fins possibles, dix secrets cachés, et une vraie leçon d'histoire en filigrane.",
+ 'c-est-qui-le-plus-fort': "Ours polaire ou grizzly ? Requin blanc ou orque ? Trente duels d'animaux : l'enfant parie, tourne la page et découvre qui gagne vraiment, avec les vraies forces de chaque animal. Un livre-jeu qui se lit à plusieurs et se termine en débat à table.",
  'metiers-secrets-petites-betes': "La taupe conduit le métro, le lombric est ingénieur agronome, la coccinelle commande la brigade anti-pucerons et le hérisson fait sa ronde de nuit. Trente petites bêtes du jardin présentées par leur métier, du sol au potager, de la mare au compost, avec cherche-et-trouve, quiz et bons gestes pour le jardin.",
  '100-pourquoi-des-dinosaures': "Cent vraies questions d'enfant sur les dinosaures — leurs plumes, leurs œufs, leurs dents, leur disparition — et pour chacune une réponse en deux ou trois phrases, juste et à leur portée. Chaque page se termine par un « truc waouh » à raconter à la maison.",
  '100-pourquoi': "Pourquoi mes doigts se plissent-ils dans le bain ? Pourquoi le chat ronronne ? Pourquoi le ciel devient orange le soir ? Huit parties — mon corps, les animaux, le ciel et la météo, l'espace et la nuit, la maison, la table, le jardin, les grandes questions — et cent réponses simples, drôles et vraies.",
@@ -175,7 +179,7 @@ def build_html():
   <div class="brand"><b>Famille Chevalier</b><small>Maison d’édition jeunesse</small></div>
   <p class="kicker">Dossier de presse · %s</p>
   <h1>Des livres que les enfants <em>finissent.</em></h1>
-  <p class="lead">Dix-sept livres illustrés pour les 3-12 ans, écrits en famille depuis 2023 : romans d’aventure
+  <p class="lead">@@NB_LIVRES@@ livres illustrés pour les 3-12 ans, écrits en famille depuis 2023 : romans d’aventure
   historiques, encyclopédies qui répondent aux vrais «&nbsp;pourquoi&nbsp;», albums tendres, documentaires et bande dessinée.</p>
   <div class="stats">
     <div><b>%d</b><span>titres publiés</span></div>
@@ -230,7 +234,7 @@ def build_html():
     P.append("""
 <section class="page">
   <p class="eyebrow">Catalogue</p>
-  <h2>Dix-sept livres, classés par âge</h2>
+  <h2>@@NB_LIVRES@@ livres, classés par âge</h2>
   <h3 class="sub">Dès 3 ans — albums et premières encyclopédies</h3>
   <div class="grid-bk c4">%s</div>
   %s
@@ -252,7 +256,7 @@ def build_html():
     lignes = []
     for l in nouveautes:
         lignes.append("""
-  <article class="nouv">
+  <article class="nouv%s">
     <img src="../%s" alt="">
     <div>
       <p class="tag">%s · %s · parution %s</p>
@@ -260,7 +264,7 @@ def build_html():
       <p>%s</p>
       <p class="specs">%s · %s · %d p. · ISBN %s</p>
     </div>
-  </article>""" % (l['cover'], html.escape(cat_de[l['slug']].upper()), l['age'].upper(),
+  </article>""" % (' serre' if len(nouveautes) > 6 else '', l['cover'], html.escape(cat_de[l['slug']].upper()), l['age'].upper(),
                    date_fr(l['date']).upper(), html.escape(l['nom']),
                    html.escape(PITCHES_2026.get(l['slug'], '')),
                    ('%s %s · %s avis' % (etoiles(l['note']), note_fr(l['note']), l['avis'])) if l['avis'] else 'nouveauté, en librairie en ligne',
@@ -354,6 +358,7 @@ def build_html():
                  note_fr(note_moy), pmin, pmax, euro(prix_min), euro(prix_max), pied(7)))
 
     doc = DOC % {'pages': ''.join(P), 'mois': mois_an}
+    doc = doc.replace('@@NB_LIVRES@@', {17: 'Dix-sept', 18: 'Dix-huit', 19: 'Dix-neuf', 20: 'Vingt', 21: 'Vingt et un', 22: 'Vingt-deux'}.get(len(tous), str(len(tous))))   # nombre de titres en lettres
     open(SRC_HTML, 'w', encoding='utf-8').write(doc)
     print('HTML : %s (%.0f Ko)' % (SRC_HTML, os.path.getsize(SRC_HTML) / 1024))
     print('  %d livres · %s avis · note %s · %d-%d p. · %s-%s' % (
@@ -429,6 +434,10 @@ font-size:6.9pt;color:var(--ink-3);border-top:1px solid var(--line);padding-top:
 .nouv h3{margin-bottom:1.2mm;font-size:12pt}
 .nouv p{font-size:8.7pt;color:var(--ink-2);margin-bottom:1.4mm}
 .nouv .specs{font-size:7.8pt;color:var(--ink-3)}
+.nouv.serre{grid-template-columns:17mm 1fr;gap:4mm;margin-bottom:2.4mm}
+.nouv.serre h3{font-size:10.8pt;margin-bottom:.6mm}
+.nouv.serre p{font-size:8.1pt;line-height:1.4;margin-bottom:.8mm}
+.nouv.serre .specs{font-size:7.4pt}
 /* série */
 .tomes{margin-bottom:2mm}
 .quotes{display:grid;grid-template-columns:1fr 1fr;gap:6mm}
