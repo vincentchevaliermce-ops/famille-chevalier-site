@@ -2,7 +2,7 @@
    La page, les icônes et les petits dessins sont gardés à l'installation.
    Les dessins et les voix de chaque film sont gardés au premier passage, puis servis même sans Internet.
    Nouvelle version = nouveau nom de cache : l'ancien est effacé proprement. */
-const VER='v24-petits-defauts';
+const VER='v25-moteur-doux';
 const CORE='core-'+VER, RUN='films-'+VER;
 const CORE_FILES=['./','index.html','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png','icons/icon-maskable-512.png','icons/apple-touch-icon.png','tpl/bebe_lines.png','tpl/bebe_labels.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CORE).then(c=>c.addAll(CORE_FILES)).then(()=>self.skipWaiting()));});

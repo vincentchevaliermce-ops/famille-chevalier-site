@@ -295,7 +295,7 @@ body.fs .fsbar .round{width:52px;height:52px;font-size:1.35rem;background:rgba(2
           </div>
           <ol class="log" id="log"></ol>
         </details>
-        <p class="foot">100% Licornes · version 24</p>
+        <p class="foot">100% Licornes · version 25</p>
       </div>
     </details>
   </div>
@@ -392,7 +392,7 @@ let WIDE=false,VW=FW,KS=1;const BPX=1250;
 const $=id=>document.getElementById(id);
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), lerp=(a,b,u)=>a+(b-a)*u, seg=(t,a,b)=>clamp((t-a)/(b-a));
 const eio=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2, eoc=u=>1-Math.pow(1-u,3), eic=u=>u*u*u;
-const elastic=x=>x<=0?1:1+0.26*Math.sin(x*Math.PI*3.4)*Math.exp(-x*4.6);
+const elastic=x=>x<=0?1:1+0.26*Math.sin(x*Math.PI*3.4)*Math.exp(-x*4.6),elasticIn=x=>x<=0?0:x>=1?1:1-Math.cos(x*Math.PI*1.7)*Math.exp(-x*4.6);
 const hr=(i,k=0)=>{const x=Math.sin(i*12.9898+k*78.233+1.7)*43758.5453;return x-Math.floor(x);};
 const TAU=Math.PI*2;
 function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -1126,7 +1126,7 @@ function drawRig(ctx,cre,P,t,opt={}){
     const main={tail:'tail1',legBack:'legBackU',legFar:'legFarU',body:'root',legNear:'legNearU',legFront:'legFrontU',head:'head',wing:'wing',wingFar:'wingFar'};
     for(const k of DRAW_ORDER){const m=M[BI[main[k]]],q=cre.parts[k];ctx.save();ctx.transform(m[0],m[1],m[2],m[3],m[4],m[5]);ctx.drawImage(q.cv,q.x,q.y);ctx.restore();}}
   const hm=M[BI.head];
-  if(!opt.plain){ctx.save();ctx.transform(hm[0],hm[1],hm[2],hm[3],hm[4],hm[5]);
+  if(!opt.plain){eyeKitSoon(cre);ctx.save();ctx.transform(hm[0],hm[1],hm[2],hm[3],hm[4],hm[5]);
     // regard : la pupille dessinée par l'enfant glisse dans l'œil vers ce qu'elle regarde (P.look = [dx,dy], ±10 max)
     if(P.look&&(Math.abs(P.look[0])+Math.abs(P.look[1])>0.3)&&cre.parts&&cre.parts.head&&P.happy<=0.5){const [ex,ey]=INFO.eye,[rx,ry]=INFO.eyeR,q=cre.parts.head,lx=clamp(P.look[0],-10,10),ly=clamp(P.look[1],-10,10);
       ctx.save();ctx.beginPath();ctx.ellipse(ex,ey,rx*0.84,ry*0.84,0,0,TAU);ctx.clip();ctx.drawImage(q.cv,q.x+lx,q.y+ly);ctx.restore();}
@@ -1146,17 +1146,16 @@ function drawRig(ctx,cre,P,t,opt={}){
       ctx.globalCompositeOperation='lighter';glowDot(ctx,cx-r*0.35,cy-r*0.4,r*0.45,[255,255,255],0.45);ctx.restore();}
     if(P.surprise>0.05){ctx.save();const [hx,hy]=INFO.hornTip,a=P.surprise;ctx.globalAlpha=Math.min(1,a*1.5);ctx.strokeStyle='#161616';ctx.lineCap='round';
       for(const [dx,ang,L] of [[-70,-0.35,46],[0,0,58],[70,0.35,46]]){ctx.save();ctx.translate(hx+dx,hy-40);ctx.rotate(ang);ctx.lineWidth=11;ctx.beginPath();ctx.moveTo(0,-L*a);ctx.lineTo(0,-12);ctx.stroke();ctx.strokeStyle='#ffd34d';ctx.lineWidth=5;ctx.stroke();ctx.restore();}ctx.restore();}
-    if(P.happy>0.5){const [ex,ey]=INFO.eye,[rx,ry]=INFO.eyeR;ctx.save();ctx.beginPath();ctx.ellipse(ex,ey,rx+5,ry+5,0,0,TAU);ctx.clip();ctx.fillStyle=skinPaint(cre);ctx.fillRect(ex-rx-8,ey-ry-8,2*rx+16,2*ry+16);ctx.restore();
-      ctx.save();ctx.strokeStyle='#161616';ctx.lineWidth=9;ctx.lineCap='round';ctx.beginPath();ctx.arc(ex+2,ey+18,rx*0.82,1.12*Math.PI,1.88*Math.PI);ctx.stroke();ctx.restore();}
+    if(P.happy>0.5)eyeClose(ctx,cre,P,2,1);/* v23 : yeux rieurs = ∩ du trait du dessin + cils, l'œil d'origine entièrement repeint en peau (avant : tache de motif + arc, cils et contour restaient autour) */
     if(P.sad>0.05){const [ex,ey]=INFO.eye,[rx,ry]=INFO.eyeR,a=P.sad;ctx.save();ctx.beginPath();ctx.ellipse(ex,ey,rx+4,ry+4,0,0,TAU);ctx.clip();ctx.fillStyle=skinPaint(cre);
       ctx.beginPath();ctx.moveTo(ex-rx-8,ey-ry-8);ctx.lineTo(ex+rx+8,ey-ry-8);ctx.lineTo(ex+rx+8,ey-ry*0.15*a);ctx.lineTo(ex-rx-8,ey-ry+ry*0.9*a);ctx.closePath();ctx.fill();
-      ctx.strokeStyle='#161616';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(ex-rx-6,ey-ry+ry*0.9*a);ctx.lineTo(ex+rx+6,ey-ry*0.15*a);ctx.stroke();ctx.restore();
-      const ph=(t*0.9)%1;ctx.save();ctx.globalAlpha=a*(1-ph);ctx.fillStyle='#5fb4f0';ctx.strokeStyle='#2f6fa8';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(ex-14,ey+ry+10+ph*60,9,13,0,0,TAU);ctx.fill();ctx.stroke();ctx.restore();}
+      ctx.strokeStyle='#161616';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(ex-rx-6,ey-ry+ry*0.9*a);ctx.lineTo(ex+rx+6,ey-ry*0.15*a);ctx.stroke();ctx.restore();}
     const bl=P.happy>0.5?0:Math.max(P.blink,P.wink);
-    if(bl>0.05){const [ex,ey]=INFO.eye,[rx,ry]=INFO.eyeR;ctx.save();ctx.beginPath();ctx.ellipse(ex,ey,rx+4,ry+4,0,0,TAU);ctx.clip();
-      ctx.fillStyle=skinPaint(cre);ctx.fillRect(ex-rx-6,ey-ry-6,2*rx+12,(2*ry+12)*bl);ctx.strokeStyle='#161616';ctx.lineWidth=6;ctx.lineCap='round';
-      ctx.beginPath();ctx.ellipse(ex,ey-ry-6+(2*ry+12)*bl,rx*0.9,9,0,0.15,Math.PI-0.15);ctx.stroke();ctx.restore();}
-    if(P.sparkleEye>0.02){const [x,y]=INFO.hl;ctx.save();ctx.globalCompositeOperation='lighter';twinkle(ctx,x,y,30*P.sparkleEye,[255,255,255],P.sparkleEye,t*2);ctx.restore();}
+    if(bl>0.12)eyeClose(ctx,cre,P,P.wink>P.blink?1:0,clamp((bl-0.1)/0.82));/* v23 : la paupière descend en suivant la forme de l'œil et se ferme en ‿ épais (clin d'œil : ∩), cils au coin extérieur ; avant : rideau de motif + trait fin plat */
+    if(P.sad>0.05){const [ex,ey]=INFO.eye,[rx,ry]=INFO.eyeR,a=P.sad;/* larme : dessinée après la paupière pour rester visible quand elle cligne */
+      const ph=(t*0.9)%1;ctx.save();ctx.globalAlpha=a*(1-ph);ctx.fillStyle='#5fb4f0';ctx.strokeStyle='#2f6fa8';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(ex-14,ey+ry+10+ph*60,9,13,0,0,TAU);ctx.fill();ctx.stroke();ctx.restore();}
+    const se=P.sparkleEye*(P.happy>0.5?0:1-clamp((Math.max(P.blink,P.wink)-0.1)/0.5));/* v23 : l'étincelle de l'œil s'éteint quand il se ferme (clignement, clin d'œil, rieur) */
+    if(se>0.02){const [x,y]=INFO.hl;ctx.save();ctx.globalCompositeOperation='lighter';twinkle(ctx,x,y,30*se,[255,255,255],se,t*2);ctx.restore();}
     if(P.glow>0.02){const [tx,ty]=INFO.hornTip,c=cre.glowCol||[255,230,140],p=0.6+0.4*Math.sin(t*11);ctx.save();ctx.globalCompositeOperation='lighter';
       glowDot(ctx,tx-2,ty+26,72*P.glow,c,0.85*P.glow*p);glowDot(ctx,tx,ty+8,20,[255,255,255],0.85*P.glow);ctx.restore();}
     ctx.restore();}
@@ -1177,6 +1176,113 @@ function skinPaint(cre){if(!cre)return'#fff';if(cre._sp!==undefined)return cre._
     let best=null;for(let rr=ry*1.5;rr<ry*5&&!best;rr+=10)for(let a=0;a<24&&!best;a++){const an=a*Math.PI/12,x0=Math.round(ex+Math.cos(an)*rr*1.1)-ox-S/2,y0=Math.round(ey+Math.sin(an)*rr)-oy-S/2;if(ok(x0,y0))best=[x0,y0];}
     if(best){const c=cv(S,S);c.getContext('2d').drawImage(q.cv,best[0],best[1],S,S,0,0,S,S);cre._sp=c.getContext('2d').createPattern(c,'repeat');}}}catch(e){cre._sp=null;}
   return cre._sp||rgba(cre.skin||[255,255,255],1);}
+// ---------- Yeux fermés (v23) ----------
+// L'œil dessiné (contour, iris, reflets, cils) est repéré une fois sur le gabarit : traits et zones entièrement à moins de 1,5 R du centre
+// (les sourcils, la joue, la crinière et le contour de la tête dépassent : ils restent). Sur la vraie texture de l'enfant, cette zone est
+// repeinte : couleur de fond lissée depuis la peau autour + grain crayonné recopié d'un coin de peau voisin, bords fondus.
+// Œil fermé = paupière épaisse du trait du dessin (‿ endormi, ∩ rieur ou clin d'œil) + 3 cils au coin extérieur.
+function eyeKitSoon(cre){if(cre._ek||cre._ekq)return;cre._ekq=1;setTimeout(()=>{try{eyeKit(cre);}catch(e){}},0);}/* préparé entre deux images, hors du temps de rendu mesuré (FRAME_MS) ; recalculé sur place si un œil se ferme avant */
+function eyeKit(cre){const tag=(typeof CUR_TPL!=='undefined'?CUR_TPL:'')+'|'+INFO.eye[0]+','+INFO.eye[1];if(cre._ek&&cre._ek.tag===tag)return cre._ek;
+  let K=null;try{K=eyeKitBuild(cre);}catch(e){K=null;}if(!K){const [ex]=INFO.eye;K={patch:null,kx:1.12,ky:1.12,lw:8,s:INFO.mouth&&INFO.mouth[0]>ex?-1:1};}K.tag=tag;cre._ek=K;return K;}
+function eyeKitBuild(cre){const q=cre.parts&&cre.parts.head;if(!q||!q.cv||typeof REG==='undefined'||!REG)return null;
+  const [ex,ey]=INFO.eye,[rx,ry]=INFO.eyeR,R=Math.max(rx,ry),SB=Math.ceil(R*4.9),IB=Math.ceil(R*1.9),N=2*SB,NI=2*IB,X0=Math.round(ex)-SB,Y0=Math.round(ey)-SB,o0=SB-IB,BG=typeof BG_REGION!=='undefined'?BG_REGION:1;
+  const reg=new Int32Array(N*N).fill(-1);for(let j=0;j<N;j++){const Y=Y0+j;if(Y<0||Y>=H)continue;for(let i=0;i<N;i++){const X=X0+i;if(X>=0&&X<W)reg[j*N+i]=REG[Y*W+X];}}
+  const c=cv(N,N),cx=c.getContext('2d',{willReadFrequently:true});cx.drawImage(q.cv,Math.round(q.x)-X0,Math.round(q.y)-Y0);const tex=cx.getImageData(0,0,N,N).data;
+  const RI=(i,j)=>reg[(j+o0)*N+i+o0],px=i=>X0+o0+i+0.5,py=j=>Y0+o0+j+0.5,dn=(i,j)=>Math.hypot(px(i)-ex,py(j)-ey)/R;
+  const dil=(m,w,h,r)=>{const b=boxBlur(m,w,h,r),o=new Float32Array(w*h);for(let k=0;k<w*h;k++)o[k]=b[k]>1e-4?1:0;return o;};
+  const FOR=new Set();if(typeof SIMG!=='undefined')for(const g in SIMG)if(!['body','head','legs','eye'].includes(g))for(const r of SIMG[g]||[])FOR.add(r);
+  const fm=new Float32Array(NI*NI);for(let j=0;j<NI;j++)for(let i=0;i<NI;i++)fm[j*NI+i]=FOR.has(RI(i,j))?1:0;const fd=dil(fm,NI,NI,7);/* zones coloriées qui ne sont pas l'œil (joue, crinière…) et leurs traits */
+  // 1. composantes de la boîte intérieure
+  const seen=new Uint8Array(NI*NI),m0=new Uint8Array(NI*NI),st=new Int32Array(NI*NI);let main=null,mainN=0;
+  for(let s0=0;s0<NI*NI;s0++){if(seen[s0])continue;const r0=RI(s0%NI,(s0/NI)|0);seen[s0]=1;if(r0<0)continue;let sp=0,n=0,nf=0,mx=0,mn=9,touch=false;const list=[];st[sp++]=s0;
+    while(sp){const p=st[--sp],i=p%NI,j=(p/NI)|0;list.push(p);n++;nf+=fd[p];const d=dn(i,j);if(d>mx)mx=d;if(d<mn)mn=d;if(i===0||j===0||i===NI-1||j===NI-1)touch=true;
+      for(let dj=-1;dj<=1;dj++)for(let di=-1;di<=1;di++){if(!di&&!dj)continue;if(r0!==0&&di&&dj)continue;const a=i+di,b=j+dj;if(a<0||b<0||a>=NI||b>=NI)continue;const qq=b*NI+a;if(seen[qq]||RI(a,b)!==r0)continue;seen[qq]=1;st[sp++]=qq;}}
+    if(!touch&&r0!==BG&&!FOR.has(r0)&&(r0===0?mx<=1.8&&mn<=1.25&&nf<=0.6*n:mx<=1.5)){for(const p of list)m0[p]=1;if(r0===0&&n>mainN){mainN=n;main=list;}}}/* traits : cils et contour partent de l'œil (sourcil, joue : plus loin) */
+  for(let j=0;j<NI;j++)for(let i=0;i<NI;i++)if(RI(i,j)===0&&!fd[j*NI+i]&&Math.hypot((px(i)-ex)/rx,(py(j)-ey)/ry)<=1.05)m0[j*NI+i]=1;
+  let kx=1,ky=1;if(main)for(const p of main){const i=p%NI,j=(p/NI)|0,ax=Math.abs(px(i)-ex)/rx,ay=Math.abs(py(j)-ey)/ry;if(Math.hypot(ax,ay)>1.35)continue;kx=Math.max(kx,ax);ky=Math.max(ky,ay);}kx=clamp(kx+0.04,1.04,1.5);ky=clamp(ky+0.04,1.04,1.5);
+  const mf=new Float32Array(NI*NI),kl=new Float32Array(NI*NI);for(let j=0;j<NI;j++)for(let i=0;i<NI;i++){const k=j*NI+i;mf[k]=m0[k];kl[k]=(!m0[k]&&RI(i,j)===0)||fm[k]?1:0;}const mH=dil(mf,NI,NI,6),mF=dil(mf,NI,NI,11),kp=boxBlur(dil(kl,NI,NI,2),NI,NI,1);
+  // 2. peau propre autour (même zone que la peau autour de l'œil, loin des traits)
+  const cnt=new Map();for(let j=0;j<NI;j++)for(let i=0;i<NI;i++){const r=RI(i,j),d=dn(i,j);if(r>0&&r!==BG&&d>1.0&&d<1.8&&!mF[j*NI+i])cnt.set(r,(cnt.get(r)||0)+1);}
+  let skinId=-1,bc=0;for(const [r,v] of cnt)if(v>bc){bc=v;skinId=r;}if(skinId<0)return null;
+  const sk=new Float32Array(N*N);for(let k=0;k<N*N;k++)sk[k]=reg[k]===skinId&&tex[k*4+3]===255?1:0;const ske=boxBlur(sk,N,N,3),clean=new Uint8Array(N*N);
+  for(let k=0;k<N*N;k++)clean[k]=ske[k]>0.999?1:0;for(let j=0;j<NI;j++)for(let i=0;i<NI;i++)if(mF[j*NI+i])clean[(j+o0)*N+i+o0]=0;
+  // 3. couleur lissée (moyenne locale de la peau propre) pour en extraire le grain
+  const cf=new Float32Array(N*N);for(let k=0;k<N*N;k++)cf[k]=clean[k];const den=boxBlur(boxBlur(cf,N,N,4),N,N,4),lo=[0,1,2].map(ch=>{const a=new Float32Array(N*N);for(let k=0;k<N*N;k++)a[k]=clean[k]?tex[k*4+ch]:0;return boxBlur(boxBlur(a,N,N,4),N,N,4);});
+  const lA=new Float32Array(N*N),l2=new Float32Array(N*N);for(let k=0;k<N*N;k++)if(clean[k]){const v=0.3*tex[k*4]+0.59*tex[k*4+1]+0.11*tex[k*4+2];lA[k]=v;l2[k]=v*v;}
+  const mL=boxBlur(boxBlur(lA,N,N,4),N,N,4),m2=boxBlur(boxBlur(l2,N,N,4),N,N,4),vr=k=>{const d=den[k];if(d<0.05)return 0;const m=mL[k]/d;return Math.max(0,m2[k]/d-m*m);};
+  const tw=new Float32Array(NI*NI),tv=new Float32Array(NI*NI*3);for(let j=0;j<NI;j++)for(let i=0;i<NI;i++){const k=(j+o0)*N+i+o0;if(clean[k]){const o=j*NI+i,v=vr(k);tw[o]=1;tv[o*3]=tv[o*3+1]=tv[o*3+2]=v;}}
+  const vt=eyePullPush(tv,tw,NI,NI,[100,100,100]);/* grain attendu autour de l'œil (variance locale) */
+  // 4. décalages de recopie du grain, classés : peau propre ET grain semblable à celui autour de l'œil
+  const offs=[];for(const dd of [2.1,2.6,3.1])for(let a=0;a<16;a++){const an=a*Math.PI/8,ox=Math.round(Math.cos(an)*dd*R),oy=Math.round(Math.sin(an)*dd*R);let sc=0;
+    for(let j=0;j<NI;j+=2)for(let i=0;i<NI;i+=2){if(!mH[j*NI+i])continue;const X=i+o0+ox,Y=j+o0+oy;if(X>=0&&Y>=0&&X<N&&Y<N&&clean[Y*N+X])sc+=1/(1+Math.abs(Math.log((vr(Y*N+X)+4)/(vt[(j*NI+i)*3]+4))));}offs.push([sc,ox,oy]);}
+  offs.sort((a,b)=>b[0]-a[0]);
+  // 5. fond lissé sous l'œil (tirer-pousser depuis la peau propre de la boîte intérieure)
+  const B0=Math.max(0,o0-20),BW=Math.min(N,o0+NI+20)-B0,cS=new Float32Array(BW*BW),aS=[0,1,2].map(()=>new Float32Array(BW*BW));for(let j=0;j<BW;j++)for(let i=0;i<BW;i++){const k=(j+B0)*N+i+B0;if(clean[k]){cS[j*BW+i]=1;for(let ch=0;ch<3;ch++)aS[ch][j*BW+i]=tex[k*4+ch];}}
+  const dB=boxBlur(boxBlur(cS,BW,BW,4),BW,BW,4),lB=aS.map(a=>boxBlur(boxBlur(a,BW,BW,4),BW,BW,4));/* fond = moyenne large de la peau (sinon les hachures du bord font des taches) */
+  const bw=new Float32Array(NI*NI),bv=new Float32Array(NI*NI*3);for(let j=0;j<NI;j++)for(let i=0;i<NI;i++){const k=(j+o0)*N+i+o0,kb=(j+o0-B0)*BW+i+o0-B0;if(clean[k]&&dB[kb]>0.2){const o=j*NI+i;bw[o]=1;for(let ch=0;ch<3;ch++)bv[o*3+ch]=lB[ch][kb]/dB[kb];}}
+  const base=eyeNearFill(bv,bw,NI,NI,cre.skin||[250,250,250]);/* fond = couleur de la peau propre la plus proche, adoucie : deux couleurs côte à côte gardent leur frontière */
+  // 6. pièce finale
+  const nl=new Float32Array(NI*NI),gl3=[0,1,2].map(()=>new Float32Array(NI*NI));for(let j=0;j<NI;j++)for(let i=0;i<NI;i++){const o=j*NI+i,k=(j+o0)*N+i+o0;if(RI(i,j)>0&&tex[k*4+3]>=250){nl[o]=1;for(let ch=0;ch<3;ch++)gl3[ch][o]=tex[k*4+ch];}}
+  const nlb=boxBlur(nl,NI,NI,3),glb=gl3.map(a=>boxBlur(a,NI,NI,3)),core=dil(mf,NI,NI,2);/* couleur locale d'origine, sans les traits */
+  const pc=cv(NI,NI),pcx=pc.getContext('2d'),im=pcx.createImageData(NI,NI),al=boxBlur(boxBlur(dil(mH,NI,NI,1),NI,NI,2),NI,NI,2);/* la pièce déborde de 6 px (le liseré clair autour des traits disparaît) mais épargne les traits gardés (sourcil, joue) */
+  for(let j=0;j<NI;j++)for(let i=0;i<NI;i++){const o=j*NI+i,k=(j+o0)*N+i+o0;let A=clamp(al[o]*1.3)*(1-clamp(kp[o]));if(A<=0.004||tex[k*4+3]<250)continue;let rgb=null;
+    if(!core[o]&&nlb[o]>0.3){let dc=0;for(let ch=0;ch<3;ch++)dc+=Math.abs(glb[ch][o]/nlb[o]-base[o*3+ch]);if(dc>70){A*=clamp((110-dc)/40);if(A<=0.004)continue;}}
+    if(al[o]>0.004){rgb=[base[o*3],base[o*3+1],base[o*3+2]];for(const [sc,ox,oy] of offs){if(!sc)break;const X=i+o0+ox,Y=j+o0+oy;if(X<0||Y<0||X>=N||Y>=N)continue;const kk=Y*N+X;if(!clean[kk])continue;const dd=den[kk]||1e-6;if(Math.abs(lo[0][kk]/dd-base[o*3])+Math.abs(lo[1][kk]/dd-base[o*3+1])+Math.abs(lo[2][kk]/dd-base[o*3+2])>70)continue;const gs=0.95*clamp(Math.sqrt((vt[o*3]+4)/(vr(kk)+4)),0.6,1.7);
+      for(let ch=0;ch<3;ch++)rgb[ch]+=gs*(tex[kk*4+ch]-lo[ch][kk]/dd);break;}}
+    else rgb=[tex[k*4],tex[k*4+1],tex[k*4+2]];
+    im.data[o*4]=clamp(rgb[0],0,255);im.data[o*4+1]=clamp(rgb[1],0,255);im.data[o*4+2]=clamp(rgb[2],0,255);im.data[o*4+3]=Math.round(A*255);}
+  pcx.putImageData(im,0,0);
+  // 7. épaisseur du trait du dessin (traits autour de l'œil : contour de la tête, joue, sourcil)
+  const ts=[];for(let j=0;j<N;j+=2)for(let i=0;i<N;i+=2){if(reg[j*N+i]!==0)continue;const d=Math.hypot(X0+i-ex,Y0+j-ey)/R;if(d<1.6||d>3.2)continue;let a=i,b=i,u=j,v=j;
+    while(a>0&&reg[j*N+a-1]===0)a--;while(b<N-1&&reg[j*N+b+1]===0)b++;while(u>0&&reg[(u-1)*N+i]===0)u--;while(v<N-1&&reg[(v+1)*N+i]===0)v++;ts.push(Math.min(b-a+1,v-u+1));}
+  ts.sort((a,b)=>a-b);const lw=clamp(ts.length?ts[ts.length>>1]*1.45:10,7,14);
+  return{patch:pc,x:X0+o0,y:Y0+o0,kx,ky,lw,s:INFO.mouth&&INFO.mouth[0]>ex?-1:1};}
+function eyeNearFill(v,a,w,h,fb){/* chaque pixel inconnu : interpolation entre la peau propre au-dessus/au-dessous et à gauche/à droite ; la paire dont les deux bouts ont la même couleur l'emporte (une frontière droite entre deux couleurs est prolongée) */
+  const o=new Float32Array(w*h*3),D=(o1,o2)=>Math.abs(v[o1*3]-v[o2*3])+Math.abs(v[o1*3+1]-v[o2*3+1])+Math.abs(v[o1*3+2]-v[o2*3+2]);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x;if(a[p]>0){for(let c=0;c<3;c++)o[p*3+c]=v[p*3+c];continue;}
+    const f=(dx,dy)=>{let X=x+dx,Y=y+dy,d=1;while(X>=0&&Y>=0&&X<w&&Y<h){const q=Y*w+X;if(a[q]>0)return[q,d];X+=dx;Y+=dy;d++;}return null;};
+    const u=f(0,-1),dn=f(0,1),l=f(-1,0),r=f(1,0);let acc=[0,0,0],ws=0;
+    for(const [A,B] of [[u,dn],[l,r]]){if(A&&B){const dd=D(A[0],B[0]);if(dd>45)continue;const wt=Math.exp(-dd/25)/(A[1]+B[1]);for(let c=0;c<3;c++)acc[c]+=wt*(v[A[0]*3+c]*B[1]+v[B[0]*3+c]*A[1])/(A[1]+B[1]);ws+=wt;}}
+    if(ws<1e-6){let best=null;for(const A of [u,dn,l,r])if(A&&(!best||A[1]<best[1]))best=A;if(best){for(let c=0;c<3;c++)o[p*3+c]=v[best[0]*3+c];}else{o[p*3]=fb[0];o[p*3+1]=fb[1];o[p*3+2]=fb[2];}continue;}
+    for(let c=0;c<3;c++)o[p*3+c]=acc[c]/ws;}
+  const ch=[0,1,2].map(c=>{const b=new Float32Array(w*h);for(let k=0;k<w*h;k++)b[k]=o[k*3+c];return boxBlur(boxBlur(b,w,h,2),w,h,2);});
+  for(let k=0;k<w*h;k++){o[k*3]=ch[0][k];o[k*3+1]=ch[1][k];o[k*3+2]=ch[2][k];}return o;}
+function eyePullPush(v0,a0,w,h,fb){const L=[{v:v0,a:a0,w,h}];
+  while(L[L.length-1].w>1||L[L.length-1].h>1){const p=L[L.length-1],nw=Math.max(1,Math.ceil(p.w/2)),nh=Math.max(1,Math.ceil(p.h/2)),v=new Float32Array(nw*nh*3),a=new Float32Array(nw*nh);
+    for(let y=0;y<p.h;y++)for(let x=0;x<p.w;x++){const i=y*p.w+x,o=(y>>1)*nw+(x>>1);a[o]+=p.a[i];v[o*3]+=p.v[i*3]*p.a[i];v[o*3+1]+=p.v[i*3+1]*p.a[i];v[o*3+2]+=p.v[i*3+2]*p.a[i];}
+    for(let o=0;o<nw*nh;o++){if(a[o]>0){v[o*3]/=a[o];v[o*3+1]/=a[o];v[o*3+2]/=a[o];a[o]=Math.min(1,a[o]);}}L.push({v,a,w:nw,h:nh});}
+  const T=L[L.length-1];if(!(T.a[0]>0)){T.v[0]=fb[0];T.v[1]=fb[1];T.v[2]=fb[2];}T.a[0]=1;
+  for(let l=L.length-2;l>=0;l--){const p=L[l],c=L[l+1];for(let y=0;y<p.h;y++)for(let x=0;x<p.w;x++){const i=y*p.w+x,a=p.a[i];if(a>=1)continue;
+    const fx=Math.min(c.w-1,Math.max(0,(x-0.5)/2)),fy=Math.min(c.h-1,Math.max(0,(y-0.5)/2)),x0=Math.floor(fx),y0=Math.floor(fy),x1=Math.min(c.w-1,x0+1),y1=Math.min(c.h-1,y0+1),tx=fx-x0,ty=fy-y0;
+    for(let ch=0;ch<3;ch++){const cc=(c.v[(y0*c.w+x0)*3+ch]*(1-tx)+c.v[(y0*c.w+x1)*3+ch]*tx)*(1-ty)+(c.v[(y1*c.w+x0)*3+ch]*(1-tx)+c.v[(y1*c.w+x1)*3+ch]*tx)*ty;p.v[i*3+ch]=p.v[i*3+ch]*a+cc*(1-a);}p.a[i]=1;}}
+  return L[0].v;}
+// mode 0 : clignement (‿ endormi) ; 1 : clin d'œil (∩) ; 2 : yeux rieurs (∩ marqué). e : 0 ouvert … 1 fermé.
+function eyeClose(ctx,cre,P,mode,e){const K=eyeKit(cre),[ex,ey]=INFO.eye,[rx0,ry0]=INFO.eyeR,R=Math.max(rx0,ry0),rx=rx0*Math.min(K.kx,1.1),ry=ry0*K.ky,rT=ry0*1.02,lw=K.lw,s=K.s,n=28,sad=P.sad>0.05;
+  const sq=u=>Math.sqrt(Math.max(0,1-u*u)),f=e*e*(3-2*e),g=clamp((e-0.5)/0.5),gl=g*g*(3-2*g);
+  const shut=mode===2?u=>ey+ry0*(0.32-0.62*sq(u)):mode===1?u=>ey+ry0*(0.36-0.42*sq(u)):sad?u=>ey+ry0*(0.30+0.14*sq(u)):u=>ey+ry0*(0.20+0.40*sq(u));
+  const X=u=>ex+u*(rx+(rx0*1.04-rx)*f),sa=sad?P.sad:0,tp=u=>{const y0=ey-rT*sq(u);if(!sa)return y0;const xx=X(u),k=clamp((xx-ex+rx0+6)/(2*rx0+12));return Math.max(y0,ey-ry0+ry0*0.9*sa+(ry0-ry0*0.9*sa-ry0*0.15*sa)*k);},lid=u=>tp(u)+(shut(u)-tp(u))*f,/* la paupière part du haut de l'œil dessiné */low=u=>ey+ry*sq(u)+(shut(u)-ey-ry*sq(u))*gl;
+  ctx.save();
+  if(e<0.999){ctx.beginPath();ctx.rect(ex-5*R,ey-5*R,10*R,10*R);for(let i=0;i<=n;i++){const u=-1+2*i/n;if(i)ctx.lineTo(X(u),lid(u));else ctx.moveTo(X(u),lid(u));}for(let i=n;i>=0;i--){const u=-1+2*i/n;ctx.lineTo(X(u),low(u));}ctx.closePath();ctx.clip('evenodd');}
+  if(K.patch){ctx.drawImage(K.patch,K.x,K.y);
+    if(P.blush>0.02||P.redden>0.02){const pw=K.patch.width,ph=K.patch.height;if(!K.gc)K.gc=cv(pw,ph);const gx=K.gc.getContext('2d');gx.setTransform(1,0,0,1,0,0);gx.globalCompositeOperation='source-over';gx.clearRect(0,0,pw,ph);gx.translate(-K.x,-K.y);
+      if(P.blush>0.02){const [cx,cy]=INFO.cheek;glowDot(gx,cx,cy,46,[255,95,140],0.55*P.blush);}
+      if(P.redden>0.02){const [mx2,my2]=INFO.mouth,k=(INFO.eyeR?INFO.eyeR[1]:52)/52;glowDot(gx,(ex+mx2)/2-3,ey+11*k,120*k,[255,70,70],0.42*P.redden);}
+      gx.setTransform(1,0,0,1,0,0);gx.globalCompositeOperation='destination-in';gx.drawImage(K.patch,0,0);gx.globalCompositeOperation='source-over';ctx.drawImage(K.gc,K.x,K.y);}}/* rougeur et joues roses redessinées sur la peau repeinte (sinon trou plus clair autour de l'œil fermé) */
+  else{ctx.fillStyle=skinPaint(cre);ctx.beginPath();ctx.ellipse(ex,ey,rx+4,ry+4,0,0,TAU);ctx.fill();}
+  ctx.restore();
+  // paupière : trait plein du dessin, plus épais au milieu, effilé aux coins
+  const pts=[];for(let i=0;i<=n;i++){const u=-1+2*i/n;pts.push([X(u),lid(u),lw*(0.62+0.38*sq(u))]);}
+  const nr=pts.map((p,i)=>{const a=pts[Math.max(0,i-1)],b=pts[Math.min(n,i+1)],dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1;return[-dy/l,dx/l];});
+  ctx.save();ctx.fillStyle='#161616';ctx.beginPath();for(let i=0;i<=n;i++)ctx.lineTo(pts[i][0]+nr[i][0]*pts[i][2]/2,pts[i][1]+nr[i][1]*pts[i][2]/2);
+  for(let i=n;i>=0;i--)ctx.lineTo(pts[i][0]-nr[i][0]*pts[i][2]/2,pts[i][1]-nr[i][1]*pts[i][2]/2);ctx.closePath();ctx.fill();
+  for(const i of [0,n]){ctx.beginPath();ctx.arc(pts[i][0],pts[i][1],pts[i][2]/2,0,TAU);ctx.fill();}
+  // cils au coin extérieur : vers le haut quand l'œil est ouvert ou rieur, retombent vers le bas quand il se ferme en ‿
+  const dn=mode===0?f:0;
+  for(const [a,L0,ox,oy,cx2,cy2] of [[0.97,0.44,0.96,-0.28,0.96,0.28],[0.80,0.38,0.66,-0.75,0.62,0.78],[0.62,0.30,0.30,-0.95,0.22,0.97]]){const u=s*a,bx=X(u),by=lid(u),L=L0*ry0*(mode===2?0.85:1);
+    let dx=s*(ox+(cx2-ox)*dn),dy=oy+(cy2-oy)*dn;const dl=Math.hypot(dx,dy)||1;dx/=dl;dy/=dl;const qx=-dy,qy=dx,bw2=lw*0.42,tx=bx+dx*L,ty=by+dy*L,bend=s*(mode===0?dn*2-1:-1)*L*0.12;
+    ctx.beginPath();ctx.moveTo(bx+qx*bw2,by+qy*bw2);ctx.quadraticCurveTo(bx+dx*L*0.55+qx*(bw2*0.5+bend),by+dy*L*0.55+qy*(bw2*0.5+bend),tx,ty);
+    ctx.quadraticCurveTo(bx+dx*L*0.55-qx*(bw2*0.5-bend),by+dy*L*0.55-qy*(bw2*0.5-bend),bx-qx*bw2,by-qy*bw2);ctx.closePath();ctx.fill();}
+  ctx.restore();}
 
 // ---------- Démarches (une par couleur) ----------
 // ph = phase de marche liée à la distance parcourue : les sabots restent posés sur le sol qui défile.
@@ -1205,6 +1311,58 @@ function idle(P,t){P.sy=1+Math.sin(t*2.6)*0.012;P.sx=1-Math.sin(t*2.6)*0.006;P.h
 const BLINKS6=(()=>{const b=[];let t=2.35,i=0;while(t<75){b.push(t);if(hr(i,77)<0.22)b.push(t+0.3);t+=2.2+hr(i,78)*2.4;i++;}return b;})();
 // rebond simple sur place
 function hopPose(P,u,h){gPronk(P,u,h);}
+/* ---------- v24 : gestes SUR PLACE des histoires (moves prance / stomp / skip / tiptoe) ----------
+   Avant : les quatre étaient bâtis sur gTrot : cycle de marche alterné alors que le corps reste sur place (effet « tapis roulant »).
+   Maintenant : de vrais gestes de dessin animé, sans cycle de marche. Mêmes t0, t1, rate ; même rampe r (0,25 s), adoucie en smoothstep.
+   - stomp  (piaffer) : un seul sabot avant se lève, frappe le sol puis gratte vers l'arrière ; petit tassement et hochement de tête au choc.
+   - prance (joie)    : petits rebonds sur les quatre pattes (grand, petit), tassement-détente en sin², balancement avant-arrière, tête et queue qui dansent.
+   - skip  (sautille) : sauts sur place pattes groupées, un grand puis un petit (hop-hop), réception écrasée.
+   - tiptoe (pas de loup) : posture de chat qui guette : plus basse, tête en avant, un sabot levé qui hésite, très léger balancement.
+   Si l'histoire elle-même déplace la licorne pendant le geste (ex. superheroine : elle recule), un trot dont la phase suit CE déplacement
+   prend le relais en fondu (pas de patinage) ; si l'histoire anime déjà ses pattes, on la laisse faire. */
+const ipS2=x=>{const v=Math.sin(Math.PI*x);return v*v;},ipSm=x=>x<=0?0:x>=1?1:x*x*(3-2*x),ipHind=L=>L==='legNear'||L==='legBack';
+/* a = poids du geste : add=0 fondu avec la pose de l'histoire, add=1 posture ajoutée à cette pose */
+function ipMix(P,L,u,l,a,add){const o=P.leg[L]||[0,0];P.leg[L]=add?[o[0]+a*u,o[1]+a*l]:[o[0]*(1-a)+a*u,o[1]*(1-a)+a*l];}
+function ipFore(){return LEGS.includes('legFront')?'legFront':LEGS.find(L=>!ipHind(L));}
+function ipStomp(P,ph,a){const k=((ph/TAU)%1+1)%1,K1=0.44,K2=0.62,f=ipFore();let lift=0,u;
+  if(k<K1){const e=ipSm(k/K1);lift=e;u=-0.08+0.50*e;}/* lève le sabot en avançant un peu le genou */
+  else if(k<K2){const c=Math.cos(Math.PI/2*(k-K1)/(K2-K1));lift=c;u=0.04+0.38*c;}/* le frappe au sol (accélère : petit choc) */
+  else u=0.04-0.12*ipSm((k-K2)/(1-K2));/* sabot posé qui gratte vers l'arrière */
+  const imp=k>=K2&&k<K2+0.45?ipS2((k-K2)/0.45):0;
+  for(const L of LEGS){if(L===f)ipMix(P,L,u,1.2*lift,a,0);else ipMix(P,L,ipHind(L)?0:-0.04,ipHind(L)?0.05:0,a,0);}
+  P.sy*=1-0.012*imp*a;P.sx*=1+0.006*imp*a;P.head+=0.035*imp*a;
+  P.tail[0]+=0.1*imp*a;P.tail[1]+=0.14*imp*a;P.tail[2]+=0.18*imp*a;P.mane=Math.max(P.mane||0,0.3*a);}
+function ipPrance(P,ph,a){const θ=2*ph,n=Math.floor(θ/TAU),k=θ/TAU-n,C=0.4,H=(((n%2)+2)%2)===0?18:12;let sq=0,air=0;
+  if(k<C)sq=ipS2(k/C);else air=ipS2((k-C)/(1-C));
+  P.y-=H*air*a;P.sy*=1+(-0.02*sq+0.01*air)*a;P.sx*=1+(0.012*sq-0.006*air)*a;
+  for(const L of LEGS){const h=ipHind(L);ipMix(P,L,(h?-0.16:0.28)*air,(h?0.35:0.85)*air+(h?0.12:0.18)*sq,a,0);}
+  P.rot+=0.03*Math.sin(ph)*a;P.head+=(0.03*Math.cos(θ)+0.025*Math.sin(ph+0.8))*a;
+  for(let i=0;i<3;i++)P.tail[i]+=(0.12*air+0.16*Math.sin(ph-0.7*i-0.5))*a;
+  P.mane=Math.max(P.mane||0,0.6*a);P.blush=Math.max(P.blush||0,0.5*a);}
+function ipSkip(P,ph,a){const θ=2*ph,n=Math.floor(θ/TAU),k=θ/TAU-n,C=0.36,big=(((n%2)+2)%2)===0,H=big?44:16,q=big?1:0.6;let sq=0,air=0,s=0;
+  if(k<C)sq=ipS2(k/C);else{const w=(k-C)/(1-C);air=ipS2(w);s=Math.sin(Math.PI*w);}
+  P.y-=H*air*a;P.sy*=1+(-0.035*sq+0.015*air*q)*a;P.sx*=1+(0.02*sq-0.009*air*q)*a;
+  for(const L of LEGS){const h=ipHind(L);ipMix(P,L,(h?-0.28:0.32)*s*q,(h?0.55:0.95)*s*q+0.18*sq,a,0);}
+  P.head+=(-0.04*air*q+0.015*sq-0.02)*a;for(let i=0;i<3;i++)P.tail[i]+=(0.22-0.05*i)*s*q*a;P.mane=Math.max(P.mane||0,a);}
+function ipTiptoe(P,ph,a){const sw=Math.sin(ph*0.5),hv=Math.sin(ph*0.8+0.6),f=ipFore();
+  P.sy*=1-0.05*a;P.sx*=1+0.02*a;P.rot+=0.012*sw*a;P.head+=(0.08+0.03*sw)*a;
+  P.tail[0]-=0.12*a;P.tail[1]-=0.04*a;P.tail[2]+=0.14*Math.sin(ph*0.9)*a;
+  for(const L of LEGS){if(L===f)ipMix(P,L,0.26,0.95+0.08*hv,a,1);else ipMix(P,L,ipHind(L)?-0.04:0.02,0.12,a,1);}
+  P.mane=Math.max(P.mane||0,0.15*a);}
+/* [rate par défaut, geste, puis trot de relais si l'histoire la déplace : amplitude, genou, rebond] */
+const IPK={prance:[7,ipPrance,0.85,1.15,10],stomp:[15,ipStomp,0.55,0.5,5],tiptoe:[6,ipTiptoe,0.38,0.9,4],skip:[6,ipSkip,0.7,0.8,6]};
+/* position x que l'histoire (act) donne à la licorne à l'instant t (pose de act() seule, sans les mouvements).
+   Vitesse moyenne sur ±0,2 s : un frisson ou un petit penché (bain, gourmande) ne déclenche pas le trot, un vrai recul (superheroine) oui. */
+function ipActX(st,t){const Q=pose0();idle(Q,t);st.act(Q,t,trackX(t)/(st.stride||150)*TAU);return Q.x;}
+function ipMove(st,m,t,flip){const S=typeof FILM!=='undefined'&&FILM?FILM.S:null,keep=S?S._t:undefined,o={w:0,ph:0};
+  try{const F0=typeof F!=='undefined'?F:1,h=0.2,v=Math.abs(ipActX(st,t+h)-ipActX(st,t-h))*F0/(2*h);o.w=ipSm((v-70)/100);
+    if(o.w>0.001)o.ph=(flip?-1:1)*(ipActX(st,t)-ipActX(st,m.t0))*F0/150*TAU;}catch(e){o.w=0;}
+  if(S)S._t=keep;return o;}
+function ipGesture(P,t,st,m,K,r,τ){const a=ipSm(r);let B=0;for(const L of LEGS){const l=P.leg[L]||[0,0];B=Math.max(B,Math.abs(l[0]),Math.abs(l[1]));}
+  const M=ipMove(st,m,t,P.flip),wt=M.w*(1-ipSm((B-0.02)/0.08));
+  K[1](P,τ*(m.rate||K[0]),a*(1-M.w));
+  if(wt>0.001){const G={},mn=P.mane||0,am=K[2]*a*wt;for(const L of LEGS)G[L]=(P.leg[L]||[0,0]).slice();
+    gTrot(P,M.ph,am,K[3],K[4]);for(const L of LEGS){P.leg[L][0]+=G[L][0];P.leg[L][1]+=G[L][1];}P.mane=Math.max(mn,P.mane||0);}}
 // ---------- Passe « mouvement » : déplacements déclarés par chaque histoire ----------
 // story.walk = [[t,x],…] : position au sol (pixels du monde, 0 = place du dessin). Deux clés au même t = elle sort d'un côté et rentre de l'autre.
 //   Les pattes suivent la distance parcourue : trot si lent, galop si rapide.
@@ -1217,20 +1375,45 @@ function walkAt(W,t){if(!W||!W.length||t<=W[0][0])return{x:W&&W.length?W[0][1]:0
 
 // ---------- Balades : story.trips=[{t0,t1,d,gait,z}] ----------
 // Elle part explorer le décor vers la droite (la caméra la suit, le paysage défile), fait demi-tour, revient à sa place et se retourne.
+/* v23 : demi-tour « dessin animé » (avant : elle s'aplatissait à 55 % de sa largeur, comme une feuille de papier qui pivote).
+   Petit bond (TURN_HD s, gTurnHop) : tassement à l'appel, étirement en l'air, retournement d'un coup au sommet, réception écrasée + nuage de poussière.
+   Largeur jamais sous 88 %. Demi-tour du bout : retournement au même instant qu'avant (milieu du virage) ; demi-tour du retour : le bond
+   finit à t1 (posée et à l'endroit quand l'histoire reprend la main). T.sq reste à 1 (les accessoires des histoires ne s'aplatissent plus). */
+const TURN_HD=0.56,TURN_H=52,TURN_C=0.26,TURN_A=0.74,TURN_APEX=(TURN_C+TURN_A)/2;
+/* bond du demi-tour (u de 0 à 1 sur TURN_HD s) : toutes les courbes en sin² (vitesse nulle aux raccords : pas d'à-coup à l'appel ni à la réception) */
+function gTurnHop(P,u,h){const s2=x=>{const v=Math.sin(Math.PI*x);return v*v;};
+  if(u<TURN_C){const v=s2(u/TURN_C);P.sy*=1-0.09*v;P.sx*=1+0.05*v;for(const L of LEGS)setLeg(P,L,0,0.25*v);}
+  else if(u<TURN_A){const w=(u-TURN_C)/(TURN_A-TURN_C),s=Math.sin(Math.PI*w),st=s2(2*w);P.y-=s2(w)*h;P.sy*=1+0.06*st;P.sx*=1-0.035*st;
+    for(const L of LEGS){const back=L==='legNear'||L==='legBack';setLeg(P,L,(back?-0.35:0.4)*s,0.9*s);}P.tail[0]+=0.25*s;P.tail[1]+=0.2*s;P.tail[2]+=0.15*s;P.mane=Math.max(P.mane||0,s);P.head-=0.06*s;}
+  else{const v=s2((u-TURN_A)/(1-TURN_A));P.sy*=1-0.1*v;P.sx*=1+0.055*v;for(const L of LEGS)setLeg(P,L,0,0.2*v);}}
+function tripTurns(tr){const t0=tr.t0,t1=tr.t1,turn=0.35,tm=t0+(t1-t0-2*turn)*(tr.out||0.53),c1=tm+turn/2,c2=t1-TURN_HD*(1-TURN_APEX);
+  return{tm,ta:tm+turn,tb:t1-turn,c1,c2,h1:c1-TURN_APEX*TURN_HD,h2:t1-TURN_HD};}
 function tripAt(st,t){for(const tr of st.trips||[]){const t0=tr.t0,t1=tr.t1;if(t<t0-0.7||t>t1+0.7)continue;
-    const d=tr.d||1200,turn=0.35,tm=t0+(t1-t0-2*turn)*(tr.out||0.53),ta=tm+turn,tb=t1-turn;
-    let x=0,flip=false,sq=1,v=0,u=0,dist=0,act=t>=t0&&t<=t1;
+    const d=tr.d||1200,K=tripTurns(tr),tm=K.tm,ta=K.ta,tb=K.tb;
+    let x=0,flip=false,sq=1,v=0,u=0,dist=0,act=t>=t0&&t<=t1,hu=-1,tc=0,sb=1;
     if(t<t0||t>t1){}
     else if(t<tm){u=(t-t0)/(tm-t0);x=d*eio(u);v=d/(tm-t0);dist=x;}
-    else if(t<ta){u=(t-tm)/turn;x=d;sq=Math.abs(Math.cos(Math.PI*u));flip=u>=0.5;dist=d;}
+    else if(t<ta){u=(t-tm)/(ta-tm);x=d;flip=t>=K.c1;dist=d;}
     else if(t<tb){u=(t-ta)/(tb-ta);x=d*(1-eio(u));v=d/(tb-ta);flip=true;dist=2*d-x;}
-    else{u=(t-tb)/turn;x=0;sq=Math.abs(Math.cos(Math.PI*u));flip=u<0.5;dist=2*d;}
-    return{x,flip,sq,v,u,dist,tr,act};}
+    else{u=(t-tb)/(t1-tb);x=0;flip=t<K.c2;dist=2*d;}
+    if(act){if(t>=K.h1&&t<K.h1+TURN_HD){hu=(t-K.h1)/TURN_HD;tc=K.c1;sb=1;}else if(t>=K.h2){hu=Math.min(1,(t-K.h2)/TURN_HD);tc=K.c2;sb=-1;}}
+    return{x,flip,sq,v,u,dist,tr,act,hu,tc,sb};}
   return null;}
+/* décalage horizontal (monde) du centre de la silhouette par rapport à l'axe de retournement (le sabot) : en l'air, elle pivote autour de son centre */
+function turnO(){if(typeof FILM==='undefined'||!FILM)return 0;if(FILM._tO!==undefined)return FILM._tO;let x0=1e9,x1=-1e9;
+  try{for(const k of CREATURE){const q=BOX[k];if(!q)continue;x0=Math.min(x0,q[0]);x1=Math.max(x1,q[2]);}}catch(e){}
+  return FILM._tO=x0<x1?toF((x0+x1)/2,GY)[0]-CRE_FX:0;}
 function tripX(st,t){const T=tripAt(st,t);return T&&T.act?T.x:0;}
 function applyMoves(P,t,st){const F0=typeof F!=='undefined'?F:1;
-  {const T=tripAt(st,t);if(T&&T.act){P.x+=T.x/F0;if(T.flip)P.flip=1;P.sx*=0.55+0.45*T.sq;if(T.sq<0.999){P.y-=Math.sin(Math.PI*(1-T.sq))*30/F0;}
-    if(T.v>1&&T.tr.gait!=='none'){const amp=Math.min(1,Math.sin(Math.PI*T.u)*1.7),gal=T.tr.gait==='gallop'||(T.tr.gait!=='trot'&&T.v>420),ph=T.dist/(gal?300:150)*TAU;if(gal)gGallop(P,ph,amp);else gTrot(P,ph,amp);P.mane=Math.max(P.mane||0,0.8*amp);P.tripRun=amp;}}}
+  {const T=tripAt(st,t);if(T&&T.act){P.x+=T.x/F0;if(T.flip)P.flip=1;
+    const H=T.hu>=0,k=H?Math.min(eio(seg(T.hu,0,TURN_C*0.85)),1-eio(seg(T.hu,TURN_A+0.03,1))):0;/* poids du bond (la course s'efface à l'appel et reprend à la réception) */
+    if(T.v>1&&T.tr.gait!=='none'){const amp=Math.min(1,Math.sin(Math.PI*T.u)*1.7)*(1-k),gal=T.tr.gait==='gallop'||(T.tr.gait!=='trot'&&T.v>420),ph=T.dist/(gal?300:150)*TAU;if(gal)gGallop(P,ph,amp);else gTrot(P,ph,amp);P.mane=Math.max(P.mane||0,0.8*amp);P.tripRun=amp;}
+    if(H){const G={};for(const L of LEGS)G[L]=(P.leg[L]||[0,0]).slice();
+      if(P.noGround){const s=Math.sin(Math.PI*T.hu);P.y-=s*TURN_H*0.45;for(const L of LEGS){const back=L==='legNear'||L==='legBack';setLeg(P,L,(back?-0.3:0.35)*s,0.7*s);}P.mane=Math.max(P.mane||0,s);}/* en vol : simple rebond, sans tassement */
+      else gTurnHop(P,T.hu,TURN_H);
+      for(const L of LEGS){P.leg[L][0]+=G[L][0];P.leg[L][1]+=G[L][1];}
+      const w=eio(seg(T.hu,TURN_C,TURN_A)),o=turnO();P.x+=(t>=T.tc?2*T.sb*o*(1-w):-2*T.sb*o*w)/F0;/* le centre du corps glisse d'un côté à l'autre de l'axe pendant le vol, les sabots restent posés à l'appel et à la réception */
+      const q=Math.abs(t-T.tc)*30;if(q<1)P.sx*=0.88+0.12*q;}}}/* 1 à 2 images de profil serré au retournement (largeur >= 88 %) */
   if(st.walk){const w=walkAt(st.walk,t);P.x+=w.x/F0;
     if(w.v>1){const amp=Math.min(1,Math.sin(Math.PI*w.u)*1.6),ph=w.dist/(w.v>420?300:150)*TAU;
       if(w.v>420){gGallop(P,ph,amp);}else{gTrot(P,ph,amp*(w.dir<0?0.6:1));}P.mane=Math.max(P.mane||0,0.7*amp);}}
@@ -1239,10 +1422,8 @@ function applyMoves(P,t,st){const F0=typeof F!=='undefined'?F:1;
     else if(m.k==='hop'){const d=m.dur||0.6,u=(t-t0)/d;if(u>=0&&u<1){gPronk(P,u,(m.h||55)*(m.surprise?1.5:1.3),d);P.surprise=Math.max(P.surprise||0,m.surprise?1:0);}
       if(m.dx){const back=m.back||1.0;if(u>=0&&u<1)P.x+=m.dx*eio(u)/F0;else if(u>=1&&t<t0+d+back){const v=seg(t,t0+d,t0+d+back);P.x+=m.dx*(1-eio(v))/F0;gTrot(P,(t-t0)*12,0.45*Math.sin(Math.PI*v),0.5,4);}}}
     else if(m.t1!==undefined&&t>=t0&&t<m.t1){const r=Math.min(1,seg(t,t0,t0+0.25),1-seg(t,m.t1-0.25,m.t1)),τ=t-t0;
-      if(m.k==='prance')gPrance(P,τ*(m.rate||7),r);
-      else if(m.k==='stomp')gTrot(P,τ*(m.rate||15),0.55*r,0.5,5*r);
-      else if(m.k==='tiptoe')gTiptoe(P,τ*(m.rate||6),r);
-      else if(m.k==='skip')gSkip(P,τ*(m.rate||6),r);
+      const K=IPK[m.k];
+      if(K)ipGesture(P,t,st,m,K,r,τ);/* v24 : vrais gestes sur place (avant : gTrot = marche sans avancer) */
       else if(m.k==='fly'){const u=seg(t,t0,m.t1),lift=eio(seg(u,0,0.25))*(1-eio(seg(u,0.75,1))),h=m.h||220;
         P.y-=(lift*h+Math.sin(τ*3)*12*lift)/F0;P.x+=(m.dx||0)*Math.sin(Math.PI*u)/F0;P.rot+=Math.sin(τ*2.2)*0.05*lift;
         for(const L of LEGS){const back=L==='legNear'||L==='legBack';setLeg(P,L,(back?-0.4:0.45)*lift,0.8*lift);}P.mane=1;P.tail[0]+=0.2*lift;}}}}
@@ -1413,6 +1594,7 @@ let MAGICF=toF(INFO.hornTip[0],INFO.hornTip[1]+24);
 // v7 : intro commune de 3 s, puis coupe franche vers la route. Le code des histoires reste écrit en « temps d'histoire » (o) ;
 // l'écran et le son sont en temps réel (t). Entre CUT_T et CUT_T+D, le temps d'histoire est sauté.
 const CUT_T=3.1;
+let CUT_OUT=false;/* v23 : vrai pendant le dessin du plan d'intro prolongé (fondu enchaîné de la coupe) */
 function OT(t,f=FILM){return t<CUT_T?t:t+f.D;}
 function RT(o,f=FILM){return o<CUT_T?o:(o<CUT_T+f.D?null:o-f.D);}
 let EYE_OFF=[toF(INFO.eye[0],INFO.eye[1])[0]-toF(CX,GY)[0],toF(INFO.eye[0],INFO.eye[1])[1]-toF(CX,GY)[1]];
@@ -1429,8 +1611,8 @@ const kv=(t,keys)=>vInterp(keys,t);
 function camera(t,film=FILM,P=null){const st=film.story,X=trackX(t,film),f=eio(seg(t,3.9,5.6)),lead=typeof st.lead==='function'?st.lead(t):(st.lead??90);
   const zb=WIDE?0.86:0.82,zf=eio(seg(t,3.9,5.4));const cam={C:lerp(360,CRE_FX+X+lead,f),z:lerp(1,zb,zf),cy:lerp(640,(WIDE?700:650)+(FOOT_FY-FOOT_BASE),zf),sh:[0,0]};
   const push=eio(seg(t,2.3,3.0))*(1-eio(seg(t,3.7,4.4)));cam.z+=0.07*push;cam.cy+=70*push;cam.C+=30*push;
-  const r=t<CUT_T?t:t-film.D;
-  if(t>=CUT_T){const w=1-eio(seg(r,3.5,4.5));cam.z*=1-0.2*w;cam.cy-=120*w;cam.C+=170*w;}// plan 1 : la route en plan large
+  const r=(t<CUT_T||CUT_OUT)?t:t-film.D;
+  if(t>=CUT_T&&!CUT_OUT){const w=1-eio(seg(r,3.5,4.5));cam.z*=1-0.2*w;cam.cy-=120*w;cam.C+=170*w;}// plan 1 : la route en plan large
   if(st.cam)st.cam(t,cam,X,film);
   if(st.trips){const T=tripAt(st,t);if(T){const w=eio(seg(t,T.tr.t0-0.5,T.tr.t0+0.35))*(1-eio(seg(t,T.tr.t1-0.3,T.tr.t1+0.6)));
     if(w>0){const dx=tripX(st,t+0.3)-tripX(st,t-0.3),hx=CRE_FX+X+(T.act?T.x:0)+clamp(dx/500,-1,1)*120*(1-seg(t,T.tr.t1-0.6,T.tr.t1));cam.C=lerp(cam.C,hx,w);cam.z=lerp(cam.z,T.tr.z||0.8,w);cam.cy=lerp(cam.cy,(WIDE?700:650)+(FOOT_FY-FOOT_BASE)-(T.tr.up||0),w);}}}
@@ -1530,7 +1712,7 @@ function heroPose(t){const st=FILM.story,P=pose0();idle(P,t);
   else if(t<4.2){P.head+=0.09*Math.sin(seg(t,2.6,3.3)*Math.PI);P.blush=seg(t,2.5,2.9)*(1-seg(t,3.9,4.2));P.tail[2]+=Math.sin(t*7)*0.18;if(t>3.35&&t<3.9)gPronk(P,seg(t,3.35,3.9),62,0.55);}
   else if(t<END+8)st.act(P,t,trackX(t)/(st.stride||150)*TAU);
   if(t>=4.2&&t<END+8&&(st.walk||st.moves||st.trips))applyMoves(P,t,st);
-  const r=t<CUT_T?t:t-FILM.D;
+  const r=(t<CUT_T||CUT_OUT)?t:t-FILM.D;
   if(!st.noFinale&&!st.noFinaleJump&&r>END-4.4&&r<END-3.2){const u=seg(r,END-4.3,END-3.35);gPronk(P,u,170,0.95);P.happy=1;P.sparkleEye=Math.max(P.sparkleEye||0,Math.sin(Math.PI*u));P.mane=1;}// final magique : grand saut vers l'arc-en-ciel
   if(FILM.TS<90&&r>FILM.TS-0.5){const w=eio(seg(r,FILM.TS-0.5,FILM.TS));for(const L of LEGS){P.leg[L][0]*=1-w;P.leg[L][1]*=1-w;}
     P.rot*=1-w;P.sx=lerp(P.sx,1,w);P.sy=lerp(P.sy,1,w);if(!P.noGround)P.y*=1-w;P.head=lerp(P.head,0.07,w);P.blush=Math.max(P.blush,w);P.glow*=1-w;P.shine=(P.shine||0)*(1-w);
@@ -1573,7 +1755,23 @@ function renderFilm(tr){const t=OT(tr),st=FILM.story,P=heroPose(t);hairDrag(P,t)
     sx.save();sx.clip();drawWorldScene(t,cam,P);sx.restore();
     if(u<1){sx.save();camTf(sx,cam,1);sx.globalCompositeOperation='lighter';for(let i=0;i<60;i++){const an=i*TAU/60+t;twinkle(sx,MAGICF[0]+Math.cos(an)*r,MAGICF[1]+Math.sin(an)*r,14+8*Math.sin(i+t*9),C_ARC[i%6],0.9*(1-u*0.6),an);}sx.restore();}
     overlays(tr,t,P);return;}
+  if(tr>=CUT_T&&tr<CUT_T+CUT_X&&cutMix(tr,t,cam,P)){overlays(tr,t,P);return;}
   drawWorldScene(t,cam,P);overlays(tr,t,P);}
+/* v23 : iris magique de CUT_X s à la coupe d'intro (avant : coupe sèche + éclair blanc). OT/RT, répliques, toucher et durée inchangés.
+   Le plan d'intro continue au même instant (cadrage d'intro, copines du mode paysage) ; le plan de la route s'ouvre dans un cercle doré
+   qui grandit depuis la licorne (même langage que l'ouverture du monde à 0,9 s et l'iris du générique). Aucun mouvement de caméra ajouté. */
+const CUT_X=0.45;let CUTC=null;
+function cutMix(tr,t,cam,P){const u=seg(tr,CUT_T,CUT_T+CUT_X),to=tr;let A,Po;
+  CUT_OUT=true;try{Po=heroPose(to);Po.drag=(P.drag||[0,0]).slice();A=camera(to,FILM,Po);}catch(err){CUT_OUT=false;return false;}
+  const W=scene.width,H=scene.height;
+  try{FILM.cam=A;FILM.P=Po;sx.save();drawWorldScene(to,A,Po);sx.restore();}catch(err){CUT_OUT=false;FILM.cam=cam;FILM.P=P;sx.setTransform(KS,0,0,KS,0,0);return false;}
+  CUT_OUT=false;if(!CUTC||CUTC.width!==W||CUTC.height!==H)CUTC=cv(W,H);const c2=CUTC.getContext('2d');c2.setTransform(1,0,0,1,0,0);c2.clearRect(0,0,W,H);c2.drawImage(scene,0,0);
+  FILM.cam=cam;FILM.P=P;sx.setTransform(KS,0,0,KS,0,0);drawWorldScene(t,cam,P);
+  const [hx,hy]=WS(cam,...heroPt(t,P,INFO.pivot.body,'root')),cx=clamp(hx,VW*0.2,VW*0.8),cy=clamp(hy-40,FH*0.25,FH*0.75),R=Math.hypot(Math.max(cx,VW-cx),Math.max(cy,FH-cy))+50,r=R*eio(u);
+  sx.save();sx.setTransform(KS,0,0,KS,0,0);sx.beginPath();sx.rect(0,0,VW,FH);sx.arc(cx,cy,Math.max(0.5,r),0,TAU,true);sx.clip('evenodd');sx.setTransform(1,0,0,1,0,0);sx.drawImage(CUTC,0,0);sx.restore();
+  if(r>1){sx.save();sx.setTransform(KS,0,0,KS,0,0);const lw=Math.min(1,r/60);sx.lineWidth=24*lw;sx.strokeStyle='rgba(255,214,120,.95)';sx.beginPath();sx.arc(cx,cy,r,0,TAU);sx.stroke();sx.lineWidth=8*lw;sx.strokeStyle='#ffffff';sx.stroke();
+    sx.globalCompositeOperation='lighter';const n=r<120?8:18;for(let i=0;i<n;i++){const an=i*TAU/n+tr*1.6;twinkle(sx,cx+Math.cos(an)*r,cy+Math.sin(an)*r,(14+7*Math.sin(tr*11+i))*Math.min(1,0.5+r/300),C_ARC[i%6],1,an*2);}sx.restore();}
+  return true;}
 // ouverture : une étincelle magique fait le tour de la licorne dessinée (départ et retour à la corne), laissant une traînée dorée ;
 // puis le monde s'ouvre depuis la corne. « Mon dessin se réveille ! »
 function introTrace(ctx,t,cam){const u=seg(t,0.1,0.86);if(u<=0)return;let S;try{S=silhouette();}catch(e){return;}const P=S.pts.map(([x,y])=>toF(x,y)),n=P.length;if(n<4)return;
@@ -1593,7 +1791,7 @@ function drawWorldScene(t,cam,P){const st=FILM.story,W6=FILM.world,gk=st.grayFro
   wowArc(sx);
   drawStrip(sx,cam,W6.gd,1);if(gk!==null&&W6.gdG)grayOver(sx,cam,W6.gdG,1,gk);
   drawKidDecor(sx,t,cam,'ground');
-  if(WIDE&&t<CUT_T)drawSpectators(sx,t,cam);// les copines regardent la page se réveiller, puis on part sur la route
+  if(WIDE&&(t<CUT_T||CUT_OUT))drawSpectators(sx,t,cam);// les copines regardent la page se réveiller, puis on part sur la route
   if(st.mid)st.mid(sx,t,cam,P);
   if(st.trips){tripFX(sx,t,cam,P,'back');speedLines(sx,t,cam,P);}
   if(!P.hide){heroHalo(sx,t,cam,P);drawCre(sx,cam,FILM.cre,P,CRE_FX+trackX(t)+(P.flip?2*P.x*F:0),FOOT_FY,1,!!P.flip,t);landPuffs(sx,t,cam,P);}
@@ -1661,15 +1859,18 @@ function wowTap(ctx,o,P){const J=FILM.story.tapJump;if(!J||o<J||o>J+3.2)return;c
   ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<30;i++){const s0=0.25+hr(i,24)*1.2,u=τ-s0;if(u<0)continue;const x=hr(i,25)*FW,y=-40+u*(380+hr(i,26)*320);if(y>FH)continue;
     twinkle(ctx,x+Math.sin(u*3+i)*30,y,12+hr(i,27)*12,i%2?[255,236,150]:cols[i%cols.length],1-seg(τ,2.6,3.2),u*3+i);}ctx.restore();}// pluie d'étoiles
 // traits de vitesse derrière la licorne quand elle galope vite pendant une balade (effet dessin animé)
-function turnSmear(ctx,t,cam,P,T){if(!T||!T.act||T.sq>0.97)return;const k=Math.min(1,(1-T.sq)*1.7),[bx,by]=heroPt(t,P,INFO.pivot.body,'root');ctx.save();camTf(ctx,cam,1);ctx.lineCap='round';ctx.globalAlpha=0.95*k;
-  for(const sd of [-1,1])for(let i=0;i<2;i++){const rx=215+i*42,ry=150+i*26,c=sd<0?Math.PI:0,h=0.2+0.06*i+0.08*k;ctx.beginPath();ctx.ellipse(bx,by-10,rx,ry,0,c-h*Math.PI,c+h*Math.PI);ctx.strokeStyle='rgba(45,40,70,.55)';ctx.lineWidth=13-2*i;ctx.stroke();ctx.strokeStyle='#ffffff';ctx.lineWidth=7-1.5*i;ctx.stroke();}ctx.restore();}/* v22 : traits de rotation BD « ( ) » de chaque côté pendant le demi-tour (avant : la licorne rétrécissait « en feuille de papier » sans rien autour) */
+function turnSmear(ctx,t,cam,P,T){if(!T||!T.act||!(T.hu>=0))return;const q=Math.abs(t-T.tc)/0.15;if(q>=1)return;/* v23 : autour du retournement, au sommet du bond ; arcs à la taille de la silhouette (elle reste pleine largeur) */
+  const k=1-q*q,B=turnBox(),bx=heroAt(t,P)[0]+(P.flip?-1:1)*turnO(),by=heroPt(t,P,INFO.pivot.body,'root')[1];ctx.save();camTf(ctx,cam,1);ctx.lineCap='round';ctx.globalAlpha=0.95*k;
+  for(const sd of [-1,1])for(let i=0;i<2;i++){const rx=B[0]+28+i*44,ry=B[1]*0.8+i*30,c=sd<0?Math.PI:0,h=0.13+0.05*i+0.06*k;ctx.beginPath();ctx.ellipse(bx,by-10,rx,ry,0,c-h*Math.PI,c+h*Math.PI);ctx.strokeStyle='rgba(45,40,70,.55)';ctx.lineWidth=13-2*i;ctx.stroke();ctx.strokeStyle='#ffffff';ctx.lineWidth=7-1.5*i;ctx.stroke();}ctx.restore();}/* v22 : traits de rotation BD « ( ) » de chaque côté pendant le demi-tour */
+function turnBox(){if(FILM._tB)return FILM._tB;let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const k of CREATURE){const q=BOX[k];if(!q)continue;x0=Math.min(x0,q[0]);x1=Math.max(x1,q[2]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[3]);}
+  return FILM._tB=x0<x1?[(x1-x0)*F/2,(y1-y0)*F/2]:[260,240];}
 function speedLines(ctx,t,cam,P){const st=FILM.story,T=tripAt(st,t);if(!T||!T.act)return;turnSmear(ctx,t,cam,P,T);const v=(tripX(st,t+0.05)-tripX(st,t-0.05))/0.1,sp=Math.min(1,Math.abs(v)/900);if(sp<0.3)return;
   const dir=Math.sign(v),[bx,by]=heroPt(t,P,INFO.pivot.body,'root');ctx.save();camTf(ctx,cam,1);ctx.lineCap='round';ctx.strokeStyle='#ffffff';ctx.lineWidth=7;
   for(let i=0;i<5;i++){const y=by-130+i*58+Math.sin(t*20+i)*6,x0=bx-dir*(175+hr(i,91)*60),len=(90+hr(i,92)*110)*sp;ctx.globalAlpha=0.6*(sp-0.3)/0.7*(0.6+0.4*Math.sin(t*15+i*2));
     ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x0-dir*len,y);ctx.stroke();}ctx.restore();}
 // petits nuages de poussière quand les sabots retouchent le sol après un bond (cartoon)
 function landTimes(st){if(st._lands)return st._lands;const L=[];for(const m of st.moves||[]){if(m.k==='jumps'){const d=m.dur||0.55,n=m.n||2;for(let i=0;i<n;i++)L.push(m.t0+i*d+0.86*d);}else if(m.k==='hop')L.push(m.t0+0.86*(m.dur||0.6));}
-  for(const tr of st.trips||[]){const turn=0.35,tm=tr.t0+(tr.t1-tr.t0-2*turn)*(tr.out||0.53);L.push(tm+turn*0.92,tr.t1-0.03);}// petit nuage de poussière à chaque demi-tour sauté des balades
+  for(const tr of st.trips||[]){const K=tripTurns(tr);L.push(K.h1+TURN_A*TURN_HD,K.h2+TURN_A*TURN_HD);}// petit nuage de poussière à chaque demi-tour sauté des balades
   if(!st.noFinale&&!st.noFinaleJump)L.push(END-4.3+0.86*0.95);st._lands=L;return L;}
 function landPuffs(ctx,t,cam,P){const st=FILM.story;if(st.noPuffs||P.noGround)return;const r=t<CUT_T?t:t-FILM.D;let on=false;for(const l of landTimes(st))if(r>=l&&r<l+0.5){on=true;break;}if(!on)return;
   const fx=CRE_FX+trackX(t)+P.x*F+(P.flip?-1:1)*10,fy=FOOT_FY+(P.gdy||0)+6;ctx.save();camTf(ctx,cam,1);ctx.lineWidth=3;ctx.strokeStyle='rgba(40,40,40,.35)';
@@ -1723,8 +1924,10 @@ function overlays(t,o,P){const ctx=sx,st=FILM.story,key=FILM.key,p=POW[key];
   if(t>0.25&&t<0.95){const a=Math.sin(Math.PI*seg(t,0.25,0.95));ctx.save();ctx.globalCompositeOperation='lighter';glowDot(ctx,MAGICF[0],MAGICF[1],80,[255,240,170],a);twinkle(ctx,MAGICF[0],MAGICF[1],40*a,[255,255,255],a,t*3);ctx.restore();}
   // titre de l'histoire
   // coupe magique vers la route
-  if(t>=CUT_T&&t<CUT_T+0.45){const u=seg(t,CUT_T,CUT_T+0.45);ctx.save();radialFlash(ctx,FW/2,FH*0.47,seg(t,CUT_T,CUT_T+0.26),0.9);ctx.globalCompositeOperation='lighter';/* v22 : éclat magique radial (avant : voile laiteux à 60 % sur tout l'écran, image délavée) */
-    for(let i=0;i<26;i++){const an=hr(i,3)*TAU,d=(0.2+u)*(300+hr(i,4)*500);twinkle(ctx,FW/2+Math.cos(an)*d,FH*0.45+Math.sin(an)*d,(18+hr(i,5)*16)*(1-u),C_ARC[i%6],1-u,an+u*4);}ctx.restore();}
+  if(t>=CUT_T&&t<CUT_T+0.5){const u=seg(t,CUT_T,CUT_T+0.5),[hx,hy]=wowScr(o,P,INFO.pivot.body,'root'),cx=hx,cy=hy-40;ctx.save();ctx.globalCompositeOperation='lighter';/* v23 : halo doré doux + gerbe d'étincelles depuis elle, au cœur de l'iris (avant : éclair radial blanc à 90 %, « voile blanc ») */
+    glowDot(ctx,cx,cy,200+200*eoc(u),[255,232,170],0.3*Math.sin(Math.PI*Math.min(1,u*1.5)));
+    for(let i=0;i<26;i++){const an=hr(i,3)*TAU,d=(0.2+u)*(300+hr(i,4)*500);twinkle(ctx,cx+Math.cos(an)*d,cy+Math.sin(an)*d,(18+hr(i,5)*16)*(1-u),C_ARC[i%6],1-u,an+u*4);}
+    ctx.restore();}
   if(t>3.3&&t<5.4){const a=Math.min(1,seg(t,3.3,3.7))*(1-seg(t,4.9,5.4));pill(ctx,st.title,FW/2,FH-110,0.62*elastic(seg(t,3.3,3.9)*1.2),a,'#8a63d2');}
   // carte couleur = élément
   const c0=st.card-FILM.D;if(t>c0&&t<c0+1.7){const v=eoc(seg(t,c0,c0+0.4))*(1-seg(t,c0+1.4,c0+1.7)),y=FH-150+(1-v)*200;ctx.save();ctx.globalAlpha=Math.min(1,v*1.4);
@@ -2306,7 +2509,7 @@ Object.assign(SFX,{
 });
 // hauteur du vol en ballon (px du monde, vers le haut) et gonflement 0..1
 const HQ={
-  infl(t){if(t<11.9)return 0;if(t<12.6)return elastic(seg(t,11.9,12.6)*1.05);if(t<15.0)return 1;return 1-eio(seg(t,15.0,16.25));},
+  infl(t){if(t<11.9)return 0;if(t<12.6)return elasticIn(seg(t,11.9,12.6)*1.05);if(t<15.0)return 1;return 1-eio(seg(t,15.0,16.25));},
   lift(t){if(t<11.95||t>16.45)return 0;if(t<12.6)return 40*Math.sin(Math.PI*0.5*seg(t,11.95,12.6));if(t<14.8)return lerp(40,380,eio(seg(t,12.6,14.8)))+8*Math.sin(t*5);
     if(t<15.0)return 380-30*Math.sin(Math.PI*seg(t,14.8,15.0));const u=seg(t,15.0,16.45);return 370*(1-u*u)+60*Math.sin(u*Math.PI*3)*(1-u);},
   hics:[8.95,11.8,23.0,35.35,42.6],
@@ -2838,14 +3041,14 @@ const ANV={
     if(t<ANV.relit1(i))return null;
     const K=1.5;o.face=1;// passe 2 : flammes magiques plus grandes (leurs visages se lisent)
     o.sx=K;o.sy=K*fy;
-    if(t<ANV.relit1(i)+0.6){const u=seg(t,ANV.relit1(i),ANV.relit1(i)+0.6);o.sx=K*elastic(u);o.sy=K*elastic(u);return o;}
+    if(t<ANV.relit1(i)+0.6){const u=seg(t,ANV.relit1(i),ANV.relit1(i)+0.6);o.sx=K*elasticIn(u);o.sy=K*elasticIn(u);/* E2 : la flamme pousse (avant : elastic(0)=1, pleine taille en une image) */return o;}
     if(t>12.0&&t<12.9){o.r=0.32*Math.sin((t-12.0)*13+i);o.sy*=1+0.12*Math.abs(Math.sin((t-12.0)*13));return o;}
     if(t>17.9&&t<19.6){const u=seg(t,17.9,18.4);o.r=1.2*eio(u)+0.12*Math.sin(t*34+i);o.sx=K*(1+0.45*u);o.sy=K*(1-0.3*u);return o;}
     if(t>=19.6&&t<20.5){const u=seg(t,19.6,20.4);o.r=1.2*(1-elastic(u));return o;}
     if(t>20.2&&t<21.0){o.sy*=1+0.22*Math.abs(Math.sin((t-20.2)*14+i));return o;}
     /* QA FD2 : 21,4-23,3 « pas sages » : les flammes font la ola en sautillant ; 24,5-26,4 cache-cache (elles rentrent dans les bougies, puis ressortent « coucou ») ; 26,4-31,2 elles dansent en rythme */
     if(t>21.4&&t<23.3){const w=seg(t,21.4,21.7)*(1-seg(t,23.0,23.3)),ph=((t-21.4)*1.7-i*0.22)%1,hp=ph<0.45?Math.sin(Math.PI*ph/0.45):0;o.y-=26*hp*w;o.sy*=1+0.25*hp*w;o.r=0.18*Math.sin(t*6+i)*w;return o;}
-    if(t>24.5&&t<26.4){const a=24.5+0.15*i,b2=25.3+0.3*i,d=eio(seg(t,a,a+0.25)),u=seg(t,b2,b2+0.55),k=t<b2?1-0.85*d:0.15+0.85*elastic(u);o.sx*=k;o.sy*=k;if(t>b2)o.r=0.3*Math.sin(Math.PI*u*2)*(1-u);return o;}
+    if(t>24.5&&t<26.4){const a=24.5+0.15*i,b2=25.3+0.3*i,d=eio(seg(t,a,a+0.25)),u=seg(t,b2,b2+0.55),k=t<b2?1-0.85*d:0.15+0.85*elasticIn(u);o.sx*=k;o.sy*=k;if(t>b2)o.r=0.3*Math.sin(Math.PI*u*2)*(1-u);return o;}
     if(t>26.4&&t<31.2){const w=seg(t,26.4,26.8)*(1-seg(t,30.9,31.2)),bt=Math.abs(Math.sin((t-26.4)*Math.PI*1.25));o.r=0.22*Math.sin((t-26.4)*Math.PI*1.25+i*0.9)*w;o.sy*=1+0.12*bt*w;return o;}
     if(t>31.2&&t<ANV.hop(i)){const u=seg(t,31.2,31.7);o.r=1.0*eio(u)+0.15*Math.sin(t*30+i);o.sx=K*(1+0.3*u);return o;}
     if(t>=ANV.hop(i)&&t<ANV.inBal(i)){const u=seg(t,ANV.hop(i),ANV.inBal(i)),p=ANV.arc(b,ANV.balC(ANV.BAL[i],t),eio(u),300-40*i),s=lerp(K,1.2,u)+0.9*Math.sin(Math.PI*u);
@@ -2858,7 +3061,7 @@ const ANV={
     if(t>44.3&&t<45.25){o.sy*=1-0.12*seg(t,44.3,44.6);return o;}
     if(t>45.2&&t<46.0){o.r=0.32*Math.sin((t-45.2)*16+i*0.5)*(1-seg(t,45.8,46.0));o.sy*=1+0.22*Math.abs(Math.sin((t-45.2)*14+i));return o;}
     if(t>=ANV.up(i)&&t<ANV.relit3(i))return null;
-    if(t>=ANV.relit3(i)&&t<ANV.relit3(i)+0.6){const u=seg(t,ANV.relit3(i),ANV.relit3(i)+0.6);o.sx=K*elastic(u);o.sy=K*elastic(u);return o;}
+    if(t>=ANV.relit3(i)&&t<ANV.relit3(i)+0.6){const u=seg(t,ANV.relit3(i),ANV.relit3(i)+0.6);o.sx=K*elastic(u);o.sy=K*elastic(u);/* E2 : elastic gardé ici, la flamme volante se pose à cet instant (relais, pas une apparition) */return o;}
     if(t>56.1&&t<57.1){const u=seg(t,56.1,56.5);o.r=0.6*eio(u)*(1-seg(t,56.5,57.1))+0.08*Math.sin(t*30);return o;}
     return o;},
   // une flamme du dessin (morceau colorié par l'enfant), avec ses petits yeux quand elle est magique
@@ -3012,10 +3215,10 @@ STORIES.anniversaire={title:'Les bougies magiques',end:60,D:0,card:99,noGreet:tr
     // paysage : prénom dans le ciel à droite, au-dessus du gâteau (au milieu, il passait sur son chapeau et les fanions)
     ANV.cx=WIDE?VW*0.76:VW/2;const nm=artist(),cols=FCOL(FILM),SL=ANV.slots(nm,cols),N=SL.S.length,T0=47.4,T1=51.0;
     const tk=k=>T0+(N>1?k/(N-1):0)*(T1-T0-0.4);
-    if(!nm&&t>tk(0)){const u=elastic(seg(t,tk(0),tk(0)+0.6)),cx=ANV.cx,cy=SL.cy0+20;ctx.save();ctx.translate(cx,cy);ctx.scale(u,u);ctx.beginPath();
+    if(!nm&&t>tk(0)){const u=elasticIn(seg(t,tk(0),tk(0)+0.6)),cx=ANV.cx,cy=SL.cy0+20;ctx.save();ctx.translate(cx,cy);ctx.scale(u,u);ctx.beginPath();
       for(let k=0;k<=60;k++){const a=k/60*TAU,x=16*Math.pow(Math.sin(a),3)*5.2,y=-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))*5.2;k===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
       ctx.closePath();ctx.lineJoin='round';ctx.lineWidth=20;ctx.strokeStyle='rgba(255,255,255,.95)';ctx.stroke();ctx.fillStyle=rgba(cols[0],1);ctx.fill();ctx.lineWidth=8;ctx.strokeStyle='#3a2470';ctx.stroke();ctx.restore();}
-    SL.S.forEach((s,k)=>{const u=seg(t,tk(k),tk(k)+0.55);if(u<=0)return;const e=elastic(u);
+    SL.S.forEach((s,k)=>{const u=seg(t,tk(k),tk(k)+0.55);if(u<=0)return;const e=elasticIn(u);
       if(s.l){const c=s.l.c,w=c.width*SL.sc,h=c.height*SL.sc;ctx.save();ctx.translate(s.x,SL.cy0);ctx.scale(e,e);ctx.drawImage(c,-w/2,-h/2,w,h);ctx.restore();}
       ANV.tinyFlame(ctx,s.x,s.y-4,(nm?Math.max(0.55,SL.sc*1.5):1.1)*Math.min(1,e),t,k);});
     // les trois flammes (morceaux du dessin) montent, sautent de lettre en lettre, puis redescendent sur le gâteau
@@ -3328,7 +3531,7 @@ STORIES.arcenciel={title:'Le pinceau farceur',end:60,D:0,card:99,noGreet:true,no
     for(const [k,pv,t0] of [['potL',[145,1180],16.6],['potR',[930,1065],8.7]]){const u=seg(t,t0,t0+0.5),w=u>0&&u<1?Math.sin(Math.PI*u):0,pop=decorPose(k,t).sc;
       arPart(ctx,k,pv,...AR.W(...pv),0.04*w*Math.sin(t*30),pop*(1+0.04*w),pop*(1-0.05*w));}
     // les taches du dessin : elles arrivent quand le pinceau éclabousse
-    for(const [k,pv,t0] of [['splatL',[270,1280],36.3],['splatR',[930,1270],36.55]]){if(t<t0)continue;const s=elastic(seg(t,t0,t0+0.5)*1.1);arPart(ctx,k,pv,...AR.W(...pv),0,s,s*(0.8+0.2*s));}
+    for(const [k,pv,t0] of [['splatL',[270,1280],36.3],['splatR',[930,1270],36.55]]){if(t<t0)continue;const s=elasticIn(seg(t,t0,t0+0.5)*1.1);arPart(ctx,k,pv,...AR.W(...pv),0,s,s*(0.8+0.2*s));}
     // le grand cœur aux couleurs de l'enfant (QA B : derrière elle, elle passe devant en galopant)
     {const cols=S.cols,u=S.u,ink='rgba(30,30,30,0.9)';
     if(t>31.8){const n=Math.floor(seg(t,31.8,34.2)*S.HE.length),rise=0,pf=eio(seg(t,50.6,51.5)),a=1-pf;/* I2 : le cœur s'efface en 0,9 s (avant 0,4 s) */if(a>0.01){ctx.save();ctx.translate(0,-rise);
@@ -3344,20 +3547,20 @@ STORIES.arcenciel={title:'Le pinceau farceur',end:60,D:0,card:99,noGreet:true,no
     // le gribouillis (couleur du pot de droite), puis il coule et s'efface
     if(t>10.0&&t<16.4){const n=Math.floor(seg(t,10.0,12.8)*S.SQ.length),a=1-seg(t,14.9,16.4),dy=seg(t,14.9,16.4)*40;ctx.save();ctx.translate(0,dy);AR.stroke(ctx,S.SQ,n,[30*u,22*u],[ink,rgba(S.pR,1)],a);ctx.restore();}
     // les points de peinture sur son visage (ils restent jusqu'à la fin)
-    AR.DOTS.forEach((d,i)=>{const b=AR.BOOP[i];if(t<b)return;const s=elastic(seg(t,b,b+0.3)*1.2),[x,y]=heroPt(t,P,AR.PG(...d)),c=i===1?S.pR:S.pL;
+    AR.DOTS.forEach((d,i)=>{const b=AR.BOOP[i];if(t<b)return;const s=elasticIn(seg(t,b,b+0.3)*1.2),[x,y]=heroPt(t,P,AR.PG(...d)),c=i===1?S.pR:S.pL;
       ctx.save();ctx.fillStyle=rgba(c,1);ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(x,y,9*u*s,8*u*s,0.3,0,TAU);ctx.fill();ctx.stroke();ctx.restore();});
-    AR.SPOTS.forEach(([px,py,rr,b],i)=>{if(t<b+0.25)return;const s=elastic(seg(t,b+0.25,b+0.55)*1.2),[x,y]=heroPt(t,P,AR.PG(px,py),'root'),c=[S.pL,S.pR,cols[2%cols.length]][i];
+    AR.SPOTS.forEach(([px,py,rr,b],i)=>{if(t<b+0.25)return;const s=elasticIn(seg(t,b+0.25,b+0.55)*1.2),[x,y]=heroPt(t,P,AR.PG(px,py),'root'),c=[S.pL,S.pR,cols[2%cols.length]][i];
       ctx.save();ctx.fillStyle=rgba(c,1);ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();for(let k=0;k<9;k++){const an=k*TAU/9,rk=rr*u*s*(0.85+0.25*hr(k+i*9,7));k?ctx.lineTo(x+Math.cos(an)*rk*1.15,y+Math.sin(an)*rk):ctx.moveTo(x+Math.cos(an)*rk*1.15,y+Math.sin(an)*rk);}ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();});
     if(t>36.1&&t<37.1){for(const [px,py,rr,b] of AR.SPOTS){const v=seg(t,b-0.1,b+0.25);if(v<=0||v>=1)continue;const tg=heroPt(t,P,AR.PG(px,py),'root'),p=[lerp(S.flick[0],tg[0],v),lerp(S.flick[1],tg[1],v)-Math.sin(Math.PI*v)*120];ctx.save();ctx.fillStyle=rgba(S.pR,1);ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();ctx.arc(p[0],p[1],9*u,0,TAU);ctx.fill();ctx.stroke();ctx.restore();}}
     // éclaboussures : gouttes vers les taches du sol et une sur la corne
     if(t>36.0&&t<37.0){for(const [tx,ty,t0,c] of [[270,1280,36.0,S.pL],[930,1270,36.15,S.pR],[820,330,36.4,cols[2%cols.length]]]){const v=seg(t,t0,t0+0.45);if(v<=0||v>=1)continue;
       const tg=tx===820?heroPt(t,P,AR.PG(tx,ty)):AR.W(tx,ty),p=[lerp(S.flick[0],tg[0],v),lerp(S.flick[1],tg[1],v)-Math.sin(Math.PI*v)*160];ctx.save();ctx.fillStyle=rgba(c,1);ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();ctx.arc(p[0],p[1],10*u,0,TAU);ctx.fill();ctx.stroke();ctx.restore();}}
-    if(t>36.85){const [x,y]=heroPt(t,P,AR.PG(812,338)),s=elastic(seg(t,36.85,37.15)*1.2);ctx.save();ctx.fillStyle=rgba(cols[2%cols.length],1);ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();
+    if(t>36.85){const [x,y]=heroPt(t,P,AR.PG(812,338)),s=elasticIn(seg(t,36.85,37.15)*1.2);ctx.save();ctx.fillStyle=rgba(cols[2%cols.length],1);ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();
       ctx.moveTo(x-9*u*s,y);ctx.quadraticCurveTo(x,y-14*u*s,x+9*u*s,y);ctx.quadraticCurveTo(x+7*u*s,y+14*u*s,x,y+16*u*s);ctx.quadraticCurveTo(x-7*u*s,y+14*u*s,x-9*u*s,y);ctx.fill();ctx.stroke();ctx.restore();}
     // le pinceau (pointe chargée de peinture)
     const B=AR.brush(t,P);if(B.lay==='front'){if(P.flip){ctx.save();ctx.translate(B.tip[0],0);ctx.scale(-1,1);ctx.translate(-B.tip[0],0);AR.drawBrush(ctx,B);ctx.restore();}else AR.drawBrush(ctx,B);const pc=t<9.0?null:t<16.9?S.pR:t<31.4?S.pL:t<36.6?cols[(Math.floor(t*4))%cols.length]:null;
       if(pc){ctx.save();ctx.fillStyle=rgba(pc,1);ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();ctx.arc(B.tip[0],B.tip[1],9*u,0,TAU);ctx.fill();ctx.stroke();ctx.restore();}
-      if(t>43.2&&t<44.8){for(let i=0;i<3;i++){const v=seg(t,43.25+i*0.18,44.5+i*0.18);if(v<=0||v>=1)continue;heart(ctx,B.tip[0]+20+i*34+Math.sin(v*6+i)*14,B.tip[1]-40-v*200,(18+7*i)*elastic(Math.min(1,v*3)),[255,111,163],1-seg(v,0.7,1),0.2*Math.sin(v*5+i));}}// QA B : bisou = des cœurs qui montent (avant : tache rose floue)
+      if(t>43.2&&t<44.8){for(let i=0;i<3;i++){const v=seg(t,43.25+i*0.18,44.5+i*0.18);if(v<=0||v>=1)continue;heart(ctx,B.tip[0]+20+i*34+Math.sin(v*6+i)*14,B.tip[1]-40-v*200,(18+7*i)*elasticIn(Math.min(1,v*3)),[255,111,163],1-seg(v,0.7,1),0.2*Math.sin(v*5+i));}}// QA B : bisou = des cœurs qui montent (avant : tache rose floue)
       if(t>27.4&&t<31.4&&!S.tapped){ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<3;i++){const an=t*4+i*TAU/3;twinkle(ctx,B.tip[0]+Math.cos(an)*30*u,B.tip[1]+Math.sin(an)*30*u,(9+4*Math.sin(t*8+i))*u,[255,240,170],0.9,an);}ctx.restore();}}
     ctx.restore();},
   over(ctx,t,cam,P){if(t<52.6)return;ctx.save();ctx.setTransform(KS,0,0,KS,0,0);const nm=artist(),cols=FCOL(FILM);let pts,sc,cy0=300;
@@ -3745,7 +3948,7 @@ STORIES.bain={title:'La bulle géante',end:60,D:0,card:99,noGreet:true,noSecret:
   mid(ctx,t,cam,P){const S=FILM.S,cols=FCOL(FILM);ctx.save();camTf(ctx,cam,1);
     // les bulles du dessin : elles apparaissent quand la licorne les fabrique
     const app={bubA:10.3,bubB:34.1,bubC:34.0,bubD:34.2};
-    for(const k of ['bubA','bubB','bubC','bubD']){if(t<app[k])continue;const s=elastic(seg(t,app[k],app[k]+0.5)*1.1),h=S[k];baPart(ctx,k,INFO.pivot[k],h[0]+Math.sin(t*0.8+h[0])*4,h[1]+Math.sin(t*1.1+h[1])*6,0,s);}
+    for(const k of ['bubA','bubB','bubC','bubD']){if(t<app[k])continue;const s=elasticIn(seg(t,app[k],app[k]+0.5)*1.1),h=S[k];baPart(ctx,k,INFO.pivot[k],h[0]+Math.sin(t*0.8+h[0])*4,h[1]+Math.sin(t*1.1+h[1])*6,0,s);}
     for(const k of ['soap','towel'])baPart(ctx,k,INFO.pivot[k],...toF(...INFO.pivot[k]),0,decorPose(k,t).sc);
     const D=BA.duck(t,P);if(D.lay==='under')baPart(ctx,'duck',INFO.pivot.duck,D.x,D.y,D.rot,D.sc);
     const sp=t>33.7&&t<34.5?Math.sin(Math.PI*seg(t,33.7,34.5)):0;baPart(ctx,'tub',INFO.pivot.tub,S.tub[0],S.tub[1],0,decorPose('tub',t).sc*(1+0.04*sp),decorPose('tub',t).sc*(1-0.05*sp));
@@ -3792,7 +3995,7 @@ STORIES.bain={title:'La bulle géante',end:60,D:0,card:99,noGreet:true,noSecret:
     // la bulle se pose dans le ciel libre à côté de la licorne (avant : au milieu, par-dessus sa tête et sa corne)
     let cy0=230,cx0=VW*0.69,R0=170;if(WIDE){const hx=WS(cam,...heroPt(t,P,INFO.pivot.body,'root'))[0];cx0=hx<VW/2?VW*0.8:VW*0.2;cy0=330;R0=280;}
     // la dernière bulle (réussie) redescend au milieu de l'écran : le prénom est dedans
-    const u=eoc(seg(t,52.5,53.4)),fz=eio(seg(t,55.0,55.7)),R=R0*lerp(1,WIDE?0.82:0.85,fz);if(!WIDE)cx0=VW*lerp(0.69,0.755,fz);/* au saut final, sa tête ne touche pas la bulle */const by=lerp(cy0+30*(1-u),WIDE?235:165,fz);/* QA F : la bulle naît sur place (avant : elle redescendait du haut de l'image) *//* au saut final la bulle monte un peu, le prénom reste lisible */baBub(ctx,cx0,by,R*Math.max(0.02,elastic(seg(t,52.5,53.2))),cols,Math.min(1,seg(t,52.5,52.7)*1.5));// au final, la bulle monte se ranger au-dessus de l'arc-en-ciel
+    const u=eoc(seg(t,52.5,53.4)),fz=eio(seg(t,55.0,55.7)),R=R0*lerp(1,WIDE?0.82:0.85,fz);if(!WIDE)cx0=VW*lerp(0.69,0.755,fz);/* au saut final, sa tête ne touche pas la bulle */const by=lerp(cy0+30*(1-u),WIDE?235:165,fz);/* QA F : la bulle naît sur place (avant : elle redescendait du haut de l'image) *//* au saut final la bulle monte un peu, le prénom reste lisible */baBub(ctx,cx0,by,R*Math.max(0.02,elasticIn(seg(t,52.5,53.2))),cols,Math.min(1,seg(t,52.5,52.7)*1.5));// au final, la bulle monte se ranger au-dessus de l'arc-en-ciel
     if(nm&&t>53.2){const a=seg(t,53.2,53.9);ctx.save();ctx.globalAlpha=a;const np=namePoints(nm),sc=Math.min(WIDE?0.75:0.55,R*1.5/np.tw);ctx.font='900 150px Grandstander, "Comic Sans MS", sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.translate(cx0,by);ctx.scale(sc*1.12*(0.8+0.2*elastic(a)),sc*1.12*(0.8+0.2*elastic(a)));
       ctx.lineWidth=24;ctx.strokeStyle='rgba(255,255,255,.9)';ctx.strokeText(nm,0,0);ctx.lineWidth=11;ctx.strokeStyle='#3a2470';ctx.strokeText(nm,0,0);let xx=-ctx.measureText(nm).width/2;ctx.textAlign='left';
       for(let i=0;i<nm.length;i++){const w=ctx.measureText(nm[i]).width;ctx.fillStyle=rgba(cols[i%cols.length],1);ctx.fillText(nm[i],xx,0);xx+=w;}ctx.restore();}
@@ -4048,7 +4251,7 @@ STORIES.camping={title:'Le bruit dans la nuit',end:60,D:0,card:99,noGreet:true,n
     if(t>33.2&&t<34.6){const w=WIDE?CA.W(1080,560):CA.W(760,1640);comicWord(ctx,'FFFOUF !',w[0],w[1],0.5*elastic(seg(t,33.2,33.5)*3),WIDE?0.08:-0.06,'#ff9d3a',1-seg(t,34.2,34.6));}// portrait : dans l'herbe devant le feu, seule place libre (avant : sur son museau) ; paysage : à droite de la colonne de flamme
     // (E2) tendresse : « Hi hi ! » puis « Bonne nuit » : deux petits cœurs montent entre eux
     if(t>47.9&&t<51.0){const sn=heroPt(t,P,INFO.snout),mx=sn[0]+70*k,my=sn[1]+10*k;
-      for(let i=0;i<3;i++){const t0=47.95+i*0.75,τ=t-t0;if(τ<0||τ>1.6)continue;const a=Math.min(1,τ*4)*(1-seg(τ,1.1,1.6));heart(ctx,mx+Math.sin(τ*4+i)*16*k+(i-1)*34*k,my-τ*110*k,(22+5*i)*k*elastic(clamp(τ*2)),[[255,120,160],[255,90,130],[255,150,190]][i],a,Math.sin(τ*3+i)*0.2);}}
+      for(let i=0;i<3;i++){const t0=47.95+i*0.75,τ=t-t0;if(τ<0||τ>1.6)continue;const a=Math.min(1,τ*4)*(1-seg(τ,1.1,1.6));heart(ctx,mx+Math.sin(τ*4+i)*16*k+(i-1)*34*k,my-τ*110*k,(22+5*i)*k*elasticIn(clamp(τ*2)),[[255,120,160],[255,90,130],[255,150,190]][i],a,Math.sin(τ*3+i)*0.2);}}
     ctx.restore();},
   over(ctx,t,cam,P){for(const t0 of [9.4,19.5])if(t>t0&&t<t0+1.2){const S=FILM.S,[ox,oy]=WS(cam,S.oH[0],S.oH[1]);ctx.save();ctx.setTransform(KS,0,0,KS,0,0);comicWord(ctx,'HOU-HOU !',clamp(ox+(WIDE?60:30),WIDE?320:180,VW-(WIDE?320:180)),Math.max(WIDE?130:150,oy-(WIDE?330:290)),(WIDE?0.56:0.5)*elastic(seg(t,t0,t0+0.25)*3),-0.1,'#ffd75e',1-seg(t,t0+0.9,t0+1.2));ctx.restore();}/* (G3) au-dessus de l'arbre du hibou, dans le ciel libre (avant : sur le feuillage et le hibou, au bord gauche ; à droite il touchait sa tête) */
     if(t>13.4&&t<14.45){const b=FILM._bh;if(b&&Math.abs(b.t-t)<0.08&&b.h>0.3){const [bx0,by]=WS(cam,b.x,b.y),ex=seg(t,14.25,14.45);if(bx0<VW-30){ctx.save();ctx.setTransform(KS,0,0,KS,0,0);/* (G3) « PAS MOI ! » du lapin, à côté de lui dans l'herbe (au-dessus, il tombait sur la licorne) */
@@ -4062,7 +4265,7 @@ STORIES.camping={title:'Le bruit dans la nuit',end:60,D:0,card:99,noGreet:true,n
     if(a>0.01){ctx.save();ctx.globalCompositeOperation='lighter';const bd=Math.hypot(bx-lpx,cy0-lpy)+60;caCone(ctx,[lpx,lpy],Math.atan2(cy0-lpy,bx-lpx),bd,Math.atan2(46,bd),0.42*a);ctx.restore();
       ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=0.2*a;ctx.fillStyle='#fff3c8';ctx.beginPath();ctx.ellipse(bx,cy0,70,62,0,0,TAU);ctx.fill();ctx.restore();}// (E2) tache de lumière pleine au bout du faisceau (avant : un cercle vide qui faisait bouton d'interface)
     ctx.save();ctx.font=FONT;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
-    lx.forEach(([ch,x],i)=>{const tb=T0+(x-x0)/Math.max(1,x1-x0)*(T1-T0),v=t-tb;if(v<0)return;const g=elastic(clamp(v/0.5)*1.1),c=cols[i%cols.length];
+    lx.forEach(([ch,x],i)=>{const tb=T0+(x-x0)/Math.max(1,x1-x0)*(T1-T0),v=t-tb;if(v<0)return;const g=elasticIn(clamp(v/0.5)*1.1),c=cols[i%cols.length];
       ctx.save();ctx.translate(x,cy0);ctx.scale(sc*g,sc*g);
       ctx.shadowColor=rgba(c,0.9);ctx.shadowBlur=26;ctx.lineWidth=30;ctx.strokeStyle='rgba(255,255,255,.95)';ctx.strokeText(ch,0,0);ctx.shadowBlur=0;
       ctx.lineWidth=14;ctx.strokeStyle='#3a2470';ctx.strokeText(ch,0,0);ctx.fillStyle=rgba(c,1);ctx.fillText(ch,0,0);ctx.restore();
@@ -4241,9 +4444,9 @@ STORIES.chevalier={title:'Le câlin du petit dragon',end:60,D:0,card:99,noGreet:
     // câlin au bouclier : petits cœurs
     if(t>13.4&&t<16.2)for(let i=0;i<2;i++){const τ=((t-13.4)*0.7+i/2)%1;chHeart(ctx,S.dSh[0]+30+i*70,S.dSh[1]-150-τ*120,13,[255,140,170],Math.sin(Math.PI*τ));}
     // LE câlin : un grand cœur aux couleurs de l'enfant
-    if(t>32.3&&t<34.4){const u=seg(t,32.3,34.4),[hx,hy]=heroPt(t,P,INFO.eye);chHeart(ctx,hx+70,hy-170-u*60,44*elastic(seg(t,32.3,32.7)*1.2),[255,96,140],1-seg(t,33.8,34.4));
+    if(t>32.3&&t<34.4){const u=seg(t,32.3,34.4),[hx,hy]=heroPt(t,P,INFO.eye);chHeart(ctx,hx+70,hy-170-u*60,44*elasticIn(seg(t,32.3,32.7)*1.2),[255,96,140],1-seg(t,33.8,34.4));
       // (E2) gerbe de petits cœurs aux couleurs du coloriage
-      for(let i=0;i<12;i++){const an=-Math.PI/2+(i/11-0.5)*2.6,τ=t-32.35,v=320+80*hr(i,3),x=hx+70+Math.cos(an)*v*τ,y=hy-170+Math.sin(an)*v*τ+260*τ*τ;chHeart(ctx,x,y,(10+5*hr(i,4))*elastic(clamp(τ*3)),i%2?[255,140,170]:cols[i%cols.length],1-seg(τ,1.2,1.9));}}
+      for(let i=0;i<12;i++){const an=-Math.PI/2+(i/11-0.5)*2.6,τ=t-32.35,v=320+80*hr(i,3),x=hx+70+Math.cos(an)*v*τ,y=hy-170+Math.sin(an)*v*τ+260*τ*τ;chHeart(ctx,x,y,(10+5*hr(i,4))*elasticIn(clamp(τ*3)),i%2?[255,140,170]:cols[i%cols.length],1-seg(τ,1.2,1.9));}}
     // (E2) « Bisous, le bouclier ! » : un bisou-cœur vole jusqu'au bouclier, qui rougit et sautille
     if(t>46.6&&t<47.5){const u=eio(seg(t,46.6,47.3)),D2=CH.dr(46.6,P),a0=D2?[D2.x-40,D2.y-150*D2.sc]:S.shP,b0=[S.shP[0],S.shP[1]-60],p=CH.hop(a0,b0,u,160);chHeart(ctx,p[0],p[1],24*(1+0.25*Math.sin(t*14)),[255,96,140],1-seg(t,47.25,47.5));}
     if(t>47.3&&t<48.4)for(let i=0;i<3;i++){const τ=seg(t,47.3+i*0.12,48.2+i*0.12);if(τ<=0||τ>=1)continue;chHeart(ctx,S.shP[0]-50+i*50,S.shP[1]-140-τ*100,17+3*i,[255,140,170],Math.sin(Math.PI*τ));}
@@ -5105,7 +5308,7 @@ STORIES.dino={title:'Le bébé dino',end:60,D:0,card:99,noGreet:true,noSecret:tr
     for(const [t0,ddx] of DIN.HOPS){if(!ddx)continue;const u=seg(t,t0,t0+0.45);if(u<=0||u>=1)continue;const c=DIN.gpt(t,DIN.W([1060,900]));ctx.save();ctx.strokeStyle='#ffffff';ctx.lineCap='round';ctx.lineWidth=6;ctx.globalAlpha=Math.sin(Math.PI*u);
       for(let j=0;j<3;j++){ctx.beginPath();ctx.moveTo(c[0]+10*Math.sign(ddx)*-1,c[1]-40+j*35);ctx.lineTo(c[0]+Math.sign(ddx)*-1*60,c[1]-40+j*35);ctx.stroke();}ctx.restore();}
     // bisou du dino sur son nez
-    {const u=seg(t,25.15,26.4);if(u>0&&u<1){const n=heroPt(t,P,INFO.snout,'head');DIN.heart(ctx,n[0]+10,n[1]-30-u*70,1.1*elastic(Math.min(1,u*3)),1-seg(t,26.0,26.4),'#ff6fa3');}}
+    {const u=seg(t,25.15,26.4);if(u>0&&u<1){const n=heroPt(t,P,INFO.snout,'head');DIN.heart(ctx,n[0]+10,n[1]-30-u*70,1.1*elasticIn(Math.min(1,u*3)),1-seg(t,26.0,26.4),'#ff6fa3');}}
     // son appel (bouche vers le ciel) : des ondes
     if(t>33.4&&t<35.3){const m=heroPt(t,P,INFO.mouth,'head');ctx.save();ctx.strokeStyle='#ffffff';ctx.lineCap='round';for(let j=0;j<3;j++){const u=((t-33.4)*1.2+j/3)%1;ctx.globalAlpha=1-u;ctx.lineWidth=8;ctx.beginPath();ctx.arc(m[0]+20,m[1]-10,30+u*120,-1.2,0.2);ctx.stroke();}ctx.restore();}
     /* son pied géant se pose : nuages de poussière */
@@ -5116,7 +5319,7 @@ STORIES.dino={title:'Le bébé dino',end:60,D:0,card:99,noGreet:true,noSecret:tr
       for(const sg of [-1,1])for(let j=0;j<2;j++){const x=c[0]+sg*(120+j*22)*S.k+Math.sin(t*40+j)*3,y=c[1]-20*S.k+j*16*S.k;ctx.beginPath();ctx.arc(x,y,16*S.k,sg>0?-0.7:Math.PI-0.7,sg>0?0.7:Math.PI+0.7);ctx.stroke();}ctx.restore();}}
     // bisous envoyés au bébé
     {const u=seg(t,46.6,47.5);if(u>0&&u<1){const a=heroPt(t,P,INFO.mouth,'head'),b=DIN.gpt(t,DIN.W([830,640])),p=DIN.arc(a,b,u,80);DIN.heart(ctx,p[0],p[1],1.0,Math.sin(Math.PI*u)*1.5,'#ff6fa3');}}
-    {const u=seg(t,55.0,56.2);if(u>0&&u<1){const a=DIN.gpt(t,DIN.W([800,720]));DIN.heart(ctx,a[0]-u*40,a[1]-20-u*110,1.2*elastic(Math.min(1,u*2)),1-seg(t,55.9,56.2),'#ff6fa3');}}
+    {const u=seg(t,55.0,56.2);if(u>0&&u<1){const a=DIN.gpt(t,DIN.W([800,720]));DIN.heart(ctx,a[0]-u*40,a[1]-20-u*110,1.2*elasticIn(Math.min(1,u*2)),1-seg(t,55.9,56.2),'#ff6fa3');}}
     ctx.restore();},
   // fin : le papillon écrit le prénom en pointillés (sans prénom : un cœur)
   over(ctx,t,cam,P){if(t<47.4)return;ctx.save();ctx.setTransform(KS,0,0,KS,0,0);const nm=artist(),cols=FCOL(FILM),cy0=WIDE?178:250,T0=48.4,T1=52.2;
@@ -5538,7 +5741,7 @@ STORIES.dragon={title:'Le feu à paillettes',end:60,D:0,card:99,noGreet:true,noS
       else{const v=seg(t,16.6,16.85);if(v<1)DR.bubble(ctx,x,y,r*(1+0.5*v),1-v);ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<8;i++){const a=i*TAU/8,w=t-16.6;twinkle(ctx,x+Math.cos(a)*(r+w*110),y+Math.sin(a)*(r+w*110),9,[255,255,255],1-w/0.6,a);}ctx.restore();
         comicWord(ctx,'PLOP !',x+70,y-70,0.42*elastic(seg(t,16.6,16.9)*1.2),0.1,'#4aa8f0',1-seg(t,17.0,17.2));}}
     // le piment : il saute de derrière le caillou, brille (elle le regarde), puis file dans sa bouche (avant : minuscule, au ras du sol)
-    if(t>20.0&&t<23.0){const [rx,ry]=S.rockR,[mx,my]=heroPt(t,P,INFO.mouth),u=eio(seg(t,22.5,22.9)),hop=Math.sin(Math.PI*seg(t,20.0,20.5))*60,px=lerp(rx+95,mx,u),py=lerp(ry-215-hop+Math.sin(t*4)*8,my,u),s=elastic(seg(t,20.0,20.4)*1.1)*1.8*(1-0.75*u);
+    if(t>20.0&&t<23.0){const [rx,ry]=S.rockR,[mx,my]=heroPt(t,P,INFO.mouth),u=eio(seg(t,22.5,22.9)),hop=Math.sin(Math.PI*seg(t,20.0,20.5))*60,px=lerp(rx+95,mx,u),py=lerp(ry-215-hop+Math.sin(t*4)*8,my,u),s=elasticIn(seg(t,20.0,20.4)*1.1)*1.8*(1-0.75*u);
       if(t<22.5){const g=0.5+0.5*Math.sin(t*7);ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<4;i++){const a=t*2+i*TAU/4;twinkle(ctx,px+Math.cos(a)*85,py+Math.sin(a)*85,10+8*g,[255,236,150],0.9*seg(t,20.2,20.5),a);}ctx.restore();}
       drawPepper(ctx,px,py,s,1-seg(t,22.85,23.0));}
     // vapeur de « chaud chaud chaud » : petits nuages cernés qui sortent des oreilles et des naseaux et montent (avant : taches blanches floues sur le visage)
@@ -5789,7 +5992,7 @@ Object.assign(SFX,{
   gurgle(d,b,dur=1.6){if(!AU.ctx)return;const [t,o]=at(d,b);for(let i=0;i<dur/0.12;i++)osc('sine',140+((i*53)%7)*25,t+i*0.12,0.1,0.08,o,90);},
 });
 const GM={
-  cake(t){if(t<11.8)return 0;if(t<12.6)return 0.42*elastic(seg(t,11.8,12.6));if(t<13.0)return 0.42;if(t<13.8)return lerp(0.42,0.95,elastic(seg(t,13.0,13.8)));if(t<14.2)return 0.95;return lerp(0.95,1.7,elastic(seg(t,14.2,15.1)));},
+  cake(t){if(t<11.8)return 0;if(t<12.6)return 0.42*elasticIn(seg(t,11.8,12.6));if(t<13.0)return 0.42;if(t<13.8)return lerp(0.42,0.95,elasticIn(seg(t,13.0,13.8)));if(t<14.2)return 0.95;return lerp(0.95,1.7,elasticIn(seg(t,14.2,15.1)));},
   fall(t){return t<16.8?0:Math.min(1,Math.pow(seg(t,16.8,17.4),2));},
   blob(t){if(t<17.4)return 0;if(t<20.0)return 1;return 1-eio(seg(t,20.0,24.0));},
   belly(t){return eio(seg(t,23.4,24.4))*(1-eio(seg(t,32.4,33.0)));},
@@ -5864,7 +6067,7 @@ STORIES.gourmande={title:'Le gâteau géant',end:60,D:0,card:99,noGreet:true,noS
   front(ctx,t,cam,P){const S=FILM.S,cols=FCOL(FILM);ctx.save();camTf(ctx,cam,1);
     // la cerise de la page, puis la petite cerise de la fin
     const q=FILM.parts.cherry,[cx0,cy0]=S.cherry;let C=null;
-    if(t>40.4&&t<43.6){const [hx,hy]=heroPt(t,P,INFO.hornTip),[mx,my]=heroPt(t,P,INFO.mouth),u=eio(seg(t,43.1,43.6)),p0=[hx+90,hy-90];C={x:lerp(p0[0],mx,u),y:lerp(p0[1]+Math.sin(t*3)*8,my,u)-Math.sin(Math.PI*u)*80,s:elastic(seg(t,40.4,40.9)*1.1)*(1-0.6*u)};}
+    if(t>40.4&&t<43.6){const [hx,hy]=heroPt(t,P,INFO.hornTip),[mx,my]=heroPt(t,P,INFO.mouth),u=eio(seg(t,43.1,43.6)),p0=[hx+90,hy-90];C={x:lerp(p0[0],mx,u),y:lerp(p0[1]+Math.sin(t*3)*8,my,u)-Math.sin(Math.PI*u)*80,s:elasticIn(seg(t,40.4,40.9)*1.1)*(1-0.6*u)};}
     if(q&&C){ctx.save();ctx.translate(C.x,C.y);ctx.scale(C.s,C.s);ctx.translate(-cx0,-cy0);pageSpace(ctx);ctx.drawImage(q.cv,q.x,q.y);ctx.restore();}
     // rayon magique de la corne vers la cerise, puis POUF
     if(t>11.0&&t<11.85){const [hx,hy]=heroPt(t,P,INFO.hornTip),u=seg(t,11.0,11.5);ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<14;i++){const k=i/14*u;twinkle(ctx,lerp(hx,cx0,k),lerp(hy,cy0,k)+Math.sin(i+t*20)*8,12,cols[i%cols.length],0.9,t*4+i);}ctx.restore();}
@@ -5950,7 +6153,7 @@ const JA={
   spout(C){const S=FILM.S,c=Math.cos(C.rot),s=Math.sin(C.rot),ox=S.spOff[0]*(C.flip?-1:1),oy=S.spOff[1];return[C.x+c*ox-s*oy,C.y+s*ox+c*oy];},
   pouring(t){return(t>6.9&&t<8.4)||(t>47.7&&t<48.8);},
   carrot(t){const S=FILM.S,B=S.cB;let x=B[0],y=B[1],rot=0,sc=1,sy=1;
-    if(t>8.2)sc=1+0.35*elastic(seg(t,8.2,8.9)*1.1)+0.1*Math.sin(Math.PI*seg(t,8.2,8.5));
+    if(t>8.2)sc=1+0.35*elasticIn(seg(t,8.2,8.9)*1.1)+0.1*Math.sin(Math.PI*seg(t,8.2,8.5));
     if(t<31.6){const pl=JA.pull(t),g=JA.grip(t);rot=-g*(0.4+0.13*pl);sy=1+0.11*pl;y-=JA.lift(t)*S.k;if(t>27.6)rot-=0.03*Math.sin(t*30)*seg(t,27.6,28.0);if(t>16.6&&t<17.3)rot+=0.12*Math.sin((t-16.6)*18)*(1-seg(t,16.6,17.3));return{x,y,rot,sc,sy,lay:'mid',tip:false};}
     // POP : elle jaillit tout droit vers le ciel (derrière la licorne : plus jamais sur son visage), sort de l'image en tournant,
     // puis retombe à plat à ses pieds (BOUM + secousse à 32,8 s). Elle reste derrière ses sabots, le lapin la mange devant.
@@ -5964,7 +6167,7 @@ const JA={
     const dn=seg(t,b-0.3,b-0.05);v=t<b-0.05?up*(1-dn*dn):9*Math.sin(Math.PI*seg(t,b-0.05,b+0.4));});return v;},
   /* chute de l'équipe à chaque fois que la carotte retombe (sauf la dernière) */
   fall(t){for(let i=0;i<JA.PULLS.length-1;i++){const b=JA.PULLS[i][1];if(t>b-0.1&&t<b+0.7)return Math.sin(Math.PI*seg(t,b-0.1,b+0.7));}return 0;},
-  grip:t=>t<14.3?0:t<31.6?elastic(seg(t,14.3,14.8)*1.05):1,
+  grip:t=>t<14.3?0:t<31.6?elasticIn(seg(t,14.3,14.8)*1.05):1,
   // bout mangé (côté pointe, vers la droite) : de 0 (rien mangé) à 1 (tout mangé sauf les feuilles)
   eaten(t){return eio(seg(t,36.8,42.4));},
   rabbit(t,P){const S=FILM.S,H=S.rH;let x=H[0],y=H[1],rot=0,sc=1,sy=1,lay='mid';
@@ -6000,7 +6203,7 @@ function jaCarrot(ctx,C,t){const S=FILM.S,pv=INFO.pivot.carrot,[hx,hy]=toF(...pv
   ctx.restore();}
 // les deux petites carottes : coupées en deux moitiés, chacune agrandie depuis sa base ; celle de gauche penche vers la droite (loin de la licorne)
 function jaSmall(ctx,t){const q=FILM.parts.small;if(!q)return;const ds=decorPose('small',t).sc,cut=765;
-  for(const [L,bx,g,lean,t0] of [[true,690,1.45,-0.1,48.85],[false,838,1.9,0.14,48.6]]){/* I4 : elles s'écartent l'une de l'autre en poussant (avant : 0,3 et -0,08 ; maintenant -0,1 et 0,14 ; penchées l'une vers l'autre, elles se collaient en une « double carotte ») *//* (E2) « encore trop ! » : elles deviennent vraiment géantes (avant : 2 fois plus grandes seulement) */const u=seg(t,t0,t0+0.75),gr=t>t0?1+g*elastic(u*1.1):1,wob=t>t0+0.5?0.05*Math.sin((t-t0)*9)*Math.exp(-(t-t0-0.5)*1.5):0,r=lean*eio(u)+wob;
+  for(const [L,bx,g,lean,t0] of [[true,690,1.45,-0.1,48.85],[false,838,1.9,0.14,48.6]]){/* I4 : elles s'écartent l'une de l'autre en poussant (avant : 0,3 et -0,08 ; maintenant -0,1 et 0,14 ; penchées l'une vers l'autre, elles se collaient en une « double carotte ») *//* (E2) « encore trop ! » : elles deviennent vraiment géantes (avant : 2 fois plus grandes seulement) */const u=seg(t,t0,t0+0.75),gr=t>t0?1+g*elasticIn(u*1.1):1,wob=t>t0+0.5?0.05*Math.sin((t-t0)*9)*Math.exp(-(t-t0-0.5)*1.5):0,r=lean*eio(u)+wob;
     const [wx,wy]=toF(bx,786);ctx.save();ctx.translate(wx,wy);ctx.rotate(r);ctx.scale(ds*gr,ds*gr);ctx.translate(-wx,-wy);pageSpace(ctx);
     ctx.beginPath();if(L)ctx.rect(0,0,cut,2000);else ctx.rect(cut,0,2000,2000);ctx.clip();ctx.drawImage(q.cv,q.x,q.y);ctx.restore();}}
 function jaDrops(ctx,t,C){if(!JA.pouring(t))return;const [sx,sy]=JA.spout(C),S=FILM.S;ctx.save();for(let i=0;i<14;i++){const τ=((t*1.6+i/14)%1),x=sx+(hr(i,3)-0.3)*40*S.k+τ*30*S.k,y=sy+τ*260*S.k;
@@ -6114,7 +6317,7 @@ STORIES.jardiniere={title:'La carotte géante',end:60,D:0,card:99,noGreet:true,n
     if(pour){ctx.save();for(let i=0;i<8;i++){const τ=((t*2.2+i/8)%1);ctx.globalAlpha=0.9*Math.sin(Math.PI*τ);ctx.fillStyle='#7cc8f2';ctx.strokeStyle='#2f6fa8';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(spx+(hr(i,7)-0.5)*14+τ*12,spy+τ*(base-60-spy),4.5,7,0,0,TAU);ctx.fill();ctx.stroke();}ctx.restore();}
     // lettres qui poussent depuis leur base
     ctx.save();ctx.font=FONT;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
-    lx.forEach(([ch,x,w],i)=>{const tb=T0+(x-SPX-A)/(Bx-A)*(T1-T0)+0.22,v=t-tb;if(v<0)return;const g=elastic(clamp(v/0.6)*1.1),sw=0.08*Math.sin(v*7)*Math.exp(-v*2.2);
+    lx.forEach(([ch,x,w],i)=>{const tb=T0+(x-SPX-A)/(Bx-A)*(T1-T0)+0.22,v=t-tb;if(v<0)return;const g=elasticIn(clamp(v/0.6)*1.1),sw=0.08*Math.sin(v*7)*Math.exp(-v*2.2);
       ctx.save();ctx.translate(x,base);ctx.rotate(sw);ctx.scale(sc*Math.min(1.15,0.3+0.7*g),sc*g);ctx.translate(0,-(base-cy0)/sc);
       ctx.lineWidth=30;ctx.strokeStyle='rgba(255,255,255,.92)';ctx.strokeText(ch,0,0);ctx.lineWidth=14;ctx.strokeStyle='#3a2470';ctx.strokeText(ch,0,0);ctx.fillStyle=rgba(cols[i%cols.length],1);ctx.fillText(ch,0,0);ctx.restore();
       if(v<0.5){ctx.save();ctx.globalAlpha=1-v/0.5;ctx.fillStyle='#7cc8f2';ctx.strokeStyle='#2f6fa8';ctx.lineWidth=2;for(const d of [-1,1]){ctx.beginPath();ctx.arc(x+d*(10+60*v),base-30*v+60*v*v,4,0,TAU);ctx.fill();ctx.stroke();}ctx.restore();}});
@@ -6156,7 +6359,7 @@ const MA={
   bunny(t,P){const S=FILM.S,onHead=()=>heroPt(t,P,S.top),peek=()=>heroPt(t,P,S.peek);
     if(t<8.5)return{p:S.b0,rot:0.05*Math.sin(t*2.6),sc:1,mode:'hat',sink:0};
     if(t<9.6)return null;
-    if(t<16.8){const p=onHead(),u=seg(t,9.6,10.0);let y=p[1];if(t>14.6&&t<16.0)y-=Math.abs(Math.sin((t-14.6)*9))*MA.d(10);return{p:[p[0],y],rot:(P.head||0)*0.6,sc:0.72*(u<1?elastic(u*1.2):1),mode:'head'};}
+    if(t<16.8){const p=onHead(),u=seg(t,9.6,10.0);let y=p[1];if(t>14.6&&t<16.0)y-=Math.abs(Math.sin((t-14.6)*9))*MA.d(10);return{p:[p[0],y],rot:(P.head||0)*0.6,sc:0.72*(u<1?elasticIn(u*1.2):1),mode:'head'};}
     if(t<17.9){const u=eio(seg(t,16.8,17.6)),a=onHead(),b=peek();return{p:[lerp(a[0],b[0],u),lerp(a[1],b[1],u)],rot:Math.PI*u,sc:0.72+0.2*u,mode:'head'};}/* C2 : nez à nez : il grossit un peu (on le voit bien) */
     if(t<18.9){const u=eio(seg(t,17.9,18.9)),a=peek(),b=onHead();/* G2 : il remonte en 1 s (avant : d'un coup) */return{p:[lerp(a[0],b[0],u),lerp(a[1],b[1],u)-Math.sin(Math.PI*u)*MA.d(80)],rot:Math.PI+Math.PI*u,sc:0.92-0.2*u,mode:'head'};}
     if(t<32.5){const p=onHead();let y=p[1];if(t>20.2&&t<22.4)y-=Math.abs(Math.sin((t-20.2)*8))*MA.d(22);const sh=t>23.5&&t<25.9?0.07*Math.sin(t*38)*(1-seg(t,25.5,25.9)):0;return{p:[p[0],y],rot:(P.head||0)*0.6+sh,sc:0.72,mode:'head'};}/* G2 : il grelotte sous la pluie */
@@ -6294,7 +6497,7 @@ STORIES.magicienne={title:'Le tour qui rate',end:60,D:0,card:99,noGreet:true,noS
     {const B=MA.bunny(t,P);if(B&&B.lev>0.05){for(let k=0;k<6;k++){const an=t*4+k*TAU/6;star(ctx,B.p[0]+Math.cos(an)*MA.d(200),B.p[1]-MA.d(70)+Math.sin(an)*MA.d(80),MA.d(26),k%2?[255,215,90]:cols[k%cols.length],B.lev,an,0.45,true);}}}
     if(t>33.0&&t<34.3)comicWord(ctx,'TA-DA !',S.hat[0]-MA.d(WIDE?120:300),S.brim+MA.d(WIDE?300:320),0.8*maWpop(t,33.0)*maWout(t,34.0,34.3),-0.08,'#f2b705',1-seg(t,34.0,34.3));
     if(t>12.95&&t<13.6)comicWord(ctx,'BOING !',S.hat[0]-MA.d(WIDE?40:150),S.brim+MA.d(280),0.55*maWpop(t,12.95)*maWout(t,13.35,13.6),0.1,'#ff8a2a',1-seg(t,13.35,13.6));/* G2 : tour 2 */
-    {const v=seg(t,44.45,45.6);if(v>0&&v<1){const p=heroPt(t,P,INFO.snout);heart(ctx,p[0]+MA.d(60)+MA.d(30)*Math.sin(v*7),p[1]-MA.d(60)-v*MA.d(260),MA.d(40)*elastic(Math.min(1,v*3)),cols[0],1-seg(v,0.7,1),0.2*Math.sin(v*6));}}/* G2 : bisou du lapin sur son nez */
+    {const v=seg(t,44.45,45.6);if(v>0&&v<1){const p=heroPt(t,P,INFO.snout);heart(ctx,p[0]+MA.d(60)+MA.d(30)*Math.sin(v*7),p[1]-MA.d(60)-v*MA.d(260),MA.d(40)*elasticIn(Math.min(1,v*3)),cols[0],1-seg(v,0.7,1),0.2*Math.sin(v*6));}}/* G2 : bisou du lapin sur son nez */
     if(t>48.0&&t<48.75){const B=MA.bunny(t,P);if(B)comicWord(ctx,'HOP !',B.p[0]+MA.d(170),B.p[1]-MA.d(260),0.5*maWpop(t,48.0)*maWout(t,48.5,48.75),0.1,'#f2b705',1-seg(t,48.5,48.75));}
     if(t>17.85&&t<18.7){const p=heroPt(t,P,S.peek);const q=WIDE?MA.W(1192,342):MA.W(1056,176);comicWord(ctx,'AH !',q[0],q[1],0.5*maWpop(t,17.85),0.1,'#e8590c',1-seg(t,18.4,18.7))/* I2 : point fixe dans le ciel libre, au-dessus de la grande étoile (portrait) ou à sa droite (paysage), sans grossir en s'effaçant (avant : suivait sa tête et se posait sur la grande étoile 18,4-18,7) */;/* H3 : en l'air au-dessus du lapin, loin du museau, orange foncé (avant : jaune collé au lapin) */}
     if(t>35.5&&t<37.6){for(const tc of [35.6,36.3,37.0]){const v=seg(t,tc,tc+0.45);if(v>0&&v<1)comicWord(ctx,'CRAC !',S.b0[0]+MA.d(MA.CRX),S.b0[1]-MA.d(MA.CRY)-v*MA.d(40),0.44*elastic(v*1.5),0.1,'#ff8a2a',1-seg(v,0.7,1));}}
@@ -6870,7 +7073,7 @@ STORIES.musicienne={title:'Le concert des fleurs',end:60,D:0,card:99,noGreet:tru
     ctx.restore();},
   front(ctx,t,cam,P){const S=FILM.S,cols=FCOL(FILM),hh=MU.hit(t);ctx.save();camTf(ctx,cam,1);const D=heroPt(t,P,MU.DRUM,'root');
     /* G1 : son saut après la ola fait jaillir une gerbe de notes du tambour */
-    {const τ=t-15.35;if(τ>0&&τ<1.2)for(let i=0;i<6;i++){const an=-0.95+i*0.19,d=70+τ*(330+50*(i%2)),x=D[0]+40+Math.cos(an)*d,y=D[1]-10+Math.sin(an)*d+τ*τ*200;MU.glyph(ctx,x,y,1.25*elastic(seg(τ,0,0.25)*1.2),[[255,94,94],[255,170,60],[255,214,64],[110,200,110],[90,160,255],[180,110,230]][i],1-seg(τ,0.85,1.2),an*0.3,i%2===1);}}
+    {const τ=t-15.35;if(τ>0&&τ<1.2)for(let i=0;i<6;i++){const an=-0.95+i*0.19,d=70+τ*(330+50*(i%2)),x=D[0]+40+Math.cos(an)*d,y=D[1]-10+Math.sin(an)*d+τ*τ*200;MU.glyph(ctx,x,y,1.25*elasticIn(seg(τ,0,0.36)*1.2),[[255,94,94],[255,170,60],[255,214,64],[110,200,110],[90,160,255],[180,110,230]][i],1-seg(τ,0.85,1.2),an*0.3,i%2===1);}}
     // les traits magiques autour de la corne battent la mesure ; pendant la balade ils se retournent et s'aplatissent avec elle au demi-tour
     const fl=P.flip?-1:1,TQ=tripAt(STORIES.musicienne,t),sq=TQ&&TQ.act?Math.max(0.06,TQ.sq):1;
     const rp=heroPt(t,P,INFO.pivot.rays),rs=(1+0.3*Math.min(hh,1.5))*decorPose('rays',t).sc;muPart(ctx,'rays',INFO.pivot.rays,rp[0],rp[1],(P.head||0)*fl,rs*fl*sq,rs);
@@ -6917,7 +7120,7 @@ STORIES.musicienne={title:'Le concert des fleurs',end:60,D:0,card:99,noGreet:tru
       for(let j=0;j<3;j++){const an=-Math.PI/2*up+(j-1)*0.55-0.35*up,ph=(t*3+j*0.3)%1,r0=95+ph*18,r1=r0+26;ctx.globalAlpha=Math.sin(Math.PI*ph);ctx.beginPath();ctx.moveTo(H.c[0]+Math.cos(an)*r0,H.c[1]+Math.sin(an)*r0);ctx.lineTo(H.c[0]+Math.cos(an)*r1,H.c[1]+Math.sin(an)*r1);ctx.stroke();}ctx.restore();}
     // révérences : les fleurs envoient des petits cœurs ; « pour toi » : un grand cœur part vers l'enfant
     {const u=seg(t,47.6,49.2);if(u>0&&u<1)['flowerL','flowerR','flowerB'].forEach((k,i)=>{const M=MU.flower(t,k,i),H=MU.fHead(k,M),v=clamp((u-i*0.12)/0.7);if(v>0&&v<1)heart(ctx,H.c[0]+Math.sin(v*9+i)*14,H.c[1]-60-v*130,15*(0.6+0.4*elastic(v*2)),[255,111,163],Math.sin(Math.PI*v),0.2*Math.sin(v*6));});}
-    {const u=seg(t,53.55,54.6);if(u>0&&u<1){const m=heroPt(t,P,INFO.mouth,'head');heart(ctx,m[0]+40+u*40,m[1]-60-u*90,(22+40*eoc(u))*elastic(Math.min(1,u*2.5)),[255,93,140],1-seg(u,0.7,1),0.1*Math.sin(u*8));}}
+    {const u=seg(t,53.55,54.6);if(u>0&&u<1){const m=heroPt(t,P,INFO.mouth,'head');heart(ctx,m[0]+40+u*40,m[1]-60-u*90,(22+40*eoc(u))*elasticIn(Math.min(1,u*2.5)),[255,93,140],1-seg(u,0.7,1),0.1*Math.sin(u*8));}}
     ctx.restore();
     // mots BD de l'histoire (en coordonnées écran : même place en portrait et en paysage)
     // « Croâ-vo ! » : à côté de la grenouille, du côté libre de l'image (le moteur le posait sur la licorne, puis le perdait quand la grenouille sort du cadre)
@@ -6998,8 +7201,24 @@ function drawDrift(ctx,x,y,s,front=false){ctx.save();ctx.translate(x,y);ctx.scal
 function snowflake(ctx,x,y,r,c,a,rot){if(a<=0.01)return;ctx.save();ctx.globalAlpha=a;ctx.translate(x,y);ctx.rotate(rot);ctx.strokeStyle='#1e1e1e';ctx.lineCap='round';
   for(const [w,col] of [[r*0.42,'#1e1e1e'],[r*0.24,rgba(c,1)]]){ctx.lineWidth=w;ctx.strokeStyle=col;for(let i=0;i<3;i++){ctx.rotate(Math.PI/3);ctx.beginPath();ctx.moveTo(-r,0);ctx.lineTo(r,0);ctx.stroke();}}ctx.restore();}
 /* QA F : plans enchaînés, comme daChain (danseuse) : un plan reste plein jusqu'à la fin du fondu d'entrée du suivant */
+/* (E4) le petit sapin derrière le grand : sur la page, la crinière de la licorne cachait le bout droit de son étage du bas. Ce morceau, découpé
+   avec le grand sapin (treeL), finissait en dents de scie (le contour de la crinière) : on le voit quand elle part à droite (17-21 s).
+   On efface le bout déchiré et on redessine la pointe de l'étage comme les autres (même encre, trait de même épaisseur, feutre prélevé sur l'étage). */
+function neTreeTip(f){const q=f.parts.treeL;if(!q||!q.cv||typeof REG==='undefined')return;const w0=q.cv.width,h0=q.cv.height,ox=Math.round(q.x),oy=Math.round(q.y);
+  if(ox+w0<360||oy>680||oy+h0<726)return;const d0=rpCtx(q).getImageData(0,0,w0,h0).data,PR=Math.max(0,396-(ox+w0)),c=cv(w0+PR,h0),x=c.getContext('2d');
+  /* motif : carré propre (sans trait) de la région de l'étage, le plus près du bout */
+  const r0=(()=>{for(const [X,Y] of [[322,705],[315,700],[330,712]]){const p=Y*W+X,i=((Y-oy)*w0+X-ox)*4;if(LINEA[p]<20&&d0[i+3]>250)return REG[p];}return -1;})();
+  let tl=null;if(r0>=0)for(const S of [26,22,18,14,10]){let best=null,bd=1e18;for(let y=0;y+S<=h0;y+=2)for(let xx=0;xx+S<=w0;xx+=2){const dd=(xx-(330-ox))**2+(y-(705-oy))**2;if(dd>=bd)continue;let ok=true;
+      for(let j=0;j<S&&ok;j++)for(let i=0;i<S;i++){const X=ox+xx+i,Y=oy+y+j,k=((y+j)*w0+xx+i)*4;if(X>=W||Y>=H||REG[Y*W+X]!==r0||LINEA[Y*W+X]>25||d0[k+3]<250){ok=false;break;}}if(ok){best=[xx,y];bd=dd;}}
+    if(best){tl={c:cv(S,S),x:best[0],y:best[1]};tl.c.getContext('2d').drawImage(q.cv,best[0],best[1],S,S,0,0,S,S);break;}}/* tuile sans miroir (le miroir croisait les hachures du feutre en losanges), calée sur sa place d'origine */
+  if(!tl)return;const ink=rpInkQ(q),G=(X,Y)=>[X-ox,Y-oy];
+  x.drawImage(q.cv,0,0);x.clearRect(...G(348,674),60,72);/* bout déchiré + contour de la crinière */
+  const P=new Path2D();P.moveTo(...G(343,672));P.quadraticCurveTo(...G(355,683),...G(366,697));P.quadraticCurveTo(...G(381,710),...G(385,718));P.quadraticCurveTo(...G(387,727),...G(377,727));P.quadraticCurveTo(...G(361,737),...G(344,723));
+  const C=new Path2D(P);C.lineTo(...G(338,723));C.lineTo(...G(338,672));C.closePath();
+  x.save();x.clip(C);const pt=x.createPattern(tl.c,'repeat');pt.setTransform(new DOMMatrix().translate(tl.x,tl.y));x.fillStyle=pt;x.fillRect(0,0,c.width,c.height);x.restore();
+  x.save();x.strokeStyle=`rgb(${ink[0]},${ink[1]},${ink[2]})`;x.lineWidth=5.4;x.lineCap='round';x.lineJoin='round';x.stroke(P);x.restore();q.cv=c;}
 function neChain(c,t,L){for(let i=0;i<L.length;i++){const [a,b,tg,ei,eo]=L[i],n=L[i+1];shotTo(c,t,a,n?Math.max(b,n[0]+n[3]+eo):b,tg,ei,eo);}}
-STORIES.neiges={title:'Le gros rhume',end:60,D:0,card:99,noGreet:true,noSecret:true,noQuest:true,stride:150,pack:'neiges',
+STORIES.neiges={afterRepair(f){try{neTreeTip(f);}catch(e){console.warn('treeL',e);}},title:'Le gros rhume',end:60,D:0,card:99,noGreet:true,noSecret:true,noQuest:true,stride:150,pack:'neiges',
   lesson:'Ta licorne est enrhumée et toute gelée ! Quand elle te le demande, touche l’écran pour la réchauffer.',
   tapWin:[27.4,31.0],tapJump:31.2,
   speed:[[0,0],[61,0]],
@@ -7066,7 +7285,7 @@ STORIES.neiges={title:'Le gros rhume',end:60,D:0,card:99,noGreet:true,noSecret:t
       ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=6;ctx.lineCap='round';for(const [dx,dy,l] of [[-300,-12,90],[-80,10,60],[150,-18,110],[330,6,70]]){ctx.beginPath();ctx.moveTo(x+dx*ic,y+dy*ic);ctx.lineTo(x+(dx+l)*ic,y+(dy-8)*ic);ctx.stroke();}ctx.restore();}
     drawDrift(ctx,S.drift[0],S.drift[1],1);
     {const [sx,sy]=S.snowman;
-    const cb=NE.cube(t);if(cb>0.01){const g=elastic(seg(t,10.0,10.4)*1.1),w=230*g,h=330*g,x=sx-w/2,y=sy-h*0.62;ctx.save();ctx.globalAlpha=0.55*cb;ctx.fillStyle='#a9dcf7';ctx.beginPath();ctx.roundRect(x,y,w,h,24);ctx.fill();
+    const cb=NE.cube(t);if(cb>0.01){const g=elasticIn(seg(t,10.1,10.55)*1.1),w=230*g,h=330*g,x=sx-w/2,y=sy-h*0.62;ctx.save();ctx.globalAlpha=0.55*cb;ctx.fillStyle='#a9dcf7';ctx.beginPath();ctx.roundRect(x,y,w,h,24);ctx.fill();
       ctx.globalAlpha=0.9*cb;ctx.strokeStyle='#2f6fa8';ctx.lineWidth=6;ctx.stroke();ctx.strokeStyle='#fff';ctx.lineWidth=8;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x+30,y+40);ctx.lineTo(x+30,y+130);ctx.moveTo(x+50,y+30);ctx.lineTo(x+90,y+30);ctx.stroke();ctx.restore();
       if(t>33.8&&t<35.2)for(let i=0;i<8;i++){const τ=(t-33.8+hr(i,5)*0.6)%0.8;ctx.fillStyle='#7fc4f2';ctx.beginPath();ctx.ellipse(sx-90+i*25,sy+40+τ*160,6,9,0,0,TAU);ctx.fill();}}
     }ctx.restore();},
@@ -7102,7 +7321,7 @@ STORIES.neiges={title:'Le gros rhume',end:60,D:0,card:99,noGreet:true,noSecret:t
     // neige qui tombe doucement
     ctx.save();ctx.globalAlpha=0.9;ctx.fillStyle='#ffffff';for(let i=0;i<40;i++){const x=(hr(i,71)*VW+Math.sin(t*0.9+i)*30+VW)%VW,y=(hr(i,72)*FH+t*(40+hr(i,73)*40))%FH;ctx.beginPath();ctx.arc(x,y,3+hr(i,74)*4,0,TAU);ctx.fill();}ctx.restore();
     // le soleil (si l'enfant n'a pas touché l'écran) puis il reste
-    const sa=FILM.S.tapped?seg(t,31.2,32.0):seg(t,29.0,29.8);const sk=WIDE?0:eio(seg(t,51.6,52.6));if(sa>0)drawSun(ctx,VW-150+45*sk,250-80*(1-eoc(sa))-95*sk,0.85*elastic(sa*1.05)*(1-0.3*sk),1,t);
+    const sa=FILM.S.tapped?seg(t,31.2,32.0):seg(t,29.0,29.8);const sk=WIDE?0:eio(seg(t,51.6,52.6));if(sa>0)drawSun(ctx,VW-150+45*sk,250-80*(1-eoc(sa))-95*sk,0.85*elasticIn(sa*1.05)*(1-0.3*sk),1,t);
     if(t>52.4){const nm=artist(),cols=FCOL(FILM);let cx0=WIDE?VW*0.24:VW/2,pts,sc,cy0=WIDE?300:330;
       if(nm){const np=namePoints(nm);sc=Math.min(0.62,560/np.tw);[cx0,sc]=qaNameFit(t,P,cam,cx0,cy0,sc,np.tw);pts=np.pts.filter((_,i)=>i%2===0).map(([x,y])=>[cx0+x*sc,cy0+y*sc]);}
       else{pts=[];for(let k=0;k<70;k++){const u=k/70*TAU;pts.push([cx0+16*Math.pow(Math.sin(u),3)*13,cy0-(13*Math.cos(u)-5*Math.cos(2*u)-2*Math.cos(3*u)-Math.cos(4*u))*13]);}}
@@ -7430,7 +7649,7 @@ STORIES.noel={title:'Un renne, ça vole !',end:60,D:0,card:99,noGreet:true,noSec
       }
     if(t>40.55&&t<42.35){const c=NO.tgPt(t,S.tree);cw('TADAM !',c[0]+(WIDE?40:20),c[1]+240,0.62*elastic(seg(t,40.6,40.8)*3)*(1+0.16*seg(t,42.1,42.35)),-0.08,'#d62839',1-seg(t,42.1,42.35));}/* H3 : TADAM ! rouge foncé, plus gros, tenu 1,8 s (avant : jaune pâle sur l'herbe, effacé dès 41,3) */
     // un cœur pour l'enfant
-    for(const [b,dx] of [[45.6,0],[45.95,-55],[46.3,45]]){const u=seg(t,b,b+1.5);if(u>0&&u<1){const m=heroPt(t,P,INFO.mouth);heart(ctx,m[0]+20+dx-u*30,m[1]-40-u*150,(dx?17:24)*elastic(Math.min(1,u*3)),dx<0?cols[1]||[255,111,163]:[255,111,163],1-seg(u,0.75,1),0.15*Math.sin(t*3+b));}}
+    for(const [b,dx] of [[45.6,0],[45.95,-55],[46.3,45]]){const u=seg(t,b,b+1.5);if(u>0&&u<1){const m=heroPt(t,P,INFO.mouth);heart(ctx,m[0]+20+dx-u*30,m[1]-40-u*150,(dx?17:24)*elasticIn(Math.min(1,u*3)),dx<0?cols[1]||[255,111,163]:[255,111,163],1-seg(u,0.75,1),0.15*Math.sin(t*3+b));}}
     ctx.restore();},
   // fin : le petit cadeau s'ouvre, des petites lumières en sortent et écrivent le prénom
   over(ctx,t,cam,P){
@@ -7621,7 +7840,7 @@ STORIES.nuages={title:'Le nuage boudeur',end:60,D:0,card:99,noGreet:true,noSecre
   // soleil, prénom écrit par des gouttes de couleur, « Touche l'écran ! »
   over(ctx,t,cam,P){ctx.save();ctx.setTransform(KS,0,0,KS,0,0);/* « FFFFIIOU ! » : en haut à gauche, d'où vient le vent (avant : sur la tête, puis caché par le nuage) */
     if(t>8.7&&t<9.8)comicWord(ctx,'FFFFIIOU !',WIDE?VW*0.3:VW*0.36,WIDE?125:105,elastic(seg(t,8.7,9.0)*1.2)*(WIDE?0.55:0.5),0.1,'#9b59d0',1-seg(t,9.5,9.8));
-    const sa=seg(t,34.8,35.6),sk=WIDE?0:eio(seg(t,52.0,53.0));if(sa>0)drawSun(ctx,VW-150+45*sk,250-80*(1-eoc(sa))-95*sk,0.9*elastic(sa*1.05)*(1-0.3*sk),1,t);
+    const sa=seg(t,34.8,35.6),sk=WIDE?0:eio(seg(t,52.0,53.0));if(sa>0)drawSun(ctx,VW-150+45*sk,250-80*(1-eoc(sa))-95*sk,0.9*elasticIn(sa*1.05)*(1-0.3*sk),1,t);
     if(t>52.4){const nm=artist(),cols=FCOL(FILM);let cx0=WIDE?VW*0.24:VW/2,pts,sc,cy0=WIDE?300:330;
       if(nm){const np=namePoints(nm);sc=Math.min(WIDE?0.7:0.85,560/np.tw);[cx0,sc]=qaNameFit(t,P,cam,cx0,cy0,sc,np.tw);pts=np.pts.filter((_,i)=>i%2===0).map(([x,y])=>[cx0+x*sc,cy0+y*sc]);}
       else{pts=[];for(let k=0;k<70;k++){const u=k/70*TAU;pts.push([cx0+16*Math.pow(Math.sin(u),3)*13,cy0-(13*Math.cos(u)-5*Math.cos(2*u)-2*Math.cos(3*u)-Math.cos(4*u))*13]);}}
@@ -7733,6 +7952,31 @@ function paChick(ctx,x,y,r,t,o={}){ctx.save();ctx.translate(x,y);ctx.rotate(o.ro
   ctx.restore();}
 function paChain(c,t,L){for(let i=0;i<L.length;i++){const [a,b,tg,ei,eo]=L[i],n=L[i+1];shotTo(c,t,a,n?Math.max(b,n[0]+n[3]+eo):b,tg,ei,eo);}}
 function paLook(t,P,w){const [ex,ey]=heroPt(t,P,INFO.eye),dx=w[0]-ex,dy=w[1]-ey,d=Math.hypot(dx,dy)||1;P.look=[10*dx/d,10*dy/d];}
+/* (E4) le lapin du dessin : sa 2e oreille est cachée par la queue de la licorne sur la page ; dès qu'elle bougeait, il n'avait qu'une oreille.
+   On la redessine derrière sa tête, juste à droite de la 1re et un peu plus droite : même encre, trait de même épaisseur, feutre prélevé sur sa pièce
+   (région de l'autre oreille, sinon la tête), intérieur prélevé dans l'intérieur de l'autre oreille (rose s'il est rose, blanc s'il n'est pas colorié).
+   PA_EAR : base (page), angle, longueur, demi-largeur. Dessinée SOUS la pièce : la tête et la 1re oreille restent devant. */
+const PA_EAR={B:[253,842],a:-0.3,L:88,hw:19,lw:4.4,ilw:3.0,out:[[169,800],[205,802],[168,790],[206,812]],inn:[[188,812],[185,800],[194,822]],body:[[255,880],[240,900],[270,870]]};
+function paEar(f){const q=f.parts.bunny;if(!q||!q.cv||typeof REG==='undefined')return;const E=PA_EAR,w0=q.cv.width,h0=q.cv.height,ox=Math.round(q.x),oy=Math.round(q.y),d0=rpCtx(q).getImageData(0,0,w0,h0).data,bb=1<<ORDER.indexOf('bunny');
+  const rAt=pts=>{for(const [X,Y] of pts){const p=Y*W+X,i=((Y-oy)*w0+X-ox)*4;if(X-ox<0||Y-oy<0||X-ox>=w0||Y-oy>=h0)continue;if(LINEA[p]<20&&(BITS[p]&bb)&&d0[i+3]>250)return REG[p];}return -1;};
+  /* motif en miroir (pas de couture) : le plus grand carré propre (sans trait) de la région r, le plus près du point (nx,ny) de la pièce */
+  const tile=(r,nx,ny)=>{if(r<0)return null;for(const S of [20,14,10,8,6]){let best=null,bd=1e18;for(let y=0;y+S<=h0;y+=2)for(let x=0;x+S<=w0;x+=2){const dd=(x+S/2-nx)**2+(y+S/2-ny)**2;if(dd>=bd)continue;let ok=true;
+      for(let j=0;j<S&&ok;j++)for(let i=0;i<S;i++){const X=ox+x+i,Y=oy+y+j,k=((y+j)*w0+x+i)*4;if(X<0||Y<0||X>=W||Y>=H){ok=false;break;}const p=Y*W+X;if(REG[p]!==r||LINEA[p]>25||d0[k+3]<250){ok=false;break;}}if(ok){best=[x,y];bd=dd;}}
+    if(best){const c=cv(2*S,2*S),x=c.getContext('2d');for(const [sx,sy] of [[1,1],[-1,1],[1,-1],[-1,-1]]){x.save();x.translate(sx<0?2*S:0,sy<0?2*S:0);x.scale(sx,sy);x.drawImage(q.cv,best[0],best[1],S,S,0,0,S,S);x.restore();}return c;}}return null;};
+  const avg=r=>{let n=0,a=0,b=0,c=0;for(let y=0;y<h0;y++)for(let x=0;x<w0;x++){const X=ox+x,Y=oy+y;if(X<0||Y<0||X>=W||Y>=H)continue;const p=Y*W+X,k=(y*w0+x)*4;if(REG[p]!==r||LINEA[p]>25||d0[k+3]<250)continue;n++;a+=d0[k];b+=d0[k+1];c+=d0[k+2];}return n>8?`rgb(${a/n|0},${b/n|0},${c/n|0})`:null;};
+  let rO=rAt(E.out);const rB=rAt(E.body);if(rO<0)rO=rB;const rI=rAt(E.inn),ink=rpInkQ(q),INK=`rgb(${ink[0]},${ink[1]},${ink[2]})`;
+  /* forme (repère de l'oreille : base en 0, pointe vers -y) */
+  const L=E.L,hw=E.hw,ca=Math.cos(E.a),sa=Math.sin(E.a),T=(x,y)=>[E.B[0]+x*ca-y*sa,E.B[1]+x*sa+y*ca];
+  const OUT=[[-hw*0.8,0],[-hw*1.25,-L*0.32],[-hw*1.15,-L*0.72],[-hw*0.42,-L*0.95],[0,-L*1.02],[hw*0.42,-L*0.95],[hw*1.12,-L*0.72],[hw*1.2,-L*0.32],[hw*0.8,0]];
+  const INN=[[-hw*0.18,-L*0.12],[-hw*0.62,-L*0.4],[-hw*0.5,-L*0.74],[-hw*0.12,-L*0.86],[hw*0.12,-L*0.88],[hw*0.4,-L*0.84],[hw*0.66,-L*0.62],[hw*0.48,-L*0.3],[hw*0.18,-L*0.12]];
+  const ys=OUT.map(([x,y])=>T(x,y)[1]),xs=OUT.map(([x,y])=>T(x,y)[0]),PT=Math.max(0,Math.ceil(oy-(Math.min(...ys)-E.lw-6))),PL=Math.max(0,Math.ceil(ox-(Math.min(...xs)-E.lw-6))),PR=Math.max(0,Math.ceil(Math.max(...xs)+E.lw+6-(ox+w0)));
+  const c=cv(w0+PL+PR,h0+PT),x=c.getContext('2d'),X0=ox-PL,Y0=oy-PT;
+  const path=(pts,close)=>{const P=new Path2D(),m=pts.map(([a,b])=>{const [u,v]=T(a,b);return[u-X0,v-Y0];});P.moveTo(...m[0]);
+    for(let i=1;i<m.length-1;i++){const xc=(m[i][0]+m[i+1][0])/2,yc=(m[i][1]+m[i+1][1])/2;if(i===m.length-2)P.quadraticCurveTo(m[i][0],m[i][1],m[i+1][0],m[i+1][1]);else P.quadraticCurveTo(m[i][0],m[i][1],xc,yc);}if(close)P.closePath();return P;};
+  const PO=path(OUT,true),PI=path(INN,true),fill=(P,r,near)=>{const tl=tile(r,near[0]-ox,near[1]-oy);x.save();x.clip(P);if(tl){x.fillStyle=x.createPattern(tl,'repeat');x.save();x.translate(-X0%40,-Y0%40);x.fillRect(-60,-60,c.width+120,c.height+120);x.restore();}else{x.fillStyle=avg(r)||'#fff';x.fill(P);}x.restore();};
+  fill(PO,rO,E.out[0]);if(rI>=0&&rI!==rO)fill(PI,rI,E.inn[0]);
+  x.lineCap='round';x.lineJoin='round';x.strokeStyle=INK;x.lineWidth=E.ilw;x.stroke(PI);x.lineWidth=E.lw;x.stroke(path(OUT,false));
+  x.drawImage(q.cv,PL,PT);q.cv=c;q.x-=PL;q.y-=PT;}
 STORIES.paques={title:'L’œuf qui s’enfuit',end:60,D:0,card:99,noGreet:true,noSecret:true,noQuest:true,stride:150,pack:'paques',
   lesson:'C’est la chasse aux œufs… mais un œuf vert s’enfuit ! Quand la licorne te le demande, touche l’écran pour lui montrer où il est.',
   tapWin:[27.4,31.4],tapJump:31.6,noTapPunch:true,
@@ -7747,7 +7991,8 @@ STORIES.paques={title:'L’œuf qui s’enfuit',end:60,D:0,card:99,noGreet:true,
   // (E2) l'œuf rayé (eggA) : sur le dessin, le lapin le touchait. Sa pièce gardait un éclat du dos du lapin (en haut à gauche)
   // et une encoche sous sa patte (en bas à gauche). L'œuf est symétrique : son côté gauche est reconstruit en miroir du côté droit (forme,
   // trait et rayures), sur l'axe mesuré dans les rangées saines.
-  afterRepair(f){/* (G) pièce du poussin : un éclat du bord du panier (en haut à gauche) y restait collé ; le poussin voyage maintenant, on ne garde que son morceau principal */
+  afterRepair(f){try{paEar(f);}catch(e){console.warn('ear',e);}/* (E4) 2e oreille du lapin */
+    /* (G) pièce du poussin : un éclat du bord du panier (en haut à gauche) y restait collé ; le poussin voyage maintenant, on ne garde que son morceau principal */
     try{const q=f.parts.chick;if(q&&q.cv){const w=q.cv.width,h=q.cv.height,cx=q.cv.getContext('2d',{willReadFrequently:true}),id=cx.getImageData(0,0,w,h),d=id.data,seen=new Uint8Array(w*h),st=[];
       let s0=-1;for(let r=0;r<40&&s0<0;r++)for(const [x,y] of [[Math.round(w*0.6)+r,Math.round(h*0.5)],[Math.round(w*0.6)-r,Math.round(h*0.5)]])if(x>=0&&x<w&&d[(y*w+x)*4+3]>40){s0=y*w+x;break;}
       if(s0>=0){st.push(s0);seen[s0]=1;while(st.length){const p=st.pop(),x=p%w,y=(p-x)/w;for(const [ax,ay] of [[1,0],[-1,0],[0,1],[0,-1]]){const X=x+ax,Y=y+ay;if(X<0||Y<0||X>=w||Y>=h)continue;const k=Y*w+X;if(!seen[k]&&d[k*4+3]>40){seen[k]=1;st.push(k);}}}
@@ -7790,13 +8035,13 @@ STORIES.paques={title:'L’œuf qui s’enfuit',end:60,D:0,card:99,noGreet:true,
   act(P,t,ph){const S=FILM.S;P.blush=0.5;
     const E=PA.egg(t),eW=PA.W(...E.p),bk=PA.W(...PA.BK),steps=(a,b,x0,x1)=>{const u=seg(t,a,b);P.x=lerp(x0,x1,eio(u));if(u>0&&u<1){const s=Math.sin((t-a)*7);setLeg(P,'legNear',0.22*s,0.15);setLeg(P,'legFar',0.22*s,0.15);setLeg(P,'legFront',-0.22*s,0.15);setLeg(P,'legBack',-0.22*s,0.15);}};
     if(t<5.4){if(t>3.95){const D=PA.dck(t);paLook(t,P,D?[D.x,D.y-40*S.k]:eW);}return;}/* (G) elle regarde le poussin filer se cacher */
-    if(t<20.2){P.x=PA.hx(t);const mv=PA.hmv(t);if(mv>0.01)gTrot(P,(t-11.95)*15,mv,0.5,7);const T=PA.pv(t);if(T){if(T.flip)P.flip=1;P.sx*=0.25+0.75*T.sq;/* plus fin que les balades (0,55) au moment de se retourner : plan serré, le saut miroir se voit moins */if(T.sq<0.999)P.y-=Math.sin(Math.PI*(1-T.sq))*30/F;}}
+    if(t<20.2){P.x=PA.hx(t);const mv=PA.hmv(t);if(mv>0.01){const x0=PA.hx(t<16?11.9:19.0);gTrot(P,Math.abs(P.x-x0)*F/150*TAU,mv,0.5,7);}/* E6 : la phase des pattes suit la distance parcourue (avant : 15 rad/s, les sabots glissaient) */const T=PA.pv(t);if(T){if(T.flip)P.flip=1;P.sx*=0.86+0.14*T.sq;/* E6 : plus de silhouette « feuille de papier » (avant 0,25) *//* plus fin que les balades (0,55) au moment de se retourner : plan serré, le saut miroir se voit moins */if(T.sq<0.999)P.y-=Math.sin(Math.PI*(1-T.sq))*30/F;}}
     if(t<7.6){P.happy=t<6.6?1:0;P.head+=0.05*Math.sin((t-5.4)*7);P.look=[-3,1];return;}
     if(t<10.5){paLook(t,P,eW);P.sparkleEye=t<8.8?0.6:0;if(t>9.6)P.surprise=Math.max(Math.sin(Math.PI*seg(t,9.6,9.9)),Math.sin(Math.PI*seg(t,10.05,10.35)));return;}
     if(t<11.4){paLook(t,P,eW);P.head+=0.14*eio(seg(t,10.5,11.0));P.mouthO=0.3;return;}
     if(t<12.85){paLook(t,P,t<12.4?eW:bk);P.head+=0.14*(1-eio(seg(t,11.4,11.9)));P.surprise=Math.sin(Math.PI*seg(t,11.4,12.3));return;}
     /* (G) « Hé ! Reviens, petit œuf ! » : elle tape du pied les yeux fermés de colère… et ne voit pas l'œuf qui la nargue derrière le panier */
-    if(t<14.3){P.blink=t<14.15?1:0;P.head-=0.05*Math.sin(Math.PI*seg(t,12.85,14.15));if(t<13.6)P.sy*=1-0.04*Math.abs(Math.sin((t-12.6)*9));return;}
+    if(t<14.3){P.blink=t<14.15?1:0;P.head-=0.05*Math.sin(Math.PI*seg(t,12.85,14.15));if(t<13.6)P.sy*=1-0.04*Math.abs(Math.sin((t-12.85)*9));return;}
     /* « Il est où ? » : elle regarde à gauche quand il se penche à droite, puis à droite quand il est rentré */
     if(t<16.2){if(t<14.95)paLook(t,P,bk);else P.look=t<15.55?[-9,3]:[9,-3];P.head-=0.03;if(t>15.55)P.head+=0.05*Math.sin(Math.PI*seg(t,15.55,16.2));return;}
     /* « Toc toc… » : pas de loup jusqu'au panier, elle y frappe deux fois du museau */
@@ -7883,9 +8128,9 @@ STORIES.paques={title:'L’œuf qui s’enfuit',end:60,D:0,card:99,noGreet:true,
     /* CRAC */
     if(t>33.45&&t<34.5){const [fx,fy]=PA.W(...PA.HT);comicWord(ctx,'CRAC !',fx+30*S.k,fy+140*S.k,0.56*elastic(seg(t,33.45,33.65)*3),-0.1,'#f2a33a',1-seg(t,34.2,34.5));}
     /* câlin : le poussin serre l'œuf rayé, son voisin */
-    if(t>34.8&&t<37.6){const [cx,cy]=PA.W(...PA.HT),u=seg(t,34.8,37.6);heart(ctx,cx-62*S.k,cy-95*S.k-u*60*S.k,20*S.k*elastic(Math.min(1,u*4)),[255,93,122],1-seg(t,37.0,37.6),0);}
+    if(t>34.8&&t<37.6){const [cx,cy]=PA.W(...PA.HT),u=seg(t,34.8,37.6);heart(ctx,cx-62*S.k,cy-95*S.k-u*60*S.k,20*S.k*elasticIn(Math.min(1,u*4)),[255,93,122],1-seg(t,37.0,37.6),0);}
     /* (E2) son câlin à elle : le poussin sur son museau, deux cœurs */
-    if(t>39.0&&t<40.2){const C=PA.chick(t,P),[cx,cy]=toF(...C.c);for(let i=0;i<2;i++){const τ=t-39.0-i*0.35;if(τ<0)continue;heart(ctx,cx+(i?40:-36)*S.k,cy-30*S.k-τ*90*S.k,(16+4*i)*S.k*elastic(clamp(τ*2.5)),i?[255,120,160]:[255,93,122],1-seg(τ,0.7,1.1),(i?0.2:-0.2));}}
+    if(t>39.0&&t<40.2){const C=PA.chick(t,P),[cx,cy]=toF(...C.c);for(let i=0;i<2;i++){const τ=t-39.0-i*0.35;if(τ<0)continue;heart(ctx,cx+(i?40:-36)*S.k,cy-30*S.k-τ*90*S.k,(16+4*i)*S.k*elasticIn(clamp(τ*2.5)),i?[255,120,160]:[255,93,122],1-seg(τ,0.7,1.1),(i?0.2:-0.2));}}
     /* coucou dans le panier (G : plus gros, couleur franche, à droite du panier dans le ciel libre ; avant : petit, rose pâle, sur le museau) */
     if(t>46.0&&t<47.0){const [cx,cy]=PA.W(...PA.T3);comicWord(ctx,'coucou !',cx+175*S.k,cy-150*S.k,0.44*elastic(seg(t,46.0,46.2)*3),0.08,'#ff7a1a',1-seg(t,46.7,47.0));}
     ctx.restore();},
@@ -7910,7 +8155,7 @@ STORIES.paques={title:'L’œuf qui s’enfuit',end:60,D:0,card:99,noGreet:true,
         if(h>0){ctx.beginPath();ctx.moveTo(-ew,-2);for(let k=0;k<=8;k++)ctx.lineTo(-ew+k*ew/4,k%2?-12:4);ctx.lineWidth=3.5;ctx.strokeStyle='#3a2470';ctx.stroke();}ctx.restore();};
       if(h<=0){egg(true);egg(false);continue;}
       egg(false);
-      const g=elastic(h*1.05);ctx.save();ctx.translate(x,y-eh*0.15-eh*0.5*eoc(h));ctx.scale(fs*g,fs*g);ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+      const g=elasticIn(h*1.05);ctx.save();ctx.translate(x,y-eh*0.15-eh*0.5*eoc(h));ctx.scale(fs*g,fs*g);ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
       ctx.lineWidth=26;ctx.strokeStyle='rgba(255,255,255,.95)';ctx.strokeText(nm[i],0,0);ctx.lineWidth=13;ctx.strokeStyle='#3a2470';ctx.strokeText(nm[i],0,0);ctx.fillStyle=rgba(c,1);ctx.fillText(nm[i],0,0);ctx.restore();
       if(h<1){ctx.save();ctx.globalAlpha=1-h;ctx.translate(0,-80*eoc(h));ctx.translate(x,y);ctx.rotate((i%2?1:-1)*1.2*h);ctx.translate(-x,-y);egg(true);ctx.restore();
         star(ctx,x+ew,y-eh,14*(1-h)+3,[255,214,90],1-h,h*5,0.45,true);}}
@@ -8338,7 +8583,7 @@ STORIES.pompiere={title:'Le tuyau farceur',end:60,D:0,card:99,noGreet:true,noSec
     /* G2 : « Miaou… trop haut ! » : la branche tremble, des feuilles tombent */
     for(let i=0;i<7;i++){const v=seg(t,9.85+i*0.2,11.85+i*0.2);if(v<=0||v>=1)continue;const C0=S.cat,x=C0[0]+(hr(i,31)-0.5)*220+Math.sin(v*7+i)*40,y=C0[1]+30+v*420;ctx.save();ctx.globalAlpha=1-seg(v,0.8,1);ctx.translate(x,y);ctx.rotate(Math.sin(v*9+i)*0.8);ctx.fillStyle=i%2?'#7cc46a':'#a8d86e';ctx.strokeStyle='#2f5a2a';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,0,28,13,0,0,TAU);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(-24,0);ctx.lineTo(24,0);ctx.stroke();ctx.restore();}
     /* G2 : « J'ai une idée ! » : une ampoule s'allume au-dessus de sa tête */
-    {const v=seg(t,11.85,12.15)*(1-seg(t,12.9,13.2));if(v>0.01){const h=heroPt(t,P,PO.HELM),x=h[0]-(WIDE?300:60),y=h[1]-(WIDE?-10:250),g=elastic(seg(t,11.85,12.3)*1.1),on=t>12.1?1:0;ctx.save();ctx.globalAlpha=v;ctx.translate(x,y);ctx.scale(g,g);ctx.lineWidth=5;ctx.strokeStyle='#1e1e1e';
+    {const v=seg(t,11.85,12.15)*(1-seg(t,12.9,13.2));if(v>0.01){const h=heroPt(t,P,PO.HELM),x=h[0]-(WIDE?300:60),y=h[1]-(WIDE?-10:250),g=elasticIn(seg(t,11.85,12.3)*1.1),on=t>12.1?1:0;ctx.save();ctx.globalAlpha=v;ctx.translate(x,y);ctx.scale(g,g);ctx.lineWidth=5;ctx.strokeStyle='#1e1e1e';
       if(on){ctx.strokeStyle='#f2b705';ctx.lineWidth=6;for(let k=0;k<8;k++){const an=k*TAU/8;ctx.beginPath();ctx.moveTo(Math.cos(an)*62,Math.sin(an)*62-10);ctx.lineTo(Math.cos(an)*86,Math.sin(an)*86-10);ctx.stroke();}ctx.strokeStyle='#1e1e1e';ctx.lineWidth=5;}
       ctx.fillStyle=on?'#ffe45c':'#ffffff';ctx.beginPath();ctx.arc(0,-14,40,Math.PI*0.8,Math.PI*2.2);ctx.lineTo(16,30);ctx.lineTo(-16,30);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#b9bcc8';ctx.fillRect(-18,30,36,20);ctx.strokeRect(-18,30,36,20);ctx.beginPath();ctx.moveTo(-18,40);ctx.lineTo(18,40);ctx.stroke();ctx.restore();}}
     /* G2 : « Oh, le farceur ! » : le tuyau rigole (HI HI !) ; le camion s'égoutte */
@@ -8600,18 +8845,18 @@ STORIES.princesse={noTapPunch:true,title:'La grenouille timide',end:60,D:0,card:
     if(t>40.2&&t<41.2){const G=PR.frog(t,P),v=seg(t,40.2,41.2);comicWord(ctx,'SMACK !',G.x+PR.d(330),G.y-PR.d(250),0.5*prWpop(t,40.2)*prWout(t,40.9,41.2),0.1,'#e85d9c',1-seg(t,40.9,41.2));
       ctx.save();ctx.globalAlpha=1-v;ctx.fillStyle='#ff6fa5';ctx.strokeStyle='#1e1e1e';ctx.lineWidth=4;const hx=G.x-PR.d(30),hy=G.y-PR.d(60)-v*PR.d(80),s=PR.d(14);ctx.beginPath();ctx.moveTo(hx,hy+s);ctx.bezierCurveTo(hx-2*s,hy-0.2*s,hx-s,hy-1.6*s,hx,hy-0.6*s);ctx.bezierCurveTo(hx+s,hy-1.6*s,hx+2*s,hy-0.2*s,hx,hy+s);ctx.fill();ctx.stroke();ctx.restore();}
     /* G2 : la grenouille envoie des bisous (petits cœurs qui montent) pendant « Croâ ! Un bisou, vite ! » */
-    for(const tb of [6.0,6.55,7.1]){const v=seg(t,tb,tb+1.1);if(v>0&&v<1){const G=PR.frog(t,P);heart(ctx,G.x+PR.d(60)+PR.d(40)*Math.sin(v*6),G.y-PR.d(140)-v*PR.d(260),PR.d(26)*(0.5+0.5*elastic(Math.min(1,v*3))),cols[Math.round(tb*10)%cols.length],1-seg(v,0.7,1),0.2*Math.sin(v*5));}}
+    for(const tb of [6.0,6.55,7.1]){const v=seg(t,tb,tb+1.1);if(v>0&&v<1){const G=PR.frog(t,P);heart(ctx,G.x+PR.d(60)+PR.d(40)*Math.sin(v*6),G.y-PR.d(140)-v*PR.d(260),PR.d(26)*elasticIn(Math.min(1,v*3)),cols[Math.round(tb*10)%cols.length],1-seg(v,0.7,1),0.2*Math.sin(v*5));}}
     /* G2 : « Beurk… » */
     if(t>8.25&&t<9.4){const h=heroPt(t,P,INFO.hornTip);comicWord(ctx,'BEURK !',h[0]-PR.d(WIDE?330:260),h[1]-PR.d(WIDE?20:140),0.55*prWpop(t,8.25)*prWout(t,9.1,9.4),-0.12,'#5cb85c',1-seg(t,9.1,9.4));}
     /* G2 : « Je suis un prince, moi ! » : il rêve de sa couronne (bulle de pensée) */
-    {const v=seg(t,10.25,10.6)*(1-seg(t,12.1,12.45));if(v>0.01){const G=PR.frog(t,P),q=FILM.parts.frog,top=q?toF(0,q.y)[1]-FILM.S.f0[1]:-PR.d(200),bx=G.x-PR.d(40),by=G.y+top-PR.d(250),g=elastic(seg(t,10.25,10.75)*1.1),r=PR.d(150)*g;
+    {const v=seg(t,10.25,10.6)*(1-seg(t,12.1,12.45));if(v>0.01){const G=PR.frog(t,P),q=FILM.parts.frog,top=q?toF(0,q.y)[1]-FILM.S.f0[1]:-PR.d(200),bx=G.x-PR.d(40),by=G.y+top-PR.d(250),g=elasticIn(seg(t,10.25,10.75)*1.1),r=PR.d(150)*g;
       ctx.save();ctx.globalAlpha=v;ctx.lineWidth=5;ctx.strokeStyle='#1e1e1e';ctx.fillStyle='#ffffff';for(const [dx,dy,rr] of [[PR.d(30),PR.d(215),PR.d(18)],[PR.d(12),PR.d(160),PR.d(28)]]){ctx.beginPath();ctx.arc(bx+dx,by+dy,rr*g,0,TAU);ctx.fill();ctx.stroke();}
       for(const pass of [0,1])for(let i=0;i<7;i++){const an=i*TAU/7;ctx.beginPath();ctx.arc(bx+Math.cos(an)*r*0.62,by-PR.d(20)+Math.sin(an)*r*0.42,r*0.42,0,TAU);if(pass)ctx.fill();else ctx.stroke();}
       const cw=r*0.95,ch=r*0.55,x0=bx-cw/2,yb=by+ch*0.2+PR.d(5)*Math.sin(t*5);ctx.fillStyle='#f6c431';ctx.beginPath();ctx.moveTo(x0,yb);ctx.lineTo(x0-cw*0.05,yb-ch);ctx.lineTo(x0+cw*0.25,yb-ch*0.5);ctx.lineTo(bx,yb-ch*1.2);ctx.lineTo(x0+cw*0.75,yb-ch*0.5);ctx.lineTo(x0+cw*1.05,yb-ch);ctx.lineTo(x0+cw,yb);ctx.closePath();ctx.fill();ctx.stroke();
       ctx.fillStyle=rgba(cols[0],1);ctx.beginPath();ctx.arc(bx,yb-ch*0.35,ch*0.13,0,TAU);ctx.fill();ctx.lineWidth=3;ctx.stroke();ctx.restore();
       for(let k=0;k<3;k++){const an=t*3+k*TAU/3;star(ctx,bx+Math.cos(an)*r*0.9,by-PR.d(20)+Math.sin(an)*r*0.5,PR.d(16),[255,215,90],v,an,0.45,true);}}}
     /* G2 : la danse du prince : un cœur à chaque bond ; « Toujours timide ! » : des cœurs montent de derrière le rocher */
-    for(const tb of [45.3,45.9,46.5,47.4,48.0,48.6]){const v=seg(t,tb,tb+1.0);if(v>0&&v<1){const x=FILM.S.f0[0]+PR.d(70)*Math.sin(tb*7)+PR.d(30)*Math.sin(v*6),y=FILM.S.stoneTop[1]-PR.d(250)-v*PR.d(280);heart(ctx,x,y,PR.d(30)*(0.5+0.5*elastic(Math.min(1,v*3))),cols[Math.round(tb*10)%cols.length],1-seg(v,0.7,1),0.2*Math.sin(v*5));}}
+    for(const tb of [45.3,45.9,46.5,47.4,48.0,48.6]){const v=seg(t,tb,tb+1.0);if(v>0&&v<1){const x=FILM.S.f0[0]+PR.d(70)*Math.sin(tb*7)+PR.d(30)*Math.sin(v*6),y=FILM.S.stoneTop[1]-PR.d(250)-v*PR.d(280);heart(ctx,x,y,PR.d(30)*elasticIn(Math.min(1,v*3)),cols[Math.round(tb*10)%cols.length],1-seg(v,0.7,1),0.2*Math.sin(v*5));}}
     /* G2 : le chaton couronné sort de l'herbe ; le prince lui souffle un bisou (cœur qui vole), il rougit */
     {const [a0,a1]=PR.KT;if(t>a0-0.35&&t<a1+0.75){const [kx,ky]=PR.kitPos(),up=seg(t,a0,a0+0.35),bob=t>a0+0.35?Math.sin(Math.PI*seg(t,a0+0.35,a0+0.65))*0.12:0,talk=t>49.6&&t<50.9?0.05*Math.sin(t*24):0,hop=Math.sin(Math.PI*seg(t,51.55,51.95))*0.15,h=(up+bob+talk+hop)*(1-eio(seg(t,a1,a1+0.4)));
       drawPeek(ctx,kx,ky,h,{look:t<51.0?-1:-0.6,c:cols[1%cols.length],t,bl:((t*0.8)%3.2)<0.13,v:'white'},{pk:'kitten',v:'white',acc:'crown',base:'grass'},seg(t,a0-0.35,a0-0.05)*(1-seg(t,a1+0.45,a1+0.75)));
@@ -8712,7 +8957,7 @@ function pyDream(ctx,t,bx,by,cols){const J=[43.05,43.75,44.45],gy=by+62,fa=1-seg
     ctx.save();ctx.translate(x,y);ctx.rotate(0.35*sl*(k===1?-1:1));miniSheep(ctx,0,0,0.62,t);ctx.restore();
     if(sl>0.05){const τ=((t-47.0)*0.7+k/3)%1;comicWord(ctx,'z',x+30+τ*20,y-50-τ*40,0.14+τ*0.08,0.2,'#8a63d2',sl*Math.sin(Math.PI*τ));}}
   if(t<47.0){for(let i=0;i<2;i++){const τ=((t-45.6)*0.9+i/2)%1;comicWord(ctx,'♪',bx-60+i*120,by-30-τ*40,0.22,0.1,rgba(cols[i%cols.length],1),Math.sin(Math.PI*τ)*seg(t,45.7,46.0));}}
-  if(ck>0){const s=elastic(ck*1.1)*0.85;pyCake(ctx,bx,by-8,s);for(let i=0;i<4;i++){const an=t*2+i*TAU/4;star(ctx,bx+Math.cos(an)*70,by-20+Math.sin(an)*34,7,cols[i%cols.length],ck,an,0.45,true);}}}
+  if(ck>0){const s=elasticIn(ck*1.1)*0.85;pyCake(ctx,bx,by-8,s);for(let i=0;i<4;i++){const an=t*2+i*TAU/4;star(ctx,bx+Math.cos(an)*70,by-20+Math.sin(an)*34,7,cols[i%cols.length],ck,an,0.45,true);}}}
 STORIES.pyjama={title:'Les moutons qui dansent',end:60,D:0,card:99,noGreet:true,noSecret:true,noQuest:true,stride:150,pack:'pyjama',
   lesson:'Ta licorne ne veut pas dormir et les moutons font la fête ! Quand elle te le demande, touche l’écran pour endormir les moutons.',
   tapWin:[29.9,33.7],tapJump:33.9,wideZ:0.58,
@@ -8747,7 +8992,7 @@ STORIES.pyjama={title:'Les moutons qui dansent',end:60,D:0,card:99,noGreet:true,
     if(t<27.1){PY.bounce(P,t,14.5,24.5,1/1.7,30);P.blink=Math.max(P.blink||0,1-seg(t,24.5,24.64));/* G1 : yeux rieurs → clin → yeux ouverts (avant : changement d'expression d'une image) */P.surprise=Math.sin(Math.PI*seg(t,24.5,25.3));P.head-=0.14*eio(seg(t,24.45,24.9));P.sad=0.3*seg(t,24.5,24.8);return;}
     if(t<33.9){P.head+=lerp(-0.14,0.08,eio(seg(t,27.1,27.6)));P.sad=0.3*(1-seg(t,27.1,27.4));P.blush=1;P.sparkleEye=0.6+0.4*Math.sin(t*4);return;}
     if(t<37.2){P.head+=0.08*(1-eio(seg(t,33.9,34.3)));
-      {const r=Math.min(1,seg(t,34.1,34.35),1-seg(t,35.55,35.8));if(r>0){const ph2=(t-34.1)*4;gTrot(P,ph2,0.38*r,0.9,4*r);P.head+=(0.06+Math.sin(ph2*0.5)*0.05)*r;P.sy*=1-0.015*r;P.tail[0]-=0.1*r;}}/* sur la pointe des sabots (fondu : avant gTiptoe sautait au début et à la fin) */
+      {const r=Math.min(1,seg(t,34.1,34.35),1-seg(t,35.55,35.8));if(r>0){const ph2=(t-34.1)*4,bb=Math.pow(Math.abs(Math.sin((t-34.1)*Math.PI*1.6)),2);P.y-=bb*9*r/F;P.sy*=1-0.04*r*(1-bb);P.sx*=1+0.02*r*(1-bb);P.head+=(0.06+Math.sin(ph2*0.5)*0.05)*r;P.tail[0]-=0.1*r;}}/* E6 : petits rebonds de joie sur place (avant : trot sur place, « marche sans avancer ») *//* sur la pointe des sabots (fondu : avant gTiptoe sautait au début et à la fin) */
       if(t<35.9){P.happy=1;P.blush=1;return;}P.head-=0.22*Math.sin(Math.PI*seg(t,35.95,37.15));P.surprise=t>36.0&&t<36.95?1:0;P.sy*=1+0.05*Math.sin(Math.PI*seg(t,35.95,37.15));P.blink=t>36.95?0.5:0;return;}
     // vers l'oreiller, couchée, endormie
     const u=seg(t,37.2,38.4),eu=eio(u);P.x=b[0]*eu/F;P.y=(b[1]*eu-150*Math.sin(Math.PI*u))/F;P.noGround=true;P.gdy=0;P.blink=0.5*(1-seg(t,37.2,37.5));
@@ -9038,7 +9283,7 @@ STORIES.sorciere={title:'La citrouille géante',end:60,D:0,card:99,noGreet:true,
     for(const [a,b] of SV.CAST){if(t<a||t>b)continue;const h=heroPt(t,P,INFO.hornTip),w=Math.min(1,seg(t,a,a+0.3),1-seg(t,b-0.2,b));for(let k=0;k<6;k++){const u=((t-a)*1.6+k/6)%1,p=SV.arc(h,top,eio(u),150);star(ctx,p[0],p[1],(14+6*Math.sin(t*9+k))*w,cols[k%cols.length],w*(1-seg(u,0.85,1)),t*6+k,0.45,true);}}
     /* POUF (nuage aux couleurs de l'enfant) et rayon d'étoiles vers la citrouille */
     for(const [pt,i,big] of SV.POUF){const τ=t-pt;if(τ<0||τ>1.35)continue;const c=cols[i%cols.length];
-      svCloud(ctx,top[0]-τ*25,top[1]-60-τ*150,0.5*big*elastic(clamp(τ*3))*(1-eio(seg(τ,0.85,1.3))),c,1);
+      svCloud(ctx,top[0]-τ*25,top[1]-60-τ*150,0.5*big*elasticIn(clamp(τ*3))*(1-eio(seg(τ,0.85,1.3))),c,1);
       if(τ<0.7)cw('POUF !',top[0]+40,top[1]-(big>1?330:270),0.5*big*elastic(seg(τ,0,0.2)*3),-0.1,(typeof wordInk==='function'?rgba(wordInk(c),1):'#7b3fc4'),1-seg(τ,0.5,0.7));/* H3 : encre foncée de sa couleur (avant : couleur claire, pâle) */
       const tgt=[S.pk0[0],S.pk0[1]-(i===1?0:10)],u=seg(τ,0.15,0.5);if(u>0&&u<1)for(let k=0;k<8;k++){const v=clamp(u-k*0.05);if(v<=0)continue;const p=SV.arc(top,tgt,v,200);star(ctx,p[0],p[1],15-k,cols[(i+k)%cols.length],1-k/8,t*5+k,0.45,true);}}
     /* la citrouille rétrécit (petit pouf) */
@@ -9054,7 +9299,7 @@ STORIES.sorciere={title:'La citrouille géante',end:60,D:0,card:99,noGreet:true,
       for(const [rt,bx,by,j] of SV.ROCK){const u=seg(t,rt,rt+0.5);if(u>0&&u<1)rocket(ctx,top[0],top[1]-60,bx,by,u,cols[j%cols.length]);burst(ctx,bx,by,t-rt-0.5,cols,j,46,420,1.25);}
       {const k=SV.pk(t,P),bx=S.gx,by=S.pkBot-S.hb*3.0*2-40;burst(ctx,bx,by,t-SV.BOOM-0.05,cols,4,60,560,1.6);}}
     /* un cœur pour l'enfant */
-    for(const [b,dx] of [[46.5,0],[46.85,-55],[47.2,45]]){const u=seg(t,b,b+1.5);if(u>0&&u<1){const m=heroPt(t,P,INFO.mouth);heart(ctx,m[0]+20+dx-u*30,m[1]-40-u*150,(dx?17:24)*elastic(Math.min(1,u*3)),dx<0?cols[1]||[255,111,163]:[255,111,163],1-seg(u,0.75,1),0.15*Math.sin(t*3+b));}}
+    for(const [b,dx] of [[46.5,0],[46.85,-55],[47.2,45]]){const u=seg(t,b,b+1.5);if(u>0&&u<1){const m=heroPt(t,P,INFO.mouth);heart(ctx,m[0]+20+dx-u*30,m[1]-40-u*150,(dx?17:24)*elasticIn(Math.min(1,u*3)),dx<0?cols[1]||[255,111,163]:[255,111,163],1-seg(u,0.75,1),0.15*Math.sin(t*3+b));}}
     /* la chauve-souris (devant) */
     {const b=SV.bat(t),s=decorPose('bat',t).sc;svPart(ctx,'bat',INFO.pivot.bat,b.x,b.y,0.08*Math.sin(t*1.7),b.sx*s,b.sy*s);}
     ctx.restore();},
@@ -9285,7 +9530,7 @@ STORIES.superheroine={title:'Super Licorne et le cerf-volant',end:60,D:0,card:99
     else if(t<T1){KX=lerp(A,Bx,(t-T0)/(T1-T0));KY=KY0+Math.sin(t*3)*12;}
     else{const u=eio(seg(t,T1,55.4));KX=Bx+30*u;KY=KY0-170*u;ks=s*(1-0.85*u);ka=1-seg(t,55.0,55.4);}
     ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
-    lx.forEach(([ch,x],i)=>{const tb=T0+clamp((x-A)/(Bx-A))*(T1-T0)+0.08,v=t-tb;if(v<0)return;const g=elastic(clamp(v/0.55)*1.1),fall=1-eoc(clamp(v/0.35)),c=cols[i%cols.length];
+    lx.forEach(([ch,x],i)=>{const tb=T0+clamp((x-A)/(Bx-A))*(T1-T0)+0.08,v=t-tb;if(v<0)return;const g=elasticIn(clamp(v/0.55)*1.1),fall=1-eoc(clamp(v/0.35)),c=cols[i%cols.length];
       ctx.save();ctx.translate(x,cy0-60*fall);ctx.rotate(0.25*fall*(i%2?1:-1));ctx.scale(sc*g,sc*g);
       ctx.lineWidth=30;ctx.strokeStyle='rgba(255,255,255,.95)';ctx.strokeText(ch,0,0);ctx.lineWidth=14;ctx.strokeStyle='#3a2470';ctx.strokeText(ch,0,0);ctx.fillStyle=rgba(c,1);ctx.fillText(ch,0,0);ctx.restore();
       if(v<0.5)star(ctx,x+38*sc/0.62,cy0-55*sc/0.62,16*(1-v/0.5)+4,[255,214,90],1-v/0.5,v*6,0.45,true);});
