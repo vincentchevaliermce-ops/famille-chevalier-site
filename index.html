@@ -852,16 +852,25 @@
 
     var form = document.getElementById('freeBookForm');
     var LEAD_SOURCE = 'free-book-direct';
-    var OFFRE_2 = false;   /* lien de l'email « nouveau site » : un livre de plus, une fois */
+    var OFFRE_2 = false;   /* lien d'un email « un livre de plus » : un livre de plus, une fois par offre et par navigateur */
+    /* offre=2 : email « nouveau site » (17/09/2026) ; offre=merci : email « un autre livre offert, et votre avis » (11/2026) */
+    var OFFRES = {
+        '2': {cle: 'fc_book_offre2', texte: '<b>Nouveau site, un livre de plus offert.</b> Choisissez un titre et indiquez l’adresse email à laquelle vous avez reçu notre message.'},
+        'merci': {cle: 'fc_book_offre_merci', texte: '<b>Un livre de plus, offert pour vous dire merci.</b> Choisissez un titre et indiquez l’adresse email à laquelle vous avez reçu notre message.'}
+    };
+    var OFFRE = null;
     try {
         var qs = new URLSearchParams(location.search);
         var pre = qs.get('livre');
         if (pre && DIRECT_PDF[pre]) { document.getElementById('bookSelect').value = pre; }
         var src = (qs.get('src') || '').replace(/[^a-z0-9-]/gi, '').slice(0, 24);
         if (src) { LEAD_SOURCE = 'free-book-direct-' + src; }
-        OFFRE_2 = qs.get('offre') === '2';
+        var code = qs.get('offre');
         /* l'offre suit la visite : page d'un livre, puis retour au formulaire */
-        try { if (OFFRE_2) { sessionStorage.setItem('fc_offre2', '1'); } else { OFFRE_2 = sessionStorage.getItem('fc_offre2') === '1'; } } catch(e){}
+        var connue = function (c) { return !!c && Object.prototype.hasOwnProperty.call(OFFRES, c); };
+        try { if (connue(code)) { sessionStorage.setItem('fc_offre2', code); } else { code = sessionStorage.getItem('fc_offre2'); if (code === '1') { code = '2'; } } } catch(e){}
+        OFFRE = connue(code) ? OFFRES[code] : null;
+        OFFRE_2 = !!OFFRE;
     } catch(e){}
 
     /* Lecteur déjà inscrit : on lui redonne son livre tout de suite, sans masquer le formulaire */
@@ -880,7 +889,7 @@
         if (OFFRE_2) {
             var fete = document.createElement('div');
             fete.className = 'gift-back';
-            fete.innerHTML = '<p><b>Nouveau site, un livre de plus offert.</b> Choisissez un titre et indiquez l’adresse email à laquelle vous avez reçu notre message.</p>';
+            fete.innerHTML = '<p>' + OFFRE.texte + '</p>';
             form.parentNode.insertBefore(fete, form.parentNode.firstChild);
         }
     } catch(e){}
@@ -892,7 +901,7 @@
         var consent = document.getElementById('consentCheck');
         if(!email || !book || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ document.getElementById('emailInput').reportValidity(); return; }
         if(!consent.checked){ consent.focus(); consent.reportValidity(); return; }
-        var already = null; try { already = localStorage.getItem(OFFRE_2 ? 'fc_book_offre2' : 'fc_book_claimed'); } catch(e){}
+        var already = null; try { already = localStorage.getItem(OFFRE_2 ? OFFRE.cle : 'fc_book_claimed'); } catch(e){}
         if(already){
             var usedPdf = null; try { usedPdf = DIRECT_PDF[localStorage.getItem('fc_book_title')] || localStorage.getItem('fc_book_pdf'); } catch(e){}
             form.style.display = 'none';
@@ -905,7 +914,7 @@
         if(!pdfUrl){ alert("Ce livre n'est pas encore disponible en version offerte. Écrivez-nous à contact@editions-chevalier.fr."); return; }
         btn.disabled = true; btn.querySelector('.btn-text').style.display='none'; btn.querySelector('.btn-loading').style.display='inline';
         try { fetch(APPS_SCRIPT_URL + '?action=email&email=' + encodeURIComponent(email) + '&book=' + encodeURIComponent(book) + '&source=' + encodeURIComponent(LEAD_SOURCE), {mode:'no-cors'}); } catch(e){}
-        try { localStorage.setItem('fc_book_claimed', email); localStorage.setItem('fc_book_title', book); localStorage.setItem('fc_book_pdf', pdfUrl); if (OFFRE_2) { localStorage.setItem('fc_book_offre2', email); } } catch(e){}
+        try { localStorage.setItem('fc_book_claimed', email); localStorage.setItem('fc_book_title', book); localStorage.setItem('fc_book_pdf', pdfUrl); if (OFFRE_2) { localStorage.setItem(OFFRE.cle, email); } } catch(e){}
         var asin = BOOK_ASIN[book];
         var reviewUrl = asin ? 'https://www.amazon.fr/review/create-review?asin=' + asin : 'https://www.amazon.fr/stores/author/B0CJ6VJG76';
         var succ = document.getElementById('freeBookSuccess');
