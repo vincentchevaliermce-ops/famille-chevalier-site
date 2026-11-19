@@ -30,6 +30,7 @@ LIVRES = [
     ('une-histoire-et-au-lit',                  'Histoires du soir',         '3'),
     ('frisson-le-petit-manchot',                'Album illustré',            '3'),
     ('mon-livre-anime-des-animaux-rigolos',     'Livre animé',               '3'),
+    ('100-licornes',                            'Coloriage animé',           '3'),
     ('metiers-secrets-petites-betes',           'Documentaire',              '7'),
     ('gaspard-voyageur-du-temps',               'Gaspard, 10 ans · Tome 1',  '7'),
     ('gaspard-la-legende-du-bison-blanc',       'Gaspard, 10 ans · Tome 2',  '7'),
@@ -56,6 +57,7 @@ COURT = {
 
 # Pitches de la page « Parutions 2026 »
 PITCHES_2026 = {
+ '100-licornes': "L'enfant colorie sa licorne, prend la page en photo avec l'appli gratuite, et sa licorne devient un dessin animé d'une minute avec ses propres couleurs. Trente coloriages, trente dessins animés et trente jeux d'activités, pour les 3-6 ans.",
  'piege-dans-le-titanic': "14 avril 1912, 23 h 40. Le lecteur devient Louis, 10 ans, à bord du Titanic avec sa famille et Moustique, son chien. Il observe les illustrations, repère les indices et choisit son chemin : dix fins possibles, dix secrets cachés, et une vraie leçon d'histoire en filigrane.",
  'c-est-qui-le-plus-fort': "Ours polaire ou grizzly ? Requin blanc ou orque ? Trente duels d'animaux : l'enfant parie, tourne la page et découvre qui gagne vraiment, avec les vraies forces de chaque animal. Un livre-jeu qui se lit à plusieurs et se termine en débat à table.",
  'metiers-secrets-petites-betes': "La taupe conduit le métro, le lombric est ingénieur agronome, la coccinelle commande la brigade anti-pucerons et le hérisson fait sa ronde de nuit. Trente petites bêtes du jardin présentées par leur métier, du sol au potager, de la mare au compost, avec cherche-et-trouve, quiz et bons gestes pour le jardin.",
@@ -264,7 +266,7 @@ def build_html():
       <p>%s</p>
       <p class="specs">%s · %s · %d p. · ISBN %s</p>
     </div>
-  </article>""" % (' serre' if len(nouveautes) > 6 else '', l['cover'], html.escape(cat_de[l['slug']].upper()), l['age'].upper(),
+  </article>""" % ((' serre' if len(nouveautes) > 6 else '') + (' tres-serre' if len(nouveautes) > 8 else ''), l['cover'], html.escape(cat_de[l['slug']].upper()), l['age'].upper(),
                    date_fr(l['date']).upper(), html.escape(l['nom']),
                    html.escape(PITCHES_2026.get(l['slug'], '')),
                    ('%s %s · %s avis' % (etoiles(l['note']), note_fr(l['note']), l['avis'])) if l['avis'] else 'nouveauté, en librairie en ligne',
@@ -275,7 +277,7 @@ def build_html():
   <h2>%s nouveautés cette année</h2>
   %s
   %s
-</section>""" % ({4: 'Quatre', 5: 'Cinq', 6: 'Six', 7: 'Sept', 8: 'Huit'}.get(len(nouveautes), str(len(nouveautes))), ''.join(lignes), pied(5)))
+</section>""" % ({4: 'Quatre', 5: 'Cinq', 6: 'Six', 7: 'Sept', 8: 'Huit', 9: 'Neuf', 10: 'Dix'}.get(len(nouveautes), str(len(nouveautes))), ''.join(lignes), pied(5)))
 
     # ---------- 6. série phare ----------
     tomes = ''.join(
@@ -438,6 +440,11 @@ font-size:6.9pt;color:var(--ink-3);border-top:1px solid var(--line);padding-top:
 .nouv.serre h3{font-size:10.8pt;margin-bottom:.6mm}
 .nouv.serre p{font-size:8.1pt;line-height:1.4;margin-bottom:.8mm}
 .nouv.serre .specs{font-size:7.4pt}
+.nouv.tres-serre{grid-template-columns:15mm 1fr;gap:3.5mm;margin-bottom:1.6mm}
+.nouv.tres-serre .tag{margin-bottom:.8mm}
+.nouv.tres-serre h3{font-size:10.2pt;margin-bottom:.4mm}
+.nouv.tres-serre p{font-size:7.8pt;line-height:1.33;margin-bottom:.5mm}
+.nouv.tres-serre .specs{font-size:7.1pt}
 /* série */
 .tomes{margin-bottom:2mm}
 .quotes{display:grid;grid-template-columns:1fr 1fr;gap:6mm}
