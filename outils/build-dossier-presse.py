@@ -38,7 +38,9 @@ LIVRES = [
     ('gaspard-les-graines-de-la-liberte',       'Gaspard, 10 ans · Tome 4',  '7'),
     ('gaspard-le-secret-de-la-montre-magique',  'Gaspard, 10 ans · Tome 5',  '7'),
     ('guide-de-survie-des-enfants-debrouillards','Documentaire',             '7'),
-    ('50-erreurs-geniales',                     'Documentaire',              '7'),
+    ('50-erreurs-geniales',                     'Documentaire · Tome 1',     '7'),
+    ('50-erreurs-monumentales',                 'Documentaire · Tome 2',     '7'),
+    ('50-erreurs-animaux',                      'Documentaire · Tome 3',     '7'),
     ('incroyapedia',                            'Encyclopédie',              '7'),
     ('leo-et-la-loi-de-murphy',                 'BD humour',                 '7'),
     ('c-est-qui-le-plus-fort',                  'Livre-jeu',                 '7'),
@@ -57,6 +59,8 @@ COURT = {
 
 # Pitches de la page « Parutions 2026 »
 PITCHES_2026 = {
+ '50-erreurs-monumentales': "Colomb qui débarque en Amérique en se croyant aux Indes, la tour de Pise qui penche depuis le chantier, une « guerre » déclenchée par un cochon : cinquante boulettes vraies qui ont changé l'Histoire. Une page par histoire, un « Le savais-tu ? », des quiz et vingt expériences à faire à la maison. Tome 2 de la collection 50 Erreurs.",
+ '50-erreurs-animaux': "Le poisson rouge qui oublierait tout en trois secondes, le taureau que le rouge rendrait furieux : cinquante idées reçues sur les animaux, démontées une par une, avec à chaque page le verdict vrai ou faux. Des quiz et vingt expériences à faire à la maison. Tome 3 de la collection 50 Erreurs.",
  '100-licornes': "L'enfant colorie sa licorne, prend la page en photo avec l'appli gratuite, et sa licorne devient un dessin animé d'une minute avec ses propres couleurs. Trente coloriages, trente dessins animés et trente jeux d'activités, pour les 3-6 ans.",
  'piege-dans-le-titanic': "14 avril 1912, 23 h 40. Le lecteur devient Louis, 10 ans, à bord du Titanic avec sa famille et Moustique, son chien. Il observe les illustrations, repère les indices et choisit son chemin : dix fins possibles, dix secrets cachés, et une vraie leçon d'histoire en filigrane.",
  'c-est-qui-le-plus-fort': "Ours polaire ou grizzly ? Requin blanc ou orque ? Trente duels d'animaux : l'enfant parie, tourne la page et découvre qui gagne vraiment, avec les vraies forces de chaque animal. Un livre-jeu qui se lit à plusieurs et se termine en débat à table.",
@@ -247,17 +251,16 @@ def build_html():
 <section class="page">
   <p class="eyebrow">Catalogue (suite)</p>
   <h2>Dès 6 ans — romans, documentaires et BD</h2>
-  <div class="grid-bk c5">%s</div>
+  <div class="grid-bk c5%s">%s</div>
   <p class="encart">Tous les titres sont imprimés à la demande en couleurs, au format broché, et disponibles sur
   Amazon.fr. Un PDF complet de chaque livre peut être fourni aux enseignants, bibliothécaires et journalistes sur
   simple demande.</p>
   %s
-</section>""" % (''.join(carte(l, c, 5) for l, c in d7), pied(4)))
+</section>""" % (' dense' if len(d7) > 12 else '', ''.join(carte(l, c, 5) for l, c in d7), pied(4)))
 
     # ---------- 5. parutions 2026 ----------
-    lignes = []
-    for l in nouveautes:
-        lignes.append("""
+    def ligne_nouv(l, n_page):
+        return """
   <article class="nouv%s">
     <img src="../%s" alt="">
     <div>
@@ -266,18 +269,28 @@ def build_html():
       <p>%s</p>
       <p class="specs">%s · %s · %d p. · ISBN %s</p>
     </div>
-  </article>""" % ((' serre' if len(nouveautes) > 6 else '') + (' tres-serre' if len(nouveautes) > 8 else ''), l['cover'], html.escape(cat_de[l['slug']].upper()), l['age'].upper(),
+  </article>""" % ((' serre' if n_page > 6 else '') + (' tres-serre' if n_page > 8 else ''), l['cover'], html.escape(cat_de[l['slug']].upper()), l['age'].upper(),
                    date_fr(l['date']).upper(), html.escape(l['nom']),
                    html.escape(PITCHES_2026.get(l['slug'], '')),
                    ('%s %s · %s avis' % (etoiles(l['note']), note_fr(l['note']), l['avis'])) if l['avis'] else 'nouveauté, en librairie en ligne',
-                   euro(l['prix']), l['pages'], l['isbn']))
-    P.append("""
+                   euro(l['prix']), l['pages'], l['isbn'])
+    nb_mots = {4: 'Quatre', 5: 'Cinq', 6: 'Six', 7: 'Sept', 8: 'Huit', 9: 'Neuf', 10: 'Dix', 11: 'Onze', 12: 'Douze'}.get(len(nouveautes), str(len(nouveautes)))
+    if len(nouveautes) > 9:
+        coupe = (len(nouveautes) + 1) // 2
+        lots = [nouveautes[:coupe], nouveautes[coupe:]]
+    else:
+        lots = [nouveautes]
+    for k, lot in enumerate(lots):
+        titre = ('<h2>%s nouveautés cette année</h2>' % nb_mots) if k == 0 else '<h2>Parutions 2026 (suite)</h2>'
+        P.append("""
 <section class="page">
   <p class="eyebrow">Parutions 2026</p>
-  <h2>%s nouveautés cette année</h2>
   %s
   %s
-</section>""" % ({4: 'Quatre', 5: 'Cinq', 6: 'Six', 7: 'Sept', 8: 'Huit', 9: 'Neuf', 10: 'Dix'}.get(len(nouveautes), str(len(nouveautes))), ''.join(lignes), pied(5)))
+  %s
+</section>""" % (titre, ''.join(ligne_nouv(l, len(lot)) for l in lot), pied(5 + k)))
+    sup = len(lots) - 1   # pages ajoutées après la page 5
+
 
     # ---------- 6. série phare ----------
     tomes = ''.join(
@@ -305,7 +318,7 @@ def build_html():
   <p class="encart">Le premier tome existe aussi en anglais (<i>Jasper, 10 years old, time traveler</i>), en espagnol
   et en italien.</p>
   %s
-</section>""" % (avis_gaspard, tomes, citations, pied(6)))
+</section>""" % (avis_gaspard, tomes, citations, pied(6 + sup)))
 
     # ---------- 7. pro ----------
     P.append("""
@@ -340,7 +353,7 @@ def build_html():
         <h3>Boutique Amazon</h3>
         <p class="url">amazon.fr/stores/author/B0CJ6VJG76</p>
         <h3>Réseaux</h3>
-        <p>Instagram @vincent___chevalier · TikTok @vinchevalier · Facebook micheleetvincent</p>
+        <p>Instagram @vincent___chevalier · TikTok @vincentchevalier14 · Facebook micheleetvincent</p>
       </div>
       <div class="card reperes">
         <h3>Repères</h3>
@@ -357,7 +370,7 @@ def build_html():
   %s
 </section>""" % (CONTACT, SITE, date_fr(premiere['date']).replace('2 mai', 'mai').replace('1 ', ''), html.escape(premiere['nom']),
                  len(tous), date_fr(aujourdhui.isoformat()), len(nouveautes), milliers(total_avis),
-                 note_fr(note_moy), pmin, pmax, euro(prix_min), euro(prix_max), pied(7)))
+                 note_fr(note_moy), pmin, pmax, euro(prix_min), euro(prix_max), pied(7 + sup)))
 
     doc = DOC % {'pages': ''.join(P), 'mois': mois_an}
     doc = doc.replace('@@NB_LIVRES@@', {17: 'Dix-sept', 18: 'Dix-huit', 19: 'Dix-neuf', 20: 'Vingt', 21: 'Vingt et un', 22: 'Vingt-deux'}.get(len(tous), str(len(tous))))   # nombre de titres en lettres
@@ -419,6 +432,8 @@ font-size:6.9pt;color:var(--ink-3);border-top:1px solid var(--line);padding-top:
 .grid-bk{display:grid;gap:7mm 5mm;margin-top:4mm}
 .grid-bk.c4{grid-template-columns:repeat(4,1fr)}
 .grid-bk.c5{grid-template-columns:repeat(5,1fr)}
+.grid-bk.c5.dense{gap:4.5mm 5mm;margin-left:7mm;margin-right:7mm}
+.grid-bk.dense+.encart{margin-top:4mm}
 .bk img{width:100%%;aspect-ratio:2/3;object-fit:cover;border-radius:1mm;box-shadow:0 1.5mm 4mm rgba(28,31,42,.14)}
 .bk figcaption{margin-top:2.5mm}
 .bk b{display:block;font-family:var(--serif);font-size:9.6pt;font-weight:500;line-height:1.25;margin-bottom:1mm}
